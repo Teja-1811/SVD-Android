@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#EEE"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/white">
+
+    <!-- Container for Blue Bar + Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Left Blue Stroke Indicator -->
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="@color/icon_blue" />
+
+        <!-- Main Content -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="12dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp">
+
+            <!-- ================= TOP ROW: Name ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/txtCustomerName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="2. N Satyavathi"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:ellipsize="end"
+                    android:maxLines="1"/>
+
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#F0F0F0"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
+
+            <!-- ================= MIDDLE ROW: Details ================= -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="bottom">
+
+                <!-- LEFT INFO COLUMN -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Shop Name -->
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Shop: "
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@+id/txtShopName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sri Vijaya Durga Generals..."
+                            android:textColor="#555"
+                            android:textSize="14sp"
+                            android:ellipsize="end"
+                            android:maxLines="1"/>
+                    </LinearLayout>
+
+                    <!-- Balance -->
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Balance: "
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@+id/txtBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₹ 8.00"
+                            android:textColor="@color/icon_red"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+                    <!-- Phone -->
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Phone: "
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:id="@+id/txtPhone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="8886307827"
+                            android:textColor="#555"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- RIGHT ACTION BUTTONS -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- View / Eye Button -->
+                    <ImageView
+                        android:id="@+id/btnView"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_eye"
+                        android:background="@drawable/bg_icon_btn"
+                        android:tint="@color/icon_blue"
+                        android:layout_marginEnd="8dp"/>
+
+                    <!-- Lock / Password Button -->
+                    <ImageView
+                        android:id="@+id/btnPassword"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_lock"
+                        android:background="@drawable/bg_icon_btn_gray"
+                        android:tint="#757575"
+                        android:layout_marginEnd="8dp"/>
+
+                    <!-- WhatsApp Button -->
+                    <ImageView
+                        android:id="@+id/btnWhatsapp"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_whatsapp"
+                        android:background="@drawable/bg_icon_btn_green"
+                        android:tint="#25D366"
+                        android:layout_marginEnd="8dp"/>
+
+                    <!-- Pay Button -->
+                    <ImageView
+                        android:id="@+id/btnPay"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_rupee"
+                        android:background="@drawable/bg_icon_btn"
+                        android:tint="@color/icon_blue"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

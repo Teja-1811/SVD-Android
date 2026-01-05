@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    app:cardCornerRadius="16dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#80BDBDBD"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Company Logo (Top Left) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="4dp"
+                android:layout_gravity="start|top">
+                
+                <ImageView
+                    android:id="@+id/imgCompanyLogo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_milk_placeholder"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"/>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Product Image (Center) -->
+            <ImageView
+                android:id="@+id/imgProduct"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_milk_placeholder" 
+                android:scaleType="fitCenter"/>
+
+            <!-- Stock Badge (Top Right) -->
+            <TextView
+                android:id="@+id/tvStock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|top"
+                android:text="57 in stock"
+                android:background="@drawable/bg_status_active"
+                android:backgroundTint="#4CAF50"
+                android:textColor="@color/white"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+
+        </FrameLayout>
+
+        <!-- Product Name -->
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Full Cream Milk 120 ML"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Code & Company -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Code"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray500"/>
+                
+                <TextView
+                    android:id="@+id/tvCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FCM120"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Company"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray500"/>
+
+                <TextView
+                    android:id="@+id/tvCompany"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dodla"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Buying & Selling -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Buying"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray500"/>
+
+                <TextView
+                    android:id="@+id/tvBuyingPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹8.16"
+                    android:textColor="#2196F3"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Selling"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray500"/>
+
+                <TextView
+                    android:id="@+id/tvSellingPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹9.00"
+                    android:textColor="#4CAF50"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- MRP & Margin -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MRP"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray500"/>
+
+                <TextView
+                    android:id="@+id/tvMrp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹10.00"
+                    android:textColor="#C2185B"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Margin"
+                    android:textSize="12sp"
+                    android:textColor="@color/gray500"/>
+
+                <TextView
+                    android:id="@+id/tvMargin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹0.84"
+                    android:textColor="#0097A7"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:weightSum="2">
+
+            <!-- Edit Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit"
+                android:textColor="#4CAF50"
+                app:backgroundTint="#E8F5E9"
+                app:strokeColor="#4CAF50"
+                app:strokeWidth="1dp"
+                app:cornerRadius="8dp"
+                android:layout_marginEnd="8dp"
+                app:icon="@drawable/ic_edit"
+                app:iconTint="#4CAF50"
+                app:iconGravity="textStart"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+            <!-- Freeze Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFreeze"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Freeze"
+                android:textColor="#F44336"
+                app:backgroundTint="#FFEBEE"
+                app:strokeColor="#F44336"
+                app:strokeWidth="1dp"
+                app:cornerRadius="8dp"
+                android:layout_marginStart="8dp"
+                app:icon="@drawable/ic_snowflake"
+                app:iconTint="#F44336"
+                app:iconGravity="textStart"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

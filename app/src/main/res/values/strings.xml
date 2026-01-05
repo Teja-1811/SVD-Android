@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">SVD Milk</string>
+    <string name="login_tagline">Grow Dairy Sales With Our Products</string>
+    <string name="login_title">LOGIN</string>
+    <string name="login_mobile_number_hint">Mobile Number</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button_text">LOGIN</string>
+    <string name="logo_content_description">Logo</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="no_account">Don\'t have account yet?</string>
+</resources>

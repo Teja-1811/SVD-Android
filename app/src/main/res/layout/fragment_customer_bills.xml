@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/billsSwipeRefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/editTextBackground"
+        android:padding="16dp">
+
+        <!-- ================= FILTER ROW ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/etMonth"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:hint="Month"
+                android:focusable="false"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_calendar"
+                android:padding="12dp"
+                android:background="@drawable/bg_qty_outline"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="@color/textColorSecondary"/>
+
+            <Button
+                android:id="@+id/btnFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:text="Filter"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/icon_red"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+        <!-- ================= STATS ROW ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="@color/editTextBackground">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Bills"
+                        android:textColor="@color/textColorSecondary"/>
+
+                    <TextView
+                        android:id="@+id/tvTotalBills"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/textColorPrimary"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:background="@color/editTextBackground">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Amount"
+                        android:textColor="@color/textColorSecondary"/>
+
+                    <TextView
+                        android:id="@+id/tvTotalAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0"
+                        android:textColor="@color/textColorPrimary"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/gray500"/>
+
+        <!-- ================= EMPTY STATE ================= -->
+        <TextView
+            android:id="@+id/tvEmptyBills"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No bills found"
+            android:textSize="14sp"
+            android:textColor="@color/gray500"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="40dp"/>
+
+        <!-- ================= BILLS LIST ================= -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBills"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"/>
+
+    </LinearLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

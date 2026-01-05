@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/window_background"
+    tools:context=".ui.customer.fragment.CustomerPaymentFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Development Warning -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This page is under development. Do not make any payments."
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="#FFCDD2"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Make Payment"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/icon_blue" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pay any amount to update your balance"
+            android:textSize="14sp"
+            android:textColor="@color/icon_red"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Balance Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/editTextBackground"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current Due"
+                    android:textSize="14sp"
+                    android:textColor="@color/textColorSecondary"/>
+
+                <TextView
+                    android:id="@+id/tvCurrentDue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹0.00"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/login_text_red"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#EEE"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wallet Balance"
+                    android:textSize="14sp"
+                    android:textColor="@color/textColorSecondary"/>
+
+                <TextView
+                    android:id="@+id/tvCurrentBalance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹0.00"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/icon_green"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Amount -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Amount"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/icon_orange"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/etPayAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter amount (₹)"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:background="@drawable/bg_icon_btn"
+            android:textColor="@color/textColorPrimary"
+            android:textColorHint="@color/textColorSecondary"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- UPI APP -->
+        <Button
+            android:id="@+id/btnPayUpi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay via UPI App"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- QR -->
+        <Button
+            android:id="@+id/btnScanQr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan QR Code"
+            android:backgroundTint="#FF9800"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- UPI LINK -->
+        <Button
+            android:id="@+id/btnShareLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Get Payment Link"
+            android:backgroundTint="#2196F3"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+
+</ScrollView>

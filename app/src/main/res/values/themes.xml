@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.SVDAgency" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- STATUS BAR -->
+        <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/brand_red</item>
+        <item name="colorPrimaryVariant">@color/brand_red_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/brand_red</item>
+        <item name="colorSecondaryVariant">@color/brand_red_dark</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Toolbar Text/Icon Colors -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="actionMenuTextColor">@color/white</item>
+
+        <!-- Customize your theme here. -->
+    </style>
+</resources>

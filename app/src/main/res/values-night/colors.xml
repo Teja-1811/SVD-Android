@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FFFFFFFF</color>
+    <color name="white">#FF121212</color>
+    <color name="status_bar">#D51E39</color>
+
+    <!-- Brand Colors -->
+    <color name="brand_red">#D51E39</color>
+    <color name="brand_red_dark">#9A0014</color>
+
+    <!-- Semantic Colors -->
+    <color name="textColorPrimary">#FFFFFFFF</color>
+    <color name="textColorSecondary">#B3FFFFFF</color>
+    <color name="editTextBackground">#FF1E1E1E</color>
+    <color name="editTextColor">#FFFFFFFF</color>
+    <color name="editTextStroke">#333333</color>
+
+    <!-- Window -->
+    <color name="window_background">#FF121212</color>
+
+    <!-- Admin Dashboard -->
+    <color name="card_customers">#2C3E50</color> <!-- darker blue -->
+    <color name="card_items">#2C3E50</color>     <!-- darker green -->
+    <color name="card_sales">#2C3E50</color>     <!-- darker orange -->
+    <color name="card_dues">#2C3E50</color>      <!-- darker pink -->
+    <color name="red600">#E57373</color>
+    <color name="gray500">#BDBDBD</color>
+
+    <color name="icon_blue">#90CAF9</color>
+    <color name="icon_green">#A5D6A7</color>
+    <color name="icon_orange">#FFCC80</color>
+    <color name="icon_red">#EF9A9A</color>
+
+    <!-- Login Screen -->
+    <color name="login_red_start">#FF416C</color>
+    <color name="login_red_end">#FF4B2B</color>
+    <color name="login_text_red">#FF4B2B</color>
+
+    <!-- Category Tabs -->
+    <color name="chip_selected_bg">#1E88E5</color>   <!-- Blue -->
+    <color name="chip_unselected_bg">#37474F</color>
+    <color name="chip_unselected_border">#546E7A</color>
+
+</resources>

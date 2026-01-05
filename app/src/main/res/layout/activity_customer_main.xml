@@ -1,0 +1,40 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/window_background">
+
+    <!-- ================= TOOLBAR ================= -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/customerToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="?attr/colorOnPrimary"
+        app:titleCentered="true"
+        app:title="Customer"
+        app:menu="@menu/menu_customer_toolbar" />
+
+    <!-- FRAGMENT CONTAINER -->
+    <FrameLayout
+        android:id="@+id/customerFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp"
+        android:layout_marginBottom="70dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <!-- ================= BOTTOM NAV ================= -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/customerBottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        android:background="@color/editTextBackground"
+        app:itemIconTint="@color/bottom_nav_selector"
+        app:itemTextColor="@color/bottom_nav_selector"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/menu_customer_bottom" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

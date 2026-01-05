@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:weightSum="3">
+
+        <!-- Date (Left) -->
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.6"
+            android:text="01"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:gravity="start|center_vertical"
+            android:paddingStart="8dp"/>
+
+        <!-- Invoice (Center) -->
+        <TextView
+            android:id="@+id/tvInvoice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:text="16201.30"
+            android:textColor="#555555"
+            android:gravity="center"/>
+
+        <!-- Paid (Right) -->
+        <TextView
+            android:id="@+id/tvPaid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:text="16569.23"
+            android:textColor="#555555"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"/>
+
+</LinearLayout>
