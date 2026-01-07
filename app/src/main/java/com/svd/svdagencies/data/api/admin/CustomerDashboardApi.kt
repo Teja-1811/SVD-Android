@@ -31,4 +31,10 @@ interface CustomerDashboardApi {
         @Path("id") id: Int,
         @Body request: UpdateBalanceRequest
     ): UpdateBalanceResponse
+
+    // Add or Edit Customer
+    @POST("api/customer-add/")
+    suspend fun addOrUpdateCustomer(
+        @Body request: AddCustomerRequest
+    ): AddCustomerResponse
 }

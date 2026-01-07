@@ -1,9 +1,12 @@
 package com.svd.svdagencies.ui.admin.customer
 
+import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -59,7 +62,11 @@ class CustomerProfileActivity : AdminBaseActivity() {
 
         // Setup button listeners
         binding.btnUpdate.setOnClickListener {
-            Toast.makeText(this, "Update feature coming soon", Toast.LENGTH_SHORT).show()
+            // Launch AddCustomerActivity in Update mode
+            val intent = Intent(this, AddCustomerActivity::class.java).apply {
+                putExtra("CUSTOMER_TO_UPDATE", customer)
+            }
+            startActivity(intent)
         }
 
         binding.btnFreeze.setOnClickListener {
@@ -110,11 +117,20 @@ class CustomerProfileActivity : AdminBaseActivity() {
 
     private fun updateFreezeButtonState() {
         binding.txtStatus.text = if (isFrozen) "Frozen" else "Active"
-        binding.btnFreeze.text = if (isFrozen) "Unfreeze" else "Freeze"
         
-        // Update color optionally
-        val color = if (isFrozen) R.color.icon_green else R.color.icon_red
-        // binding.btnFreeze.setBackgroundColor(...) - usually requires handling tint
+        if (isFrozen) {
+            binding.btnFreeze.text = "Unfreeze"
+            binding.btnFreeze.setIconResource(R.drawable.ic_unlock)
+            binding.btnFreeze.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.icon_green)
+            )
+        } else {
+            binding.btnFreeze.text = "Freeze"
+            binding.btnFreeze.setIconResource(R.drawable.ic_lock)
+            binding.btnFreeze.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.icon_red)
+            )
+        }
     }
 
     private fun toggleFreeze(id: Int) {

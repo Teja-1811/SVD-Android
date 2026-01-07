@@ -11,5 +11,6 @@ data class CustomerItem(
     val shop_name: String? = "",
     val phone: String? = "",
     val due: Double? = 0.0,
-    val frozen: Boolean? = false
+    val frozen: Boolean? = false,
+    val retailer_id: String? = null
 ) : Parcelable

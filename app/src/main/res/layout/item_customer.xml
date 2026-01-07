@@ -95,7 +95,8 @@
 
                         <TextView
                             android:id="@+id/txtShopName"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:text="Sri Vijaya Durga Generals..."
                             android:textColor="@color/text_item_value"

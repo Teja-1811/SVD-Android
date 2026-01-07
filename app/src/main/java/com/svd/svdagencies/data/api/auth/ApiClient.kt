@@ -1,6 +1,7 @@
 package com.svd.svdagencies.data.api.auth
 
 import com.svd.svdagencies.App
+import com.svd.svdagencies.data.api.admin.AdminItemsApi
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.AuthInterceptor
 import com.svd.svdagencies.utils.SessionManager
@@ -32,5 +33,9 @@ object ApiClient {
 
     val adminCustomerDashboard: CustomerDashboardApi by lazy {
         retrofit.create(CustomerDashboardApi::class.java)
+    }
+
+    val adminItemsApi: AdminItemsApi by lazy {
+        retrofit.create(AdminItemsApi::class.java)
     }
 }
