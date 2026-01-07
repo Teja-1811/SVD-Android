@@ -46,4 +46,12 @@
     <color name="chip_unselected_bg">#37474F</color>
     <color name="chip_unselected_border">#546E7A</color>
 
+    <!-- Adapted Colors -->
+    <color name="text_item_value">#CCCCCC</color>
+    <color name="icon_gray_btn">#BDBDBD</color>
+    <color name="divider_line">#333333</color>
+    <color name="card_stroke_color">#333333</color>
+    <color name="card_background">#FF1E1E1E</color>
+    <color name="surface_background">#FF1E1E1E</color>
+
 </resources>

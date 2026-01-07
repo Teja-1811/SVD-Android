@@ -31,6 +31,8 @@
         <activity android:name=".ui.customer.CustomerMainActivity"/>
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>
         <activity android:name=".ui.admin.customer.CustomersData"/>
+        <activity android:name=".ui.admin.customer.AddCustomerActivity"/>
+        <activity android:name=".ui.admin.customer.CustomerProfileActivity"/>
         <activity android:name=".ui.admin.bills.AdminBillsActivity"/>
         <activity android:name=".ui.admin.AdminOrdersActivity"/>
         <activity android:name=".ui.admin.items.AdminItemsActivity"/>

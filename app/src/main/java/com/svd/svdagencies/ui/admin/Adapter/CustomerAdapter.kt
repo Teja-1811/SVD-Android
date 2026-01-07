@@ -1,10 +1,12 @@
 package com.svd.svdagencies.ui.admin.Adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.data.model.admin.CustomerItem
 import com.svd.svdagencies.databinding.ItemCustomerBinding
+import com.svd.svdagencies.ui.admin.customer.CustomerProfileActivity
 
 class CustomerAdapter(
     private var items: List<CustomerItem>
@@ -33,6 +35,14 @@ class CustomerAdapter(
             txtShopName.text = c.shop_name
             txtPhone.text = c.phone
             txtBalance.text = "₹ %.2f".format(c.due)
+
+            btnView.setOnClickListener {
+                val context = root.context
+                val intent = Intent(context, CustomerProfileActivity::class.java).apply {
+                    putExtra("CUSTOMER_DATA", c)
+                }
+                context.startActivity(intent)
+            }
         }
     }
 

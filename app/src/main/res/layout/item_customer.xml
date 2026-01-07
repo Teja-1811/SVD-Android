@@ -8,10 +8,10 @@
     app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#EEE"
+    app:strokeColor="@color/card_stroke_color"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/card_background">
 
     <!-- Container for Blue Bar + Content -->
     <LinearLayout
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="2. N Satyavathi"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColorPrimary"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:ellipsize="end"
@@ -60,7 +60,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#F0F0F0"
+                android:background="@color/divider_line"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"/>
 
@@ -89,7 +89,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shop: "
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:textStyle="bold"
                             android:textSize="14sp"/>
 
@@ -98,7 +98,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Sri Vijaya Durga Generals..."
-                            android:textColor="#555"
+                            android:textColor="@color/text_item_value"
                             android:textSize="14sp"
                             android:ellipsize="end"
                             android:maxLines="1"/>
@@ -115,7 +115,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Balance: "
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:textStyle="bold"
                             android:textSize="14sp"/>
 
@@ -138,7 +138,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Phone: "
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:textStyle="bold"
                             android:textSize="14sp"/>
 
@@ -147,7 +147,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="8886307827"
-                            android:textColor="#555"
+                            android:textColor="@color/text_item_value"
                             android:textSize="14sp"/>
                     </LinearLayout>
 
@@ -168,7 +168,7 @@
                         android:padding="8dp"
                         android:src="@drawable/ic_eye"
                         android:background="@drawable/bg_icon_btn"
-                        android:tint="@color/icon_blue"
+                        app:tint="@color/icon_blue"
                         android:layout_marginEnd="8dp"/>
 
                     <!-- Lock / Password Button -->
@@ -179,7 +179,7 @@
                         android:padding="8dp"
                         android:src="@drawable/ic_lock"
                         android:background="@drawable/bg_icon_btn_gray"
-                        android:tint="#757575"
+                        app:tint="@color/icon_gray_btn"
                         android:layout_marginEnd="8dp"/>
 
                     <!-- WhatsApp Button -->
@@ -190,7 +190,7 @@
                         android:padding="8dp"
                         android:src="@drawable/ic_whatsapp"
                         android:background="@drawable/bg_icon_btn_green"
-                        android:tint="#25D366"
+                        app:tint="#25D366"
                         android:layout_marginEnd="8dp"/>
 
                     <!-- Pay Button -->
@@ -201,7 +201,7 @@
                         android:padding="8dp"
                         android:src="@drawable/ic_rupee"
                         android:background="@drawable/bg_icon_btn"
-                        android:tint="@color/icon_blue"/>
+                        app:tint="@color/icon_blue"/>
 
                 </LinearLayout>
 

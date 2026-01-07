@@ -135,7 +135,7 @@ class AdminBillsActivity : AdminBaseActivity() {
             return
         }
 
-        ApiClient.adminCustomerDashboard.getCustomers("Token $token")
+        ApiClient.adminCustomerDashboard.getCustomers()
             .enqueue(object : Callback<CustomerDashboardResponse> {
                 override fun onResponse(
                     call: Call<CustomerDashboardResponse>,
