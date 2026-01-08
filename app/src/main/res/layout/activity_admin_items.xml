@@ -36,72 +36,16 @@
                 android:textColor="@color/black"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- CATEGORIES ROW -->
-            <HorizontalScrollView
+            <!-- CATEGORIES TABS -->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayoutCategories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="none"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
-                    android:id="@+id/layoutCategories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <!-- Categories will be added dynamically -->
-                    
-                    <!-- Mock Categories for preview -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardCat1"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        app:cardCornerRadius="30dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DDDDDD"
-                        android:layout_marginEnd="12dp"
-                        android:clickable="true"
-                        android:focusable="true">
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_milk_placeholder"
-                            android:scaleType="fitCenter"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        app:cardCornerRadius="30dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="#DDDDDD"
-                        android:layout_marginEnd="12dp">
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_milk_placeholder" 
-                            android:scaleType="fitCenter"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        app:cardCornerRadius="30dp"
-                        app:strokeWidth="2dp"
-                        app:strokeColor="#4CAF50"
-                        android:layout_marginEnd="12dp">
-                         <!-- Refresh Icon / Selected indicator -->
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="18dp"
-                            android:src="@drawable/ic_stock" 
-                            app:tint="#4CAF50"/>
-                    </com.google.android.material.card.MaterialCardView>
-
-                </LinearLayout>
-            </HorizontalScrollView>
+                app:tabMode="scrollable"
+                app:tabIndicatorColor="@color/icon_blue"
+                app:tabSelectedTextColor="@color/icon_blue"
+                app:tabTextColor="@color/gray500"
+                android:layout_marginBottom="16dp"/>
 
             <!-- SEARCH & ADD -->
             <LinearLayout
@@ -153,7 +97,8 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"/>
 
             <!-- ITEM LIST -->
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

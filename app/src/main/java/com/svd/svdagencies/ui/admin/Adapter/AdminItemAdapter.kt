@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
+import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.AdminItem
 
 class AdminItemAdapter(
@@ -51,14 +53,44 @@ class AdminItemAdapter(
             tvProductName.text = item.name
             tvCode.text = item.code
             tvCompany.text = item.company
-            tvBuyingPrice.text = "₹${item.buying_price}"
-            tvSellingPrice.text = "₹${item.selling_price}"
-            tvMrp.text = "₹${item.mrp}"
-            tvMargin.text = "₹${item.margin}"
-            tvStock.text = "${item.stock} in stock"
+            tvBuyingPrice.text = "₹${item.buying_price ?: "0.00"}"
+            tvSellingPrice.text = "₹${item.selling_price ?: "0.00"}"
+            tvMrp.text = "₹${item.mrp ?: "0.00"}"
 
-            // Load images logic here if using Glide/Picasso later
-            // For now using placeholder
+            val selling = item.selling_price?.toDoubleOrNull() ?: 0.0
+            val buying = item.buying_price?.toDoubleOrNull() ?: 0.0
+            val margin = selling - buying
+            
+            tvMargin.text = "₹%.2f".format(margin)
+            tvStock.text = "${item.stock_quantity ?: 0} in stock"
+
+            // Loading product image using Glide
+            val imageUrl = item.image
+            
+            if (!imageUrl.isNullOrEmpty()) {
+                val fullUrl = if (imageUrl.startsWith("http")) {
+                    imageUrl
+                } else {
+                    // Assuming ApiClient.BASE_URL exists and needs to be prepended
+                    // Since I can't access ApiClient.BASE_URL directly if private,
+                    // I'll assume the URL from backend is relative.
+                    // If it is an absolute path from Django like /media/..., we need base url.
+                    // Let's try to construct it.
+                    "http://ec2-18-235-222-205.compute-1.amazonaws.com$imageUrl"
+                }
+
+                Glide.with(itemView.context)
+                    .load(fullUrl)
+                    .placeholder(R.drawable.ic_milk_placeholder) // Use a default placeholder
+                    .error(R.drawable.ic_milk_placeholder)
+                    .into(imgProduct)
+            } else {
+                imgProduct.setImageResource(R.drawable.ic_milk_placeholder)
+            }
+
+            // Company Logo logic (if applicable, otherwise hide or set default)
+            // Assuming no company logo url in AdminItem for now, just hiding or setting placeholder
+            // imgCompanyLogo.visibility = View.GONE 
 
             btnEdit.setOnClickListener { onEditClick(item) }
             btnFreeze.setOnClickListener { onFreezeClick(item) }

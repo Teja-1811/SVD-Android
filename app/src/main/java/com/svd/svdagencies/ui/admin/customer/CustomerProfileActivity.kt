@@ -37,6 +37,7 @@ class CustomerProfileActivity : AdminBaseActivity() {
         setupAdminLayout("Customer Profile")
 
         // Retrieve customer data from intent
+        @Suppress("DEPRECATION")
         customer = intent.getParcelableExtra("CUSTOMER_DATA")
 
         if (customer != null) {

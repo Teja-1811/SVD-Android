@@ -7,16 +7,16 @@ import retrofit2.http.*
 
 interface AdminItemsApi {
 
-    @GET("items/categories/")
+    @GET("api/items/categories/")
     suspend fun getCategories(): List<String>
 
-    @GET("items/by-category/")
+    @GET("api/items/by-category/")
     suspend fun getItemsByCategory(
         @Query("category") category: String
     ): List<AdminItem>
 
     @Multipart
-    @POST("items/add/")
+    @POST("api/items/add/")
     suspend fun addItem(
         @Part("code") code: RequestBody?,
         @Part("name") name: RequestBody,
@@ -31,7 +31,7 @@ interface AdminItemsApi {
     ): Map<String, Any>
 
     @Multipart
-    @POST("items/edit/{id}/")
+    @POST("api/items/edit/{id}/")
     suspend fun editItem(
         @Path("id") id: Int,
         @Part("code") code: RequestBody?,

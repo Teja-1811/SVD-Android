@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
+    <!-- Replaced Purples with Reds -->
+    <color name="purple_200">#FFCDD2</color>
+    <color name="purple_500">#D51E39</color>
+    <color name="purple_700">#9A0014</color>
+    
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
@@ -27,7 +29,7 @@
     <color name="card_customers">#E3F2FD</color> <!-- blue -->
     <color name="card_items">#E8F5E9</color>     <!-- green -->
     <color name="card_sales">#FFF3E0</color>     <!-- orange -->
-    <color name="card_dues">#FCE4EC</color>      <!-- pink -->
+    <color name="card_dues">#FFEBEE</color>      <!-- light red (was pink) -->
     <color name="red600">#660000</color>
     <color name="gray500">#9E9E9E</color>
 
@@ -37,9 +39,9 @@
     <color name="icon_red">#C62828</color>
 
     <!-- Login Screen -->
-    <color name="login_red_start">#FF416C</color>
-    <color name="login_red_end">#FF4B2B</color>
-    <color name="login_text_red">#FF4B2B</color>
+    <color name="login_red_start">#D51E39</color> <!-- Brand Red (was pinkish) -->
+    <color name="login_red_end">#B71C1C</color>   <!-- Darker Red -->
+    <color name="login_text_red">#D51E39</color>
 
     <!-- Category Tabs -->
     <color name="chip_selected_bg">#1E88E5</color>   <!-- Blue -->

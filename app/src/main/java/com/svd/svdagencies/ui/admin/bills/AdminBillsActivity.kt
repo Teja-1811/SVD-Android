@@ -14,11 +14,16 @@ import com.google.android.material.card.MaterialCardView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.AdminBill
+import com.svd.svdagencies.data.model.admin.BillListResponse
 import com.svd.svdagencies.data.model.admin.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.admin.CustomerItem
 import com.svd.svdagencies.ui.admin.Adapter.AdminBillAdapter
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.SessionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -63,7 +68,7 @@ class AdminBillsActivity : AdminBaseActivity() {
         }
 
         // Initially load data
-        // loadBills() // Uncomment when API is ready
+        loadBills()
     }
 
     private fun setupRecycler() {
@@ -76,14 +81,6 @@ class AdminBillsActivity : AdminBaseActivity() {
         )
         rvBills.layoutManager = LinearLayoutManager(this)
         rvBills.adapter = adapter
-
-        // Mock data for UI development as requested (excluding screenshot data)
-        val mockData = listOf(
-            AdminBill(1, "INV-20240101001", "John Doe", "2024-01-01", 1200.0, 150.0),
-            AdminBill(2, "INV-20240102002", "Jane Smith", "2024-01-02", 2500.0, 300.0),
-            AdminBill(3, "INV-20240103003", "Bob Johnson", "2024-01-03", 800.0, 100.0)
-        )
-        adapter.updateList(mockData)
     }
 
     private fun setupListeners() {
@@ -118,7 +115,7 @@ class AdminBillsActivity : AdminBaseActivity() {
             this,
             { _, selectedYear, selectedMonth, selectedDay ->
                 val formattedDate =
-                    String.format("%02d-%02d-%d", selectedDay, selectedMonth + 1, selectedYear)
+                    String.format("%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
                 textView.text = formattedDate
             },
             year, month, day
@@ -155,7 +152,6 @@ class AdminBillsActivity : AdminBaseActivity() {
 
     private fun setupCustomerSpinner() {
         val customerNames = mutableListOf("All Customers")
-        // Fixed type mismatch by handling nullable name
         customerNames.addAll(allCustomers.map { it.name ?: "" })
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, customerNames)
@@ -164,13 +160,57 @@ class AdminBillsActivity : AdminBaseActivity() {
     }
 
     private fun loadBills() {
-        swipeRefresh.isRefreshing = false
-        // Implement API call to filter bills based on selection
-        // val selectedCustomerIndex = spinnerCustomers.selectedItemPosition
-        // val fromDate = tvFromDate.text.toString()
-        // val toDate = tvToDate.text.toString()
+        swipeRefresh.isRefreshing = true
 
-        // call api...
+        val customerId = if (spinnerCustomers.adapter != null && spinnerCustomers.selectedItemPosition > 0) {
+            allCustomers[spinnerCustomers.selectedItemPosition - 1].id
+        } else {
+            null
+        }
+
+        val startDate = if (tvFromDate.text.toString() != "dd-mm-yyyy") tvFromDate.text.toString() else null
+        val endDate = if (tvToDate.text.toString() != "dd-mm-yyyy") tvToDate.text.toString() else null
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = ApiClient.billsDashboardApi.getBills(
+                    customerId = customerId,
+                    startDate = startDate,
+                    endDate = endDate,
+                    page = 1
+                )
+                
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) {
+                        swipeRefresh.isRefreshing = false
+                        // Convert BillItem (API) to AdminBill (UI Model)
+                        // Or update Adapter to use BillItem directly.
+                        // For now mapping to AdminBill as Adapter expects it.
+                        // Note: API BillItem fields: id, invoice_number, invoice_date, customer, total_amount, op_due, current_due
+                        // UI AdminBill fields: id, bill_number, customer_name, date, total_amount, profit
+                        
+                        val uiBills = response.results.map { apiBill ->
+                            AdminBill(
+                                id = apiBill.id,
+                                bill_number = apiBill.invoice_number,
+                                customer_name = apiBill.customer,
+                                date = apiBill.invoice_date,
+                                total_amount = apiBill.total_amount.toDoubleOrNull() ?: 0.0,
+                                profit = 0.0 // API list doesn't return profit, only detail does
+                            )
+                        }
+                        adapter.updateList(uiBills)
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) {
+                        swipeRefresh.isRefreshing = false
+                        showToast("Error loading bills: ${e.message}")
+                    }
+                }
+            }
+        }
     }
 
     private fun showToast(message: String) {

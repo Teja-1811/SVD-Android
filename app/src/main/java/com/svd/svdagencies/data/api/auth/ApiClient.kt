@@ -2,6 +2,10 @@ package com.svd.svdagencies.data.api.auth
 
 import com.svd.svdagencies.App
 import com.svd.svdagencies.data.api.admin.AdminItemsApi
+import com.svd.svdagencies.data.api.admin.AdminOrdersApi
+import com.svd.svdagencies.data.api.admin.AdminPaymentsApi
+import com.svd.svdagencies.data.api.admin.BillsDashboardApi
+import com.svd.svdagencies.data.api.admin.CashbookApi
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.AuthInterceptor
 import com.svd.svdagencies.utils.SessionManager
@@ -37,5 +41,21 @@ object ApiClient {
 
     val adminItemsApi: AdminItemsApi by lazy {
         retrofit.create(AdminItemsApi::class.java)
+    }
+
+    val billsDashboardApi: BillsDashboardApi by lazy {
+        retrofit.create(BillsDashboardApi::class.java)
+    }
+
+    val cashbookApi: CashbookApi by lazy {
+        retrofit.create(CashbookApi::class.java)
+    }
+
+    val adminPaymentsApi: AdminPaymentsApi by lazy {
+        retrofit.create(AdminPaymentsApi::class.java)
+    }
+
+    val adminOrdersApi: AdminOrdersApi by lazy {
+        retrofit.create(AdminOrdersApi::class.java)
     }
 }

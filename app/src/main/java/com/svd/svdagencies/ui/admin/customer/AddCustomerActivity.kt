@@ -1,6 +1,7 @@
 package com.svd.svdagencies.ui.admin.customer
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import com.svd.svdagencies.R
@@ -29,7 +30,12 @@ class AddCustomerActivity : AdminBaseActivity() {
         api = ApiClient.adminCustomerDashboard
 
         // Check if we are in Update mode
-        customerToUpdate = intent.getParcelableExtra("CUSTOMER_TO_UPDATE")
+        customerToUpdate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("CUSTOMER_TO_UPDATE", CustomerItem::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("CUSTOMER_TO_UPDATE")
+        }
 
         if (customerToUpdate != null) {
             setupAdminLayout("Update Customer")
