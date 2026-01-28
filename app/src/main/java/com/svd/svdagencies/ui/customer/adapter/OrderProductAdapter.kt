@@ -12,11 +12,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.svd.svdagencies.R
+import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.customer.ProductResponse
 
 class OrderProductAdapter(
     private val products: MutableList<ProductResponse>,
-    private val cartQuantities: HashMap<Int, Double>,   // 🔹 Double because 0.5 allowed
+    private val cartQuantities: HashMap<Int, Double>,
     private val onTotalChanged: (Double) -> Unit
 ) : RecyclerView.Adapter<OrderProductAdapter.ProductViewHolder>() {
 
@@ -41,7 +42,7 @@ class OrderProductAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_order_product, parent, false)
+            .inflate(R.layout.customer_order_product, parent, false)
         return ProductViewHolder(v)
     }
 
@@ -49,38 +50,28 @@ class OrderProductAdapter(
 
         val product = products[position]
         val productId = product.id
+        val step = product.calculateStep
 
-        // 🔹 RULE: if pcs > 1 → step 0.5 else 1
-        val pcs = product.pcs_count ?: 1
-
-        val step = when {
-            pcs == 1 -> 1.0
-            pcs == 5 -> 0.2
-            pcs > 10 -> 0.5
-            else -> 1.0
-        }
-
-
-        val qty = cartQuantities[productId] ?: 0.0   // quantity in crates/units
-        val total = qty * pcs * product.selling_price
+        val qty = cartQuantities[productId] ?: 0.0
+        val total = product.calculateTotal(qty)
 
         holder.tvName.text = product.name
-        holder.tvPcs.text = "$pcs pcs / crate"
+        holder.tvPcs.text = "${product.pcs} pcs / crate"
         holder.tvMrp.text = "MRP: ₹${product.mrp}"
         holder.tvPrice.text = "₹${product.selling_price}"
         holder.tvMargin.text = "Margin: ${String.format("%.1f", product.margin)}%"
         holder.tvTotal.text = "₹${String.format("%.2f", total)}"
 
-        // Show nice qty text
         holder.qtyWatcher?.let { holder.etQty.removeTextChangedListener(it) }
-        holder.etQty.setText(
-            if (qty == qty.toInt().toDouble()) qty.toInt().toString()
-            else qty.toString()
-        )
+        holder.etQty.setText(product.formatQuantity(qty))
 
-        // ---------- IMAGE ----------
-        val base = "http://ec2-18-235-222-205.compute-1.amazonaws.com"
-        val url = if (product.image.startsWith("http")) product.image else base + product.image
+        val base = ApiClient.BASE_URL.removeSuffix("/")
+        val productImg = product.image ?: ""
+        val url = if (productImg.startsWith("http")) {
+            productImg
+        } else {
+            if (productImg.startsWith("/")) "$base$productImg" else "$base/$productImg"
+        }
 
         Glide.with(holder.itemView.context)
             .load(url)
@@ -88,7 +79,6 @@ class OrderProductAdapter(
             .error(R.drawable.ic_milk_placeholder)
             .into(holder.imgProduct)
 
-        // ---------- PLUS ----------
         holder.btnPlus.setOnClickListener {
             val newQty = (cartQuantities[productId] ?: 0.0) + step
             cartQuantities[productId] = newQty
@@ -96,7 +86,6 @@ class OrderProductAdapter(
             notifyGrandTotal()
         }
 
-        // ---------- MINUS ----------
         holder.btnMinus.setOnClickListener {
             val newQty = (cartQuantities[productId] ?: 0.0) - step
 
@@ -107,21 +96,15 @@ class OrderProductAdapter(
             notifyGrandTotal()
         }
 
-        // ---------- MANUAL INPUT ----------
         holder.qtyWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-
                 var value = s?.toString()?.toDoubleOrNull() ?: 0.0
-
-                // snap to nearest step
                 value = (Math.round(value / step) * step)
 
                 if (value <= 0) cartQuantities.remove(productId)
                 else cartQuantities[productId] = value
 
-                val totalValue = value * pcs * product.selling_price
-                holder.tvTotal.text = "₹${String.format("%.2f", totalValue)}"
-
+                holder.tvTotal.text = "₹${String.format("%.2f", product.calculateTotal(value))}"
                 notifyGrandTotal()
             }
 
@@ -134,13 +117,11 @@ class OrderProductAdapter(
 
     override fun getItemCount(): Int = products.size
 
-    // ---------- GRAND TOTAL ----------
     private fun notifyGrandTotal() {
         var total = 0.0
         cartQuantities.forEach { (id, qty) ->
             val p = products.find { it.id == id } ?: return@forEach
-            val pcs = p.pcs_count ?: 1
-            total += qty * pcs * p.selling_price
+            total += p.calculateTotal(qty)
         }
         onTotalChanged(total)
     }

@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name">
 
-    <activity
+        <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true">
             <intent-filter>
@@ -34,11 +34,23 @@
         <activity android:name=".ui.admin.customer.AddCustomerActivity"/>
         <activity android:name=".ui.admin.customer.CustomerProfileActivity"/>
         <activity android:name=".ui.admin.bills.AdminBillsActivity"/>
+        <activity android:name=".ui.admin.bills.CreateBillActivity"/>
+        <activity android:name=".ui.admin.bills.AdminBillDetailActivity"/>
         <activity android:name=".ui.admin.AdminOrdersActivity"/>
         <activity android:name=".ui.admin.items.AdminItemsActivity"/>
         <activity android:name=".ui.admin.stock.AdminStockActivity"/>
         <activity android:name=".ui.admin.AdminPaymentsActivity"/>
         <activity android:name=".ui.admin.cashbook.AdminCashBookActivity"/>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 

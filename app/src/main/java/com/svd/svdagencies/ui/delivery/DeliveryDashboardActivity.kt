@@ -7,6 +7,6 @@ import com.svd.svdagencies.base.BaseActivity
 class DeliveryDashboardActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_delivery_dashboard)
+        setContentView(R.layout.delivery_dashboard)
     }
 }

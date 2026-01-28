@@ -31,7 +31,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.Calendar
 
-class CustomerBillsFragment : Fragment(R.layout.fragment_customer_bills) {
+class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var rvBills: RecyclerView

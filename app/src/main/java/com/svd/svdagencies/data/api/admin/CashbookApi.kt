@@ -5,25 +5,25 @@ import retrofit2.http.*
 
 interface CashbookApi {
 
-    @GET("cashbook/entries/")
+    @GET("api/cashbook/entries/")
     suspend fun getDashboardData(): CashbookDashboardResponse
 
-    @POST("cashbook/save-cash/")
+    @POST("api/cashbook/save-cash/")
     suspend fun saveCashIn(@Body request: SaveCashInRequest): Map<String, Boolean>
 
-    @POST("cashbook/save-bank/")
+    @POST("api/cashbook/save-bank/")
     suspend fun saveBankBalance(@Body request: SaveBankBalanceRequest): Map<String, Boolean>
 
-    @POST("cashbook/add-expense/")
+    @POST("api/cashbook/add-expense/")
     suspend fun addExpense(@Body request: ExpenseRequest): Map<String, Boolean>
 
-    @PUT("cashbook/edit-expense/{id}/")
+    @PUT("api/cashbook/edit-expense/{id}/")
     suspend fun editExpense(
         @Path("id") id: Int,
         @Body request: ExpenseRequest
     ): Map<String, Boolean>
 
-    @GET("cashbook/expenses/")
+    @GET("api/cashbook/expenses/")
     suspend fun getExpenses(
         @Query("start_date") startDate: String?,
         @Query("end_date") endDate: String?

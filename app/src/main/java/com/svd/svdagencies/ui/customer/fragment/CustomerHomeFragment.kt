@@ -18,7 +18,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CustomerHomeFragment :
-    Fragment(R.layout.fragment_customer_home),
+    Fragment(R.layout.customer_home),
     Refreshable {
 
     private lateinit var swipeRefresh: SwipeRefreshLayout

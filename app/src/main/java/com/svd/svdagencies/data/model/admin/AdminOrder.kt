@@ -6,5 +6,6 @@ data class AdminOrder(
     val customer_id: Int?,
     val customer_name: String,
     val total_amount: Double,
-    val items_count: Int
+    val items_count: Int,
+    val items: List<AdminOrderItem> = emptyList()
 )

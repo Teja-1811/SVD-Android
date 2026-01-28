@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/window_background">
+
+    <LinearLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@+id/bottom_actions">
+
+        <include
+            layout="@layout/admin_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Header Info -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="2dp"
+                    app:cardCornerRadius="8dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tvCustomerName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Customer Name"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/tvInvoiceNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Invoice: INV-12345"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvInvoiceDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Date: 2026-01-08" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Financial Summary -->
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:useDefaultMargins="true"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_columnWeight="1"
+                        android:layout_width="0dp"
+                        app:contentPadding="12dp">
+                        <TextView
+                            android:id="@+id/tvTotalAmount"
+                            tools:text="Total\n₹1,250.00"
+                            android:gravity="center" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_columnWeight="1"
+                        android:layout_width="0dp"
+                        app:contentPadding="12dp">
+                        <TextView
+                            android:id="@+id/tvProfit"
+                            tools:text="Profit\n₹250.00"
+                            android:gravity="center" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_columnWeight="1"
+                        android:layout_width="0dp"
+                        app:contentPadding="12dp">
+                        <TextView
+                            android:id="@+id/tvOpeningDue"
+                            tools:text="Opening Due\n₹500.00"
+                            android:gravity="center" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_columnWeight="1"
+                        android:layout_width="0dp"
+                        app:contentPadding="12dp">
+                        <TextView
+                            android:id="@+id/tvCurrentDue"
+                            tools:text="Current Due\n₹1,750.00"
+                            android:gravity="center" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                </GridLayout>
+
+                <!-- Bill Items Header -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Items"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Bill Items List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvBillItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/admin_bill_info_detail" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp"
+        android:background="@color/white">
+
+        <Button
+            android:id="@+id/btnEditBill"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Edit"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btnDeleteBill"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Delete"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"/>
+
+        <Button
+            android:id="@+id/btnDownloadBill"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Download"
+            android:layout_marginStart="4dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

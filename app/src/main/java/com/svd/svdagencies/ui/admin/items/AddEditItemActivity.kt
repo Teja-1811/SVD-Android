@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.AdminItem
-import com.svd.svdagencies.databinding.ActivityAddEditItemBinding
+import com.svd.svdagencies.databinding.AdminItemAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +29,10 @@ import java.io.FileOutputStream
 
 class AddEditItemActivity : AdminBaseActivity() {
 
-    private lateinit var binding: ActivityAddEditItemBinding
+    private lateinit var binding: AdminItemAddBinding
     private var itemToUpdate: AdminItem? = null
     private var selectedImageUri: Uri? = null
+    private lateinit var categoryAdapter: ArrayAdapter<String>
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -45,7 +46,7 @@ class AddEditItemActivity : AdminBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAddEditItemBinding.inflate(layoutInflater)
+        binding = AdminItemAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Retrieve item data
@@ -56,6 +57,9 @@ class AddEditItemActivity : AdminBaseActivity() {
             intent.getParcelableExtra("ITEM_TO_UPDATE")
         }
 
+        // Setup Spinners first so adapter is ready
+        setupSpinners()
+
         if (itemToUpdate != null) {
             setupAdminLayout("Edit Item")
             binding.btnAddItem.text = "Update Item"
@@ -65,37 +69,38 @@ class AddEditItemActivity : AdminBaseActivity() {
             binding.btnAddItem.text = "Add Item"
         }
 
-        setupSpinners()
         setupListeners()
     }
 
     private fun setupSpinners() {
         // Hardcoded categories for now, ideally fetch from API
-        // Or if AdminItemsActivity fetched them, pass them via intent
         val categories = listOf("Milk", "Curd", "Butter Milk", "Paneer", "Other")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerCategory.adapter = adapter
+        categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerCategory.adapter = categoryAdapter
     }
 
     private fun populateFields(item: AdminItem) {
         binding.etItemName.setText(item.name)
         binding.etItemCode.setText(item.code)
-        // binding.etCompany.setText(item.company) // Spinner setup needed if dynamic
         binding.etBuyingPrice.setText(item.buying_price)
         binding.etSellingPrice.setText(item.selling_price)
         binding.etMrp.setText(item.mrp)
         binding.etStock.setText(item.stock_quantity?.toString())
         binding.etPcs.setText(item.pcs_count?.toString())
 
-        // Set Category Spinner
-        val adapter = binding.spinnerCategory.adapter as ArrayAdapter<String>
-        val position = adapter.getPosition(item.category)
+        // Set Category Spinner Selection
+        val position = categoryAdapter.getPosition(item.category)
         if (position >= 0) binding.spinnerCategory.setSelection(position)
 
         // Load Image
         if (!item.image.isNullOrEmpty()) {
-            val fullUrl = if (item.image.startsWith("http")) item.image else "http://ec2-18-235-222-205.compute-1.amazonaws.com${item.image}"
+            val base = ApiClient.BASE_URL.removeSuffix("/")
+            val fullUrl = if (item.image.startsWith("http")) {
+                item.image
+            } else {
+                if (item.image.startsWith("/")) "$base${item.image}" else "$base/${item.image}"
+            }
             Glide.with(this).load(fullUrl).into(binding.imgItemPreview)
             binding.btnRemoveImage.visibility = View.VISIBLE
         }
@@ -109,7 +114,7 @@ class AddEditItemActivity : AdminBaseActivity() {
 
         binding.btnRemoveImage.setOnClickListener {
             selectedImageUri = null
-            binding.imgItemPreview.setImageResource(R.drawable.ic_milk_placeholder) // Use placeholder
+            binding.imgItemPreview.setImageResource(R.drawable.ic_milk_placeholder)
             binding.btnRemoveImage.visibility = View.GONE
         }
 
@@ -151,10 +156,8 @@ class AddEditItemActivity : AdminBaseActivity() {
                 val mrpPart = mrp.toRequestBody("text/plain".toMediaTypeOrNull())
                 val stockPart = stock.toRequestBody("text/plain".toMediaTypeOrNull())
                 val pcsPart = pcs.toRequestBody("text/plain".toMediaTypeOrNull())
-                // Company ID hardcoded or retrieved
-                val companyPart = "1".toRequestBody("text/plain".toMediaTypeOrNull()) // Default or selected
+                val companyPart = "1".toRequestBody("text/plain".toMediaTypeOrNull())
 
-                // Prepare Image Part
                 var imagePart: MultipartBody.Part? = null
                 selectedImageUri?.let { uri ->
                     val file = getFileFromUri(uri)

@@ -1,7 +1,13 @@
 package com.svd.svdagencies.data.model.customer
 
 data class Bill(
-    val id: String,
-    val date: String,
-    val amount: Double
+    val id: Int,
+    val invoice_number: String,
+    val invoice_date: String,
+    val customer: String,
+    val productName: String,
+    val price: Double,
+    val quantity: Int,
+    val discount: Double,
+    val total_amount: String
 )

@@ -1,6 +1,7 @@
 package com.svd.svdagencies.data.model.admin
 
 data class BillItemDetail(
+    val item_id: Int,
     val item_name: String,
     val quantity: Int,
     val price_per_unit: Double,

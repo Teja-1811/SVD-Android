@@ -1,133 +1,178 @@
 package com.svd.svdagencies.ui.admin
 
+import android.app.DatePickerDialog
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
-import com.svd.svdagencies.data.model.admin.AdminSummaryItem
-import com.svd.svdagencies.ui.admin.Adapter.AdminSummaryAdapter
+import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.model.admin.SaveDailyPaymentsRequest
+import com.svd.svdagencies.ui.admin.adapter.CompanyPaymentsAdapter
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class AdminPaymentsActivity : AdminBaseActivity() {
 
-    private lateinit var spinnerArea: Spinner
-    private lateinit var spinnerCustomer: Spinner
     private lateinit var tvDate: TextView
-    private lateinit var btnView: MaterialButton
-    private lateinit var btnDownload: MaterialButton
-    private lateinit var btnReset: MaterialButton
     
     private lateinit var tvTotalInvoice: TextView
     private lateinit var tvTotalPaid: TextView
     private lateinit var tvTotalDue: TextView
     private lateinit var btnSaveAll: MaterialButton
     private lateinit var rvSummary: RecyclerView
-    private lateinit var adapter: AdminSummaryAdapter
-    private lateinit var tvCustomerNameHeader: TextView
+    
+    private lateinit var adapter: CompanyPaymentsAdapter
+
+    // Data handling
+    private var currentYear: Int = 0
+    private var currentMonth: Int = 0
+    
+    // We will store the dashboard data here. 
+    private var allCompanyPayments: List<com.svd.svdagencies.data.model.admin.CompanyPayment> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admin_monthly_summary)
+        setContentView(R.layout.admin_companies_due)
 
-        setupAdminLayout("Monthly Summary")
+        setupAdminLayout("Company Payments")
+
+        // Initialize current date
+        val c = Calendar.getInstance()
+        currentYear = c.get(Calendar.YEAR)
+        currentMonth = c.get(Calendar.MONTH) + 1 // 1-based
 
         // Views
-        spinnerArea = findViewById(R.id.spinnerArea)
-        spinnerCustomer = findViewById(R.id.spinnerCustomer)
         tvDate = findViewById(R.id.tvDate)
-        
-        btnView = findViewById(R.id.btnView)
-        btnDownload = findViewById(R.id.btnDownload)
-        btnReset = findViewById(R.id.btnReset)
 
         tvTotalInvoice = findViewById(R.id.tvTotalInvoice)
         tvTotalPaid = findViewById(R.id.tvTotalPaid)
         tvTotalDue = findViewById(R.id.tvTotalDue)
         btnSaveAll = findViewById(R.id.btnSaveAll)
         rvSummary = findViewById(R.id.rvSummary)
-        tvCustomerNameHeader = findViewById(R.id.tvCustomerNameHeader)
 
-        setupSpinners()
+        updateDateLabel()
+
         setupRecycler()
         setupListeners()
         
-        // Initial load (mock)
-        loadSummaryData()
+        // Initial load
+        loadPaymentsDashboard(currentYear, currentMonth)
     }
 
-    private fun setupSpinners() {
-        // Mock Areas
-        val areas = listOf("-- All Areas --", "Area 1", "Area 2")
-        val areaAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, areas)
-        areaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerArea.adapter = areaAdapter
-        
-        // Mock Customers
-        val customers = listOf("A Sivayya", "Customer B", "Customer C")
-        val customerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, customers)
-        customerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerCustomer.adapter = customerAdapter
+    private fun updateDateLabel() {
+        val monthName = getMonthName(currentMonth)
+        tvDate.text = "$monthName, $currentYear"
+    }
+
+    private fun getMonthName(month: Int): String {
+        return when(month) {
+            1 -> "January"
+            2 -> "February"
+            3 -> "March"
+            4 -> "April"
+            5 -> "May"
+            6 -> "June"
+            7 -> "July"
+            8 -> "August"
+            9 -> "September"
+            10 -> "October"
+            11 -> "November"
+            12 -> "December"
+            else -> ""
+        }
     }
 
     private fun setupRecycler() {
-        adapter = AdminSummaryAdapter(emptyList())
-        rvSummary.layoutManager = LinearLayoutManager(this)
+        // We use GridLayoutManager to show cards side-by-side on larger screens if needed, 
+        // or just vertical list for now. The screenshot shows side-by-side but on phone it will be vertical.
+        // Let's use Span count 1 for mobile, but could be dynamic.
+        adapter = CompanyPaymentsAdapter(emptyList())
+        rvSummary.layoutManager = GridLayoutManager(this, 1) // Change span to 2 for tablets
         rvSummary.adapter = adapter
     }
 
     private fun setupListeners() {
         
         tvDate.setOnClickListener {
-             // Date Picker logic would go here
-             Toast.makeText(this, "Select Month clicked", Toast.LENGTH_SHORT).show()
-        }
-
-        btnView.setOnClickListener {
-            loadSummaryData()
-            Toast.makeText(this, "View clicked", Toast.LENGTH_SHORT).show()
-        }
-        
-        btnDownload.setOnClickListener {
-            Toast.makeText(this, "Download PDF clicked", Toast.LENGTH_SHORT).show()
-        }
-        
-        btnReset.setOnClickListener {
-            Toast.makeText(this, "Reset clicked", Toast.LENGTH_SHORT).show()
+             showMonthYearPicker()
         }
 
         btnSaveAll.setOnClickListener {
-            Toast.makeText(this, "Saved Successfully!", Toast.LENGTH_SHORT).show()
+            saveAllChanges()
         }
     }
 
-    private fun loadSummaryData() {
-        // Mock data to match screenshot
-        // Totals
-        tvTotalInvoice.text = "Total Invoice: ₹47608.01"
-        tvTotalPaid.text = "Total Paid: ₹29113.23"
-        tvTotalDue.text = "Due: ₹18494.78"
-        
-        tvCustomerNameHeader.text = "Dodla"
-
-        // List Items
-        val mockData = listOf(
-            AdminSummaryItem("01", 16201.30, 16569.23),
-            AdminSummaryItem("02", 10944.24, 10422.00),
-            AdminSummaryItem("03", 17528.47, 0.0),
-            AdminSummaryItem("04", 0.0, 0.0),
-            AdminSummaryItem("05", 0.0, 0.0),
-            AdminSummaryItem("06", 0.0, 0.0),
-            AdminSummaryItem("07", 0.0, 0.0),
-            AdminSummaryItem("08", 0.0, 0.0),
-            AdminSummaryItem("09", 0.0, 0.0),
-            AdminSummaryItem("10", 0.0, 0.0)
+    private fun showMonthYearPicker() {
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, year, monthOfYear, _ ->
+                currentYear = year
+                currentMonth = monthOfYear + 1 // Month is 0-indexed in DatePickerDialog
+                updateDateLabel()
+                loadPaymentsDashboard(currentYear, currentMonth)
+            },
+            currentYear,
+            currentMonth - 1, // Month is 0-indexed
+            1 // Day doesn't matter
         )
         
-        adapter.updateList(mockData)
+        datePickerDialog.setTitle("Select Month")
+        datePickerDialog.show()
+    }
+
+    private fun loadPaymentsDashboard(year: Int, month: Int) {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.adminPaymentsApi.getPaymentsDashboard(year, month)
+                
+                // Update Totals
+                tvTotalInvoice.text = "Total Invoice: ₹${response.grand_total_invoice}"
+                tvTotalPaid.text = "Total Paid: ₹${response.grand_total_paid}"
+                tvTotalDue.text = "Due: ₹${response.grand_total_due}"
+                
+                allCompanyPayments = response.payments
+                
+                // Show all by default
+                adapter.updateList(allCompanyPayments)
+
+            } catch (e: Exception) {
+                Log.e("AdminPayments", "Error loading dashboard", e)
+                Toast.makeText(this@AdminPaymentsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun saveAllChanges() {
+        // Get all modified data
+        val dataMap = adapter.getPaymentDataWithContext(currentYear, currentMonth)
+        
+        if (dataMap.isEmpty()) {
+             Toast.makeText(this, "No data to save", Toast.LENGTH_SHORT).show()
+             return
+        }
+
+        val request = SaveDailyPaymentsRequest(
+            year = currentYear,
+            month = currentMonth,
+            data = dataMap
+        )
+        
+        lifecycleScope.launch {
+            try {
+                 ApiClient.adminPaymentsApi.saveDailyPayments(request)
+                 Toast.makeText(this@AdminPaymentsActivity, "Saved Successfully!", Toast.LENGTH_SHORT).show()
+                 
+                 // Reload to refresh totals and clear dirty states if any
+                 loadPaymentsDashboard(currentYear, currentMonth)
+            } catch (e: Exception) {
+                 Log.e("AdminPayments", "Save failed", e)
+                 Toast.makeText(this@AdminPaymentsActivity, "Save failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

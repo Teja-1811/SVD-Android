@@ -9,4 +9,27 @@ data class ProductResponse(
     val stock: Int,
     val image: String,
     val pcs_count: Int
-)
+) {
+    val pcs: Int
+        get() = if (pcs_count > 0) pcs_count else 1
+
+    val calculateStep: Double
+        get() = when {
+            pcs == 1 -> 1.0
+            pcs == 5 -> 0.2
+            pcs > 10 -> 0.5
+            else -> 1.0
+        }
+
+    fun calculateTotal(quantity: Double): Double {
+        return quantity * pcs * selling_price
+    }
+
+    fun formatQuantity(quantity: Double): String {
+        return if (quantity == quantity.toInt().toDouble()) {
+            quantity.toInt().toString()
+        } else {
+            quantity.toString()
+        }
+    }
+}

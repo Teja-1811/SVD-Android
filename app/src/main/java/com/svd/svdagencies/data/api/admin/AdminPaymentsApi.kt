@@ -7,18 +7,18 @@ import retrofit2.http.*
 
 interface AdminPaymentsApi {
 
-    @GET("payments/dashboard/")
+    @GET("api/payments/dashboard/")
     suspend fun getPaymentsDashboard(
         @Query("year") year: Int,
         @Query("month") month: Int
     ): PaymentsDashboardResponse
 
-    @POST("payments/save-daily/")
+    @POST("api/payments/save-daily/")
     suspend fun saveDailyPayments(
         @Body request: SaveDailyPaymentsRequest
     ): Map<String, Boolean>
 
-    @GET("payments/monthly-summary/")
+    @GET("api/payments/monthly-summary/")
     suspend fun getMonthlyPaymentSummary(
         @Query("year") year: Int,
         @Query("month") month: Int

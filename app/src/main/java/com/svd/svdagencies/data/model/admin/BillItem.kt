@@ -5,7 +5,9 @@ data class BillItem(
     val invoice_number: String,
     val invoice_date: String,
     val customer: String,
-    val total_amount: String,
-    val op_due: String,
-    val current_due: String
+    val productName: String,
+    val price: Double,
+    val quantity: Int,
+    val discount: Double,
+    val total_amount: String
 )

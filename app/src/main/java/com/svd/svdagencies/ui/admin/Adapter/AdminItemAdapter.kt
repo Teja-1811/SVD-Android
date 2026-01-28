@@ -1,5 +1,6 @@
-package com.svd.svdagencies.ui.admin.Adapter
+package com.svd.svdagencies.ui.admin.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.AdminItem
+import com.svd.svdagencies.data.model.admin.BillItem
+import com.svd.svdagencies.ui.admin.bills.AdminBillDetailActivity
 
 class AdminItemAdapter(
     private var items: List<AdminItem>,
@@ -25,7 +28,7 @@ class AdminItemAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_admin_product, parent, false)
+            .inflate(R.layout.admin_item_card, parent, false)
         return ItemViewHolder(view)
     }
 
@@ -53,15 +56,10 @@ class AdminItemAdapter(
             tvProductName.text = item.name
             tvCode.text = item.code
             tvCompany.text = item.company
-            tvBuyingPrice.text = "₹${item.buying_price ?: "0.00"}"
-            tvSellingPrice.text = "₹${item.selling_price ?: "0.00"}"
-            tvMrp.text = "₹${item.mrp ?: "0.00"}"
-
-            val selling = item.selling_price?.toDoubleOrNull() ?: 0.0
-            val buying = item.buying_price?.toDoubleOrNull() ?: 0.0
-            val margin = selling - buying
-            
-            tvMargin.text = "₹%.2f".format(margin)
+            tvBuyingPrice.text = "₹%.2f".format(item.buyingPriceValue)
+            tvSellingPrice.text = "₹%.2f".format(item.sellingPriceValue)
+            tvMrp.text = "₹%.2f".format(item.mrpValue)
+            tvMargin.text = "₹%.2f".format(item.margin)
             tvStock.text = "${item.stock_quantity ?: 0} in stock"
 
             // Loading product image using Glide
@@ -71,29 +69,67 @@ class AdminItemAdapter(
                 val fullUrl = if (imageUrl.startsWith("http")) {
                     imageUrl
                 } else {
-                    // Assuming ApiClient.BASE_URL exists and needs to be prepended
-                    // Since I can't access ApiClient.BASE_URL directly if private,
-                    // I'll assume the URL from backend is relative.
-                    // If it is an absolute path from Django like /media/..., we need base url.
-                    // Let's try to construct it.
-                    "http://ec2-18-235-222-205.compute-1.amazonaws.com$imageUrl"
+                    val baseUrl = ApiClient.BASE_URL.removeSuffix("/")
+                    if (imageUrl.startsWith("/")) {
+                        "$baseUrl$imageUrl"
+                    } else {
+                        "$baseUrl/$imageUrl"
+                    }
                 }
 
                 Glide.with(itemView.context)
                     .load(fullUrl)
-                    .placeholder(R.drawable.ic_milk_placeholder) // Use a default placeholder
+                    .placeholder(R.drawable.ic_milk_placeholder)
                     .error(R.drawable.ic_milk_placeholder)
                     .into(imgProduct)
             } else {
                 imgProduct.setImageResource(R.drawable.ic_milk_placeholder)
             }
 
-            // Company Logo logic (if applicable, otherwise hide or set default)
-            // Assuming no company logo url in AdminItem for now, just hiding or setting placeholder
-            // imgCompanyLogo.visibility = View.GONE 
-
             btnEdit.setOnClickListener { onEditClick(item) }
             btnFreeze.setOnClickListener { onFreezeClick(item) }
+        }
+    }
+}
+
+class BillAdapter(private var bills: List<BillItem>) : RecyclerView.Adapter<BillAdapter.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.admin_bill_card, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val bill = bills[position]
+        holder.bind(bill)
+    }
+
+    override fun getItemCount(): Int = bills.size
+
+    fun updateData(newBills: List<BillItem>) {
+        bills = newBills
+        notifyDataSetChanged()
+    }
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvCustomerName: TextView = itemView.findViewById(R.id.tvCustomerName)
+        private val tvBillDate: TextView = itemView.findViewById(R.id.tvBillDate)
+        private val tvBillNumber: TextView = itemView.findViewById(R.id.tvBillNumber)
+        private val tvTotalAmount: TextView = itemView.findViewById(R.id.tvTotalAmount)
+
+        fun bind(bill: BillItem) {
+            tvCustomerName.text = bill.customer
+            tvBillDate.text = bill.invoice_date
+            tvBillNumber.text = bill.invoice_number
+            tvTotalAmount.text = "₹${bill.total_amount}"
+
+            itemView.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, AdminBillDetailActivity::class.java).apply {
+                    putExtra("bill_id", bill.id)
+                }
+                context.startActivity(intent)
+            }
         }
     }
 }

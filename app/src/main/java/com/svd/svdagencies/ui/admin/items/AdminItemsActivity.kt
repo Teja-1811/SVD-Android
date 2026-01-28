@@ -2,7 +2,6 @@ package com.svd.svdagencies.ui.admin.items
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,8 +11,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.tabs.TabLayout
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.data.model.admin.AdminItem
-import com.svd.svdagencies.ui.admin.Adapter.AdminItemAdapter
+import com.svd.svdagencies.ui.admin.adapter.AdminItemAdapter
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +31,7 @@ class AdminItemsActivity : AdminBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admin_items)
+        setContentView(R.layout.admin_items_dashboard)
 
         setupAdminLayout("Items")
 
@@ -93,7 +91,6 @@ class AdminItemsActivity : AdminBaseActivity() {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         showToast("Failed to load categories: ${e.message}")
-                        // Even if failed, try loading default "Milk" category
                         loadItems(currentCategory)
                     }
                 }
@@ -104,28 +101,17 @@ class AdminItemsActivity : AdminBaseActivity() {
     private fun setupTabs(categories: List<String>) {
         tabLayoutCategories.removeAllTabs()
         
-        // Add categories from API
         for (category in categories) {
             val tab = tabLayoutCategories.newTab().setText(category)
             tabLayoutCategories.addTab(tab)
             
-            // Select default category "Milk" if present
             if (category.equals("Milk", ignoreCase = true)) {
                 tab.select()
             }
         }
 
-        // If no "Milk" found or list empty, select first tab if available
         if (tabLayoutCategories.tabCount > 0 && tabLayoutCategories.selectedTabPosition == -1) {
              tabLayoutCategories.getTabAt(0)?.select()
-        } else if (tabLayoutCategories.selectedTabPosition != -1) {
-             // Already selected (e.g. Milk), ensure we load items for it
-             // Actually, selecting programmatically triggers onTabSelected which calls loadItems
-             // But sometimes on initial add it might not trigger if added first. 
-             // Let's verify: addTab doesn't select unless it's the first one and no other is selected?
-             // Usually first tab is selected by default.
-             // We can explicitly trigger load here if we want to be sure.
-             // The OnTabSelectedListener will handle it if we call select().
         }
     }
 

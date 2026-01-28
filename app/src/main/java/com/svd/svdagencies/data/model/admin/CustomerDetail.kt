@@ -8,6 +8,9 @@ data class CustomerDetail(
     val due: Double,
     val city: String?,
     val state: String?,
+    val area: String?,
+    val pincode: String?,
+    val address: String?,
     val frozen: Boolean,
     val retailer_id: String?
 )

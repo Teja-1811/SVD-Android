@@ -20,7 +20,7 @@ class SummaryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_summary_product, parent, false)
+            .inflate(R.layout.customer_order_summary, parent, false)
         return SummaryViewHolder(view)
     }
 

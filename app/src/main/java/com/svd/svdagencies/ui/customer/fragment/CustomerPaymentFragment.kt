@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,7 +58,7 @@ class CustomerPaymentFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_customer_payment, container, false)
+        return inflater.inflate(R.layout.customer_payment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -164,7 +163,7 @@ class CustomerPaymentFragment : Fragment() {
         val amount = getAmount() ?: return
 
         val dialog = Dialog(requireActivity())
-        dialog.setContentView(R.layout.dialog_upi_qr)
+        dialog.setContentView(R.layout.customer_upi_qr)
 
         val imgQr = dialog.findViewById<ImageView>(R.id.imgQr)
         imgQr.setImageBitmap(generateUpiQr(amount))

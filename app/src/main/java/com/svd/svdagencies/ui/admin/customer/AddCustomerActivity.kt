@@ -4,12 +4,11 @@ import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.data.model.admin.AddCustomerRequest
+import com.svd.svdagencies.data.model.admin.customerData.AddCustomerRequest
 import com.svd.svdagencies.data.model.admin.CustomerItem
-import com.svd.svdagencies.databinding.ActivityAddCustomerBinding
+import com.svd.svdagencies.databinding.AdminCustomerAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,13 +17,13 @@ import kotlinx.coroutines.withContext
 
 class AddCustomerActivity : AdminBaseActivity() {
 
-    private lateinit var binding: ActivityAddCustomerBinding
+    private lateinit var binding: AdminCustomerAddBinding
     private var customerToUpdate: CustomerItem? = null
     private lateinit var api: CustomerDashboardApi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAddCustomerBinding.inflate(layoutInflater)
+        binding = AdminCustomerAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         api = ApiClient.adminCustomerDashboard
@@ -68,6 +67,9 @@ class AddCustomerActivity : AdminBaseActivity() {
                         binding.etCity.setText(detail.city)
                         binding.etState.setText(detail.state)
                         binding.etRetailerId.setText(detail.retailer_id)
+                        binding.etArea.setText(detail.area)
+                        binding.etPinCode.setText(detail.pincode)
+                        binding.etAddressLine1.setText(detail.address)
                     }
                 }
             } catch (e: Exception) {
@@ -93,6 +95,9 @@ class AddCustomerActivity : AdminBaseActivity() {
         val retailerId = binding.etRetailerId.text.toString().trim()
         val city = binding.etCity.text.toString().trim()
         val state = binding.etState.text.toString().trim()
+        val area = binding.etArea.text.toString().trim()
+        val pincode = binding.etPinCode.text.toString().trim()
+        val address = binding.etAddressLine1.text.toString().trim()
         
         if (name.isEmpty()) {
             Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show()
@@ -106,6 +111,9 @@ class AddCustomerActivity : AdminBaseActivity() {
             phone = phone,
             city = city,
             state = state,
+            area = area,
+            pincode = pincode,
+            address = address,
             retailer_id = retailerId
         )
 

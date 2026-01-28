@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,6 +15,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.AdminApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.AdminDashboardResponse
+import com.svd.svdagencies.ui.admin.customer.CustomersData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,10 +30,16 @@ class AdminDashboardActivity : AdminBaseActivity() {
     private lateinit var tvPendingOrders: TextView
     private lateinit var tvNotOrdered: TextView
     private lateinit var layoutNoOrdersList: LinearLayout
+    private lateinit var btnViewOrders: ImageButton
+    
+    private lateinit var cardCustomers: View
+    private lateinit var cardItems: View
+    private lateinit var cardSales: View
+    private lateinit var cardDues: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admin_dashboard)
+        setContentView(R.layout.admin_dashboard_main)
 
         // Toolbar
         setupAdminLayout("Admin")
@@ -44,6 +53,21 @@ class AdminDashboardActivity : AdminBaseActivity() {
         tvPendingOrders = findViewById(R.id.tvPendingOrders)
         tvNotOrdered = findViewById(R.id.tvNotOrdered)
         layoutNoOrdersList = findViewById(R.id.layoutNoOrdersList)
+        btnViewOrders = findViewById(R.id.btnViewOrders)
+        
+        cardCustomers = findViewById(R.id.cardCustomers)
+        cardItems = findViewById(R.id.cardItems)
+        cardSales = findViewById(R.id.cardSales)
+        cardDues = findViewById(R.id.cardDues)
+
+        btnViewOrders.setOnClickListener {
+            val intent = Intent(this, AdminOrdersActivity::class.java)
+            startActivity(intent)
+        }
+        
+        cardCustomers.setOnClickListener {
+            startActivity(Intent(this, CustomersData::class.java))
+        }
 
         swipeRefresh.setColorSchemeResources(
             R.color.status_bar,

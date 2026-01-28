@@ -1,59 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Replaced Purples with Reds -->
-    <color name="purple_200">#FFCDD2</color>
-    <color name="purple_500">#D51E39</color>
-    <color name="purple_700">#9A0014</color>
-    
+
+    <!-- Default Material Colors -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="status_bar">#D51E39</color>
-    
-    <!-- Brand Colors -->
-    <color name="brand_red">#D51E39</color>
-    <color name="brand_red_dark">#9A0014</color>
 
-    <!-- Semantic Colors -->
-    <color name="textColorPrimary">#FF000000</color>
-    <color name="textColorSecondary">#80000000</color>
-    <color name="editTextBackground">#FFFFFFFF</color>
-    <color name="editTextColor">#FF000000</color>
+    <!-- App Primary Colors (Updated to RED) -->
+    <color name="colorPrimary">#D32F2F</color>
+    <color name="colorPrimaryDark">#B71C1C</color>
+    <color name="colorAccent">#FF5252</color>
+    <color name="window_background">#F5F5F5</color>
+    <color name="status_bar">#B71C1C</color>
+
+    <!-- 🔴 BRAND COLORS -->
+    <color name="brand_red">#D32F2F</color>
+    <color name="brand_red_dark">#B71C1C</color>
+
+    <!-- Text Colors -->
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+    <color name="editTextColor">#000000</color>
+    <color name="gray500">#9E9E9E</color>
+    <color name="red600">#E53935</color>
+    <color name="text_item_value">#212121</color>
+
+    <!-- Icon / Status Colors -->
+    <color name="icon_orange">#FF9800</color>
+    <color name="icon_blue">#2196F3</color>
+    <color name="icon_red">#F44336</color>
+    <color name="icon_green">#4CAF50</color>
+    <color name="icon_gray_btn">#757575</color>
+
+    <!-- EditText Colors -->
+    <color name="editTextBackground">#FFFFFF</color>
     <color name="editTextStroke">#DDDDDD</color>
 
-    <!-- Window -->
-    <color name="window_background">#F7F7F7</color>
+    <!-- Login Button Gradient -->
+    <color name="login_red_start">#FF5252</color>
+    <color name="login_red_end">#D32F2F</color>
+    <color name="login_text_red">#D32F2F</color>
 
-    <!-- Admin Dashboard -->
-    <color name="card_customers">#E3F2FD</color> <!-- blue -->
-    <color name="card_items">#E8F5E9</color>     <!-- green -->
-    <color name="card_sales">#FFF3E0</color>     <!-- orange -->
-    <color name="card_dues">#FFEBEE</color>      <!-- light red (was pink) -->
-    <color name="red600">#660000</color>
-    <color name="gray500">#9E9E9E</color>
+    <!-- Dashboard Card Backgrounds -->
+    <color name="card_customers">#FFEBEE</color>
+    <color name="card_items">#E8F5E9</color>
+    <color name="card_sales">#FFF3E0</color>
+    <color name="card_dues">#FFEBEE</color>
 
-    <color name="icon_blue">#1565C0</color>
-    <color name="icon_green">#2E7D32</color>
-    <color name="icon_orange">#EF6C00</color>
-    <color name="icon_red">#C62828</color>
+    <!-- Cards & Surfaces -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="surface_background">#FFFFFF</color>
+    <color name="card_stroke_color">#E0E0E0</color>
+    <color name="divider_line">#E0E0E0</color>
 
-    <!-- Login Screen -->
-    <color name="login_red_start">#D51E39</color> <!-- Brand Red (was pinkish) -->
-    <color name="login_red_end">#B71C1C</color>   <!-- Darker Red -->
-    <color name="login_text_red">#D51E39</color>
-
-    <!-- Category Tabs -->
-    <color name="chip_selected_bg">#1E88E5</color>   <!-- Blue -->
-    <color name="chip_unselected_bg">#F1F3F4</color>
-    <color name="chip_unselected_border">#D0D0D0</color>
-
-    <!-- Adapted Colors -->
-    <color name="text_item_value">#555555</color>
-    <color name="icon_gray_btn">#757575</color>
-    <color name="divider_line">#F0F0F0</color>
-    <color name="card_stroke_color">#EEEEEE</color>
-    <color name="card_background">@color/white</color>
-    <color name="surface_background">@color/white</color>
+    <!-- Chips -->
+    <color name="chip_selected_bg">#FFEBEE</color>
+    <color name="chip_unselected_bg">#ECEFF1</color>
+    <color name="chip_unselected_border">#CFD8DC</color>
 
 </resources>

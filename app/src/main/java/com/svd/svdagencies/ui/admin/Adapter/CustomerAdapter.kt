@@ -1,7 +1,6 @@
-package com.svd.svdagencies.ui.admin.Adapter
+package com.svd.svdagencies.ui.admin.adapter
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.view.LayoutInflater
@@ -11,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.admin.CustomerItem
-import com.svd.svdagencies.databinding.ItemCustomerBinding
+import com.svd.svdagencies.databinding.AdminCustomerCardBinding
 import com.svd.svdagencies.ui.admin.customer.CustomerProfileActivity
 import java.net.URLEncoder
 
@@ -21,12 +20,12 @@ class CustomerAdapter(
     private val onBalanceClick: ((CustomerItem) -> Unit)? = null
 ) : RecyclerView.Adapter<CustomerAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: ItemCustomerBinding) :
+    inner class ViewHolder(val binding: AdminCustomerCardBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            ItemCustomerBinding.inflate(
+            AdminCustomerCardBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

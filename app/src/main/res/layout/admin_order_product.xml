@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="6dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tvItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.5"
+        android:text="Item Name"
+        android:textSize="13sp"
+        android:textColor="@color/black" />
+
+    <EditText
+        android:id="@+id/etQty"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_qty_outline"
+        android:gravity="center"
+        android:inputType="number"
+        android:textSize="13sp"
+        android:layout_marginHorizontal="4dp"
+        android:padding="4dp"/>
+
+    <EditText
+        android:id="@+id/etDisc"
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_qty_outline"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:textSize="13sp"
+        android:layout_marginHorizontal="4dp"
+        android:padding="4dp"/>
+
+    <TextView
+        android:id="@+id/tvAQ"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:gravity="center"
+        android:text="0"
+        android:textSize="13sp"
+        android:textColor="@color/brand_red"
+        android:textStyle="bold"/>
+</LinearLayout>

@@ -1,6 +1,9 @@
 package com.svd.svdagencies.data.api.admin
 
 import com.svd.svdagencies.data.model.admin.*
+import com.svd.svdagencies.data.model.admin.customerData.AddCustomerRequest
+import com.svd.svdagencies.data.model.admin.customerData.AddCustomerResponse
+import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
 import retrofit2.http.*
 import retrofit2.Call
 

@@ -1,4 +1,4 @@
-package com.svd.svdagencies.ui.admin.Adapter
+package com.svd.svdagencies.ui.admin.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.R
-import com.svd.svdagencies.data.model.admin.AdminBill
+import com.svd.svdagencies.data.model.admin.Bills.AdminBill
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -26,7 +26,7 @@ class AdminBillAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BillViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_admin_bill, parent, false)
+            .inflate(R.layout.admin_bill_card, parent, false)
         return BillViewHolder(view)
     }
 
@@ -51,7 +51,6 @@ class AdminBillAdapter(
             tvBillNumber.text = "Bill #${bill.bill_number}"
             
             // Format Date if needed (assuming date string is YYYY-MM-DD or similar)
-            // If it's already formatted, just use bill.date
             tvBillDate.text = formatDate(bill.date)
 
             tvCustomerName.text = bill.customer_name
@@ -66,7 +65,6 @@ class AdminBillAdapter(
 
         private fun formatDate(dateString: String): String {
             return try {
-                // Assuming backend sends yyyy-MM-dd
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 val outputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                 val date = inputFormat.parse(dateString)

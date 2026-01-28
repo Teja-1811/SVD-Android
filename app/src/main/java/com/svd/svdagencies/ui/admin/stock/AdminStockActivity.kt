@@ -20,7 +20,7 @@ class AdminStockActivity : AdminBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admin_stock)
+        setContentView(R.layout.admin_stock_dashboard)
 
         setupAdminLayout("Stock")
 

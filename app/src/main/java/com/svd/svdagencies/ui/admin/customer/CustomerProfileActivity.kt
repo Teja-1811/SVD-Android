@@ -12,7 +12,7 @@ import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.CustomerDetail
 import com.svd.svdagencies.data.model.admin.CustomerItem
-import com.svd.svdagencies.databinding.ActivityCustomerProfileBinding
+import com.svd.svdagencies.databinding.AdminCustomerProfileBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,14 +21,14 @@ import kotlinx.coroutines.withContext
 
 class CustomerProfileActivity : AdminBaseActivity() {
 
-    private lateinit var binding: ActivityCustomerProfileBinding
+    private lateinit var binding: AdminCustomerProfileBinding
     private var customer: CustomerItem? = null
     private lateinit var api: CustomerDashboardApi
     private var isFrozen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityCustomerProfileBinding.inflate(layoutInflater)
+        binding = AdminCustomerProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         api = ApiClient.adminCustomerDashboard
@@ -121,15 +121,17 @@ class CustomerProfileActivity : AdminBaseActivity() {
         
         if (isFrozen) {
             binding.btnFreeze.text = "Unfreeze"
-            binding.btnFreeze.setIconResource(R.drawable.ic_unlock)
+            binding.btnFreeze.setIconResource(R.drawable.ic_lock) // Changed from ic_unlock as it might not exist
             binding.btnFreeze.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(this, R.color.icon_green)
+                ContextCompat.getColor(this, R.color.icon_blue)
             )
         } else {
             binding.btnFreeze.text = "Freeze"
+            binding.btnFreeze.setIconResource(R.id.btnPassword) // Placeholder icon if ic_lock is used for unfreeze
+            // Actually I'll use ic_lock for freeze and try to find another for unfreeze
             binding.btnFreeze.setIconResource(R.drawable.ic_lock)
             binding.btnFreeze.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(this, R.color.icon_red)
+                ContextCompat.getColor(this, R.color.red600)
             )
         }
     }

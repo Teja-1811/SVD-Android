@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/window_background"
+    tools:context=".ui.admin.bills.CreateBillActivity">
+
+    <include
+        layout="@layout/admin_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Filter by Area -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Filter by Area" />
+
+            <Spinner
+                android:id="@+id/spinnerArea"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/bg_qty_outline"
+                android:paddingHorizontal="12dp" 
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Select Customer -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Customer" />
+
+            <Spinner
+                android:id="@+id/spinnerCustomer"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/bg_qty_outline"
+                android:paddingHorizontal="12dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Bill Date -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bill Date" />
+
+            <TextView
+                android:id="@+id/tvBillDate"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/bg_qty_outline"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="12dp"
+                android:hint="Select Date"
+                app:drawableEndCompat="@drawable/ic_calendar" />
+
+            <!-- Add Item to Bill -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Item to Bill"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp" />
+
+            <EditText
+                android:id="@+id/etSearchItems"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:hint="Type to search items..."
+                android:background="@drawable/bg_qty_outline"
+                android:paddingHorizontal="12dp"
+                android:layout_marginTop="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerItem"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/bg_qty_outline"
+                android:paddingHorizontal="12dp"
+                android:layout_marginTop="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/etAvailableQty"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:hint="Available Qty"
+                    android:inputType="number"
+                    android:background="@drawable/bg_qty_outline"
+                    android:paddingHorizontal="12dp"
+                    android:layout_marginEnd="4dp"/>
+
+                <EditText
+                    android:id="@+id/etQty"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:hint="Qty"
+                    android:inputType="number"
+                    android:background="@drawable/bg_qty_outline"
+                    android:paddingHorizontal="12dp"
+                    android:layout_marginStart="4dp"/>
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/etDiscount"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:hint="Disc"
+                android:inputType="numberDecimal"
+                android:background="@drawable/bg_qty_outline"
+                android:paddingHorizontal="12dp"
+                android:layout_marginTop="8dp"/>
+
+            <Button
+                android:id="@+id/btnAddItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Item"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Summary Table Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Product Name" android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Price" android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Qty" android:textStyle="bold" android:layout_marginStart="16dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Disc" android:textStyle="bold" android:layout_marginStart="16dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total" android:textStyle="bold" android:layout_marginStart="16dp"/>
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBillItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:minHeight="100dp"
+                tools:listitem="@layout/admin_bill_summary" />
+
+            <Button
+                android:id="@+id/btnGenerateBill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Generate Bill"
+                android:layout_gravity="end"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

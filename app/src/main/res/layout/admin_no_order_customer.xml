@@ -7,8 +7,10 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:gravity="center_vertical">
+        android:layout_height="52dp"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp">
 
         <TextView
             android:id="@+id/txtCustomerName"
@@ -16,21 +18,23 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Customer Name"
-            android:textSize="15sp"
-            android:textColor="@color/icon_blue"/>
+            android:textSize="16sp"
+            android:textColor="@color/brand_red"/>
 
         <ImageView
             android:id="@+id/btnCall"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_phone"
             android:tint="@color/icon_green"
-            android:padding="6dp"/>
+            android:padding="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"/>
     </LinearLayout>
 
-    <!-- Bottom Border -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#D0D0D0"/>
+        android:background="#F0F0F0"/>
 </LinearLayout>

@@ -17,4 +17,16 @@ data class AdminItem(
     val pcs_count: Int?,
     val image: String?,
     val frozen: Boolean
-) : Parcelable
+) : Parcelable {
+    val sellingPriceValue: Double
+        get() = selling_price?.toDoubleOrNull() ?: 0.0
+
+    val buyingPriceValue: Double
+        get() = buying_price?.toDoubleOrNull() ?: 0.0
+
+    val mrpValue: Double
+        get() = mrp?.toDoubleOrNull() ?: 0.0
+
+    val margin: Double
+        get() = sellingPriceValue - buyingPriceValue
+}

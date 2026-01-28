@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.widget.EditText
@@ -21,11 +20,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.data.model.admin.CustomerDashboardResponse
+import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.admin.CustomerItem
 import com.svd.svdagencies.data.model.admin.UpdateBalanceRequest
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
-import com.svd.svdagencies.ui.admin.Adapter.CustomerAdapter
+import com.svd.svdagencies.ui.admin.adapter.CustomerAdapter
 import com.svd.svdagencies.utils.SessionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +50,7 @@ class CustomersData : AdminBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admin_customers)
+        setContentView(R.layout.admin_customer_dashboard)
 
         // Setup shared admin UI
         setupAdminLayout("Customers")
@@ -205,7 +204,7 @@ class CustomersData : AdminBaseActivity() {
     private fun showUpdateBalanceDialog(customer: CustomerItem) {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.dialog_update_balance)
+        dialog.setContentView(R.layout.admin_customer_balance_update)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.9).toInt(),

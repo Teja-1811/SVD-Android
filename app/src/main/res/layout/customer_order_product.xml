@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E0E0E0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <!-- PRODUCT IMAGE CONTAINER -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/imageContainer"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#F0F0F0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imgProduct"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:padding="4dp"
+                tools:src="@drawable/ic_milk_placeholder" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- DETAILS -->
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageContainer"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Item Name" />
+
+        <TextView
+            android:id="@+id/tvPcs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/brand_red"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvName"
+            tools:text="Crate QTY : 12" />
+
+        <TextView
+            android:id="@+id/tvMrp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/brand_red"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvPcs"
+            tools:text="MRP: ₹0.00" />
+
+        <LinearLayout
+            android:id="@+id/layoutPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvMrp">
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#2E7D32"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                tools:text="₹0.00" />
+
+            <TextView
+                android:id="@+id/tvMargin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="#2E7D32"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="Margin: 5%" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="#F0F0F0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageContainer" />
+
+        <!-- QTY CONTROLS -->
+        <LinearLayout
+            android:id="@+id/layoutQty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider">
+
+            <ImageButton
+                android:id="@+id/btnMinus"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_qty_outline"
+                android:backgroundTint="@color/brand_red"
+                android:src="@drawable/ic_minus"
+                app:tint="@color/white" />
+
+            <EditText
+                android:id="@+id/etQty"
+                android:layout_width="50dp"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="8dp"
+                android:background="@drawable/bg_qty_outline"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:maxLength="5"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="0" />
+
+            <ImageButton
+                android:id="@+id/btnPlus"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_qty_outline"
+                android:backgroundTint="#2E7D32"
+                android:src="@drawable/ic_plus"
+                app:tint="@color/white" />
+        </LinearLayout>
+
+        <!-- TOTAL -->
+        <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/layoutQty"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layoutQty"
+            tools:text="₹0.00" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

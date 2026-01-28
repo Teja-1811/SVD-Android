@@ -32,7 +32,7 @@ import retrofit2.Response
 import java.text.NumberFormat
 import java.util.*
 
-class CustomerOrdersFragment : Fragment(R.layout.fragment_customer_orders) {
+class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
     private lateinit var orderAdapter: OrderProductAdapter
     private lateinit var summaryAdapter: SummaryAdapter
