@@ -39,7 +39,7 @@
         <activity android:name=".ui.admin.AdminOrdersActivity"/>
         <activity android:name=".ui.admin.items.AdminItemsActivity"/>
         <activity android:name=".ui.admin.stock.AdminStockActivity"/>
-        <activity android:name=".ui.admin.AdminPaymentsActivity"/>
+        <activity android:name=".ui.admin.AdminDuesActivity"/>
         <activity android:name=".ui.admin.cashbook.AdminCashBookActivity"/>
 
         <provider

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/window_background"
-    tools:context=".ui.admin.AdminPaymentsActivity">
+    tools:context=".ui.admin.AdminDuesActivity">
 
     <!-- MAIN CONTENT -->
     <LinearLayout
@@ -159,7 +159,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    tools:listitem="@layout/admin_companies_payment_card"
+                    tools:listitem="@layout/admin_companies_due_card"
                     android:clipToPadding="false"
                     android:paddingBottom="80dp"/>
 

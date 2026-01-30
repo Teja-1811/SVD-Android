@@ -3,199 +3,192 @@ package com.svd.svdagencies.ui.admin.cashbook
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
-import android.widget.GridLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.CashbookDashboardResponse
 import com.svd.svdagencies.data.model.admin.SaveBankBalanceRequest
 import com.svd.svdagencies.data.model.admin.SaveCashInRequest
+import com.svd.svdagencies.databinding.AdminCashbookBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.launch
 
 class AdminCashBookActivity : AdminBaseActivity() {
 
-    // Stats
-    private lateinit var tvCash: TextView
-    private lateinit var tvBank: TextView
-    private lateinit var tvDues: TextView
-    private lateinit var tvNetCash: TextView
-    private lateinit var tvExpenses: TextView
-    private lateinit var tvProfit: TextView
-    private lateinit var tvStockValue: TextView
-    private lateinit var tvRAmount: TextView
-    private lateinit var tvNetProfit: TextView
+    private lateinit var binding: AdminCashbookBinding
+    private lateinit var companyDueAdapter: CompanyDueAdapter
 
-    // Company Dues
-    private lateinit var layoutCompanyDues: android.widget.LinearLayout
-    private lateinit var tvTotalCompanyDues: TextView
+    private val noteValues = listOf(500, 200, 100, 50, 20, 10)
+    private val coinValues = listOf(20, 10, 5, 2, 1)
 
-    // Bank Balance
-    private lateinit var etBankBalance: EditText
-    private lateinit var btnUpdateBank: MaterialButton
-
-    // Cash In
-    private lateinit var gridNotes: GridLayout
-    private lateinit var gridCoins: GridLayout
-    private lateinit var btnUpdateCashIn: MaterialButton
-
-    // Denominations structure to match API
-    private val notes = listOf(500, 200, 100, 50, 20, 10)
-    private val coins = listOf(20, 10, 5, 2, 1)
-    
-    // Separate maps for notes and coins to handle collisions (like 20 and 10)
     private val noteEditTexts = mutableMapOf<Int, EditText>()
     private val coinEditTexts = mutableMapOf<Int, EditText>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.admin_cashbook)
+        binding = AdminCashbookBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupAdminLayout("CashBook")
-
         initViews()
         setupCashInGrids()
-        loadDashboardData() 
+        loadDashboardData()
     }
 
     private fun initViews() {
-        tvCash = findViewById(R.id.tvCash)
-        tvBank = findViewById(R.id.tvBank)
-        tvDues = findViewById(R.id.tvDues)
-        tvNetCash = findViewById(R.id.tvNetCash)
-        tvExpenses = findViewById(R.id.tvExpenses)
-        tvProfit = findViewById(R.id.tvProfit)
-        tvStockValue = findViewById(R.id.tvStockValue)
-        tvRAmount = findViewById(R.id.tvRAmount)
-        tvNetProfit = findViewById(R.id.tvNetProfit)
+        // Initialize Stat Labels
+        binding.statCash.tvStatLabel.text = "CASH IN HAND"
+        binding.statBank.tvStatLabel.text = "BANK BALANCE"
+        binding.statDues.tvStatLabel.text = "CUSTOMER DUES"
+        binding.statNetCash.tvStatLabel.text = "NET CASH"
+        binding.statExpenses.tvStatLabel.text = "MONTHLY EXPENSES"
+        binding.statProfit.tvStatLabel.text = "MONTHLY PROFIT"
+        binding.statStockValue.tvStatLabel.text = "STOCK VALUE"
+        binding.statRAmount.tvStatLabel.text = "REMAINING AMOUNT"
 
-        layoutCompanyDues = findViewById(R.id.layoutCompanyDues)
-        tvTotalCompanyDues = findViewById(R.id.tvTotalCompanyDues)
+        // Setup RecyclerView for Company Dues
+        companyDueAdapter = CompanyDueAdapter(emptyList())
+        binding.rvCompanyDues.apply {
+            layoutManager = LinearLayoutManager(this@AdminCashBookActivity)
+            adapter = companyDueAdapter
+            isNestedScrollingEnabled = false // Important inside NestedScrollView
+        }
 
-        etBankBalance = findViewById(R.id.etBankBalance)
-        btnUpdateBank = findViewById(R.id.btnUpdateBank)
+        binding.btnUpdateBank.setOnClickListener { updateBankBalance() }
+        binding.btnUpdateCashIn.setOnClickListener { updateCashIn() }
         
-        btnUpdateBank.setOnClickListener { updateBankBalance() }
-
-        gridNotes = findViewById(R.id.gridNotes)
-        gridCoins = findViewById(R.id.gridCoins)
-        btnUpdateCashIn = findViewById(R.id.btnUpdateCashIn)
-
-        btnUpdateCashIn.setOnClickListener { updateCashIn() }
-        
-        findViewById<MaterialButton>(R.id.btnAddExpense).setOnClickListener {
-            Toast.makeText(this, "Add Expense Clicked", Toast.LENGTH_SHORT).show()
+        binding.btnAddExpense.setOnClickListener {
+            Toast.makeText(this, "Opening Add Expense", Toast.LENGTH_SHORT).show()
         }
         
-        findViewById<MaterialButton>(R.id.btnViewExpenses).setOnClickListener {
-             Toast.makeText(this, "View Expenses Clicked", Toast.LENGTH_SHORT).show()
+        binding.btnViewExpenses.setOnClickListener {
+            Toast.makeText(this, "Opening Expense List", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            loadDashboardData()
         }
     }
 
     private fun setupCashInGrids() {
-        gridNotes.removeAllViews()
-        gridCoins.removeAllViews()
+        binding.gridNotes.removeAllViews()
+        binding.gridCoins.removeAllViews()
         noteEditTexts.clear()
         coinEditTexts.clear()
 
-        for (value in notes) {
-            val view = LayoutInflater.from(this).inflate(R.layout.admin_cashbook_denomination_input, gridNotes, false)
-            val et = setupDenominationItem(view, value, isCoin = false)
+        // Create Notes Inputs
+        for (value in noteValues) {
+            val view = layoutInflater.inflate(R.layout.admin_cashbook_denomination_input, binding.gridNotes, false)
+            val et = setupDenominationItem(view, value)
             noteEditTexts[value] = et
-            
-            val params = GridLayout.LayoutParams()
-            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
-            params.width = 0 
-            view.layoutParams = params
-            gridNotes.addView(view)
+            binding.gridNotes.addView(view)
         }
 
-        for (value in coins) {
-            val view = LayoutInflater.from(this).inflate(R.layout.admin_cashbook_denomination_input, gridCoins, false)
-            val et = setupDenominationItem(view, value, isCoin = true)
+        // Create Coins Inputs
+        for (value in coinValues) {
+            val view = layoutInflater.inflate(R.layout.admin_cashbook_denomination_input, binding.gridCoins, false)
+            val et = setupDenominationItem(view, value)
             coinEditTexts[value] = et
-            
-            val params = GridLayout.LayoutParams()
-            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
-            params.width = 0
-            view.layoutParams = params
-            gridCoins.addView(view)
+            binding.gridCoins.addView(view)
         }
     }
 
-    private fun setupDenominationItem(view: android.view.View, value: Int, isCoin: Boolean): EditText {
+    private fun setupDenominationItem(view: View, value: Int): EditText {
         val tvLabel = view.findViewById<TextView>(R.id.tvLabel)
         val etCount = view.findViewById<EditText>(R.id.etCount)
         val tvTotal = view.findViewById<TextView>(R.id.tvTotal)
 
         tvLabel.text = "₹$value"
-        etCount.hint = "0"
-        
         etCount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val countInt = s.toString().toIntOrNull() ?: 0
                 tvTotal.text = "Total: ₹${countInt * value}"
+                updateLiveCashTotal() 
             }
         })
         return etCount
     }
 
+    private fun updateLiveCashTotal() {
+        var total = 0.0
+        noteEditTexts.forEach { (value, et) ->
+            total += (et.text.toString().toIntOrNull() ?: 0) * value
+        }
+        coinEditTexts.forEach { (value, et) ->
+            total += (et.text.toString().toIntOrNull() ?: 0) * value
+        }
+        binding.statCash.tvStatValue.text = "₹%.2f".format(total)
+    }
+
     private fun loadDashboardData() {
+        binding.swipeRefresh.isRefreshing = true
         lifecycleScope.launch {
             try {
                 val response = ApiClient.cashbookApi.getDashboardData()
                 populateUI(response)
             } catch (e: Exception) {
-                Toast.makeText(this@AdminCashBookActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                if (!isFinishing) {
+                    Toast.makeText(this@AdminCashBookActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                binding.swipeRefresh.isRefreshing = false
             }
         }
     }
-    
+
     private fun populateUI(data: CashbookDashboardResponse) {
-        tvCash.text = "₹%.2f".format(data.cash_in)
-        tvBank.text = "₹%.2f".format(data.bank_balance)
-        tvDues.text = "₹%.2f".format(data.total_customer_dues)
-        tvNetCash.text = "₹%.2f".format(data.net_cash)
-        tvExpenses.text = "₹%.2f".format(data.cash_out)
-        tvProfit.text = "₹%.2f".format(data.monthly_profit)
-        tvStockValue.text = "₹%.2f".format(data.stock_value)
-        tvRAmount.text = "₹%.2f".format(data.remaining_amount)
-        tvNetProfit.text = "₹%.2f".format(data.net_profit)
+        // Core Summary
+        binding.statCash.tvStatValue.text = "₹%.2f".format(data.cash_in)
+        binding.statBank.tvStatValue.text = "₹%.2f".format(data.bank_balance)
+        binding.statDues.tvStatValue.text = "₹%.2f".format(data.total_customer_dues)
+        binding.statNetCash.tvStatValue.text = "₹%.2f".format(data.net_cash)
+        binding.statExpenses.tvStatValue.text = "₹%.2f".format(data.cash_out)
+        binding.statProfit.tvStatValue.text = "₹%.2f".format(data.monthly_profit)
+        binding.statStockValue.tvStatValue.text = "₹%.2f".format(data.stock_value)
+        binding.statRAmount.tvStatValue.text = "₹%.2f".format(data.remaining_amount)
+        binding.tvNetProfitValue.text = "₹%.2f".format(data.net_profit)
 
-        etBankBalance.setText(data.bank_balance.toString())
+        binding.etBankBalance.setText(data.bank_balance.toString())
 
-        layoutCompanyDues.removeAllViews()
-        data.company_dues.forEach { due ->
-            addCompanyDueCard(due.company_name, "₹%.2f".format(due.total_due), "Last updated: ${due.last_updated}")
+        // Company Dues - Now using Adapter
+        companyDueAdapter.update(data.company_dues)
+        binding.tvTotalCompanyDues.text = "Total Company Dues: ₹%.2f".format(data.total_company_dues)
+
+        // Reflect Denominations from Database
+        data.denominations.let { d ->
+            setDenominationValue(noteEditTexts[500], d.c500)
+            setDenominationValue(noteEditTexts[200], d.c200)
+            setDenominationValue(noteEditTexts[100], d.c100)
+            setDenominationValue(noteEditTexts[50], d.c50)
+            setDenominationValue(noteEditTexts[20], d.c20)
+            setDenominationValue(noteEditTexts[10], d.c10)
+
+            setDenominationValue(coinEditTexts[20], d.coin20)
+            setDenominationValue(coinEditTexts[10], d.coin10)
+            setDenominationValue(coinEditTexts[5], d.coin5)
+            setDenominationValue(coinEditTexts[2], d.coin2)
+            setDenominationValue(coinEditTexts[1], d.coin1)
         }
-        tvTotalCompanyDues.text = "Total Dues: ₹%.2f".format(data.total_company_dues)
-        
-        data.denominations?.let { d ->
-            noteEditTexts[500]?.setText(d.c500.toString())
-            noteEditTexts[200]?.setText(d.c200.toString())
-            noteEditTexts[100]?.setText(d.c100.toString())
-            noteEditTexts[50]?.setText(d.c50.toString())
-            noteEditTexts[20]?.setText(d.c20.toString())
-            noteEditTexts[10]?.setText(d.c10.toString())
-            
-            coinEditTexts[20]?.setText(d.coin20.toString())
-            coinEditTexts[10]?.setText(d.coin10.toString())
-            coinEditTexts[5]?.setText(d.coin5.toString())
-            coinEditTexts[2]?.setText(d.coin2.toString())
-            coinEditTexts[1]?.setText(d.coin1.toString())
+    }
+
+    private fun setDenominationValue(et: EditText?, value: Int) {
+        if (et == null) return
+        val currentText = et.text.toString()
+        val newText = if (value == 0) "" else value.toString()
+        if (currentText != newText) {
+            et.setText(newText)
         }
     }
 
     private fun updateBankBalance() {
-        val balance = etBankBalance.text.toString().toDoubleOrNull() ?: return
+        val balance = binding.etBankBalance.text.toString().toDoubleOrNull() ?: return
         lifecycleScope.launch {
             try {
                 ApiClient.cashbookApi.saveBankBalance(SaveBankBalanceRequest(balance))
@@ -225,55 +218,11 @@ class AdminCashBookActivity : AdminBaseActivity() {
         lifecycleScope.launch {
             try {
                 ApiClient.cashbookApi.saveCashIn(request)
-                Toast.makeText(this@AdminCashBookActivity, "Cash in updated", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminCashBookActivity, "Cash Inventory synced successfully!", Toast.LENGTH_SHORT).show()
                 loadDashboardData()
             } catch (e: Exception) {
-                Toast.makeText(this@AdminCashBookActivity, "Failed to update: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminCashBookActivity, "Sync failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun addCompanyDueCard(name: String, amount: String, date: String) {
-        val card = MaterialCardView(this)
-        val params = android.widget.LinearLayout.LayoutParams(
-            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(0, 8, 0, 8)
-        card.layoutParams = params
-        card.radius = 16f
-        card.cardElevation = 4f
-        card.setContentPadding(24, 24, 24, 24)
-        card.setCardBackgroundColor(android.graphics.Color.WHITE)
-        card.strokeWidth = 2
-        card.strokeColor = android.graphics.Color.parseColor("#DDDDDD")
-
-        val layout = android.widget.LinearLayout(this)
-        layout.orientation = android.widget.LinearLayout.VERTICAL
-        
-        val tvName = TextView(this)
-        tvName.text = name
-        tvName.textSize = 16f
-        tvName.setTypeface(null, android.graphics.Typeface.BOLD)
-        tvName.setTextColor(android.graphics.Color.parseColor("#FF9800"))
-        
-        val tvAmount = TextView(this)
-        tvAmount.text = amount
-        tvAmount.textSize = 20f
-        tvAmount.setTypeface(null, android.graphics.Typeface.BOLD)
-        tvAmount.setTextColor(android.graphics.Color.parseColor("#C62828"))
-        tvAmount.setPadding(0, 8, 0, 8)
-
-        val tvDate = TextView(this)
-        tvDate.text = date
-        tvDate.textSize = 12f
-        tvDate.setTextColor(android.graphics.Color.GRAY)
-
-        layout.addView(tvName)
-        layout.addView(tvAmount)
-        layout.addView(tvDate)
-        
-        card.addView(layout)
-        layoutCompanyDues.addView(card)
     }
 }

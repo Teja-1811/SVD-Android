@@ -37,6 +37,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
@@ -49,6 +53,7 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
     
+    // Fixed: Hyphens in Version Catalog are accessed with dots in Kotlin DSL
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.fragment.ktx)
     

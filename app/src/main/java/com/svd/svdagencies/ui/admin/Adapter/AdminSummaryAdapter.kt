@@ -28,7 +28,7 @@ class AdminSummaryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.admin_companies_payment_daily_row, parent, false)
+            .inflate(R.layout.admin_companies_due_daily_row, parent, false)
         return SummaryViewHolder(view)
     }
 
@@ -46,7 +46,7 @@ class AdminSummaryAdapter(
         fun bind(item: AdminSummaryItem) {
             tvDay.text = item.date
             
-            // Avoid triggering text watcher when setting initial value
+            // Clear previous listeners to avoid feedback loops and unexpected behaviors during binding
             etInvoice.setOnFocusChangeListener(null)
             etPaid.setOnFocusChangeListener(null)
 
@@ -62,24 +62,26 @@ class AdminSummaryAdapter(
                  etPaid.setText("")
             }
             
-            // Text Watchers to update model
-            etInvoice.addTextChangedListener(object : TextWatcher {
+            // Re-adding Text Watchers to update model correctly
+            val invoiceWatcher = object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
                     val amount = s.toString().toDoubleOrNull() ?: 0.0
                     item.invoice_amount = amount
                 }
-            })
+            }
+            etInvoice.addTextChangedListener(invoiceWatcher)
 
-            etPaid.addTextChangedListener(object : TextWatcher {
+            val paidWatcher = object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
                     val amount = s.toString().toDoubleOrNull() ?: 0.0
                     item.paid_amount = amount
                 }
-            })
+            }
+            etPaid.addTextChangedListener(paidWatcher)
         }
     }
 }

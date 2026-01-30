@@ -15,7 +15,7 @@ class CompanyPaymentsAdapter(
     private var companies: List<CompanyPayment>
 ) : RecyclerView.Adapter<CompanyPaymentsAdapter.CompanyViewHolder>() {
 
-    private val recordsAdapters = mutableMapOf<Int, PaymentDailyRecordsAdapter>()
+    private val recordsAdapters = mutableMapOf<Int, CompanyDuesDailyRecordsAdapter>()
 
     fun updateList(newCompanies: List<CompanyPayment>) {
         companies = newCompanies
@@ -68,7 +68,7 @@ class CompanyPaymentsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CompanyViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.admin_companies_payment_card, parent, false)
+            .inflate(R.layout.admin_companies_due_card, parent, false)
         return CompanyViewHolder(view)
     }
 
@@ -92,7 +92,7 @@ class CompanyPaymentsAdapter(
             var adapter = recordsAdapters[company.company_id]
             if (adapter == null) {
                 val summaryItems = convertDailyRecords(company.records)
-                adapter = PaymentDailyRecordsAdapter(summaryItems)
+                adapter = CompanyDuesDailyRecordsAdapter(summaryItems)
                 recordsAdapters[company.company_id] = adapter
             }
             

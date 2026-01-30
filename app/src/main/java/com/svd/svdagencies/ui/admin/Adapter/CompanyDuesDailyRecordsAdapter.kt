@@ -11,13 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.admin.AdminSummaryItem
 
-class PaymentDailyRecordsAdapter(
+class CompanyDuesDailyRecordsAdapter(
     private var records: List<AdminSummaryItem>
-) : RecyclerView.Adapter<PaymentDailyRecordsAdapter.DailyRecordViewHolder>() {
+) : RecyclerView.Adapter<CompanyDuesDailyRecordsAdapter.DailyRecordViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyRecordViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.admin_companies_payment_daily_row, parent, false)
+            .inflate(R.layout.admin_companies_due_daily_row, parent, false)
         return DailyRecordViewHolder(view)
     }
 

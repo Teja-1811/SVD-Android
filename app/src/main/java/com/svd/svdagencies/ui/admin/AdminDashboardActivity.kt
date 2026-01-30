@@ -39,7 +39,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.admin_dashboard_main)
+        setContentView(R.layout.admin)
 
         // Toolbar
         setupAdminLayout("Admin")
@@ -80,6 +80,10 @@ class AdminDashboardActivity : AdminBaseActivity() {
         }
 
         swipeRefresh.isRefreshing = true
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadDashboard()
     }
 
@@ -93,7 +97,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
                 call: Call<AdminDashboardResponse>,
                 response: Response<AdminDashboardResponse>
             ) {
-
+                if (isDestroyed) return
                 swipeRefresh.isRefreshing = false
 
                 if (!response.isSuccessful) {
@@ -121,7 +125,14 @@ class AdminDashboardActivity : AdminBaseActivity() {
                 // ========= POPULATE LIST =========
                 layoutNoOrdersList.removeAllViews()
 
-                for (customer in data.customers_no_orders_today_list ?: emptyList()) {
+                val customers = data.customers_no_orders_today_list ?: emptyList()
+                
+                // Optimization: If the list is large, we should use a RecyclerView.
+                // For a dashboard "not ordered today" list, it's usually small.
+                // But we'll limit it to 10 items here to prevent UI lag, or better yet, 
+                // just inflate what's needed.
+                
+                for (customer in customers.take(20)) { // Limit to top 20 for safety
 
                     val row = LayoutInflater.from(this@AdminDashboardActivity)
                         .inflate(
@@ -148,6 +159,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
             }
 
             override fun onFailure(call: Call<AdminDashboardResponse>, t: Throwable) {
+                if (isDestroyed) return
                 swipeRefresh.isRefreshing = false
                 Toast.makeText(
                     this@AdminDashboardActivity,

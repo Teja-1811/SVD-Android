@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/nav_home"
@@ -32,8 +33,8 @@
         android:icon="@drawable/ic_stock"/>
 
     <item
-        android:id="@+id/nav_payments"
-        android:title="Payments"
+        android:id="@+id/nav_dues"
+        android:title="Dues"
         android:icon="@drawable/ic_payments"/>
 
     <item
@@ -45,5 +46,10 @@
         android:id="@+id/nav_monthly_summary"
         android:title="Monthly Summary"
         android:icon="@drawable/ic_calendar"/>
+
+    <item
+        android:id="@+id/nav_payments"
+        android:title="Payments"
+        android:icon="@drawable/ic_payments"/>
 
 </menu>
