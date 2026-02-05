@@ -13,7 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.data.model.admin.AdminItem
+import com.svd.svdagencies.data.model.admin.Items.AdminItem
 import com.svd.svdagencies.databinding.AdminItemAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.CoroutineScope

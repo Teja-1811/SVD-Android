@@ -48,14 +48,11 @@ class AdminBillAdapter(
         private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
 
         fun bind(bill: AdminBill) {
-            tvBillNumber.text = "Bill #${bill.bill_number}"
-            
-            // Format Date if needed (assuming date string is YYYY-MM-DD or similar)
+            tvBillNumber.text = "Bill #" + (bill.bill_number ?: "")
             tvBillDate.text = formatDate(bill.date)
-
-            tvCustomerName.text = bill.customer_name
-            tvTotalAmount.text = "₹${bill.total_amount}"
-            tvProfitAmount.text = "₹${bill.profit}"
+            tvCustomerName.text = bill.customer_name ?: ""
+            tvTotalAmount.text = "₹" + bill.total_amount
+            tvProfitAmount.text = "₹" + bill.profit
 
             btnView.setOnClickListener { onViewClick(bill) }
             btnEdit.setOnClickListener { onEditClick(bill) }
@@ -63,12 +60,17 @@ class AdminBillAdapter(
             btnDelete.setOnClickListener { onDeleteClick(bill) }
         }
 
-        private fun formatDate(dateString: String): String {
+        private fun formatDate(dateString: String?): String {
+            if (dateString == null) return ""
             return try {
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 val outputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                 val date = inputFormat.parse(dateString)
-                outputFormat.format(date!!)
+                if (date != null) {
+                    outputFormat.format(date)
+                } else {
+                    dateString
+                }
             } catch (e: Exception) {
                 dateString
             }

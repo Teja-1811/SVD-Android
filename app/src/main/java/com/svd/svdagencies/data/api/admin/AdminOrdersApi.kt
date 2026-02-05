@@ -1,6 +1,10 @@
 package com.svd.svdagencies.data.api.admin
 
 import com.svd.svdagencies.data.model.admin.*
+import com.svd.svdagencies.data.model.admin.Orders.AdminOrderDetail
+import com.svd.svdagencies.data.model.admin.Orders.ConfirmOrderRequest
+import com.svd.svdagencies.data.model.admin.Orders.ConfirmOrderResponse
+import com.svd.svdagencies.data.model.admin.Orders.OrdersDashboardResponse
 import retrofit2.http.*
 
 interface AdminOrdersApi {

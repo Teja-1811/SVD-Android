@@ -45,7 +45,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Welcome back 👋"
-                        android:textSize="20sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
                         android:layout_marginBottom="6dp"/>
@@ -54,7 +54,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Manage your orders, track your account,\nand stay updated with \n Sri Vijaya Durga Milk Agencies"
-                        android:textSize="14sp"
+                        android:textSize="11sp"
                         android:textColor="@android:color/white"
                         android:gravity="center"/>
                 </LinearLayout>
@@ -92,7 +92,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Account Balance"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
                             android:textColor="@color/textColorSecondary"/>
 
                         <TextView
@@ -100,7 +100,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0.00"
-                            android:textSize="18sp"
+                            android:textSize="13sp"
                             android:textStyle="bold"
                             android:textColor="@color/textColorPrimary"/>
                     </LinearLayout>
@@ -139,7 +139,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shop Name"
-                            android:textSize="14sp"
+                            android:textSize="11sp"
                             android:textColor="@color/textColorSecondary"/>
 
                         <TextView
@@ -147,7 +147,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shop Name"
-                            android:textSize="16sp"
+                            android:textSize="12sp"
                             android:textStyle="bold"
                             android:textColor="@color/textColorPrimary"/>
                     </LinearLayout>
@@ -181,7 +181,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="Account Status : Active"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:textStyle="bold"
                         android:textColor="@color/icon_green"/>
                 </LinearLayout>

@@ -119,9 +119,27 @@ abstract class AdminBaseActivity : AppCompatActivity() {
                     }
                     true
                 }
+                R.id.nav_dues -> {
+                    if (this !is AdminDuesActivity) {
+                        startActivity(Intent(this, AdminDuesActivity::class.java))
+                    }
+                    true
+                }
                 R.id.nav_cashbook -> {
                     if (this !is AdminCashBookActivity) {
                          startActivity(Intent(this, AdminCashBookActivity::class.java))
+                    }
+                    true
+                }
+                R.id.nav_monthly_summary -> {
+                    if (this !is AdminMonthlySummary) {
+                        startActivity(Intent(this, AdminMonthlySummary::class.java))
+                    }
+                    true
+                }
+                R.id.nav_payments -> {
+                    if (this !is AdminPaymentsActivity) {
+                        startActivity(Intent(this, AdminPaymentsActivity::class.java))
                     }
                     true
                 }

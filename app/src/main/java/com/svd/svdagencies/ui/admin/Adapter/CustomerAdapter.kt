@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.R
-import com.svd.svdagencies.data.model.admin.CustomerItem
+import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
 import com.svd.svdagencies.databinding.AdminCustomerCardBinding
 import com.svd.svdagencies.ui.admin.customer.CustomerProfileActivity
 import java.net.URLEncoder
@@ -55,7 +55,6 @@ class CustomerAdapter(
             } else {
                 // Active State: Freeze (Red/Gray)
                 btnPassword.setImageResource(R.drawable.ic_lock)
-                // Use red background for consistency with profile logic, or keep gray
                 btnPassword.setBackgroundResource(R.drawable.bg_icon_btn_red)
                 btnPassword.imageTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(root.context, R.color.icon_red)
@@ -70,12 +69,14 @@ class CustomerAdapter(
                 onBalanceClick?.invoke(c)
             }
 
+            // Click on Eye Button to view profile
             btnView.setOnClickListener {
-                val context = root.context
-                val intent = Intent(context, CustomerProfileActivity::class.java).apply {
-                    putExtra("CUSTOMER_DATA", c)
-                }
-                context.startActivity(intent)
+                navigateToProfile(root.context, c)
+            }
+
+            // Also make the whole card clickable for profile view
+            root.setOnClickListener {
+                navigateToProfile(root.context, c)
             }
 
             btnWhatsapp.setOnClickListener {
@@ -93,9 +94,7 @@ class CustomerAdapter(
                         }
                         context.startActivity(intent)
                     } catch (e: Exception) {
-                        // Fallback if WhatsApp is not installed or other error
                         try {
-                            // Try browser fallback
                             val url = "https://api.whatsapp.com/send?phone=+91$phoneNumber&text=${URLEncoder.encode(message, "UTF-8")}"
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                             context.startActivity(intent)
@@ -108,6 +107,13 @@ class CustomerAdapter(
                 }
             }
         }
+    }
+
+    private fun navigateToProfile(context: android.content.Context, customer: CustomerItem) {
+        val intent = Intent(context, CustomerProfileActivity::class.java).apply {
+            putExtra("CUSTOMER_DATA", customer)
+        }
+        context.startActivity(intent)
     }
 
     fun update(list: List<CustomerItem>) {

@@ -3,35 +3,44 @@ package com.svd.svdagencies.ui.admin.bills
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.data.model.admin.Bills.BillCustomer
-import com.svd.svdagencies.ui.admin.adapter.BillAdapter
+import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
+import com.svd.svdagencies.ui.admin.adapter.AdminBillAdapter
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AdminBillsActivity : AdminBaseActivity() {
 
-    private lateinit var spinnerCustomer: Spinner
+    private lateinit var autoCompleteCustomer: AutoCompleteTextView
     private lateinit var tvStartDate: TextView
     private lateinit var tvEndDate: TextView
     private lateinit var btnSearch: Button
     private lateinit var rvBills: RecyclerView
     private lateinit var fabCreateBill: FloatingActionButton
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    private lateinit var billAdapter: BillAdapter
-    private var customers: List<BillCustomer> = emptyList()
+    private lateinit var billAdapter: AdminBillAdapter
+    private var customers: List<CustomerItem> = emptyList()
 
     private var startDate: Calendar = Calendar.getInstance()
     private var endDate: Calendar = Calendar.getInstance()
@@ -46,22 +55,103 @@ class AdminBillsActivity : AdminBaseActivity() {
         setupListeners()
 
         fetchCustomers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Auto-refresh when returning from Create or Detail screens
         fetchBills()
     }
 
     private fun initViews() {
-        spinnerCustomer = findViewById(R.id.spinnerCustomer)
+        autoCompleteCustomer = findViewById(R.id.autoCompleteCustomer)
         tvStartDate = findViewById(R.id.tvStartDate)
         tvEndDate = findViewById(R.id.tvEndDate)
         btnSearch = findViewById(R.id.btnSearch)
         rvBills = findViewById(R.id.rvBills)
         fabCreateBill = findViewById(R.id.fabCreateBill)
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
     }
 
     private fun setupRecyclerView() {
-        billAdapter = BillAdapter(emptyList())
+        billAdapter = AdminBillAdapter(
+            emptyList(),
+            onViewClick = { bill ->
+                val intent = Intent(this, AdminBillDetailActivity::class.java)
+                intent.putExtra("bill_id", bill.id)
+                startActivity(intent)
+            },
+            onEditClick = { bill ->
+                val intent = Intent(this, CreateBillActivity::class.java).apply {
+                    putExtra("bill_id", bill.id)
+                }
+                startActivity(intent)
+            },
+            onDownloadClick = { bill ->
+                bill.id?.let { downloadBill(it) }
+            },
+            onDeleteClick = { bill ->
+                showDeleteConfirmation(bill.id, bill.bill_number)
+            }
+        )
         rvBills.layoutManager = LinearLayoutManager(this)
         rvBills.adapter = billAdapter
+    }
+
+    private fun showDeleteConfirmation(billId: Int?, billNumber: String?) {
+        if (billId == null) return
+        
+        AlertDialog.Builder(this)
+            .setTitle("Delete Bill")
+            .setMessage("Are you sure you want to delete bill #$billNumber?")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteBill(billId)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteBill(billId: Int) {
+        lifecycleScope.launch {
+            try {
+                ApiClient.billsDashboardApi.deleteBill(billId)
+                Toast.makeText(this@AdminBillsActivity, "Bill deleted successfully", Toast.LENGTH_SHORT).show()
+                fetchBills() // Refresh the list
+            } catch (e: Exception) {
+                Toast.makeText(this@AdminBillsActivity, "Error deleting bill: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun downloadBill(billId: Int) {
+        lifecycleScope.launch {
+            try {
+                Toast.makeText(this@AdminBillsActivity, "Downloading bill...", Toast.LENGTH_SHORT).show()
+                val responseBody = ApiClient.billsDashboardApi.downloadBill(billId)
+                val fileName = "bill_$billId.pdf"
+                val file = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
+                
+                withContext(Dispatchers.IO) {
+                    val inputStream = responseBody.byteStream()
+                    val outputStream = FileOutputStream(file)
+                    inputStream.use { input ->
+                        outputStream.use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+
+                val fileUri = FileProvider.getUriForFile(this@AdminBillsActivity, "${applicationContext.packageName}.provider", file)
+                val viewIntent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(fileUri, "application/pdf")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(viewIntent)
+
+            } catch (e: Exception) {
+                Toast.makeText(this@AdminBillsActivity, "Error downloading bill: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setupListeners() {
@@ -71,6 +161,10 @@ class AdminBillsActivity : AdminBaseActivity() {
         fabCreateBill.setOnClickListener { 
             val intent = Intent(this, CreateBillActivity::class.java)
             startActivity(intent)
+        }
+        
+        swipeRefreshLayout.setOnRefreshListener {
+            fetchBills()
         }
     }
 
@@ -103,12 +197,11 @@ class AdminBillsActivity : AdminBaseActivity() {
     private fun fetchCustomers() {
         lifecycleScope.launch {
             try {
-                customers = ApiClient.billsDashboardApi.getCustomersForBill()
-                val customerNames = mutableListOf("All Customers")
-                customerNames.addAll(customers.map { it.name })
-                val adapter = ArrayAdapter(this@AdminBillsActivity, android.R.layout.simple_spinner_item, customerNames)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spinnerCustomer.adapter = adapter
+                val response = ApiClient.billsDashboardApi.getCustomersForBill()
+                customers = response.customers ?: emptyList()
+                val customerNames = customers.map { "${it.name} (${it.shop_name})" }
+                val adapter = ArrayAdapter(this@AdminBillsActivity, android.R.layout.simple_dropdown_item_1line, customerNames)
+                autoCompleteCustomer.setAdapter(adapter)
             } catch (e: Exception) {
                 Toast.makeText(this@AdminBillsActivity, "Error fetching customers: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -116,8 +209,11 @@ class AdminBillsActivity : AdminBaseActivity() {
     }
 
     private fun fetchBills() {
-        val customerPosition = spinnerCustomer.selectedItemPosition
-        val customerId = if (customerPosition > 0) customers[customerPosition - 1].id else null
+        swipeRefreshLayout.isRefreshing = true
+        val selectedText = autoCompleteCustomer.text.toString()
+        val customerId = if (selectedText.isNotEmpty()) {
+            customers.find { "${it.name} (${it.shop_name})" == selectedText }?.id
+        } else null
 
         val startDateString = if (tvStartDate.text.isNotEmpty()) tvStartDate.text.toString() else null
         val endDateString = if (tvEndDate.text.isNotEmpty()) tvEndDate.text.toString() else null
@@ -125,9 +221,11 @@ class AdminBillsActivity : AdminBaseActivity() {
         lifecycleScope.launch {
             try {
                 val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString)
-                billAdapter.updateData(response.results)
+                billAdapter.updateList(response.results)
             } catch (e: Exception) {
                 Toast.makeText(this@AdminBillsActivity, "Error fetching bills: ${e.message}", Toast.LENGTH_SHORT).show()
+            } finally {
+                swipeRefreshLayout.isRefreshing = false
             }
         }
     }

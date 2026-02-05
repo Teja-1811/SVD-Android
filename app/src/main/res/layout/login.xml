@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="Username"
         android:textColor="@color/textColorPrimary"
-        android:textSize="16sp"
+        android:textSize="13sp"
         android:textStyle="bold"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
@@ -54,6 +54,7 @@
             android:drawablePadding="16dp"
             android:padding="16dp"
             android:inputType="text"
+            android:textSize="12sp"
             android:textColor="@color/editTextColor"
             android:textColorHint="@color/textColorSecondary" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -64,7 +65,7 @@
         android:layout_height="wrap_content"
         android:text="Password"
         android:textColor="@color/textColorPrimary"
-        android:textSize="16sp"
+        android:textSize="13sp"
         android:textStyle="bold"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
@@ -98,6 +99,7 @@
             android:drawablePadding="16dp"
             android:padding="16dp"
             android:inputType="textPassword"
+            android:textSize="12sp"
             android:textColor="@color/editTextColor"
             android:textColorHint="@color/textColorSecondary" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -108,6 +110,7 @@
         android:layout_height="60dp"
         android:text="Sign In"
         android:textColor="@android:color/white"
+        android:textSize="13sp"
         app:icon="@drawable/ic_arrow_forward"
         app:iconGravity="textStart"
         app:iconPadding="16dp"

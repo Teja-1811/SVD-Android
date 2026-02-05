@@ -3,7 +3,6 @@ package com.svd.svdagencies.ui.admin.bills
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -11,6 +10,8 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.ui.admin.adapter.BillItemAdapter
@@ -27,18 +28,24 @@ class AdminBillDetailActivity : AdminBaseActivity() {
 
     // Views
     private lateinit var tvCustomerName: TextView
-    private lateinit var tvInvoiceNumber: TextView
-    private lateinit var tvInvoiceDate: TextView
+    private lateinit var tvBillNumber: TextView
+    private lateinit var tvBillDate: TextView
     private lateinit var tvTotalAmount: TextView
     private lateinit var tvProfit: TextView
     private lateinit var tvOpeningDue: TextView
     private lateinit var tvCurrentDue: TextView
     private lateinit var rvBillItems: RecyclerView
-    private lateinit var btnEditBill: Button
-    private lateinit var btnDeleteBill: Button
-    private lateinit var btnDownloadBill: Button
+    private lateinit var btnEdit: MaterialButton
+    private lateinit var btnDelete: MaterialButton
+    private lateinit var btnDownload: MaterialButton
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    
+    private lateinit var tvBillItemsCount: TextView
+    private lateinit var tvFooterTotalAmount: TextView
 
     private lateinit var billItemAdapter: BillItemAdapter
+
+    private var requestsCompleted = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,23 +62,29 @@ class AdminBillDetailActivity : AdminBaseActivity() {
         initViews()
         setupRecyclerView()
         setupListeners()
+    }
 
-        fetchBillDetails()
-        fetchBillItems()
+    override fun onResume() {
+        super.onResume()
+        refreshData()
     }
 
     private fun initViews() {
         tvCustomerName = findViewById(R.id.tvCustomerName)
-        tvInvoiceNumber = findViewById(R.id.tvInvoiceNumber)
-        tvInvoiceDate = findViewById(R.id.tvInvoiceDate)
+        tvBillNumber = findViewById(R.id.tvBillNumber)
+        tvBillDate = findViewById(R.id.tvBillDate)
         tvTotalAmount = findViewById(R.id.tvTotalAmount)
         tvProfit = findViewById(R.id.tvProfit)
         tvOpeningDue = findViewById(R.id.tvOpeningDue)
         tvCurrentDue = findViewById(R.id.tvCurrentDue)
         rvBillItems = findViewById(R.id.rvBillItems)
-        btnEditBill = findViewById(R.id.btnEditBill)
-        btnDeleteBill = findViewById(R.id.btnDeleteBill)
-        btnDownloadBill = findViewById(R.id.btnDownloadBill)
+        btnEdit = findViewById(R.id.btnEdit)
+        btnDelete = findViewById(R.id.btnDelete)
+        btnDownload = findViewById(R.id.btnDownload)
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        
+        tvBillItemsCount = findViewById(R.id.tvBillItemsCount)
+        tvFooterTotalAmount = findViewById(R.id.tvFooterTotalAmount)
     }
 
     private fun setupRecyclerView() {
@@ -81,14 +94,14 @@ class AdminBillDetailActivity : AdminBaseActivity() {
     }
 
     private fun setupListeners() {
-        btnEditBill.setOnClickListener { 
+        btnEdit.setOnClickListener { 
             val intent = Intent(this, CreateBillActivity::class.java).apply {
                 putExtra("bill_id", billId)
             }
             startActivity(intent)
         }
 
-        btnDeleteBill.setOnClickListener { 
+        btnDelete.setOnClickListener { 
             AlertDialog.Builder(this)
                 .setTitle("Delete Bill")
                 .setMessage("Are you sure you want to delete this bill? This action cannot be undone.")
@@ -97,7 +110,18 @@ class AdminBillDetailActivity : AdminBaseActivity() {
                 .show()
         }
 
-        btnDownloadBill.setOnClickListener { downloadBill() }
+        btnDownload.setOnClickListener { downloadBill() }
+
+        swipeRefreshLayout.setOnRefreshListener {
+            refreshData()
+        }
+    }
+
+    private fun refreshData() {
+        requestsCompleted = 0
+        swipeRefreshLayout.isRefreshing = true
+        fetchBillDetails()
+        fetchBillItems()
     }
 
     private fun fetchBillDetails() {
@@ -105,14 +129,18 @@ class AdminBillDetailActivity : AdminBaseActivity() {
             try {
                 val response = ApiClient.billsDashboardApi.getBillDetail(billId)
                 tvCustomerName.text = response.customer
-                tvInvoiceNumber.text = "Invoice: ${response.invoice_number}"
-                tvInvoiceDate.text = "Date: ${response.invoice_date}"
-                tvTotalAmount.text = "Total\n₹${response.total_amount}"
-                tvProfit.text = "Profit\n₹${response.profit}"
-                tvOpeningDue.text = "Opening Due\n₹${response.op_due_amount}"
-                tvCurrentDue.text = "Current Due\n₹${response.current_due}"
+                tvBillNumber.text = "#${response.invoice_number}"
+                tvBillDate.text = response.invoice_date
+                tvTotalAmount.text = "₹${response.total_amount}"
+                tvProfit.text = "₹${response.profit}"
+                tvOpeningDue.text = "₹${response.op_due_amount}"
+                tvCurrentDue.text = "₹${response.current_due}"
             } catch (e: Exception) {
-                Toast.makeText(this@AdminBillDetailActivity, "Error fetching bill details: ${e.message}", Toast.LENGTH_SHORT).show()
+                if (!isFinishing) {
+                    Toast.makeText(this@AdminBillDetailActivity, "Error fetching bill details: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                checkRefreshStatus()
             }
         }
     }
@@ -122,8 +150,27 @@ class AdminBillDetailActivity : AdminBaseActivity() {
             try {
                 val response = ApiClient.billsDashboardApi.getBillItems(billId)
                 billItemAdapter.updateData(response)
+                
+                // Update table UI
+                tvBillItemsCount.text = "Bill Items (${response.size} items)"
+                val total = response.sumOf { it.total_amount }
+                tvFooterTotalAmount.text = "₹%.2f".format(total)
+
             } catch (e: Exception) {
-                Toast.makeText(this@AdminBillDetailActivity, "Error fetching bill items: ${e.message}", Toast.LENGTH_SHORT).show()
+                if (!isFinishing) {
+                    Toast.makeText(this@AdminBillDetailActivity, "Error fetching bill items: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            } finally {
+                checkRefreshStatus()
+            }
+        }
+    }
+
+    private fun checkRefreshStatus() {
+        synchronized(this) {
+            requestsCompleted++
+            if (requestsCompleted >= 2) {
+                swipeRefreshLayout.isRefreshing = false
             }
         }
     }

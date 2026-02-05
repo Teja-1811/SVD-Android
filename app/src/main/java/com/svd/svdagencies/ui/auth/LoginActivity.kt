@@ -3,12 +3,18 @@ package com.svd.svdagencies.ui.auth
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.svd.svdagencies.R
-import com.svd.svdagencies.data.api.auth.AuthApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.auth.LoginRequest
 import com.svd.svdagencies.data.api.auth.LoginResponse
@@ -39,11 +45,28 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
+        val logo = findViewById<ImageView>(R.id.login_logo)
+        val userLabel = findViewById<TextView>(R.id.username_label)
+        val userLayout = findViewById<TextInputLayout>(R.id.username_layout)
+        val passLabel = findViewById<TextView>(R.id.password_label)
+        val passLayout = findViewById<TextInputLayout>(R.id.password_layout)
         val etUsername = findViewById<TextInputEditText>(R.id.etUsername)
         val etPassword = findViewById<TextInputEditText>(R.id.etPassword)
         val btnLogin = findViewById<MaterialButton>(R.id.btnLogin)
 
-        val api = ApiClient.retrofit.create(AuthApi::class.java)
+        // Animation
+        val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+        val slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up)
+
+        logo.startAnimation(fadeIn)
+        userLabel.startAnimation(slideUp)
+        userLayout.startAnimation(slideUp)
+        passLabel.startAnimation(slideUp)
+        passLayout.startAnimation(slideUp)
+        btnLogin.startAnimation(slideUp)
+
+        // Using the dedicated authApi which bypasses the AuthInterceptor
+        val api = ApiClient.authApi
 
         btnLogin.setOnClickListener {
             val username = etUsername.text.toString().trim()
@@ -54,22 +77,35 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Using 'phone' field as expected by LoginRequest
+            btnLogin.isEnabled = false
+            btnLogin.text = "Signing In..."
+
             val request = LoginRequest(phone = username, password = password)
             Log.d("Login", "Sending request: phone=$username")
 
             api.login(request).enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                    btnLogin.isEnabled = true
+                    btnLogin.text = "Sign In"
+                    
                     if (!response.isSuccessful) {
                         val errorBody = response.errorBody()?.string()
-                        Log.e("Login", "Error response: $errorBody")
-                        Toast.makeText(this@LoginActivity, "Login Failed: ${response.code()}", Toast.LENGTH_SHORT).show()
+                        Log.e("Login", "Error response body: $errorBody")
+                        
+                        val errorMessage = try {
+                            val jsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
+                            jsonObject.get("message")?.asString 
+                                ?: jsonObject.get("detail")?.asString
+                                ?: "Error: ${response.code()}"
+                        } catch (e: Exception) {
+                            "Login Failed: ${response.code()}"
+                        }
+                        
+                        Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_LONG).show()
                         return
                     }
 
                     val body = response.body()
-                    Log.d("Login", "Response: $body")
-
                     if (body != null && body.status == "success" && body.token != null) {
                         session.saveSession(body.token, body.role ?: "", body.user_id ?: -1)
 
@@ -81,11 +117,14 @@ class LoginActivity : AppCompatActivity() {
                         }
                         finish()
                     } else {
-                        Toast.makeText(this@LoginActivity, body?.message ?: "Login failed", Toast.LENGTH_SHORT).show()
+                        val msg = body?.message ?: "Login failed"
+                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    btnLogin.isEnabled = true
+                    btnLogin.text = "Sign In"
                     Log.e("Login", "Network error", t)
                     Toast.makeText(this@LoginActivity, "Network error: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }

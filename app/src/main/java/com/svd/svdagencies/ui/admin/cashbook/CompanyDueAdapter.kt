@@ -2,19 +2,17 @@ package com.svd.svdagencies.ui.admin.cashbook
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.svd.svdagencies.R
-import com.svd.svdagencies.data.model.admin.CompanyDue
-import com.svd.svdagencies.databinding.AdminCompaniesDueRowBinding
+import com.svd.svdagencies.data.model.admin.Cashbook.CompanyDue
+import com.svd.svdagencies.databinding.AdminCashbookCompanyDueBinding
 
 class CompanyDueAdapter(private var items: List<CompanyDue>) :
     RecyclerView.Adapter<CompanyDueAdapter.ViewHolder>() {
 
-    class ViewHolder(val binding: AdminCompaniesDueRowBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: AdminCashbookCompanyDueBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = AdminCompaniesDueRowBinding.inflate(
+        val binding = AdminCashbookCompanyDueBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -25,10 +23,10 @@ class CompanyDueAdapter(private var items: List<CompanyDue>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.binding.apply {
-            tvDate.text = item.company_name
-            tvInvoice.text = "Inv: ₹%.2f".format(item.total_invoice)
-            tvPaid.text = "Due: ₹%.2f".format(item.total_due)
-            tvPaid.setTextColor(ContextCompat.getColor(root.context, R.color.brand_red))
+            tvCompanyName.text = item.company_name
+            tvInvoice.text = "₹%.2f".format(item.total_invoice)
+            tvPaid.text = "₹%.2f".format(item.total_paid)
+            tvDue.text = "₹%.2f".format(item.total_due)
         }
     }
 

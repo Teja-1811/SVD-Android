@@ -5,169 +5,236 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background"
+    android:background="#F8F9FA"
     tools:context=".ui.admin.AdminDuesActivity">
 
-    <!-- MAIN CONTENT -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- TOOLBAR -->
         <include
             layout="@layout/admin_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="80dp"
+                android:fillViewport="true">
 
-                <!-- FILTERS ROW (Month) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginBottom="20dp">
+                    android:padding="12dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Select Month"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="8dp"/>
-
-                    <TextView
-                        android:id="@+id/tvDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:text="January, 2026"
-                        android:gravity="center_vertical"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/black"
-                        android:background="@drawable/bg_qty_outline"
-                        app:drawableEndCompat="@drawable/ic_calendar"
-                        android:drawablePadding="12dp"/>
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E0E0E0"
-                    android:layout_marginBottom="20dp"/>
-
-                <!-- SUMMARY SECTION -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
-
-                    <HorizontalScrollView
+                    <!-- Filter & Month Picker Card -->
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="none"
-                        android:clipToPadding="false"
-                        android:paddingBottom="4dp">
+                        android:layout_marginBottom="16dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#E0E0E0">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="vertical"
+                            android:padding="12dp">
 
                             <TextView
-                                android:id="@+id/tvTotalInvoice"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:minWidth="150dp"
-                                android:text="Invoice: ₹0.00"
-                                android:background="@drawable/bg_status_red"
-                                android:textColor="@color/white"
+                                android:text="Billing Period"
+                                android:textColor="@color/textColorSecondary"
+                                android:textSize="12sp"
                                 android:textStyle="bold"
-                                android:gravity="center"
-                                android:padding="12dp"
-                                android:textSize="14sp"
-                                android:layout_marginEnd="12dp"/>
+                                android:textAllCaps="true"
+                                android:layout_marginBottom="12dp"/>
 
                             <TextView
-                                android:id="@+id/tvTotalPaid"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="150dp"
-                                android:text="Paid: ₹0.00"
-                                android:background="@drawable/bg_status_green"
-                                android:textColor="@color/white"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:padding="12dp"
-                                android:textSize="14sp"
-                                android:layout_marginEnd="12dp"/>
-
-                            <TextView
-                                android:id="@+id/tvTotalDue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:minWidth="150dp"
-                                android:text="Due: ₹0.00"
-                                android:background="@drawable/bg_status_yellow"
+                                android:id="@+id/tvDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="35dp"
+                                android:background="@drawable/bg_edit_text"
+                                android:gravity="center_vertical"
+                                android:paddingHorizontal="16dp"
+                                android:text="February, 2025"
                                 android:textColor="@color/black"
+                                android:textSize="12sp"
                                 android:textStyle="bold"
-                                android:gravity="center"
-                                android:padding="12dp"
-                                android:textSize="14sp"
-                                android:layout_marginEnd="4dp"/>
+                                app:drawableEndCompat="@drawable/ic_calendar"
+                                app:drawableTint="@color/brand_red" />
 
                         </LinearLayout>
-                    </HorizontalScrollView>
+                    </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Save All Button -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSaveAll"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
+                    <!-- Summary Grid -->
+                    <GridLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="20dp"
-                        android:text="Save All"
-                        android:textColor="#2E7D32"
-                        android:textSize="14sp"
-                        app:icon="@drawable/ic_money_bag"
-                        app:iconTint="#E65100"
-                        app:strokeColor="#2E7D32"
-                        app:strokeWidth="1dp"
-                        app:cornerRadius="24dp"
-                        android:paddingHorizontal="32dp"
-                        android:paddingVertical="12dp"/>
+                        android:columnCount="3"
+                        android:alignmentMode="alignMargins"
+                        android:columnOrderPreserved="false"
+                        android:layout_marginBottom="10dp">
+
+                        <!-- Total Invoice -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#FFF3F3"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="#FFEBEE">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:gravity="center">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="INVOICE"
+                                    android:textSize="10sp"
+                                    android:textColor="#C62828"/>
+                                <TextView
+                                    android:id="@+id/tvTotalInvoice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₹0.00"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#C62828"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Total Paid -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#F1F8E9"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="#DCEDC8">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:gravity="center">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="PAID"
+                                    android:textSize="10sp"
+                                    android:textColor="#2E7D32"/>
+                                <TextView
+                                    android:id="@+id/tvTotalPaid"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₹0.00"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#2E7D32"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Total Due -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="#FFF8E1"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="#FFECB3">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="12dp"
+                                android:gravity="center">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="DUE"
+                                    android:textSize="10sp"
+                                    android:textColor="#F57F17"/>
+                                <TextView
+                                    android:id="@+id/tvTotalDue"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="₹0.00"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#F57F17"/>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </GridLayout>
+
+                    <!-- Indicators (Dots) -->
+                    <LinearLayout
+                        android:id="@+id/layoutIndicators"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="12dp"/>
+
+                    <!-- Horizontal Sliding Cards -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        tools:listitem="@layout/admin_companies_due_card" />
 
                 </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
-                <!-- LIST CONTENT -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvSummary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false"
-                    tools:listitem="@layout/admin_companies_due_card"
-                    android:clipToPadding="false"
-                    android:paddingBottom="80dp"/>
+            <!-- Floating Action Save Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveAll"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_gravity="bottom"
+                android:layout_margin="16dp"
+                android:text="Save Payments"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="16dp"
+                app:elevation="4dp"
+                app:icon="@drawable/ic_save"
+                app:iconGravity="textStart"
+                app:iconSize="20dp"
+                app:backgroundTint="@color/brand_red"
+                android:textColor="@color/white"/>
 
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
     </LinearLayout>
 
-    <!-- DRAWER -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"

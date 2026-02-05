@@ -30,6 +30,7 @@
                 android:clickable="true"
                 android:drawableEnd="@drawable/ic_calendar"
                 android:padding="12dp"
+                android:textSize="12sp"
                 android:background="@drawable/bg_qty_outline"
                 android:textColor="@color/textColorPrimary"
                 android:textColorHint="@color/textColorSecondary"/>
@@ -39,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:text="Filter"
+                android:textSize="12sp"
                 android:layout_marginStart="8dp"
                 android:backgroundTint="@color/icon_red"
                 android:textColor="@android:color/white"/>
@@ -68,6 +70,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Bills"
+                        android:textSize="11sp"
                         android:textColor="@color/textColorSecondary"/>
 
                     <TextView
@@ -75,6 +78,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
                         android:textColor="@color/textColorPrimary"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -96,6 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Amount"
+                        android:textSize="11sp"
                         android:textColor="@color/textColorSecondary"/>
 
                     <TextView
@@ -103,6 +109,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0.0"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
                         android:textColor="@color/textColorPrimary"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -113,6 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textSize="11sp"
             android:layout_marginBottom="8dp"
             android:textColor="@color/gray500"/>
 
@@ -122,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="No bills found"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="@color/gray500"
             android:gravity="center"
             android:visibility="gone"

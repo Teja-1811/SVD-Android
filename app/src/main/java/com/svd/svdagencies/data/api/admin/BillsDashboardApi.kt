@@ -1,8 +1,14 @@
 package com.svd.svdagencies.data.api.admin
 
 import com.svd.svdagencies.data.model.admin.*
-import com.svd.svdagencies.data.model.admin.Bills.BillCustomer
 import com.svd.svdagencies.data.model.admin.Bills.BillDetailResponse
+import com.svd.svdagencies.data.model.admin.Bills.BillItemDetail
+import com.svd.svdagencies.data.model.admin.Bills.BillListResponse
+import com.svd.svdagencies.data.model.admin.Bills.CreateBillRequest
+import com.svd.svdagencies.data.model.admin.Bills.CreateBillResponse
+import com.svd.svdagencies.data.model.admin.Bills.EditBillRequest
+import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
+import com.svd.svdagencies.data.model.admin.customerData.GenericSuccessResponse
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
@@ -16,8 +22,8 @@ interface BillsDashboardApi {
         @Query("page") page: Int? = 1
     ): BillListResponse
 
-    @GET("api/customers/")
-    suspend fun getCustomersForBill(): List<BillCustomer>
+    @GET("api/customer-list/")
+    suspend fun getCustomersForBill(): CustomerDashboardResponse
 
     @GET("api/bills/{bill_id}/")
     suspend fun getBillDetail(@Path("bill_id") billId: Int): BillDetailResponse

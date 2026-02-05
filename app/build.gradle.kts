@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    // Fixed: Hyphens in Version Catalog are accessed with dots in Kotlin DSL
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -53,7 +54,6 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
     
-    // Fixed: Hyphens in Version Catalog are accessed with dots in Kotlin DSL
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.fragment.ktx)
     
@@ -61,6 +61,10 @@ dependencies {
     kapt(libs.glide.compiler)
     
     implementation(libs.zxing)
+    implementation(libs.circleimageview)
+    
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("androidx.gridlayout:gridlayout:1.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -3,7 +3,7 @@ package com.svd.svdagencies.ui.admin.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.svd.svdagencies.data.model.admin.CustomerItem
+import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
 import com.svd.svdagencies.databinding.AdminNoOrderCustomerBinding
 
 class NotOrderedAdapter(

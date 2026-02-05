@@ -7,25 +7,24 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="12dp"
     android:layout_marginVertical="6dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#E0E0E0">
+    app:strokeColor="#F0F0F0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp">
 
-        <!-- PRODUCT IMAGE CONTAINER -->
+        <!-- PRODUCT IMAGE -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/imageContainer"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:cardCornerRadius="8dp"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="#F0F0F0"
+            app:cardBackgroundColor="#F8F9FA"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -34,37 +33,37 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"
-                android:padding="4dp"
+                android:padding="8dp"
                 tools:src="@drawable/ic_milk_placeholder" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- DETAILS -->
+        <!-- NAME AND DETAILS -->
         <TextView
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="13sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvPrice"
             app:layout_constraintStart_toEndOf="@id/imageContainer"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Item Name" />
+            tools:text="Full Cream Milk 500ml" />
 
         <TextView
             android:id="@+id/tvPcs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/brand_red"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="11sp"
             app:layout_constraintStart_toStartOf="@id/tvName"
             app:layout_constraintTop_toBottomOf="@id/tvName"
-            tools:text="Crate QTY : 12" />
+            tools:text="Crate: 12 Pcs" />
 
         <TextView
             android:id="@+id/tvMrp"
@@ -72,52 +71,48 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:textColor="@color/brand_red"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:layout_constraintStart_toStartOf="@id/tvName"
             app:layout_constraintTop_toBottomOf="@id/tvPcs"
-            tools:text="MRP: ₹0.00" />
+            tools:text="MRP: ₹28.00" />
 
-        <LinearLayout
-            android:id="@+id/layoutPrice"
+        <!-- PRICE AND SAVINGS -->
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#2E7D32"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="₹26.50" />
+
+        <TextView
+            android:id="@+id/tvMargin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            app:layout_constraintStart_toStartOf="@id/tvName"
-            app:layout_constraintTop_toBottomOf="@id/tvMrp">
-
-            <TextView
-                android:id="@+id/tvPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#2E7D32"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                tools:text="₹0.00" />
-
-            <TextView
-                android:id="@+id/tvMargin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textColor="#2E7D32"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                tools:text="Margin: 5%" />
-        </LinearLayout>
+            android:background="@drawable/bg_qty_outline"
+            android:backgroundTint="#E8F5E9"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:textColor="#2E7D32"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPrice"
+            tools:text="Margin: 5.4%" />
 
         <View
             android:id="@+id/divider"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:background="#F0F0F0"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:background="#F5F5F5"
             app:layout_constraintTop_toBottomOf="@id/imageContainer" />
 
-        <!-- QTY CONTROLS -->
+        <!-- QUANTITY CONTROLS -->
         <LinearLayout
             android:id="@+id/layoutQty"
             android:layout_width="wrap_content"
@@ -134,46 +129,63 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_qty_outline"
-                android:backgroundTint="@color/brand_red"
+                android:backgroundTint="#F5F5F5"
                 android:src="@drawable/ic_minus"
-                app:tint="@color/white" />
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                app:tint="@color/brand_red" />
 
             <EditText
                 android:id="@+id/etQty"
-                android:layout_width="50dp"
+                android:layout_width="54dp"
                 android:layout_height="36dp"
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/bg_qty_outline"
                 android:gravity="center"
                 android:inputType="numberDecimal"
-                android:maxLength="5"
-                android:textColor="@color/black"
-                android:textSize="15sp"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                tools:text="0" />
+                tools:text="10" />
 
             <ImageButton
                 android:id="@+id/btnPlus"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_qty_outline"
-                android:backgroundTint="#2E7D32"
+                android:backgroundTint="#F5F5F5"
                 android:src="@drawable/ic_plus"
-                app:tint="@color/white" />
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                app:tint="#2E7D32" />
         </LinearLayout>
 
-        <!-- TOTAL -->
-        <TextView
-            android:id="@+id/tvTotal"
+        <!-- LINE TOTAL -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="19sp"
-            android:textStyle="bold"
+            android:orientation="vertical"
+            android:gravity="end"
             app:layout_constraintBottom_toBottomOf="@id/layoutQty"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/layoutQty"
-            tools:text="₹0.00" />
+            app:layout_constraintTop_toTopOf="@id/layoutQty">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Item Total"
+                android:textSize="11sp"
+                android:textColor="@color/textColorSecondary" />
+
+            <TextView
+                android:id="@+id/tvTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="₹265.00" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

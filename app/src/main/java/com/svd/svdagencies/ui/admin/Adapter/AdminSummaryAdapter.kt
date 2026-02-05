@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.admin.AdminSummaryItem
-import com.svd.svdagencies.data.model.admin.BillItem
-import com.svd.svdagencies.data.model.admin.BillItemDetail
+import com.svd.svdagencies.data.model.admin.Bills.BillItem
+import com.svd.svdagencies.data.model.admin.Bills.BillItemDetail
 
 class AdminSummaryAdapter(
     private var items: List<AdminSummaryItem>
@@ -95,7 +95,7 @@ class BillItemAdapter(private var items: List<BillItemDetail>) : RecyclerView.Ad
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item)
+        holder.bind(item, position + 1)
     }
 
     override fun getItemCount(): Int = items.size
@@ -106,16 +106,20 @@ class BillItemAdapter(private var items: List<BillItemDetail>) : RecyclerView.Ad
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvIndex: TextView = itemView.findViewById(R.id.tvIndex)
         private val tvItemName: TextView = itemView.findViewById(R.id.tvItemName)
         private val tvQuantity: TextView = itemView.findViewById(R.id.tvQuantity)
         private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
+        private val tvDiscount: TextView = itemView.findViewById(R.id.tvDiscount)
         private val tvTotal: TextView = itemView.findViewById(R.id.tvTotal)
 
-        fun bind(item: BillItemDetail) {
+        fun bind(item: BillItemDetail, index: Int) {
+            tvIndex.text = index.toString()
             tvItemName.text = item.item_name
-            tvQuantity.text = "x${item.quantity}"
-            tvPrice.text = "@ ₹${item.price_per_unit}"
-            tvTotal.text = "= ₹${item.total_amount}"
+            tvQuantity.text = item.quantity.toString()
+            tvPrice.text = "₹${item.price_per_unit}"
+            tvDiscount.text = if (item.discount > 0) "₹${item.discount}" else "-"
+            tvTotal.text = "₹${item.total_amount}"
         }
     }
 }

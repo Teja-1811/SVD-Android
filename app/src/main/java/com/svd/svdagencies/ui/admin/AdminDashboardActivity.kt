@@ -5,17 +5,21 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.AdminApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.AdminDashboardResponse
 import com.svd.svdagencies.ui.admin.customer.CustomersData
+import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
+import com.svd.svdagencies.ui.admin.stock.AdminStockUpdateActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,7 +35,8 @@ class AdminDashboardActivity : AdminBaseActivity() {
     private lateinit var tvNotOrdered: TextView
     private lateinit var layoutNoOrdersList: LinearLayout
     private lateinit var btnViewOrders: ImageButton
-    
+    private lateinit var btnUpdateStock: Button
+
     private lateinit var cardCustomers: View
     private lateinit var cardItems: View
     private lateinit var cardSales: View
@@ -46,27 +51,43 @@ class AdminDashboardActivity : AdminBaseActivity() {
 
         // Views
         swipeRefresh = findViewById(R.id.swipeRefresh)
-        tvCustomers = findViewById(R.id.tvCustomers)
-        tvItems = findViewById(R.id.tvItems)
-        tvSalesToday = findViewById(R.id.tvSalesToday)
-        tvDues = findViewById(R.id.tvDues)
         tvPendingOrders = findViewById(R.id.tvPendingOrders)
         tvNotOrdered = findViewById(R.id.tvNotOrdered)
         layoutNoOrdersList = findViewById(R.id.layoutNoOrdersList)
         btnViewOrders = findViewById(R.id.btnViewOrders)
-        
+        btnUpdateStock = findViewById(R.id.btnUpdateStock)
+
         cardCustomers = findViewById(R.id.cardCustomers)
         cardItems = findViewById(R.id.cardItems)
         cardSales = findViewById(R.id.cardSales)
         cardDues = findViewById(R.id.cardDues)
 
+        // Setup Stat Cards
+        setupStatCard(cardCustomers, "Customers", R.drawable.ic_users, R.color.brand_red)
+        setupStatCard(cardItems, "Items", R.drawable.ic_items, R.color.icon_green)
+        setupStatCard(cardSales, "Sales Today", R.drawable.ic_rupee, R.color.icon_orange)
+        setupStatCard(cardDues, "Dues", R.drawable.ic_bill, R.color.brand_red)
+
+        tvCustomers = cardCustomers.findViewById(R.id.tvStatValue)
+        tvItems = cardItems.findViewById(R.id.tvStatValue)
+        tvSalesToday = cardSales.findViewById(R.id.tvStatValue)
+        tvDues = cardDues.findViewById(R.id.tvStatValue)
+
         btnViewOrders.setOnClickListener {
             val intent = Intent(this, AdminOrdersActivity::class.java)
             startActivity(intent)
         }
-        
+
         cardCustomers.setOnClickListener {
             startActivity(Intent(this, CustomersData::class.java))
+        }
+
+        cardItems.setOnClickListener {
+            startActivity(Intent(this, AdminItemsActivity::class.java))
+        }
+
+        btnUpdateStock.setOnClickListener {
+            startActivity(Intent(this, AdminStockUpdateActivity::class.java))
         }
 
         swipeRefresh.setColorSchemeResources(
@@ -80,6 +101,13 @@ class AdminDashboardActivity : AdminBaseActivity() {
         }
 
         swipeRefresh.isRefreshing = true
+    }
+
+    private fun setupStatCard(card: View, label: String, iconRes: Int, colorRes: Int) {
+        card.findViewById<TextView>(R.id.tvStatLabel).text = label
+        val iconView = card.findViewById<ImageView>(R.id.ivStatIcon)
+        iconView.setImageResource(iconRes)
+        iconView.setColorFilter(ContextCompat.getColor(this, colorRes))
     }
 
     override fun onResume() {
@@ -114,8 +142,8 @@ class AdminDashboardActivity : AdminBaseActivity() {
                 // ========= UPDATE DASHBOARD COUNTS =========
                 tvCustomers.text = data.customers.toString()
                 tvItems.text = data.items.toString()
-                tvSalesToday.text = "${data.sales_today}"
-                tvDues.text = "${data.dues}"
+                tvSalesToday.text = "₹${data.sales_today}"
+                tvDues.text = "₹${data.dues}"
                 tvPendingOrders.text = data.pending_orders.toString()
 
                 // ========= UPDATE NOT ORDERED COUNT =========
@@ -126,12 +154,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
                 layoutNoOrdersList.removeAllViews()
 
                 val customers = data.customers_no_orders_today_list ?: emptyList()
-                
-                // Optimization: If the list is large, we should use a RecyclerView.
-                // For a dashboard "not ordered today" list, it's usually small.
-                // But we'll limit it to 10 items here to prevent UI lag, or better yet, 
-                // just inflate what's needed.
-                
+
                 for (customer in customers.take(20)) { // Limit to top 20 for safety
 
                     val row = LayoutInflater.from(this@AdminDashboardActivity)

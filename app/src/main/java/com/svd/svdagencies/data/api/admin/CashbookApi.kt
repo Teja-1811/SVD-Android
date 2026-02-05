@@ -1,12 +1,20 @@
 package com.svd.svdagencies.data.api.admin
 
 import com.svd.svdagencies.data.model.admin.*
+import com.svd.svdagencies.data.model.admin.Cashbook.CashbookDashboardResponse
+import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseListResponse
+import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseRequest
+import com.svd.svdagencies.data.model.admin.Cashbook.SaveBankBalanceRequest
+import com.svd.svdagencies.data.model.admin.Cashbook.SaveCashInRequest
 import retrofit2.http.*
 
 interface CashbookApi {
 
     @GET("api/cashbook/entries/")
-    suspend fun getDashboardData(): CashbookDashboardResponse
+    suspend fun getDashboardData(
+        @Query("month") month: Int? = null,
+        @Query("year") year: Int? = null
+    ): CashbookDashboardResponse
 
     @POST("api/cashbook/save-cash/")
     suspend fun saveCashIn(@Body request: SaveCashInRequest): Map<String, Boolean>
@@ -29,6 +37,6 @@ interface CashbookApi {
         @Query("end_date") endDate: String?
     ): ExpenseListResponse
 
-    @DELETE("cashbook/delete-expense/{id}/")
+    @DELETE("api/cashbook/delete-expense/{id}/")
     suspend fun deleteExpense(@Path("id") id: Int): Map<String, Boolean>
 }

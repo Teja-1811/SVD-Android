@@ -1,6 +1,6 @@
 package com.svd.svdagencies.data.api.admin
 
-import com.svd.svdagencies.data.model.admin.AdminItem
+import com.svd.svdagencies.data.model.admin.Items.AdminItem
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*

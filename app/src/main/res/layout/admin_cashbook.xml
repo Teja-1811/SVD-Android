@@ -5,18 +5,14 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA">
+    android:background="@color/window_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- TOOLBAR -->
-        <include
-            layout="@layout/admin_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <include layout="@layout/admin_toolbar" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
@@ -26,199 +22,223 @@
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="none">
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="16dp">
 
-                    <!-- TOP ACTIONS -->
+                    <!-- Header Action Buttons -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="12dp"
-                        android:weightSum="2">
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAddExpense"
-                            style="@style/Widget.Material3.Button.TonalButton"
+                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="52dp"
                             android:layout_weight="1"
                             android:text="Add Expense"
-                            android:textSize="12sp"
-                            android:layout_marginEnd="6dp"
+                            android:textAllCaps="false"
+                            app:backgroundTint="#FFC107"
+                            android:textColor="@color/black"
+                            android:layout_marginEnd="12dp"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="12dp"
                             app:icon="@drawable/ic_plus"
-                            app:iconSize="16dp"
-                            app:backgroundTint="#FFF3E0"
-                            app:iconTint="#FF9800"
-                            android:textColor="#FF9800"
-                            android:paddingVertical="8dp"/>
+                            app:iconTint="@color/black"
+                            app:iconSize="18dp"
+                            app:iconGravity="textStart"/>
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnViewExpenses"
-                            style="@style/Widget.Material3.Button.TonalButton"
+                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:text="Expenses"
+                            android:textAllCaps="false"
+                            app:backgroundTint="#00BCD4"
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="12dp"
+                            app:icon="@drawable/ic_menu"
+                            app:iconSize="18dp"
+                            app:iconTint="@color/white"
+                            app:iconGravity="textStart"/>
+                    </LinearLayout>
+
+                    <!-- Filter Bar -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.2"
+                            android:layout_marginEnd="6dp"
+                            app:hintEnabled="false"
+                            app:boxCornerRadiusTopStart="10dp"
+                            app:boxCornerRadiusTopEnd="10dp"
+                            app:boxCornerRadiusBottomStart="10dp"
+                            app:boxCornerRadiusBottomEnd="10dp"
+                            app:boxBackgroundColor="@color/white"
+                            app:boxStrokeColor="@color/divider_line">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/spinnerMonth"
+                                android:layout_width="match_parent"
+                                android:layout_height="42dp"
+                                android:inputType="none"
+                                android:text="February"
+                                android:textSize="12sp"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="32dp"
+                                android:gravity="center_vertical"
+                                android:background="@null" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Expenses"
-                            android:textSize="12sp"
-                            android:layout_marginStart="6dp"
-                            app:icon="@drawable/ic_eye"
-                            app:iconSize="16dp"
-                            app:backgroundTint="#E0F2F1"
-                            app:iconTint="#00897B"
-                            android:textColor="#00897B"
-                            android:paddingVertical="8dp"/>
+                            android:layout_marginEnd="6dp"
+                            app:hintEnabled="false"
+                            app:boxCornerRadiusTopStart="10dp"
+                            app:boxCornerRadiusTopEnd="10dp"
+                            app:boxCornerRadiusBottomStart="10dp"
+                            app:boxCornerRadiusBottomEnd="10dp"
+                            app:boxBackgroundColor="@color/white"
+                            app:boxStrokeColor="@color/divider_line">
 
+                            <AutoCompleteTextView
+                                android:id="@+id/spinnerYear"
+                                android:layout_width="match_parent"
+                                android:layout_height="42dp"
+                                android:inputType="none"
+                                android:text="2025"
+                                android:textSize="12sp"
+                                android:paddingStart="10dp"
+                                android:paddingEnd="32dp"
+                                android:gravity="center_vertical"
+                                android:background="@null" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnApplyFilters"
+                            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:padding="0dp"
+                            app:backgroundTint="#2962FF"
+                            app:cornerRadius="10dp"
+                            app:icon="@drawable/ic_search"
+                            app:iconSize="20dp"
+                            app:iconGravity="textStart"
+                            app:iconPadding="0dp"
+                            android:insetLeft="0dp"
+                            android:insetRight="0dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:gravity="center"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="0dp" />
+
+                        <ImageButton
+                            android:id="@+id/btnResetFilters"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginStart="4dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_close"
+                            app:tint="@color/textColorSecondary"
+                            android:padding="6dp"
+                            android:scaleType="fitCenter"/>
                     </LinearLayout>
 
-                    <!-- SUMMARY STATS -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Financial Summary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#424242"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginBottom="8dp"/>
-
+                    <!-- Stats Grid -->
                     <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:columnCount="2"
                         android:alignmentMode="alignMargins"
-                        android:columnOrderPreserved="false"
-                        android:useDefaultMargins="false">
+                        android:columnCount="2"
+                        android:columnOrderPreserved="false">
 
-                        <!-- Cash In Hand -->
-                        <include
-                            android:id="@+id/statCash"
-                            layout="@layout/admin_cashbook_stat_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill_horizontal" />
-
-                        <!-- Bank Balance -->
-                        <include
-                            android:id="@+id/statBank"
-                            layout="@layout/admin_cashbook_stat_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill_horizontal" />
-
-                        <!-- Customer Dues -->
-                        <include
-                            android:id="@+id/statDues"
-                            layout="@layout/admin_cashbook_stat_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill_horizontal" />
-
-                        <!-- Net Cash -->
-                        <include
-                            android:id="@+id/statNetCash"
-                            layout="@layout/admin_cashbook_stat_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill_horizontal" />
-
-                        <!-- Monthly Expenses -->
-                        <include
-                            android:id="@+id/statExpenses"
-                            layout="@layout/admin_cashbook_stat_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill_horizontal" />
-
-                        <!-- Monthly Profit -->
-                        <include
-                            android:id="@+id/statProfit"
-                            layout="@layout/admin_cashbook_stat_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill_horizontal" />
-
-                        <!-- Stock Value -->
-                        <include
-                            android:id="@+id/statStockValue"
-                            layout="@layout/admin_cashbook_stat_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill_horizontal" />
-
-                        <!-- Remaining Amount -->
-                        <include
-                            android:id="@+id/statRAmount"
-                            layout="@layout/admin_cashbook_stat_card"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill_horizontal" />
-
-                        <!-- Net Profit (Full Width Highlight) -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/statNetProfitCard"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_columnSpan="2"
-                            android:layout_margin="4dp"
-                            android:layout_gravity="fill_horizontal"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="2dp"
-                            app:strokeWidth="1dp"
-                            app:strokeColor="#C8E6C9"
-                            app:cardBackgroundColor="#F1F8E9">
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="12dp">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="NET PROFIT"
-                                    android:textColor="#2E7D32"
-                                    android:textSize="11sp"
-                                    android:textStyle="bold"
-                                    android:textAllCaps="true"
-                                    android:letterSpacing="0.05" />
-                                <TextView
-                                    android:id="@+id/tvNetProfitValue"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="6dp"
-                                    android:text="₹0.00"
-                                    android:textColor="#1B5E20"
-                                    android:textSize="22sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
+                        <include android:id="@+id/statCash" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statBank" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statDues" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statNetCash" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statExpenses" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statProfit" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statStockValue" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statRAmount" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statNetProfit" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
 
                     </GridLayout>
 
-                    <!-- BANK BALANCE UPDATE -->
+                    <!-- Company Dues Header -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Company Dues"
+                        android:textColor="#FFC107"
+                        android:textStyle="bold"
+                        android:textSize="13sp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <!-- Indicators (Dots) -->
+                    <LinearLayout
+                        android:id="@+id/layoutDuesIndicators"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_marginBottom="8dp"/>
+
+                    <!-- Horizontal Sliding Cards -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvCompanyDues"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        tools:listitem="@layout/admin_cashbook_company_due"
+                        android:clipToPadding="false" />
+
+                    <TextView
+                        android:id="@+id/tvTotalCompanyDues"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Total Dues: ₹0.00"
+                        android:textColor="#D32F2F"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:textSize="13sp"/>
+
+                    <!-- Bank Balance Update -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginHorizontal="4dp"
-                        app:cardCornerRadius="12dp"
+                        android:layout_marginTop="16dp"
+                        app:cardCornerRadius="16dp"
                         app:cardElevation="2dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#EEEEEE">
+                        app:strokeColor="#E0E0E0">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -230,57 +250,54 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Bank Balance"
+                                android:textColor="#00BCD4"
                                 android:textStyle="bold"
-                                android:textColor="#424242"
-                                android:textSize="14sp"
-                                android:layout_marginBottom="12dp"/>
+                                android:textSize="13sp"
+                                android:layout_marginBottom="16dp"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:background="@drawable/bg_qty_outline"
-                                android:backgroundTint="#F5F5F5"
-                                android:padding="4dp">
+                                android:gravity="center_vertical">
 
                                 <EditText
                                     android:id="@+id/etBankBalance"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="52dp"
                                     android:layout_weight="1"
-                                    android:hint="₹ 0.00"
+                                    android:background="@drawable/bg_edit_text"
+                                    android:hint="e.g. 5697.27"
                                     android:inputType="numberDecimal"
-                                    android:background="@android:color/transparent"
-                                    android:padding="10dp"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/black"/>
+                                    android:paddingStart="16dp"
+                                    android:paddingEnd="16dp"
+                                    android:textSize="12sp" />
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnUpdateBank"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="52dp"
                                     android:text="Update"
-                                    android:textSize="12sp"
                                     android:textAllCaps="false"
-                                    app:backgroundTint="#00897B"
-                                    app:cornerRadius="8dp"
-                                    android:layout_margin="4dp"/>
+                                    app:backgroundTint="#00BCD4"
+                                    android:layout_marginStart="12dp"
+                                    android:textStyle="bold"
+                                    android:textSize="12sp"
+                                    app:cornerRadius="12dp"/>
                             </LinearLayout>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- CASH INVENTORY -->
+                    <!-- Cash In / Denominations -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginHorizontal="4dp"
-                        app:cardCornerRadius="12dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        app:cardCornerRadius="16dp"
                         app:cardElevation="2dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#EEEEEE">
+                        app:strokeColor="#E0E0E0">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -291,117 +308,48 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Cash Denominations"
+                                android:text="Cash In Counter"
+                                android:textColor="#2196F3"
                                 android:textStyle="bold"
-                                android:textColor="#424242"
-                                android:textSize="14sp"
+                                android:textSize="13sp"
                                 android:layout_marginBottom="16dp"/>
 
-                            <TextView
+                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="NOTES"
-                                android:textSize="11sp"
-                                android:textColor="@color/gray500"
+                                android:text="Notes"
+                                android:textColor="#2196F3"
+                                android:textSize="12sp"
                                 android:textStyle="bold"
-                                android:letterSpacing="0.05"
-                                android:layout_marginBottom="8dp"/>
+                                android:layout_marginBottom="12dp"/>
 
                             <GridLayout
                                 android:id="@+id/gridNotes"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:columnCount="3"
-                                android:alignmentMode="alignMargins"/>
-
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:background="#F0F0F0"
-                                android:layout_marginTop="12dp"
-                                android:layout_marginBottom="12dp"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="COINS"
-                                android:textSize="11sp"
-                                android:textColor="@color/gray500"
-                                android:textStyle="bold"
-                                android:letterSpacing="0.05"
-                                android:layout_marginBottom="8dp"/>
-
-                            <GridLayout
-                                android:id="@+id/gridCoins"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:columnCount="3"
-                                android:alignmentMode="alignMargins"/>
+                                android:alignmentMode="alignMargins"
+                                android:columnOrderPreserved="false">
+                                <!-- Dynamically filled in code -->
+                            </GridLayout>
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btnUpdateCashIn"
                                 android:layout_width="match_parent"
-                                android:layout_height="54dp"
-                                android:layout_marginTop="20dp"
-                                android:text="Update Cash Entry"
-                                android:textStyle="bold"
+                                android:layout_height="52dp"
+                                android:text="Save Cash Counts"
                                 android:textAllCaps="false"
+                                app:backgroundTint="#2196F3"
+                                android:layout_marginTop="24dp"
+                                android:textStyle="bold"
+                                android:textSize="13sp"
                                 app:cornerRadius="12dp"
-                                app:backgroundTint="@color/brand_red"/>
+                                app:icon="@drawable/ic_save"
+                                app:iconGravity="textStart"
+                                app:iconSize="20dp"/>
 
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
-
-                    <!-- COMPANY DUES -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginHorizontal="4dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Unpaid Company Dues"
-                            android:textStyle="bold"
-                            android:textColor="#424242"
-                            android:textSize="14sp"
-                            android:layout_marginBottom="12dp"/>
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvCompanyDues"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false"
-                            tools:listitem="@layout/admin_companies_due_row"/>
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="0dp"
-                            app:strokeWidth="1dp"
-                            app:strokeColor="#FFCCBC"
-                            app:cardBackgroundColor="#FFF9F9">
-                            <TextView
-                                android:id="@+id/tvTotalCompanyDues"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Total Dues: ₹ 0.00"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:textColor="#D32F2F"
-                                android:padding="16dp"
-                                android:gravity="end"/>
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"/>
 
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>

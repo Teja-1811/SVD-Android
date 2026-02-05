@@ -20,6 +20,7 @@
     <!-- 🔴 BRAND COLORS -->
     <color name="brand_red">#D32F2F</color>
     <color name="brand_red_dark">#B71C1C</color>
+    <color name="brand_blue">#1976D2</color>
 
     <!-- Text Colors -->
     <color name="textColorPrimary">#212121</color>

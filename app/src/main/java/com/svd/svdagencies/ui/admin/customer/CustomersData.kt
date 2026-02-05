@@ -21,8 +21,8 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
-import com.svd.svdagencies.data.model.admin.CustomerItem
-import com.svd.svdagencies.data.model.admin.UpdateBalanceRequest
+import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
+import com.svd.svdagencies.data.model.admin.customerData.UpdateBalanceRequest
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.ui.admin.adapter.CustomerAdapter
 import com.svd.svdagencies.utils.SessionManager

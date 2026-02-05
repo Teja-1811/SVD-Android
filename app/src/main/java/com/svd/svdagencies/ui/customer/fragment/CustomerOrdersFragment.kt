@@ -136,12 +136,13 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 call: Call<PlaceOrderResponse>,
                 response: Response<PlaceOrderResponse>
             ) {
+                val context = context ?: return
                 btnPlaceOrder.isEnabled = true
 
                 if (response.isSuccessful && response.body()?.success == true) {
 
                     Toast.makeText(
-                        requireContext(),
+                        context,
                         "Order placed with ID: ${response.body()?.orderNumber}",
                         Toast.LENGTH_LONG
                     ).show()
@@ -155,7 +156,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
                 } else {
                     Toast.makeText(
-                        requireContext(),
+                        context,
                         response.body()?.message ?: "Order failed",
                         Toast.LENGTH_SHORT
                     ).show()
@@ -163,8 +164,9 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             }
 
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
+                val context = context ?: return
                 btnPlaceOrder.isEnabled = true
-                Toast.makeText(requireContext(), t.localizedMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -182,6 +184,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 call: Call<List<CategoryResponse>>,
                 response: Response<List<CategoryResponse>>
             ) {
+                val context = context ?: return
                 val categories = response.body()
 
                 if (categories.isNullOrEmpty()) {
@@ -193,7 +196,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
                 categories.forEachIndexed { index, category ->
 
-                    val chip = Chip(requireContext()).apply {
+                    val chip = Chip(context).apply {
                         text = category.name
                         isCheckable = true
                         setOnClickListener { loadProducts(category.id) }
@@ -209,8 +212,9 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             }
 
             override fun onFailure(call: Call<List<CategoryResponse>>, t: Throwable) {
+                val context = context ?: return
                 swipeRefresh.isRefreshing = false
-                Toast.makeText(requireContext(), "Failed to load categories", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Failed to load categories", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -229,6 +233,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                     call: Call<List<ProductResponse>>,
                     response: Response<List<ProductResponse>>
                 ) {
+                    if (context == null) return
                     swipeRefresh.isRefreshing = false
 
                     val list = response.body() ?: return
@@ -247,6 +252,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                     call: Call<List<ProductResponse>>,
                     t: Throwable
                 ) {
+                    if (context == null) return
                     swipeRefresh.isRefreshing = false
                 }
             })

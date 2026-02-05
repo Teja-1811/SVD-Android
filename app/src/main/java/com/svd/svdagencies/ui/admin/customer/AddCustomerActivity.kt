@@ -7,7 +7,7 @@ import android.widget.Toast
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.customerData.AddCustomerRequest
-import com.svd.svdagencies.data.model.admin.CustomerItem
+import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
 import com.svd.svdagencies.databinding.AdminCustomerAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.CoroutineScope

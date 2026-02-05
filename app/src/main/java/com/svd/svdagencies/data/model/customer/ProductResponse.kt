@@ -3,6 +3,7 @@ package com.svd.svdagencies.data.model.customer
 data class ProductResponse(
     val id: Int,
     val name: String,
+    val company: String,
     val mrp: Double,
     val selling_price: Double,
     val margin: Double,
@@ -14,15 +15,10 @@ data class ProductResponse(
         get() = if (pcs_count > 0) pcs_count else 1
 
     val calculateStep: Double
-        get() = when {
-            pcs == 1 -> 1.0
-            pcs == 5 -> 0.2
-            pcs > 10 -> 0.5
-            else -> 1.0
-        }
+        get() = 1.0
 
     fun calculateTotal(quantity: Double): Double {
-        return quantity * pcs * selling_price
+        return quantity * selling_price
     }
 
     fun formatQuantity(quantity: Double): String {

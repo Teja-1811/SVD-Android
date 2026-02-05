@@ -4,6 +4,10 @@ import com.svd.svdagencies.data.model.admin.*
 import com.svd.svdagencies.data.model.admin.customerData.AddCustomerRequest
 import com.svd.svdagencies.data.model.admin.customerData.AddCustomerResponse
 import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
+import com.svd.svdagencies.data.model.admin.customerData.CustomerDetail
+import com.svd.svdagencies.data.model.admin.customerData.ToggleFreezeResponse
+import com.svd.svdagencies.data.model.admin.customerData.UpdateBalanceRequest
+import com.svd.svdagencies.data.model.admin.Orders.UpdateBalanceResponse
 import retrofit2.http.*
 import retrofit2.Call
 
@@ -21,15 +25,15 @@ interface CustomerDashboardApi {
     ): CustomerDetail
 
 
-    // Freeze / Unfreeze customer
-    @POST("api/customer-freeze/{id}/freeze/")
+    // Freeze / Unfreeze customer - Updated URL based on Server Logs
+    @POST("api/customer-freeze/{id}/")
     suspend fun toggleFreeze(
         @Path("id") id: Int
     ): ToggleFreezeResponse
 
 
     // Update balance
-    @POST("api/customer-balance/{id}/balance/")
+    @POST("api/customer-balance/{id}/")
     suspend fun updateBalance(
         @Path("id") id: Int,
         @Body request: UpdateBalanceRequest

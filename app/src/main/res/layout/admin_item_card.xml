@@ -63,7 +63,7 @@
                 android:paddingEnd="8dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:textStyle="bold"/>
 
         </FrameLayout>
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Full Cream Milk 120 ML"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:layout_marginTop="16dp"/>
@@ -96,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Code"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
                 
                 <TextView
@@ -104,6 +104,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="FCM120"
+                    android:textSize="12sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -118,7 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Company"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
 
                 <TextView
@@ -126,6 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dodla"
+                    android:textSize="12sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -154,7 +156,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Buying"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
 
                 <TextView
@@ -163,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:text="₹8.16"
                     android:textColor="#2196F3"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"/>
             </LinearLayout>
 
@@ -177,7 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Selling"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
 
                 <TextView
@@ -186,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:text="₹9.00"
                     android:textColor="#4CAF50"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
@@ -214,7 +216,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="MRP"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
 
                 <TextView
@@ -223,7 +225,7 @@
                     android:layout_height="wrap_content"
                     android:text="₹10.00"
                     android:textColor="#C2185B"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"/>
             </LinearLayout>
 
@@ -237,7 +239,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Margin"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
 
                 <TextView
@@ -246,7 +248,7 @@
                     android:layout_height="wrap_content"
                     android:text="₹0.84"
                     android:textColor="#0097A7"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
@@ -266,6 +268,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Edit"
+                android:textSize="11sp"
                 android:textColor="#4CAF50"
                 app:backgroundTint="#E8F5E9"
                 app:strokeColor="#4CAF50"
@@ -285,6 +288,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Freeze"
+                android:textSize="11sp"
                 android:textColor="#F44336"
                 app:backgroundTint="#FFEBEE"
                 app:strokeColor="#F44336"

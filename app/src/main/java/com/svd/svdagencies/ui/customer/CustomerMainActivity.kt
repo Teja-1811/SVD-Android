@@ -21,7 +21,7 @@ class CustomerMainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.customer_main)
+        setContentView(R.layout.customer)
 
         // ================= TOOLBAR =================
         toolbar = findViewById<MaterialToolbar>(R.id.customerToolbar)

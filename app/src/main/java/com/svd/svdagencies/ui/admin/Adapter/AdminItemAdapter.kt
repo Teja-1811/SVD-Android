@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +12,8 @@ import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.data.model.admin.AdminItem
-import com.svd.svdagencies.data.model.admin.BillItem
+import com.svd.svdagencies.data.model.admin.Items.AdminItem
+import com.svd.svdagencies.data.model.admin.Bills.BillItem
 import com.svd.svdagencies.ui.admin.bills.AdminBillDetailActivity
 
 class AdminItemAdapter(
@@ -116,6 +117,7 @@ class BillAdapter(private var bills: List<BillItem>) : RecyclerView.Adapter<Bill
         private val tvBillDate: TextView = itemView.findViewById(R.id.tvBillDate)
         private val tvBillNumber: TextView = itemView.findViewById(R.id.tvBillNumber)
         private val tvTotalAmount: TextView = itemView.findViewById(R.id.tvTotalAmount)
+        private val btnView: ImageButton = itemView.findViewById(R.id.btnView)
 
         fun bind(bill: BillItem) {
             tvCustomerName.text = bill.customer
@@ -123,13 +125,16 @@ class BillAdapter(private var bills: List<BillItem>) : RecyclerView.Adapter<Bill
             tvBillNumber.text = bill.invoice_number
             tvTotalAmount.text = "₹${bill.total_amount}"
 
-            itemView.setOnClickListener {
+            val navigateToDetail = {
                 val context = itemView.context
                 val intent = Intent(context, AdminBillDetailActivity::class.java).apply {
                     putExtra("bill_id", bill.id)
                 }
                 context.startActivity(intent)
             }
+
+            btnView.setOnClickListener { navigateToDetail() }
+            itemView.setOnClickListener { navigateToDetail() }
         }
     }
 }

@@ -15,9 +15,9 @@ import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.AdminOrdersApi
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.data.model.admin.AdminOrder
-import com.svd.svdagencies.data.model.admin.ConfirmOrderItem
-import com.svd.svdagencies.data.model.admin.ConfirmOrderRequest
+import com.svd.svdagencies.data.model.admin.Orders.AdminOrder
+import com.svd.svdagencies.data.model.admin.Orders.ConfirmOrderItem
+import com.svd.svdagencies.data.model.admin.Orders.ConfirmOrderRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

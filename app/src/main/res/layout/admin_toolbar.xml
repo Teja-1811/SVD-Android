@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:text="Admin"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

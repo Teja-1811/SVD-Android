@@ -55,7 +55,7 @@ class OrderProductAdapter(
         val qty = cartQuantities[productId] ?: 0.0
         val total = product.calculateTotal(qty)
 
-        holder.tvName.text = product.name
+        holder.tvName.text = "${product.name} (${product.company})"
         holder.tvPcs.text = "${product.pcs} pcs / crate"
         holder.tvMrp.text = "MRP: ₹${product.mrp}"
         holder.tvPrice.text = "₹${product.selling_price}"

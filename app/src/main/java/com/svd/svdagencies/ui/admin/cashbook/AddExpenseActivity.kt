@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.data.model.admin.ExpenseRequest
+import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseRequest
 import com.svd.svdagencies.databinding.AdminExpencesAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.launch
@@ -23,7 +23,7 @@ class AddExpenseActivity : AdminBaseActivity() {
         binding = AdminExpencesAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupAdminLayout("Expenses")
+        setupAdminLayout("Add Expense")
 
         // Check if editing
         expenseId = intent.getIntExtra("EXPENSE_ID", -1).takeIf { it != -1 }

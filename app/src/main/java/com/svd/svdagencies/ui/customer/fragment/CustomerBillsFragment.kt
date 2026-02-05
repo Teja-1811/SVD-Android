@@ -119,13 +119,14 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
     }
 
     private fun showMonthYearPicker() {
+        val context = context ?: return
         val cal = Calendar.getInstance()
         val monthYear = etMonth.text.toString().split("-")
         val year = if (monthYear.size == 2) monthYear[1].toIntOrNull() ?: cal.get(Calendar.YEAR) else cal.get(Calendar.YEAR)
         val month = if (monthYear.size == 2) monthYear[0].toIntOrNull()?.minus(1) ?: cal.get(Calendar.MONTH) else cal.get(Calendar.MONTH)
 
         val dpd = DatePickerDialog(
-            requireContext(),
+            context,
             { _, selectedYear, selectedMonth, _ ->
                 etMonth.setText("${selectedMonth + 1}-$selectedYear")
                 loadBills()
@@ -160,6 +161,8 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
                 call: Call<InvoiceResponse>,
                 response: Response<InvoiceResponse>
             ) {
+                if (context == null) return
+
                 swipeRefresh.isRefreshing = false
 
                 if (response.isSuccessful && response.body() != null) {
@@ -186,6 +189,7 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
             }
 
             override fun onFailure(call: Call<InvoiceResponse>, t: Throwable) {
+                if (context == null) return
                 swipeRefresh.isRefreshing = false
                 tvStatus.text = "Network error"
             }
@@ -197,11 +201,12 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
     }
 
     private fun downloadInvoice(bill: InvoiceItem, openAfterDownload: Boolean = false) {
+        val context = context ?: return
         val url = "${ApiClient.retrofit.baseUrl()}api/customer/invoice/download/?invoice_number=${bill.number}"
         val token = sessionManager.getToken()
 
         if (token == null) {
-            Toast.makeText(requireContext(), "Authentication error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Authentication error", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -213,16 +218,16 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Invoice-${bill.number}.pdf")
 
-            val downloadManager = requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val downloadId = downloadManager.enqueue(request)
 
             if (openAfterDownload) {
                 downloadIdsToOpen.add(downloadId)
             }
 
-            Toast.makeText(requireContext(), "Download started...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Download started...", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Failed to start download: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Failed to start download: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -234,7 +239,7 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "No PDF viewer found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "No PDF viewer found", Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Update Balance"
-                android:textSize="20sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:textColor="@color/textColorPrimary"/>
 
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Customer:"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textColor="@color/textColorSecondary"
             android:layout_marginTop="8dp"/>
 
@@ -56,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Admin"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/textColorPrimary"
             android:layout_marginBottom="12dp"/>
@@ -66,7 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Current Balance:"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textColor="@color/textColorSecondary"/>
 
         <TextView
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="₹ 0.00"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/textColorPrimary"
             android:layout_marginBottom="16dp"/>
@@ -84,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Update Amount (₹)"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textColor="@color/textColorSecondary"
             android:layout_marginBottom="4dp"/>
 
@@ -95,6 +95,7 @@
             android:background="@drawable/bg_edittext"
             android:padding="12dp"
             android:hint="Enter amount"
+            android:textSize="12sp"
             android:inputType="numberDecimal|numberSigned"
             android:textColor="@color/textColorPrimary"
             android:layout_marginBottom="24dp"/>
@@ -112,6 +113,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
+                android:textSize="12sp"
                 android:textColor="@color/gray500"
                 android:layout_marginEnd="8dp"/>
 
@@ -120,6 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Update"
+                android:textSize="12sp"
                 app:backgroundTint="@color/icon_blue"/>
 
         </LinearLayout>

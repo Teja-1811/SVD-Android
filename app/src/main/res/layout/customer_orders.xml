@@ -64,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Order Summary"
-                        android:textSize="18sp"
+                        android:textSize="13sp"
                         android:textStyle="bold"
                         android:textColor="@color/textColorPrimary"/>
 
@@ -91,7 +91,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Total:"
-                            android:textSize="18sp"
+                            android:textSize="13sp"
                             android:textStyle="bold"
                             android:textColor="@color/textColorPrimary"/>
 
@@ -100,7 +100,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="₹0.00"
-                            android:textSize="18sp"
+                            android:textSize="13sp"
                             android:textStyle="bold"
                             android:textColor="@color/textColorPrimary"/>
                     </LinearLayout>
@@ -112,7 +112,7 @@
                         android:layout_marginTop="16dp"
                         android:text="Place Order"
                         android:textAllCaps="false"
-                        android:textSize="16sp"
+                        android:textSize="13sp"
                         app:cornerRadius="16dp"
                         app:backgroundTint="@color/icon_green"/>
                 </LinearLayout>

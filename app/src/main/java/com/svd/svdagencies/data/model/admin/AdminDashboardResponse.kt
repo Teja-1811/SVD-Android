@@ -1,5 +1,8 @@
 package com.svd.svdagencies.data.model.admin
 
+import androidx.annotation.Keep
+
+@Keep
 data class AdminDashboardResponse(
     val customers: Int? = 0,
     val items: Int? = 0,
@@ -10,6 +13,7 @@ data class AdminDashboardResponse(
     val customers_no_orders_today_list: List<NoOrderCustomer>? = emptyList()
 )
 
+@Keep
 data class NoOrderCustomer(
     val id: Int? = 0,
     val name: String? = "",
