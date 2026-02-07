@@ -1,9 +1,11 @@
 package com.svd.svdagencies.ui.customer.fragment
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -102,14 +104,8 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         var total = 0.0
 
         viewModel.cartQuantities.forEach { (id, qty) ->
-
             val product = viewModel.allProducts[id] ?: return@forEach
-
-            val pcsCount = product.pcs_count ?: 1
-
-            val totalPieces = qty * pcsCount
-
-            total += totalPieces * product.selling_price
+            total += product.calculateTotal(qty)
         }
 
         tvTotalAmount.text = currency.format(total)
@@ -199,6 +195,13 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                     val chip = Chip(context).apply {
                         text = category.name
                         isCheckable = true
+                        
+                        // Set colors for selected/unselected states
+                        chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.chip_background_color)
+                        setTextColor(ContextCompat.getColorStateList(context, R.color.chip_text_color))
+                        chipStrokeColor = ContextCompat.getColorStateList(context, R.color.chip_unselected_border)
+                        chipStrokeWidth = 1f
+
                         setOnClickListener { loadProducts(category.id) }
                     }
 

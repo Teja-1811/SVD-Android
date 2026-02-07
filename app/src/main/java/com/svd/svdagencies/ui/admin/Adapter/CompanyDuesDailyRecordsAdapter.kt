@@ -26,9 +26,14 @@ class CompanyDuesDailyRecordsAdapter(
     }
 
     override fun getItemCount(): Int = records.size
-    
+
     fun getRecords(): List<AdminSummaryItem> {
         return records
+    }
+
+    fun updateRecords(newRecords: List<AdminSummaryItem>) {
+        records = newRecords
+        notifyDataSetChanged()
     }
 
     inner class DailyRecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -36,43 +41,51 @@ class CompanyDuesDailyRecordsAdapter(
         private val etInvoice: EditText = itemView.findViewById(R.id.etInvoice)
         private val etPaid: EditText = itemView.findViewById(R.id.etPaid)
 
+        private var invoiceWatcher: TextWatcher? = null
+        private var paidWatcher: TextWatcher? = null
+
         fun bind(record: AdminSummaryItem) {
             tvDay.text = record.date
-            
-            // Clear previous listeners to avoid feedback loops
-            etInvoice.setOnFocusChangeListener(null)
-            etPaid.setOnFocusChangeListener(null)
 
-            if (record.invoice_amount != 0.0) {
-                 etInvoice.setText(String.format("%.2f", record.invoice_amount))
-            } else {
-                 etInvoice.setText("")
+            etInvoice.clearFocus()
+            etPaid.clearFocus()
+
+            // Remove listeners before setting text to avoid triggering them
+            etInvoice.removeTextChangedListener(invoiceWatcher)
+            etPaid.removeTextChangedListener(paidWatcher)
+
+            val invoiceText = if (record.invoice_amount != 0.0) String.format("%.2f", record.invoice_amount) else ""
+            if (etInvoice.text.toString() != invoiceText) {
+                etInvoice.setText(invoiceText)
             }
 
-            if (record.paid_amount != 0.0) {
-                 etPaid.setText(String.format("%.2f", record.paid_amount))
-            } else {
-                 etPaid.setText("")
+            val paidText = if (record.paid_amount != 0.0) String.format("%.2f", record.paid_amount) else ""
+            if (etPaid.text.toString() != paidText) {
+                etPaid.setText(paidText)
             }
 
-            // Simple text watchers to update model
-            etInvoice.addTextChangedListener(object : TextWatcher {
+            invoiceWatcher = object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
-                    val amount = s.toString().toDoubleOrNull() ?: 0.0
-                    record.invoice_amount = amount
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        records[adapterPosition].invoice_amount = s.toString().toDoubleOrNull() ?: 0.0
+                    }
                 }
-            })
+            }
 
-            etPaid.addTextChangedListener(object : TextWatcher {
+            paidWatcher = object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
-                    val amount = s.toString().toDoubleOrNull() ?: 0.0
-                    record.paid_amount = amount
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        records[adapterPosition].paid_amount = s.toString().toDoubleOrNull() ?: 0.0
+                    }
                 }
-            })
+            }
+
+            etInvoice.addTextChangedListener(invoiceWatcher)
+            etPaid.addTextChangedListener(paidWatcher)
         }
     }
 }

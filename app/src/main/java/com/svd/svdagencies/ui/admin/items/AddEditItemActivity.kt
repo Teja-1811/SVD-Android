@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.bumptech.glide.Glide
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.model.admin.Company
 import com.svd.svdagencies.data.model.admin.Items.AdminItem
 import com.svd.svdagencies.databinding.AdminItemAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
@@ -33,6 +34,8 @@ class AddEditItemActivity : AdminBaseActivity() {
     private var itemToUpdate: AdminItem? = null
     private var selectedImageUri: Uri? = null
     private lateinit var categoryAdapter: ArrayAdapter<String>
+    private lateinit var companyAdapter: ArrayAdapter<String>
+    private var companies: List<Company> = emptyList()
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -57,27 +60,52 @@ class AddEditItemActivity : AdminBaseActivity() {
             intent.getParcelableExtra("ITEM_TO_UPDATE")
         }
 
-        // Setup Spinners first so adapter is ready
         setupSpinners()
 
         if (itemToUpdate != null) {
             setupAdminLayout("Edit Item")
             binding.btnAddItem.text = "Update Item"
-            populateFields(itemToUpdate!!)
         } else {
             setupAdminLayout("Add Item")
             binding.btnAddItem.text = "Add Item"
         }
 
+        loadCompanies()
         setupListeners()
     }
 
     private fun setupSpinners() {
-        // Hardcoded categories for now, ideally fetch from API
         val categories = listOf("Milk", "Curd", "Butter Milk", "Paneer", "Other")
         categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCategory.adapter = categoryAdapter
+    }
+
+    private fun loadCompanies() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = ApiClient.adminCompaniesApi.getCompanies()
+                companies = response.companies
+                val companyNames = companies.map { it.name }
+
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) {
+                        companyAdapter = ArrayAdapter(this@AddEditItemActivity, android.R.layout.simple_spinner_item, companyNames)
+                        companyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        binding.spinnerCompany.adapter = companyAdapter
+
+                        // If editing, set the correct company selection
+                        itemToUpdate?.let { populateFields(it) }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) {
+                        Toast.makeText(this@AddEditItemActivity, "Failed to load companies", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun populateFields(item: AdminItem) {
@@ -89,18 +117,18 @@ class AddEditItemActivity : AdminBaseActivity() {
         binding.etStock.setText(item.stock_quantity?.toString())
         binding.etPcs.setText(item.pcs_count?.toString())
 
-        // Set Category Spinner Selection
-        val position = categoryAdapter.getPosition(item.category)
-        if (position >= 0) binding.spinnerCategory.setSelection(position)
+        // Set Category Selection
+        val catPos = categoryAdapter.getPosition(item.category)
+        if (catPos >= 0) binding.spinnerCategory.setSelection(catPos)
+
+        // Set Company Selection
+        val companyIndex = companies.indexOfFirst { it.name == item.company }
+        if (companyIndex >= 0) binding.spinnerCompany.setSelection(companyIndex)
 
         // Load Image
         if (!item.image.isNullOrEmpty()) {
             val base = ApiClient.BASE_URL.removeSuffix("/")
-            val fullUrl = if (item.image.startsWith("http")) {
-                item.image
-            } else {
-                if (item.image.startsWith("/")) "$base${item.image}" else "$base/${item.image}"
-            }
+            val fullUrl = if (item.image.startsWith("http")) item.image else "$base/${item.image.removePrefix("/")}"
             Glide.with(this).load(fullUrl).into(binding.imgItemPreview)
             binding.btnRemoveImage.visibility = View.VISIBLE
         }
@@ -118,27 +146,26 @@ class AddEditItemActivity : AdminBaseActivity() {
             binding.btnRemoveImage.visibility = View.GONE
         }
 
-        binding.btnAddItem.setOnClickListener {
-            saveItem()
-        }
-
-        binding.btnCancel.setOnClickListener {
-            finish()
-        }
+        binding.btnAddItem.setOnClickListener { saveItem() }
+        binding.btnCancel.setOnClickListener { finish() }
     }
 
     private fun saveItem() {
         val name = binding.etItemName.text.toString().trim()
         val code = binding.etItemCode.text.toString().trim()
-        val category = binding.spinnerCategory.selectedItem.toString()
+        val category = binding.spinnerCategory.selectedItem?.toString() ?: ""
         val buyingPrice = binding.etBuyingPrice.text.toString().trim()
         val sellingPrice = binding.etSellingPrice.text.toString().trim()
         val mrp = binding.etMrp.text.toString().trim()
         val stock = binding.etStock.text.toString().trim()
         val pcs = binding.etPcs.text.toString().trim()
 
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show()
+        // Get selected company ID
+        val companyIndex = binding.spinnerCompany.selectedItemPosition
+        val companyId = if (companyIndex >= 0) companies[companyIndex].id.toString() else ""
+
+        if (name.isEmpty() || companyId.isEmpty()) {
+            Toast.makeText(this, "Name and Company are required", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -147,7 +174,6 @@ class AddEditItemActivity : AdminBaseActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Prepare RequestBody parts
                 val namePart = name.toRequestBody("text/plain".toMediaTypeOrNull())
                 val codePart = code.toRequestBody("text/plain".toMediaTypeOrNull())
                 val categoryPart = category.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -156,36 +182,24 @@ class AddEditItemActivity : AdminBaseActivity() {
                 val mrpPart = mrp.toRequestBody("text/plain".toMediaTypeOrNull())
                 val stockPart = stock.toRequestBody("text/plain".toMediaTypeOrNull())
                 val pcsPart = pcs.toRequestBody("text/plain".toMediaTypeOrNull())
-                val companyPart = "1".toRequestBody("text/plain".toMediaTypeOrNull())
+                val companyPart = companyId.toRequestBody("text/plain".toMediaTypeOrNull())
 
                 var imagePart: MultipartBody.Part? = null
                 selectedImageUri?.let { uri ->
-                    val file = getFileFromUri(uri)
-                    if (file != null) {
+                    getFileFromUri(uri)?.let { file ->
                         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
                         imagePart = MultipartBody.Part.createFormData("image", file.name, requestFile)
                     }
                 }
 
-                val response = if (itemToUpdate == null) {
-                    ApiClient.adminItemsApi.addItem(
-                        code = codePart, name = namePart, companyId = companyPart, category = categoryPart,
-                        sellingPrice = sellingPart, buyingPrice = buyingPart, mrp = mrpPart,
-                        stockQuantity = stockPart, pcsCount = pcsPart, image = imagePart
-                    )
+                if (itemToUpdate == null) {
+                    ApiClient.adminItemsApi.addItem(codePart, namePart, companyPart, categoryPart, sellingPart, buyingPart, mrpPart, stockPart, pcsPart, imagePart)
                 } else {
-                    ApiClient.adminItemsApi.editItem(
-                        id = itemToUpdate!!.id,
-                        code = codePart, name = namePart, companyId = companyPart, category = categoryPart,
-                        sellingPrice = sellingPart, buyingPrice = buyingPart, mrp = mrpPart,
-                        stockQuantity = stockPart, pcsCount = pcsPart, image = imagePart
-                    )
+                    ApiClient.adminItemsApi.editItem(itemToUpdate!!.id, codePart, namePart, companyPart, categoryPart, sellingPart, buyingPart, mrpPart, stockPart, pcsPart, imagePart)
                 }
 
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        binding.btnAddItem.isEnabled = true
-                        binding.progressBar.visibility = View.GONE
                         Toast.makeText(this@AddEditItemActivity, "Saved successfully", Toast.LENGTH_SHORT).show()
                         setResult(Activity.RESULT_OK)
                         finish()
@@ -213,7 +227,6 @@ class AddEditItemActivity : AdminBaseActivity() {
             outputStream.close()
             file
         } catch (e: Exception) {
-            e.printStackTrace()
             null
         }
     }

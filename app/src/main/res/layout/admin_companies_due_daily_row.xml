@@ -39,9 +39,12 @@
             android:textSize="12sp"
             android:gravity="center"
             android:background="@android:color/transparent"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:saveEnabled="false"
+            android:importantForAutofill="no"
+            android:imeOptions="actionNext"
+            android:nextFocusRight="@id/etPaid"/>
 
-        <!-- Paid (Right) -->
         <EditText
             android:id="@+id/etPaid"
             android:layout_width="0dp"
@@ -53,7 +56,11 @@
             android:textSize="12sp"
             android:gravity="center"
             android:background="@android:color/transparent"
-            android:padding="8dp"/>
+            android:padding="8dp"
+            android:saveEnabled="false"
+            android:importantForAutofill="no"
+            android:imeOptions="actionDone"/>
+
 
     </LinearLayout>
 

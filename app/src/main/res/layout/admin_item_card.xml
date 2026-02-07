@@ -4,69 +4,73 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
+    android:layout_marginBottom="12dp"
     android:layout_marginTop="4dp"
     android:layout_marginStart="4dp"
     android:layout_marginEnd="4dp"
-    app:cardCornerRadius="16dp"
+    app:cardCornerRadius="12dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#80BDBDBD"
-    app:cardElevation="2dp">
+    app:strokeColor="#E0E0E0"
+    app:cardElevation="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="12dp">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="130dp">
 
-            <!-- Company Logo (Top Left) -->
+            <!-- Company Logo -->
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                app:cardCornerRadius="30dp"
-                app:cardElevation="4dp"
-                android:layout_gravity="start|top">
-                
+                android:id="@+id/cardCompanyLogo"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="2dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
+
                 <ImageView
                     android:id="@+id/imgCompanyLogo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_milk_placeholder"
-                    android:padding="8dp"
-                    android:scaleType="fitCenter"/>
+                    android:padding="6dp"
+                    android:scaleType="fitCenter"
+                    android:background="@color/white"/>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Product Image (Center) -->
+            <!-- Product Image -->
             <ImageView
                 android:id="@+id/imgProduct"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_milk_placeholder" 
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_milk_placeholder"
                 android:scaleType="fitCenter"/>
 
-            <!-- Stock Badge (Top Right) -->
+            <!-- Stock Badge -->
             <TextView
                 android:id="@+id/tvStock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
                 android:text="57 in stock"
                 android:background="@drawable/bg_status_active"
                 android:backgroundTint="#4CAF50"
                 android:textColor="@color/white"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:textSize="11sp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:textSize="10sp"
                 android:textStyle="bold"/>
 
-        </FrameLayout>
+        </RelativeLayout>
 
         <!-- Product Name -->
         <TextView
@@ -74,230 +78,218 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Full Cream Milk 120 ML"
-            android:textSize="13sp"
+            android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="8dp"/>
 
-        <!-- Code & Company -->
-        <LinearLayout
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F5F5F5"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Details Grid -->
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:columnCount="2">
 
+            <!-- Code -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_columnWeight="1"
                 android:orientation="vertical">
-                
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Code"
-                    android:textSize="11sp"
+                    android:textSize="9sp"
                     android:textColor="@color/gray500"/>
-                
                 <TextView
                     android:id="@+id/tvCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="FCM120"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
             </LinearLayout>
 
+            <!-- Company -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
                 android:orientation="vertical"
                 android:gravity="end">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Company"
-                    android:textSize="11sp"
+                    android:textSize="9sp"
                     android:textColor="@color/gray500"/>
-
                 <TextView
                     android:id="@+id/tvCompany"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dodla"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
             </LinearLayout>
-        </LinearLayout>
-        
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E0E0E0"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
 
-        <!-- Buying & Selling -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            <!-- Buying -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:layout_marginTop="6dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Buying"
-                    android:textSize="11sp"
+                    android:textSize="9sp"
                     android:textColor="@color/gray500"/>
-
                 <TextView
                     android:id="@+id/tvBuyingPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹8.16"
                     android:textColor="#2196F3"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"/>
             </LinearLayout>
 
+            <!-- Selling -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
                 android:orientation="vertical"
-                android:gravity="end">
-
+                android:gravity="end"
+                android:layout_marginTop="6dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Selling"
-                    android:textSize="11sp"
+                    android:textSize="9sp"
                     android:textColor="@color/gray500"/>
-
                 <TextView
                     android:id="@+id/tvSellingPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹9.00"
                     android:textColor="#4CAF50"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"/>
             </LinearLayout>
-        </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E0E0E0"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- MRP & Margin -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            <!-- MRP -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:layout_marginTop="6dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="MRP"
-                    android:textSize="11sp"
+                    android:textSize="9sp"
                     android:textColor="@color/gray500"/>
-
                 <TextView
                     android:id="@+id/tvMrp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹10.00"
                     android:textColor="#C2185B"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"/>
             </LinearLayout>
 
+            <!-- Margin -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
                 android:orientation="vertical"
-                android:gravity="end">
-
+                android:gravity="end"
+                android:layout_marginTop="6dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Margin"
-                    android:textSize="11sp"
+                    android:textSize="9sp"
                     android:textColor="@color/gray500"/>
-
                 <TextView
                     android:id="@+id/tvMargin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹0.84"
                     android:textColor="#0097A7"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"/>
             </LinearLayout>
-        </LinearLayout>
 
-        <!-- Buttons -->
+        </GridLayout>
+
+        <!-- ======= UPDATED BUTTONS (More Intuitive) ======= -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:weightSum="2">
 
-            <!-- Edit Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnEdit"
+                android:id="@+id/btnUpdate"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_weight="1"
-                android:text="Edit"
+                android:text="Update"
                 android:textSize="11sp"
-                android:textColor="#4CAF50"
-                app:backgroundTint="#E8F5E9"
-                app:strokeColor="#4CAF50"
-                app:strokeWidth="1dp"
-                app:cornerRadius="8dp"
-                android:layout_marginEnd="8dp"
+                android:textAllCaps="false"
+                android:textColor="#2E7D32"
+                app:strokeColor="#2E7D32"
+                app:cornerRadius="6dp"
+                android:layout_marginEnd="4dp"
                 app:icon="@drawable/ic_edit"
-                app:iconTint="#4CAF50"
+                app:iconSize="14dp"
+                app:iconTint="#2E7D32"
                 app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                android:gravity="center"
+                android:padding="6dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"/>
 
-            <!-- Freeze Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnFreeze"
+                android:id="@+id/btnStatus"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_weight="1"
-                android:text="Freeze"
-                android:textSize="11sp"
-                android:textColor="#F44336"
-                app:backgroundTint="#FFEBEE"
-                app:strokeColor="#F44336"
-                app:strokeWidth="1dp"
-                app:cornerRadius="8dp"
-                android:layout_marginStart="8dp"
-                app:icon="@drawable/ic_snowflake"
-                app:iconTint="#F44336"
+                android:text="Deactivate"
+                android:textSize="10sp"
+                android:textAllCaps="false"
+                android:textColor="#D32F2F"
+                app:strokeColor="#D32F2F"
+                app:cornerRadius="6dp"
+                android:layout_marginStart="4dp"
+                app:icon="@drawable/ic_lock"
+                app:iconSize="14dp"
+                app:iconTint="#D32F2F"
                 app:iconGravity="textStart"
+                app:iconPadding="4dp"
+                android:gravity="center"
+                android:padding="6dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"/>
 

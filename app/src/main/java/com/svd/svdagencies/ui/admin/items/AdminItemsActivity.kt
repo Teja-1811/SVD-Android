@@ -2,15 +2,24 @@ package com.svd.svdagencies.ui.admin.items
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.model.admin.Items.AdminItem
 import com.svd.svdagencies.ui.admin.adapter.AdminItemAdapter
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.CoroutineScope
@@ -22,12 +31,21 @@ class AdminItemsActivity : AdminBaseActivity() {
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var rvItems: RecyclerView
+    private lateinit var rvCompanyFilter: RecyclerView
+    private lateinit var rvCategoryFilter: RecyclerView
     private lateinit var etSearchItems: EditText
-    private lateinit var btnAddItem: MaterialCardView
-    private lateinit var tabLayoutCategories: TabLayout
-    private lateinit var adapter: AdminItemAdapter
+    private lateinit var btnAddItem: FloatingActionButton
+    private lateinit var btnResetFilter: MaterialCardView
+    private lateinit var tvCategoryTitle: TextView
+    private lateinit var itemAdapter: AdminItemAdapter
+    private lateinit var companyAdapter: CompanyFilterAdapter
+    private lateinit var categoryAdapter: CategoryFilterAdapter
 
-    private var currentCategory: String = "Milk" // Default category
+    private var allItems: List<AdminItem> = emptyList()
+    private var currentCategory: String = "Milk"
+    private var selectedCompany: String? = null
+
+    private val categoryOrder = listOf("milk", "curd", "buckets", "cups", "ghee", "flavoured milk", "panner", "sweets", "others")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,27 +55,45 @@ class AdminItemsActivity : AdminBaseActivity() {
 
         swipeRefresh = findViewById(R.id.swipeRefresh)
         rvItems = findViewById(R.id.rvItems)
+        rvCompanyFilter = findViewById(R.id.rvCompanyFilter)
+        rvCategoryFilter = findViewById(R.id.rvCategoryFilter)
         etSearchItems = findViewById(R.id.etSearchItems)
         btnAddItem = findViewById(R.id.btnAddItem)
-        tabLayoutCategories = findViewById(R.id.tabLayoutCategories)
+        btnResetFilter = findViewById(R.id.btnResetFilter)
+        tvCategoryTitle = findViewById(R.id.tvCategoryTitle)
 
-        setupRecycler()
+        setupRecyclers()
         setupListeners()
-        loadCategories() // Load categories first, which will trigger loadItems
+        loadInitialData()
     }
 
-    private fun setupRecycler() {
-        adapter = AdminItemAdapter(
+    private fun setupRecyclers() {
+        itemAdapter = AdminItemAdapter(
             emptyList(),
             onEditClick = { item -> 
                 val intent = Intent(this, AddEditItemActivity::class.java)
                 intent.putExtra("ITEM_TO_UPDATE", item)
                 startActivity(intent)
             },
-            onFreezeClick = { item -> showToast("Freeze Item: ${item.name} (Coming soon)") }
+            onFreezeClick = { item -> showToast("Freeze Item: ${item.name}") }
         )
         rvItems.layoutManager = LinearLayoutManager(this)
-        rvItems.adapter = adapter
+        rvItems.adapter = itemAdapter
+
+        companyAdapter = CompanyFilterAdapter { company ->
+            selectedCompany = company
+            applyFilters()
+        }
+        rvCompanyFilter.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rvCompanyFilter.adapter = companyAdapter
+
+        categoryAdapter = CategoryFilterAdapter { category ->
+            currentCategory = category
+            tvCategoryTitle.text = category
+            loadItems(category)
+        }
+        rvCategoryFilter.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rvCategoryFilter.adapter = categoryAdapter
     }
 
     private fun setupListeners() {
@@ -65,32 +101,55 @@ class AdminItemsActivity : AdminBaseActivity() {
             startActivity(Intent(this, AddEditItemActivity::class.java))
         }
 
-        tabLayoutCategories.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.text?.let { category ->
-                    currentCategory = category.toString()
-                    loadItems(currentCategory)
-                }
-            }
+        btnResetFilter.setOnClickListener {
+            selectedCompany = null
+            companyAdapter.clearSelection()
+            etSearchItems.text.clear()
+            applyFilters()
+        }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        swipeRefresh.setOnRefreshListener {
+            loadItems(currentCategory)
+        }
+
+        etSearchItems.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                applyFilters()
+            }
+            override fun afterTextChanged(s: Editable?) {}
         })
     }
 
-    private fun loadCategories() {
+    private fun loadInitialData() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                // Fetch all companies globally
+                val companiesResponse = ApiClient.adminCompaniesApi.getCompanies()
+                val companyDataList = companiesResponse.companies.map { CompanyData(it.name, it.logo) }
+                
+                // Fetch and sort categories
                 val categories = ApiClient.adminItemsApi.getCategories()
+                val sortedCategories = sortCategories(categories)
+
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        setupTabs(categories)
+                        companyAdapter.submitList(companyDataList)
+                        categoryAdapter.submitList(sortedCategories)
+                        
+                        val milkIndex = sortedCategories.indexOfFirst { it.equals("Milk", ignoreCase = true) }
+                        if (milkIndex != -1) {
+                            categoryAdapter.setSelection(milkIndex)
+                            currentCategory = sortedCategories[milkIndex]
+                            tvCategoryTitle.text = currentCategory
+                        }
+                        loadItems(currentCategory)
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        showToast("Failed to load categories: ${e.message}")
+                        showToast("Failed to load filters")
                         loadItems(currentCategory)
                     }
                 }
@@ -98,47 +157,173 @@ class AdminItemsActivity : AdminBaseActivity() {
         }
     }
 
-    private fun setupTabs(categories: List<String>) {
-        tabLayoutCategories.removeAllTabs()
-        
-        for (category in categories) {
-            val tab = tabLayoutCategories.newTab().setText(category)
-            tabLayoutCategories.addTab(tab)
-            
-            if (category.equals("Milk", ignoreCase = true)) {
-                tab.select()
-            }
-        }
-
-        if (tabLayoutCategories.tabCount > 0 && tabLayoutCategories.selectedTabPosition == -1) {
-             tabLayoutCategories.getTabAt(0)?.select()
+    private fun sortCategories(categories: List<String>): List<String> {
+        return categories.sortedBy { cat ->
+            val index = categoryOrder.indexOf(cat.lowercase())
+            if (index != -1) index else Int.MAX_VALUE
         }
     }
 
-    private fun loadItems(category: String = currentCategory) {
+    private fun loadItems(category: String) {
         swipeRefresh.isRefreshing = true
-        
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val items = ApiClient.adminItemsApi.getItemsByCategory(category)
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         swipeRefresh.isRefreshing = false
-                        adapter.updateList(items)
+                        allItems = items
+                        applyFilters()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         swipeRefresh.isRefreshing = false
-                        showToast("Error loading items: ${e.message}")
+                        showToast("Error loading items")
                     }
                 }
             }
         }
     }
 
+    private fun applyFilters() {
+        val searchQuery = etSearchItems.text.toString().trim()
+        var filteredList = allItems
+
+        if (selectedCompany != null) {
+            filteredList = filteredList.filter { it.company == selectedCompany }
+        }
+
+        if (searchQuery.isNotEmpty()) {
+            filteredList = filteredList.filter { 
+                it.name.contains(searchQuery, ignoreCase = true) || 
+                it.code?.contains(searchQuery, ignoreCase = true) == true
+            }
+        }
+        itemAdapter.updateList(filteredList)
+    }
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    data class CompanyData(val name: String, val logo: String?)
+
+    inner class CompanyFilterAdapter(private val onCompanySelected: (String) -> Unit) : 
+        RecyclerView.Adapter<CompanyFilterAdapter.ViewHolder>() {
+
+        private var companies: List<CompanyData> = emptyList()
+        private var selectedPosition: Int = -1
+
+        fun submitList(list: List<CompanyData>) {
+            companies = list
+            notifyDataSetChanged()
+        }
+
+        fun clearSelection() {
+            selectedPosition = -1
+            notifyDataSetChanged()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.admin_company_filter_item, parent, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val company = companies[position]
+            holder.bind(company, position == selectedPosition)
+            
+            holder.itemView.setOnClickListener {
+                if (selectedPosition == holder.adapterPosition) {
+                    selectedPosition = -1
+                    onCompanySelected("") // Deselect
+                } else {
+                    val prev = selectedPosition
+                    selectedPosition = holder.adapterPosition
+                    notifyItemChanged(prev)
+                    onCompanySelected(company.name)
+                }
+                notifyItemChanged(selectedPosition)
+            }
+        }
+
+        override fun getItemCount() = companies.size
+
+        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val imgLogo: ImageView = itemView.findViewById(R.id.imgCompanyLogo)
+            private val card: MaterialCardView = itemView.findViewById(R.id.cardCompany)
+
+            fun bind(company: CompanyData, isSelected: Boolean) {
+                val logoUrl = company.logo
+                val fullUrl = if (logoUrl.isNullOrEmpty()) "" else if (logoUrl.startsWith("http")) logoUrl else "${ApiClient.BASE_URL.removeSuffix("/")}/${logoUrl.removePrefix("/")}"
+                
+                Glide.with(itemView.context)
+                    .load(fullUrl)
+                    .placeholder(R.drawable.ic_milk_placeholder)
+                    .into(imgLogo)
+
+                card.strokeColor = if (isSelected) 0xFFD32F2F.toInt() else 0xFFE0E0E0.toInt()
+                card.strokeWidth = if (isSelected) 6 else 2
+            }
+        }
+    }
+
+    inner class CategoryFilterAdapter(private val onCategorySelected: (String) -> Unit) : 
+        RecyclerView.Adapter<CategoryFilterAdapter.ViewHolder>() {
+
+        private var categories: List<String> = emptyList()
+        private var selectedPosition: Int = -1
+
+        fun submitList(list: List<String>) {
+            categories = list
+            notifyDataSetChanged()
+        }
+
+        fun setSelection(position: Int) {
+            selectedPosition = position
+            notifyDataSetChanged()
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.admin_category_filter_item, parent, false)
+            return ViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val category = categories[position]
+            holder.bind(category, position == selectedPosition)
+            
+            holder.itemView.setOnClickListener {
+                if (selectedPosition != holder.adapterPosition) {
+                    val prev = selectedPosition
+                    selectedPosition = holder.adapterPosition
+                    notifyItemChanged(prev)
+                    notifyItemChanged(selectedPosition)
+                    onCategorySelected(category)
+                }
+            }
+        }
+
+        override fun getItemCount() = categories.size
+
+        inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val tvName: TextView = itemView.findViewById(R.id.tvCategoryName)
+            private val card: MaterialCardView = itemView.findViewById(R.id.cardCategory)
+
+            fun bind(category: String, isSelected: Boolean) {
+                tvName.text = category
+                if (isSelected) {
+                    card.setCardBackgroundColor(0xFFD32F2F.toInt())
+                    tvName.setTextColor(0xFFFFFFFF.toInt())
+                    card.strokeWidth = 0
+                } else {
+                    card.setCardBackgroundColor(0xFFFFFFFF.toInt())
+                    tvName.setTextColor(0xFF000000.toInt())
+                    card.strokeWidth = 2
+                }
+            }
+        }
     }
 }

@@ -12,7 +12,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:descendantFocusability="afterDescendants"
+        android:focusableInTouchMode="true">
 
         <!-- Header: Company Name & Due Summary -->
         <LinearLayout

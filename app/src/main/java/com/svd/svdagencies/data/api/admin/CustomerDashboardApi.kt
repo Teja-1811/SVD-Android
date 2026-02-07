@@ -5,9 +5,11 @@ import com.svd.svdagencies.data.model.admin.customerData.AddCustomerRequest
 import com.svd.svdagencies.data.model.admin.customerData.AddCustomerResponse
 import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.admin.customerData.CustomerDetail
+import com.svd.svdagencies.data.model.admin.customerData.MonthlySummaryResponse
 import com.svd.svdagencies.data.model.admin.customerData.ToggleFreezeResponse
 import com.svd.svdagencies.data.model.admin.customerData.UpdateBalanceRequest
 import com.svd.svdagencies.data.model.admin.Orders.UpdateBalanceResponse
+import okhttp3.ResponseBody
 import retrofit2.http.*
 import retrofit2.Call
 
@@ -44,4 +46,17 @@ interface CustomerDashboardApi {
     suspend fun addOrUpdateCustomer(
         @Body request: AddCustomerRequest
     ): AddCustomerResponse
+
+    @GET("api/sales/monthly-summary/")
+    suspend fun getMonthlySalesSummary(
+        @Query("date") date: String,
+        @Query("customer_id") customerId: Int?
+    ): MonthlySummaryResponse
+
+    @GET("milk_agency/generate-monthly-sales-pdf/")
+    suspend fun downloadMonthlySalesPdf(
+        @Query("date") date: String,
+        @Query("customer") customerId: Int,
+        @Query("area") area: String = ""
+    ): ResponseBody
 }

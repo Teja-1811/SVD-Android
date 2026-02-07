@@ -1,6 +1,7 @@
 package com.svd.svdagencies.data.model.admin.Items
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -9,6 +10,8 @@ data class AdminItem(
     val code: String?,
     val name: String,
     val company: String?,
+    @SerializedName("company_logo")
+    val logo: String?,
     val category: String?,
     val selling_price: String?,
     val buying_price: String?,

@@ -109,6 +109,22 @@
                         android:inputType="textCapCharacters"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Company Spinner -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Company"
+                    android:textSize="11sp"
+                    android:textColor="@color/gray500"
+                    android:layout_marginBottom="4dp"/>
+
+                <Spinner
+                    android:id="@+id/spinnerCompany"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_edittext"
+                    android:layout_marginBottom="16dp"/>
+
                 <!-- Category Spinner -->
                 <TextView
                     android:layout_width="wrap_content"

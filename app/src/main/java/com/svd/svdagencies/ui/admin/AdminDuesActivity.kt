@@ -3,6 +3,7 @@ package com.svd.svdagencies.ui.admin
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -10,7 +11,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
@@ -54,6 +54,9 @@ class AdminDuesActivity : AdminBaseActivity() {
         rvSummary = findViewById(R.id.rvSummary)
         layoutIndicators = findViewById(R.id.layoutIndicators)
 
+        // Indicators are not needed for vertical view
+        layoutIndicators.visibility = View.GONE
+
         updateDateLabel()
         setupRecycler()
         setupListeners()
@@ -62,60 +65,14 @@ class AdminDuesActivity : AdminBaseActivity() {
 
     private fun setupRecycler() {
         adapter = CompanyPaymentsAdapter(emptyList())
-        rvSummary.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        // Change to Vertical Orientation
+        rvSummary.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rvSummary.adapter = adapter
         
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(rvSummary)
-
-        rvSummary.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val position = layoutManager.findFirstCompletelyVisibleItemPosition()
-                if (position != RecyclerView.NO_POSITION) {
-                    updateIndicators(position)
-                }
-            }
-        })
-    }
-
-    private fun setupIndicators(count: Int) {
-        layoutIndicators.removeAllViews()
-        if (count <= 1) return
-
-        val indicators = arrayOfNulls<ImageView>(count)
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(8, 0, 8, 0)
-
-        for (i in 0 until count) {
-            indicators[i] = ImageView(applicationContext)
-            indicators[i]?.apply {
-                setImageDrawable(ContextCompat.getDrawable(this@AdminDuesActivity, R.drawable.bg_red_dot))
-                alpha = 0.3f
-                layoutParams = params
-            }
-            layoutIndicators.addView(indicators[i])
-        }
-        updateIndicators(0)
-    }
-
-    private fun updateIndicators(position: Int) {
-        for (i in 0 until layoutIndicators.childCount) {
-            val view = layoutIndicators.getChildAt(i) as ImageView
-            if (i == position) {
-                view.alpha = 1.0f
-                view.scaleX = 1.2f
-                view.scaleY = 1.2f
-            } else {
-                view.alpha = 0.3f
-                view.scaleX = 1.0f
-                view.scaleY = 1.0f
-            }
-        }
+        // Prevent focus from jumping when items are recycled
+        rvSummary.descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
+        
+        // PagerSnapHelper removed as it's not needed for vertical list
     }
 
     private fun updateDateLabel() {
@@ -148,7 +105,6 @@ class AdminDuesActivity : AdminBaseActivity() {
                 
                 allCompanyPayments = response.payments
                 adapter.updateList(allCompanyPayments)
-                setupIndicators(allCompanyPayments.size)
 
             } catch (e: Exception) {
                 Toast.makeText(this@AdminDuesActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()

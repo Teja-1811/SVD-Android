@@ -20,6 +20,7 @@ import com.svd.svdagencies.ui.admin.bills.AdminBillsActivity
 import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
 import com.svd.svdagencies.ui.admin.stock.AdminStockActivity
 import com.svd.svdagencies.ui.admin.cashbook.AdminCashBookActivity
+import com.svd.svdagencies.ui.admin.companies.AdminCompaniesActivity
 
 abstract class AdminBaseActivity : AppCompatActivity() {
 
@@ -27,124 +28,118 @@ abstract class AdminBaseActivity : AppCompatActivity() {
 
     protected fun setupAdminLayout(title: String) {
         
-        // 1. Enable Edge-to-Edge: This allows the background to draw behind the status bar
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        drawerLayout = findViewById(R.id.drawerLayout)
+        val dl = findViewById<DrawerLayout>(R.id.drawerLayout)
+        if (dl != null) {
+            drawerLayout = dl
+        }
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.adminToolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        if (toolbar != null) {
+            setSupportActionBar(toolbar)
+            supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // 2. Handle Insets: Add top padding to the toolbar so content is not hidden by the status bar
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, insets ->
-            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(top = statusBarInsets.top)
-            insets
-        }
+            ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, insets ->
+                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+                view.updatePadding(top = statusBarInsets.top)
+                insets
+            }
 
-        val tvTitle = toolbar.findViewById<TextView>(R.id.tvToolbarTitle)
-        val btnMenu = toolbar.findViewById<ImageButton>(R.id.btnMenu)
-        val btnLogout = toolbar.findViewById<ImageButton>(R.id.btnLogout)
+            toolbar.findViewById<TextView>(R.id.tvToolbarTitle)?.text = title
 
-        tvTitle.text = title
+            toolbar.findViewById<ImageButton>(R.id.btnMenu)?.setOnClickListener {
+                if (::drawerLayout.isInitialized) {
+                    drawerLayout.openDrawer(GravityCompat.START)
+                }
+            }
 
-        // Open Drawer
-        btnMenu.setOnClickListener {
-            drawerLayout.openDrawer(GravityCompat.START)
-        }
-
-        // Logout
-        btnLogout.setOnClickListener {
-            SessionManager(this).logout()
-            startActivity(Intent(this, LoginActivity::class.java))
-            finishAffinity()
+            toolbar.findViewById<ImageButton>(R.id.btnLogout)?.setOnClickListener {
+                SessionManager(this).logout()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finishAffinity()
+            }
         }
 
         val navView = findViewById<NavigationView>(R.id.navigationView)
-
-        // ===== Drawer Header Close Button =====
-        val headerView = navView.getHeaderView(0)
-        val btnCloseDrawer = headerView.findViewById<ImageView>(R.id.btnCloseDrawer)
-
-        btnCloseDrawer.setOnClickListener {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
-        
-        // Handle insets for Navigation Drawer as well
-        ViewCompat.setOnApplyWindowInsetsListener(navView) { view, insets ->
-            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            view.updatePadding(top = statusBarInsets.top)
-            insets
-        }
-
-        // ===== Drawer Menu Clicks =====
-        navView.setNavigationItemSelectedListener { item ->
-            drawerLayout.closeDrawer(GravityCompat.START)
-
-            when (item.itemId) {
-
-                R.id.nav_home -> {
-                    if (this !is AdminDashboardActivity) {
-                        startActivity(Intent(this, AdminDashboardActivity::class.java))
+        if (navView != null) {
+            // Safe header access
+            if (navView.headerCount > 0) {
+                val headerView = navView.getHeaderView(0)
+                headerView?.findViewById<ImageView>(R.id.btnCloseDrawer)?.setOnClickListener {
+                    if (::drawerLayout.isInitialized) {
+                        drawerLayout.closeDrawer(GravityCompat.START)
                     }
-                    true
+                }
+            }
+            
+            ViewCompat.setOnApplyWindowInsetsListener(navView) { view, insets ->
+                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+                view.updatePadding(top = statusBarInsets.top)
+                insets
+            }
+
+            navView.setNavigationItemSelectedListener { item ->
+                if (::drawerLayout.isInitialized) {
+                    drawerLayout.closeDrawer(GravityCompat.START)
                 }
 
-                R.id.nav_customers -> {
-                    startActivity(Intent(this, CustomersData::class.java))
-                    true
-                }
-                R.id.nav_bills -> {
-                    if (this !is AdminBillsActivity) {
-                        startActivity(Intent(this, AdminBillsActivity::class.java))
+                when (item.itemId) {
+                    R.id.nav_home -> {
+                        if (this !is AdminDashboardActivity) {
+                            startActivity(Intent(this, AdminDashboardActivity::class.java))
+                        }
+                        true
                     }
-                    true
-                }
-                R.id.nav_orders -> {
-                    if (this !is AdminOrdersActivity) {
-                        startActivity(Intent(this, AdminOrdersActivity::class.java))
+                    R.id.nav_companies -> {
+                        if (this !is AdminCompaniesActivity) {
+                            startActivity(Intent(this, AdminCompaniesActivity::class.java))
+                        }
+                        true
                     }
-                    true
-                }
-                R.id.nav_items -> {
-                    if (this !is AdminItemsActivity) {
-                        startActivity(Intent(this, AdminItemsActivity::class.java))
+                    R.id.nav_customers -> {
+                        startActivity(Intent(this, CustomersData::class.java))
+                        true
                     }
-                    true
-                }
-                R.id.nav_stock -> {
-                    if (this !is AdminStockActivity) {
-                        startActivity(Intent(this, AdminStockActivity::class.java))
+                    R.id.nav_bills -> {
+                        if (this !is AdminBillsActivity) {
+                            startActivity(Intent(this, AdminBillsActivity::class.java))
+                        }
+                        true
                     }
-                    true
-                }
-                R.id.nav_dues -> {
-                    if (this !is AdminDuesActivity) {
-                        startActivity(Intent(this, AdminDuesActivity::class.java))
+                    R.id.nav_orders -> {
+                        if (this !is AdminOrdersActivity) {
+                            if (this is AdminBaseActivity) {
+                                // For activities not yet implemented or known
+                                // startActivity(Intent(this, AdminOrdersActivity::class.java))
+                            }
+                        }
+                        true
                     }
-                    true
-                }
-                R.id.nav_cashbook -> {
-                    if (this !is AdminCashBookActivity) {
-                         startActivity(Intent(this, AdminCashBookActivity::class.java))
+                    R.id.nav_items -> {
+                        if (this !is AdminItemsActivity) {
+                            startActivity(Intent(this, AdminItemsActivity::class.java))
+                        }
+                        true
                     }
-                    true
-                }
-                R.id.nav_monthly_summary -> {
-                    if (this !is AdminMonthlySummary) {
-                        startActivity(Intent(this, AdminMonthlySummary::class.java))
+                    R.id.nav_stock -> {
+                        if (this !is AdminStockActivity) {
+                            startActivity(Intent(this, AdminStockActivity::class.java))
+                        }
+                        true
                     }
-                    true
-                }
-                R.id.nav_payments -> {
-                    if (this !is AdminPaymentsActivity) {
-                        startActivity(Intent(this, AdminPaymentsActivity::class.java))
+                    R.id.nav_cashbook -> {
+                        if (this !is AdminCashBookActivity) {
+                             startActivity(Intent(this, AdminCashBookActivity::class.java))
+                        }
+                        true
                     }
-                    true
+                    R.id.nav_monthly_summary -> {
+                        if (this !is AdminMonthlySummary) {
+                            startActivity(Intent(this, AdminMonthlySummary::class.java))
+                        }
+                        true
+                    }
+                    else -> false
                 }
-
-                else -> false
             }
         }
     }

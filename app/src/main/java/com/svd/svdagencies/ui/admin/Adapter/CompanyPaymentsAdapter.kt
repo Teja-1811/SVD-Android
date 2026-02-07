@@ -19,7 +19,7 @@ class CompanyPaymentsAdapter(
 
     fun updateList(newCompanies: List<CompanyPayment>) {
         companies = newCompanies
-        recordsAdapters.clear()
+        // We don't clear recordsAdapters here to maintain the state of input fields
         notifyDataSetChanged()
     }
 
@@ -83,12 +83,17 @@ class CompanyPaymentsAdapter(
         private val tvCompanyTotals: TextView = itemView.findViewById(R.id.tvCompanyTotals)
         private val rvDailyRecords: RecyclerView = itemView.findViewById(R.id.rvDailyRecords)
 
+        init {
+            rvDailyRecords.layoutManager = LinearLayoutManager(itemView.context)
+            // Crucial: Optimization to prevent focus issues in nested RecyclerViews
+            rvDailyRecords.setHasFixedSize(true)
+            rvDailyRecords.isNestedScrollingEnabled = false
+        }
+
         fun bind(company: CompanyPayment) {
             tvCompanyName.text = company.company_name
             tvCompanyTotals.text = "Invoice: ₹${company.total_invoice} | Paid: ₹${company.total_paid} | Due: ₹${company.remaining_due}"
 
-            rvDailyRecords.layoutManager = LinearLayoutManager(itemView.context)
-            
             var adapter = recordsAdapters[company.company_id]
             if (adapter == null) {
                 val summaryItems = convertDailyRecords(company.records)
@@ -96,7 +101,10 @@ class CompanyPaymentsAdapter(
                 recordsAdapters[company.company_id] = adapter
             }
             
-            rvDailyRecords.adapter = adapter
+            // Re-assign the adapter only if it's different to avoid resetting scroll position/focus
+            if (rvDailyRecords.adapter !== adapter) {
+                rvDailyRecords.adapter = adapter
+            }
         }
     }
 }

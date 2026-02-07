@@ -9,7 +9,7 @@ data class AdminOrder(
     val customer_name: String,
     val total_amount: Double,
     val items_count: Int,
-    val items: List<AdminOrderItem> = emptyList()
+    val items: List<AdminOrderItem>? = emptyList()
 )
 
 data class AdminOrderDetail(
@@ -18,7 +18,7 @@ data class AdminOrderDetail(
     val customer_name: String,
     val status: String,
     val total_amount: Double,
-    val items: List<AdminOrderItem>
+    val items: List<AdminOrderItem>?
 )
 
 data class AdminOrderItem(
@@ -29,5 +29,6 @@ data class AdminOrderItem(
     val requested_quantity: Int,
     val discount_per_qty: Double,
     val discount_total: Double,
-    val requested_total: Double
+    val requested_total: Double,
+    val available_quantity: Int = 0
 )

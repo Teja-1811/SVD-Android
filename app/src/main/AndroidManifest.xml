@@ -38,6 +38,7 @@
         <activity android:name=".ui.admin.bills.AdminBillDetailActivity"/>
         <activity android:name=".ui.admin.AdminOrdersActivity"/>
         <activity android:name=".ui.admin.items.AdminItemsActivity"/>
+        <activity android:name=".ui.admin.items.AddEditItemActivity"/>
         <activity android:name=".ui.admin.stock.AdminStockActivity"/>
         <activity android:name=".ui.admin.stock.AdminStockUpdateActivity"/>
         <activity android:name=".ui.admin.AdminDuesActivity"/>
@@ -46,9 +47,13 @@
         <activity android:name=".ui.admin.cashbook.ViewExpensesActivity"/>
         <activity android:name=".ui.admin.AdminPaymentsActivity"/>
         <activity android:name=".ui.admin.AdminMonthlySummary"/>
+        <activity android:name=".ui.admin.companies.AdminCompaniesActivity"/>
+        <activity android:name=".ui.admin.companies.AddEditCompanyActivity"/>
+        <activity android:name=".ui.admin.companies.CompanyCatalogActivity"/>
 
         <!-- Customer -->
         <activity android:name=".ui.customer.CustomerMainActivity"/>
+        <activity android:name=".ui.customer.fragment.CustomerCompanyCatalogActivity"/>
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>

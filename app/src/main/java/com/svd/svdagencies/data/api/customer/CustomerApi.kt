@@ -1,5 +1,6 @@
 package com.svd.svdagencies.data.api.customer
 
+import com.svd.svdagencies.data.model.admin.CompaniesListResponse
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.customer.GenericResponse
 import retrofit2.Call
@@ -18,5 +19,8 @@ interface CustomerApi {
     fun recordCustomerPayment(
         @Body body: Map<String, String>
     ): Call<GenericResponse>
+
+    @GET("api/companies/")
+    suspend fun getCompanies(): CompaniesListResponse
 
 }

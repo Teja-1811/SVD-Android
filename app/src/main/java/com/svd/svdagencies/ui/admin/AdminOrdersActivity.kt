@@ -110,16 +110,18 @@ class AdminOrdersActivity : AdminBaseActivity() {
 
             // Populate Items
             holder.layoutItems.removeAllViews()
-            order.items.forEach { item ->
+            order.items?.forEach { item ->
                 val row = LayoutInflater.from(holder.itemView.context)
                     .inflate(R.layout.admin_order_product, holder.layoutItems, false)
                 
                 row.findViewById<TextView>(R.id.tvItemName).text = item.item_name
                 val etQty = row.findViewById<EditText>(R.id.etQty)
                 val etDisc = row.findViewById<EditText>(R.id.etDisc)
+                val tvAQ = row.findViewById<TextView>(R.id.tvAQ)
                 
                 etQty.setText(item.requested_quantity.toString())
                 etDisc.setText(item.discount_per_qty.toString())
+                tvAQ.text = item.available_quantity.toString()
                 
                 holder.layoutItems.addView(row)
             }
@@ -140,7 +142,7 @@ class AdminOrdersActivity : AdminBaseActivity() {
             
             for (i in 0 until holder.layoutItems.childCount) {
                 val row = holder.layoutItems.getChildAt(i)
-                val item = order.items[i]
+                val item = order.items?.getOrNull(i) ?: continue
                 
                 val qty = row.findViewById<EditText>(R.id.etQty).text.toString().toIntOrNull() ?: 0
                 val disc = row.findViewById<EditText>(R.id.etDisc).text.toString().toDoubleOrNull() ?: 0.0

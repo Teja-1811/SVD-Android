@@ -17,8 +17,28 @@ data class ProductResponse(
     val calculateStep: Double
         get() = 1.0
 
+    /**
+     * Calculates the total price based on total pieces.
+     * @param quantity Total pieces.
+     */
     fun calculateTotal(quantity: Double): Double {
         return quantity * selling_price
+    }
+
+    /**
+     * Returns a formatted string showing crates and pieces.
+     * @param quantity Total pieces.
+     */
+    fun getCrateAndPcsDescription(quantity: Double): String {
+        val totalPieces = quantity.toInt()
+        val crates = totalPieces / pcs
+        val remainingPcs = totalPieces % pcs
+        
+        return when {
+            crates > 0 && remainingPcs > 0 -> "$crates crates, $remainingPcs pcs"
+            crates > 0 -> "$crates crates"
+            else -> "$totalPieces pcs"
+        }
     }
 
     fun formatQuantity(quantity: Double): String {

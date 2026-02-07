@@ -48,8 +48,8 @@ class AdminItemAdapter(
         private val tvMrp: TextView = itemView.findViewById(R.id.tvMrp)
         private val tvMargin: TextView = itemView.findViewById(R.id.tvMargin)
         private val tvStock: TextView = itemView.findViewById(R.id.tvStock)
-        private val btnEdit: MaterialButton = itemView.findViewById(R.id.btnEdit)
-        private val btnFreeze: MaterialButton = itemView.findViewById(R.id.btnFreeze)
+        private val btnUpdate: MaterialButton = itemView.findViewById(R.id.btnUpdate)
+        private val btnStatus: MaterialButton = itemView.findViewById(R.id.btnStatus)
         private val imgCompanyLogo: ImageView = itemView.findViewById(R.id.imgCompanyLogo)
         private val imgProduct: ImageView = itemView.findViewById(R.id.imgProduct)
 
@@ -62,6 +62,28 @@ class AdminItemAdapter(
             tvMrp.text = "₹%.2f".format(item.mrpValue)
             tvMargin.text = "₹%.2f".format(item.margin)
             tvStock.text = "${item.stock_quantity ?: 0} in stock"
+
+            // Loading company logo using Glide
+            val companyLogoUrl = item.logo
+            if (!companyLogoUrl.isNullOrEmpty()) {
+                val fullUrl = if (companyLogoUrl.startsWith("http")) {
+                    companyLogoUrl
+                } else {
+                    val baseUrl = ApiClient.BASE_URL.removeSuffix("/")
+                    if (companyLogoUrl.startsWith("/")) {
+                        "$baseUrl$companyLogoUrl"
+                    } else {
+                        "$baseUrl/$companyLogoUrl"
+                    }
+                }
+                Glide.with(itemView.context)
+                    .load(fullUrl)
+                    .placeholder(R.drawable.ic_milk_placeholder)
+                    .error(R.drawable.ic_milk_placeholder)
+                    .into(imgCompanyLogo)
+            } else {
+                imgCompanyLogo.setImageResource(R.drawable.ic_milk_placeholder)
+            }
 
             // Loading product image using Glide
             val imageUrl = item.image
@@ -87,8 +109,8 @@ class AdminItemAdapter(
                 imgProduct.setImageResource(R.drawable.ic_milk_placeholder)
             }
 
-            btnEdit.setOnClickListener { onEditClick(item) }
-            btnFreeze.setOnClickListener { onFreezeClick(item) }
+            btnUpdate.setOnClickListener { onEditClick(item) }
+            btnStatus.setOnClickListener { onFreezeClick(item) }
         }
     }
 }

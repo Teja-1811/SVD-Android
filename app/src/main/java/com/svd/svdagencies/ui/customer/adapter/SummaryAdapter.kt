@@ -30,24 +30,12 @@ class SummaryAdapter(
         val quantity = cartQuantities[productId] ?: 0.0
         val product = allProducts[productId] ?: return
 
-        val pcs = product.pcs_count
-
-        // 🔥 Total pieces (crate qty × pcs count)
-        val totalPieces = quantity * pcs
-
-        // 👍 Format qty (hide .0)
-        val qtyString =
-            if (quantity == quantity.toInt().toDouble())
-                quantity.toInt().toString()
-            else
-                quantity.toString()
-
-        // 🏷 Show name + qty + total pieces
-        holder.tvProductName.text =
-            "${product.name} - (${totalPieces.toInt()} pcs)"
+        // 🏷 Show name + (crates, pcs)
+        val qtyDescription = product.getCrateAndPcsDescription(quantity)
+        holder.tvProductName.text = "${product.name} - ($qtyDescription)"
 
         // 💰 Total price = price × total pieces
-        val total = totalPieces * product.selling_price
+        val total = product.calculateTotal(quantity)
 
         holder.tvProductTotal.text =
             "₹${String.format("%.2f", total)}"

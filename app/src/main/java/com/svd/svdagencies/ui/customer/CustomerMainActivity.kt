@@ -10,6 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.auth.LoginActivity
 import com.svd.svdagencies.ui.customer.fragment.CustomerBillsFragment
+import com.svd.svdagencies.ui.customer.fragment.CustomerCompaniesFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerHomeFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerOrdersFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerPaymentFragment
@@ -53,6 +54,7 @@ class CustomerMainActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_home -> loadFragment(CustomerHomeFragment(), "Home")
+                R.id.nav_companies -> loadFragment(CustomerCompaniesFragment(), "Companies")
                 R.id.nav_orders -> loadFragment(CustomerOrdersFragment(), "Orders")
                 R.id.nav_bills -> loadFragment(CustomerBillsFragment(), "Bills")
                 R.id.nav_payment -> loadFragment(CustomerPaymentFragment(), "Payment")

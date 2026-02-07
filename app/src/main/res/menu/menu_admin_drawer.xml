@@ -8,6 +8,11 @@
         android:icon="@drawable/ic_home"/>
 
     <item
+        android:id="@+id/nav_companies"
+        android:title="Companies"
+        android:icon="@drawable/ic_shop"/>
+
+    <item
         android:id="@+id/nav_customers"
         android:title="Customers"
         android:icon="@drawable/ic_users"/>
