@@ -53,7 +53,7 @@ interface CustomerDashboardApi {
         @Query("customer_id") customerId: Int?
     ): MonthlySummaryResponse
 
-    @GET("milk_agency/generate-monthly-sales-pdf/")
+    @GET("api/sales/generate-monthly-sales-pdf/")
     suspend fun downloadMonthlySalesPdf(
         @Query("date") date: String,
         @Query("customer") customerId: Int,

@@ -1,17 +1,20 @@
 package com.svd.svdagencies.ui.admin
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.button.MaterialButton
+import androidx.core.content.FileProvider
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.textfield.TextInputEditText
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -30,8 +33,8 @@ import java.util.*
 class AdminMonthlySummary : AdminBaseActivity() {
 
     private lateinit var autoCustomer: AutoCompleteTextView
-    private lateinit var etMonth: MaterialButton
-    private lateinit var btnDownload: MaterialButton
+    private lateinit var etMonth: ImageButton
+    private lateinit var btnDownload: ImageButton
     private lateinit var api: CustomerDashboardApi
 
     private lateinit var layoutResults: LinearLayout
@@ -68,10 +71,6 @@ class AdminMonthlySummary : AdminBaseActivity() {
         tvDetailShop = findViewById(R.id.tvDetailShop) ?: return
         tvDetailPhone = findViewById(R.id.tvDetailPhone) ?: return
 
-        // Set default month
-        val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
-        etMonth.text = sdf.format(calendar.time)
-
         etMonth.setOnClickListener { showMonthPicker() }
         
         loadCustomers()
@@ -85,8 +84,6 @@ class AdminMonthlySummary : AdminBaseActivity() {
         val dpd = DatePickerDialog(this, { _, year, month, _ ->
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
-            val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
-            etMonth.text = sdf.format(calendar.time)
             
             // Auto fetch summary on date change
             fetchSummary()
@@ -134,7 +131,8 @@ class AdminMonthlySummary : AdminBaseActivity() {
     }
 
     private fun fetchSummary() {
-        val date = etMonth.text.toString()
+        val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+        val date = sdf.format(calendar.time)
         val customerId = selectedCustomerId ?: return
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -159,30 +157,83 @@ class AdminMonthlySummary : AdminBaseActivity() {
             return
         }
 
-        val date = etMonth.text.toString() // yyyy-MM
+        val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+        val date = sdf.format(calendar.time) // yyyy-MM
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val responseBody = api.downloadMonthlySalesPdf(date, customerId)
-                val fileName = "Monthly_Summary_${date}_$customerId.pdf"
-                val file = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
+                Log.d("DownloadPdf", "Starting download for date: $date, customer: $customerId")
                 
-                responseBody.byteStream().use { inputStream ->
-                    FileOutputStream(file).use { outputStream ->
-                        inputStream.copyTo(outputStream)
+                // Construct parameters manually to verify URL structure if needed
+                // Based on API: @GET("milk_agency/generate-monthly-sales-pdf/")
+                val responseBody = api.downloadMonthlySalesPdf(date, customerId)
+                
+                // Check if response is actually HTML (login page)
+                val responseString = withContext(Dispatchers.IO) {
+                    // Peek at the beginning of the stream to check for HTML
+                    // Caution: byteStream() can only be consumed once, but we can read it and save it.
+                    null
+                }
+
+                val fileName = "Monthly_Summary_${date}_$customerId.pdf"
+                val file = File(getExternalFilesDir(null), fileName)
+                
+                Log.d("DownloadPdf", "Saving to: ${file.absolutePath}")
+                
+                withContext(Dispatchers.IO) {
+                    responseBody.byteStream().use { inputStream ->
+                        FileOutputStream(file).use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
                     }
                 }
                 
-                withContext(Dispatchers.Main) {
-                    if (isDestroyed || isFinishing) return@withContext
-                    Toast.makeText(this@AdminMonthlySummary, "PDF Downloaded: ${file.absolutePath}", Toast.LENGTH_LONG).show()
+                if (file.exists() && file.length() > 0) {
+                    // Final sanity check: if it's a PDF, it should start with %PDF
+                    val firstBytes = file.inputStream().use { 
+                        val bytes = ByteArray(4)
+                        it.read(bytes)
+                        bytes
+                    }
+                    val isPdf = String(firstBytes) == "%PDF"
+                    
+                    withContext(Dispatchers.Main) {
+                        if (isDestroyed || isFinishing) return@withContext
+                        if (isPdf) {
+                            Toast.makeText(this@AdminMonthlySummary, "PDF Downloaded", Toast.LENGTH_SHORT).show()
+                            openPdf(file)
+                        } else {
+                            // If it's not a PDF, it's likely the HTML login page or an error page
+                            file.delete()
+                            Toast.makeText(this@AdminMonthlySummary, "Failed to download: Invalid response from server", Toast.LENGTH_LONG).show()
+                            Log.e("DownloadPdf", "Downloaded file is not a PDF. Likely HTML redirect.")
+                        }
+                    }
+                } else {
+                    throw Exception("File creation failed or empty file")
                 }
             } catch (e: Exception) {
+                Log.e("DownloadPdf", "Error: ${e.message}", e)
                 withContext(Dispatchers.Main) {
                     if (isDestroyed || isFinishing) return@withContext
                     Toast.makeText(this@AdminMonthlySummary, "Download failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    private fun openPdf(file: File) {
+        try {
+            val uri = FileProvider.getUriForFile(this, "${packageName}.provider", file)
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/pdf")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Log.e("OpenPdf", "Error opening PDF", e)
+            Toast.makeText(this, "No app found to open PDF", Toast.LENGTH_SHORT).show()
         }
     }
 

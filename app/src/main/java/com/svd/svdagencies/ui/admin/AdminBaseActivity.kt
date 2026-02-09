@@ -96,7 +96,9 @@ abstract class AdminBaseActivity : AppCompatActivity() {
                         true
                     }
                     R.id.nav_customers -> {
-                        startActivity(Intent(this, CustomersData::class.java))
+                        if (this !is CustomersData) {
+                            startActivity(Intent(this, CustomersData::class.java))
+                        }
                         true
                     }
                     R.id.nav_bills -> {
@@ -107,10 +109,7 @@ abstract class AdminBaseActivity : AppCompatActivity() {
                     }
                     R.id.nav_orders -> {
                         if (this !is AdminOrdersActivity) {
-                            if (this is AdminBaseActivity) {
-                                // For activities not yet implemented or known
-                                // startActivity(Intent(this, AdminOrdersActivity::class.java))
-                            }
+                            startActivity(Intent(this, AdminOrdersActivity::class.java))
                         }
                         true
                     }
@@ -126,6 +125,12 @@ abstract class AdminBaseActivity : AppCompatActivity() {
                         }
                         true
                     }
+                    R.id.nav_dues -> {
+                        if (this !is AdminDuesActivity) {
+                            startActivity(Intent(this, AdminDuesActivity::class.java))
+                        }
+                        true
+                    }
                     R.id.nav_cashbook -> {
                         if (this !is AdminCashBookActivity) {
                              startActivity(Intent(this, AdminCashBookActivity::class.java))
@@ -135,6 +140,12 @@ abstract class AdminBaseActivity : AppCompatActivity() {
                     R.id.nav_monthly_summary -> {
                         if (this !is AdminMonthlySummary) {
                             startActivity(Intent(this, AdminMonthlySummary::class.java))
+                        }
+                        true
+                    }
+                    R.id.nav_payments -> {
+                        if (this !is AdminPaymentsActivity) {
+                            startActivity(Intent(this, AdminPaymentsActivity::class.java))
                         }
                         true
                     }
