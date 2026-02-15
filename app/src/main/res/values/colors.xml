@@ -1,34 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <!-- Default Material Colors -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <!-- Basic Colors -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- App Primary Colors (Updated to RED) -->
+    <!-- App Primary Colors -->
     <color name="colorPrimary">#D32F2F</color>
     <color name="colorPrimaryDark">#B71C1C</color>
     <color name="colorAccent">#FF5252</color>
-    <color name="window_background">#F5F5F5</color>
+    <color name="window_background">#FFFFFF</color>
     <color name="status_bar">#B71C1C</color>
 
     <!-- 🔴 BRAND COLORS -->
     <color name="brand_red">#D32F2F</color>
     <color name="brand_red_dark">#B71C1C</color>
-    <color name="brand_blue">#1976D2</color>
+    <color name="brand_blue">#2196F3</color>
 
     <!-- Text Colors -->
-    <color name="textColorPrimary">#212121</color>
+    <color name="textColorPrimary">#000000</color>
     <color name="textColorSecondary">#757575</color>
-    <color name="editTextColor">#000000</color>
     <color name="gray500">#9E9E9E</color>
     <color name="red600">#E53935</color>
-    <color name="text_item_value">#212121</color>
+    <color name="text_item_value">#000000</color>
+    <color name="login_text_red">#D32F2F</color>
 
     <!-- Icon / Status Colors -->
     <color name="icon_orange">#FF9800</color>
@@ -37,30 +31,32 @@
     <color name="icon_green">#4CAF50</color>
     <color name="icon_gray_btn">#757575</color>
 
-    <!-- EditText Colors -->
-    <color name="editTextBackground">#FFFFFF</color>
-    <color name="editTextStroke">#DDDDDD</color>
-
-    <!-- Login Button Gradient -->
-    <color name="login_red_start">#FF5252</color>
-    <color name="login_red_end">#D32F2F</color>
-    <color name="login_text_red">#D32F2F</color>
-
-    <!-- Dashboard Card Backgrounds -->
-    <color name="card_customers">#FFEBEE</color>
-    <color name="card_items">#E8F5E9</color>
-    <color name="card_sales">#FFF3E0</color>
-    <color name="card_dues">#FFEBEE</color>
-
-    <!-- Cards & Surfaces -->
+    <!-- Surface / Background Colors -->
     <color name="card_background">#FFFFFF</color>
-    <color name="surface_background">#FFFFFF</color>
     <color name="card_stroke_color">#E0E0E0</color>
     <color name="divider_line">#E0E0E0</color>
+    <color name="surface_background">#FFFFFF</color>
+    <color name="surface_variant">#F5F5F5</color>
+    <color name="on_surface_variant">#000000</color>
+
+    <!-- Input Fields -->
+    <color name="editTextBackground">#FFFFFF</color>
+    <color name="editTextStroke">#E0E0E0</color>
+    <color name="editTextColor">#000000</color>
+
+    <!-- Login Gradient -->
+    <color name="login_red_start">#D32F2F</color>
+    <color name="login_red_end">#B71C1C</color>
+
+    <!-- Dashboard Specific (Light) -->
+    <color name="card_customers">#FFFFFF</color>
+    <color name="card_items">#FFFFFF</color>
+    <color name="card_sales">#FFFFFF</color>
 
     <!-- Chips -->
-    <color name="chip_selected_bg">#FFEBEE</color>
-    <color name="chip_unselected_bg">#ECEFF1</color>
-    <color name="chip_unselected_border">#CFD8DC</color>
+    <color name="chip_unselected_border">#E0E0E0</color>
 
+    <!-- Special Backgrounds -->
+    <color name="bg_light_gray">#F5F5F5</color>
+    <color name="bg_light_green">#E8F5E9</color>
 </resources>

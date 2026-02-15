@@ -71,7 +71,7 @@ class CustomerProfileActivity : AdminBaseActivity() {
         }
 
         binding.btnFreeze.setOnClickListener {
-             customer?.id?.let { id -> toggleFreeze(id) }
+             customer.id?.let { id -> toggleFreeze(id) }
         }
     }
 

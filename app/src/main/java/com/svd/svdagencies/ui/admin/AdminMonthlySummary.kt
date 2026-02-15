@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.card.MaterialCardView
 import com.svd.svdagencies.R
@@ -271,10 +272,10 @@ class AdminMonthlySummary : AdminBaseActivity() {
         tvValue?.text = value
         
         if (isBold) {
-            tvValue?.setTextColor(resources.getColor(R.color.brand_red))
+            tvValue?.setTextColor(ContextCompat.getColor(this, R.color.brand_red))
             tvValue?.textSize = 16f
         } else {
-            tvValue?.setTextColor(resources.getColor(R.color.black))
+            tvValue?.setTextColor(ContextCompat.getColor(this, R.color.black))
             tvValue?.textSize = 14f
         }
     }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,6 +21,24 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        // Define a release config that points to the debug keystore as a fallback
+        val releaseConfig = create("release") {
+            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+
+        // Redirect the problematic 'externalOverride' config if it's being injected
+        maybeCreate("externalOverride").apply {
+            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildFeatures {
         viewBinding = true
     }
@@ -26,6 +46,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            // Explicitly use the release config defined above (which uses debug credentials)
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -34,35 +56,46 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
 }
 
 dependencies {
-    // Fixed: Hyphens in Version Catalog are accessed with dots in Kotlin DSL
+    // Standard AndroidX & UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.swiperefresh)
     
+    // Network & API
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     
-    implementation(libs.lifecycle.viewmodel.ktx)
+    // Architecture Components
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.fragment.ktx)
     
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    
+    // Image Loading
     implementation(libs.glide)
     kapt(libs.glide.compiler)
     
+    // Utilities
     implementation(libs.zxing)
     implementation(libs.circleimageview)
-    
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.gridlayout:gridlayout:1.1.0")
 

@@ -17,13 +17,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp">
+            android:padding="@dimen/spacing_medium">
 
             <!-- CATEGORY FILTERS -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/spacing_medium"
                 android:scrollbars="none">
 
                 <com.google.android.material.chip.ChipGroup
@@ -40,10 +40,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Milk"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="@dimen/spacing_small"/>
 
             <!-- PRODUCT LIST -->
             <androidx.recyclerview.widget.RecyclerView
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                android:paddingBottom="12dp"
+                android:paddingBottom="@dimen/spacing_medium"
                 android:clipToPadding="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
@@ -60,23 +60,23 @@
                 android:id="@+id/cardOrderSummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="24dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="8dp">
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:layout_marginBottom="@dimen/spacing_xlarge"
+                app:cardCornerRadius="@dimen/card_corner_radius_large"
+                app:cardElevation="@dimen/spacing_small">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/editTextBackground"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/spacing_large">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Order Summary"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/text_size_large"
                         android:textStyle="bold"
                         android:textColor="@color/textColorPrimary"/>
 
@@ -84,26 +84,26 @@
                         android:id="@+id/rvSummary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"/>
+                        android:layout_marginTop="@dimen/spacing_medium"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/editTextStroke"
-                        android:layout_marginTop="12dp"/>
+                        android:layout_marginTop="@dimen/spacing_medium"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="12dp">
+                        android:layout_marginTop="@dimen/spacing_medium">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Total:"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_size_medium"
                             android:textStyle="bold"
                             android:textColor="@color/textColorPrimary"/>
 
@@ -112,7 +112,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="₹0.00"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_size_medium"
                             android:textStyle="bold"
                             android:textColor="@color/textColorPrimary"/>
                     </LinearLayout>
@@ -120,12 +120,12 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnPlaceOrder"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="@dimen/spacing_large"
                         android:text="Place Order"
                         android:textAllCaps="false"
-                        android:textSize="13sp"
-                        app:cornerRadius="16dp"
+                        android:textSize="@dimen/text_size_button"
+                        app:cornerRadius="@dimen/card_corner_radius_large"
                         app:backgroundTint="@color/icon_green"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

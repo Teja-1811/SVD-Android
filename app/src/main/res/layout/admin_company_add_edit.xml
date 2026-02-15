@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Fill the form to save company details"
-                    android:textColor="@color/gray500"
+                    android:textColor="@color/textColorSecondary"
                     android:textSize="11sp"
                     android:layout_marginBottom="16dp"/>
 
@@ -43,7 +43,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
                     app:cardBackgroundColor="@color/card_background"
@@ -66,7 +66,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/ic_shop"
-                                app:tint="@color/icon_blue"
+                                app:tint="@color/brand_blue"
                                 android:layout_marginEnd="8dp"/>
 
                             <TextView
@@ -92,6 +92,7 @@
                                 android:layout_height="100dp"
                                 app:cardCornerRadius="16dp"
                                 app:cardElevation="0dp"
+                                app:cardBackgroundColor="@color/card_background"
                                 app:strokeWidth="1dp"
                                 app:strokeColor="@color/card_stroke_color">
                                 <ImageView
@@ -110,7 +111,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Change Logo"
                                 android:textSize="12sp"
-                                android:textColor="@color/icon_blue"/>
+                                android:textColor="@color/brand_blue"/>
                         </LinearLayout>
 
                         <!-- Name -->
@@ -131,6 +132,7 @@
                             android:hint="e.g. Heritage, Dodla"
                             android:textSize="13sp"
                             android:textColor="@color/textColorPrimary"
+                            android:textColorHint="@color/gray500"
                             android:inputType="textCapWords"
                             android:layout_marginBottom="16dp"/>
 
@@ -152,6 +154,7 @@
                             android:hint="https://example.com"
                             android:textSize="13sp"
                             android:textColor="@color/textColorPrimary"
+                            android:textColorHint="@color/gray500"
                             android:inputType="textUri"
                             android:layout_marginBottom="16dp"/>
 
@@ -168,7 +171,7 @@
             android:orientation="horizontal"
             android:padding="16dp"
             android:background="@color/surface_background"
-            android:elevation="8dp"
+            android:elevation="0dp"
             android:gravity="end">
 
             <com.google.android.material.button.MaterialButton
@@ -178,7 +181,8 @@
                 android:layout_height="wrap_content"
                 android:text="Cancel"
                 android:textSize="12sp"
-                android:textColor="@color/gray500"
+                android:textAllCaps="false"
+                android:textColor="@color/textColorSecondary"
                 app:strokeColor="@color/gray500"
                 android:layout_marginEnd="16dp"/>
 
@@ -188,6 +192,8 @@
                 android:layout_height="wrap_content"
                 android:text="Save Company"
                 android:textSize="12sp"
+                android:textAllCaps="false"
+                app:cornerRadius="8dp"
                 app:backgroundTint="@color/brand_red"/>
 
         </LinearLayout>
@@ -199,7 +205,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
-        app:menu="@menu/menu_admin_drawer"/>
+        app:menu="@menu/menu_admin_drawer"
+        app:itemIconTint="@color/textColorSecondary"
+        app:itemTextColor="@color/black"
+        app:elevation="0dp"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

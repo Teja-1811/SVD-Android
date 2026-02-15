@@ -20,13 +20,16 @@
         android:enableOnBackInvokedCallback="true">
 
         <activity
-            android:name=".ui.auth.LoginActivity"
+            android:name=".ui.auth.WelcomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.auth.LoginActivity" />
+        <activity android:name=".ui.auth.RegisterActivity" />
 
         <!-- Admin -->
         <activity android:name=".ui.admin.AdminDashboardActivity"/>
@@ -53,7 +56,7 @@
 
         <!-- Customer -->
         <activity android:name=".ui.customer.CustomerMainActivity"/>
-        <activity android:name=".ui.customer.fragment.CustomerCompanyCatalogActivity"/>
+        <activity android:name=".ui.customer.CustomerCompanyCatalogActivity"/>
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>

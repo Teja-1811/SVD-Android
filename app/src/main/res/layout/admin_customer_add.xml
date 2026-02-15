@@ -45,8 +45,8 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
                     app:cardBackgroundColor="@color/card_background"
@@ -70,7 +70,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/ic_person"
-                                app:tint="@color/icon_blue"
+                                app:tint="@color/brand_blue"
                                 android:layout_marginEnd="8dp"/>
 
                             <TextView
@@ -78,8 +78,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="Customer Information"
                                 android:textStyle="bold"
-                                android:textColor="@color/textColorPrimary"
-                                android:textSize="13sp"/>
+                                android:textColor="@color/black"
+                                android:textSize="14sp"/>
                         </LinearLayout>
 
                         <!-- Row 1: Name & Shop Name -->
@@ -93,7 +93,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Customer Name *"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:textColor="@color/textColorSecondary"
                                 android:layout_marginBottom="4dp"/>
 
@@ -102,10 +102,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_edittext"
-                                android:padding="10dp"
+                                android:padding="12dp"
                                 android:hint="Enter Name"
-                                android:textSize="12sp"
-                                android:textColor="@color/textColorPrimary"
+                                android:textSize="13sp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/gray500"
                                 android:inputType="textPersonName"
                                 android:layout_marginBottom="16dp"/>
 
@@ -114,7 +115,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Shop Name"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:textColor="@color/textColorSecondary"
                                 android:layout_marginBottom="4dp"/>
 
@@ -123,10 +124,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_edittext"
-                                android:padding="10dp"
+                                android:padding="12dp"
                                 android:hint="Enter Shop Name"
-                                android:textSize="12sp"
-                                android:textColor="@color/textColorPrimary"
+                                android:textSize="13sp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/gray500"
                                 android:inputType="text"
                                 android:layout_marginBottom="16dp"/>
 
@@ -143,7 +145,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Retailer ID"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:textColor="@color/textColorSecondary"
                                 android:layout_marginBottom="4dp"/>
 
@@ -152,10 +154,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_edittext"
-                                android:padding="10dp"
+                                android:padding="12dp"
                                 android:hint="Enter Retailer ID"
-                                android:textSize="12sp"
-                                android:textColor="@color/textColorPrimary"
+                                android:textSize="13sp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/gray500"
                                 android:inputType="text"
                                 android:layout_marginBottom="16dp"/>
 
@@ -164,7 +167,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Phone Number *"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:textColor="@color/textColorSecondary"
                                 android:layout_marginBottom="4dp"/>
 
@@ -173,10 +176,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_edittext"
-                                android:padding="10dp"
+                                android:padding="12dp"
                                 android:hint="+91"
-                                android:textSize="12sp"
-                                android:textColor="@color/textColorPrimary"
+                                android:textSize="13sp"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/gray500"
                                 android:inputType="phone"
                                 android:layout_marginBottom="16dp"/>
 
@@ -188,8 +192,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Is Commissioned (Eligible for commission)"
-                            android:textSize="11sp"
-                            android:textColor="@color/textColorSecondary"/>
+                            android:textSize="12sp"
+                            android:textColor="@color/textColorSecondary"
+                            android:buttonTint="@color/brand_blue"/>
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -198,8 +203,8 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
                     app:cardBackgroundColor="@color/card_background">
@@ -222,7 +227,7 @@
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
                                 android:src="@drawable/ic_location_pin"
-                                app:tint="@color/icon_blue"
+                                app:tint="@color/brand_blue"
                                 android:layout_marginEnd="8dp"/>
 
                             <TextView
@@ -230,8 +235,8 @@
                                 android:layout_height="wrap_content"
                                 android:text="Shipping Address"
                                 android:textStyle="bold"
-                                android:textColor="@color/textColorPrimary"
-                                android:textSize="13sp"/>
+                                android:textColor="@color/black"
+                                android:textSize="14sp"/>
                         </LinearLayout>
 
                         <!-- Flat / Building No. -->
@@ -239,7 +244,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Flat / Building No."
-                            android:textSize="11sp"
+                            android:textSize="12sp"
                             android:textColor="@color/textColorSecondary"
                             android:layout_marginBottom="4dp"/>
 
@@ -248,10 +253,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_edittext"
-                            android:padding="10dp"
+                            android:padding="12dp"
                             android:hint="Enter Flat / Building No"
-                            android:textSize="12sp"
-                            android:textColor="@color/textColorPrimary"
+                            android:textSize="13sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/gray500"
                             android:inputType="textPostalAddress"
                             android:layout_marginBottom="16dp"/>
 
@@ -260,7 +266,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Area / Locality"
-                            android:textSize="11sp"
+                            android:textSize="12sp"
                             android:textColor="@color/textColorSecondary"
                             android:layout_marginBottom="4dp"/>
 
@@ -269,10 +275,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_edittext"
-                            android:padding="10dp"
+                            android:padding="12dp"
                             android:hint="Enter Area / Locality"
-                            android:textSize="12sp"
-                            android:textColor="@color/textColorPrimary"
+                            android:textSize="13sp"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/gray500"
                             android:inputType="textPostalAddress"
                             android:layout_marginBottom="16dp"/>
 
@@ -294,7 +301,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="PIN Code"
-                                    android:textSize="11sp"
+                                    android:textSize="12sp"
                                     android:textColor="@color/textColorSecondary"
                                     android:layout_marginBottom="4dp"/>
 
@@ -303,10 +310,11 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/bg_edittext"
-                                    android:padding="10dp"
+                                    android:padding="12dp"
                                     android:hint="534427"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/textColorPrimary"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/gray500"
                                     android:inputType="number"/>
                             </LinearLayout>
 
@@ -322,7 +330,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="City"
-                                    android:textSize="11sp"
+                                    android:textSize="12sp"
                                     android:textColor="@color/textColorSecondary"
                                     android:layout_marginBottom="4dp"/>
 
@@ -331,10 +339,11 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/bg_edittext"
-                                    android:padding="10dp"
+                                    android:padding="12dp"
                                     android:hint="GGL"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/textColorPrimary"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/gray500"
                                     android:inputType="text"/>
                             </LinearLayout>
 
@@ -349,7 +358,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="State"
-                                    android:textSize="11sp"
+                                    android:textSize="12sp"
                                     android:textColor="@color/textColorSecondary"
                                     android:layout_marginBottom="4dp"/>
 
@@ -358,10 +367,11 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/bg_edittext"
-                                    android:padding="10dp"
+                                    android:padding="12dp"
                                     android:hint="AP"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/textColorPrimary"
+                                    android:textSize="13sp"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/gray500"
                                     android:inputType="text"/>
                             </LinearLayout>
                         </LinearLayout>
@@ -379,7 +389,7 @@
             android:orientation="horizontal"
             android:padding="16dp"
             android:background="@color/surface_background"
-            android:elevation="4dp"
+            android:elevation="0dp"
             android:gravity="end">
 
             <com.google.android.material.button.MaterialButton
@@ -388,7 +398,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
-                android:textSize="12sp"
+                android:textSize="13sp"
+                android:textAllCaps="false"
                 android:textColor="@color/gray500"
                 app:strokeColor="@color/gray500"
                 android:layout_marginEnd="16dp"/>
@@ -398,8 +409,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add Customer"
-                android:textSize="12sp"
-                app:backgroundTint="@color/icon_blue"/>
+                android:textSize="13sp"
+                android:textAllCaps="false"
+                app:cornerRadius="8dp"
+                app:backgroundTint="@color/brand_blue"/>
 
         </LinearLayout>
 
@@ -411,7 +424,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
-        app:menu="@menu/menu_admin_drawer"/>
+        app:menu="@menu/menu_admin_drawer"
+        app:itemIconTint="@color/textColorSecondary"
+        app:itemTextColor="@color/black"
+        app:elevation="0dp"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

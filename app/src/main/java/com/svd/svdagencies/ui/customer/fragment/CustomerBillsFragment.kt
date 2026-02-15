@@ -25,6 +25,7 @@ import com.svd.svdagencies.data.api.customer.InvoiceApi
 import com.svd.svdagencies.data.model.customer.InvoiceItem
 import com.svd.svdagencies.data.model.customer.InvoiceResponse
 import com.svd.svdagencies.ui.customer.adapter.BillsAdapter
+import com.svd.svdagencies.utils.RefreshManager
 import com.svd.svdagencies.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -94,9 +95,13 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
         etMonth.setOnClickListener { showMonthYearPicker() }
         btnFilter.setOnClickListener { loadBills() }
 
-        swipeRefresh.setOnRefreshListener { loadBills() }
+        // Use RefreshManager to setup swipe refresh
+        RefreshManager.setupRefresh(swipeRefresh) {
+            loadBills()
+        }
 
         // ---------- INITIAL LOAD ----------
+        RefreshManager.startRefresh(swipeRefresh)
         loadBills()
 
         ContextCompat.registerReceiver(requireContext(), onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_NOT_EXPORTED)
@@ -140,12 +145,12 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
 
     private fun loadBills() {
         tvStatus.text = "Loading bills..."
-        swipeRefresh.isRefreshing = true
+        RefreshManager.startRefresh(swipeRefresh)
 
         val monthYear = etMonth.text.toString().split("-")
         if (monthYear.size != 2) {
             tvStatus.text = "Invalid month format (MM-YYYY)"
-            swipeRefresh.isRefreshing = false
+            RefreshManager.stopRefresh(swipeRefresh)
             return
         }
 
@@ -163,7 +168,7 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
             ) {
                 if (context == null) return
 
-                swipeRefresh.isRefreshing = false
+                RefreshManager.stopRefresh(swipeRefresh)
 
                 if (response.isSuccessful && response.body() != null) {
                     val invoices = response.body()!!.invoices
@@ -190,7 +195,7 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
 
             override fun onFailure(call: Call<InvoiceResponse>, t: Throwable) {
                 if (context == null) return
-                swipeRefresh.isRefreshing = false
+                RefreshManager.stopRefresh(swipeRefresh)
                 tvStatus.text = "Network error"
             }
         })

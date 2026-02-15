@@ -6,7 +6,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F7FA"
+    android:background="@color/bg_light_gray"
     tools:context=".ui.admin.AdminMonthlySummary">
 
     <LinearLayout
@@ -34,7 +34,7 @@
                     app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
                     app:strokeWidth="1dp"
-                    app:strokeColor="#E2E8F0"
+                    app:strokeColor="@color/card_stroke_color"
                     android:layout_marginBottom="20dp">
 
                     <LinearLayout
@@ -47,15 +47,15 @@
                         <com.google.android.material.textfield.TextInputLayout
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                             android:layout_width="0dp"
-                            android:layout_height="52dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:hint="Select Customer"
                             app:boxCornerRadiusTopStart="12dp"
                             app:boxCornerRadiusTopEnd="12dp"
                             app:boxCornerRadiusBottomStart="12dp"
                             app:boxCornerRadiusBottomEnd="12dp"
-                            app:boxStrokeColor="#2563EB"
-                            app:hintTextColor="#2563EB">
+                            app:boxStrokeColor="?attr/colorPrimary"
+                            app:hintTextColor="?attr/colorPrimary">
 
                             <AutoCompleteTextView
                                 android:id="@+id/autoCustomer"
@@ -64,7 +64,7 @@
                                 android:inputType="none"
                                 android:textSize="14sp"
                                 android:padding="12dp"
-                                android:textColor="#1E293B" />
+                                android:textColor="@color/black" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <ImageButton
@@ -75,7 +75,7 @@
                             android:background="@drawable/bg_rounded_light_blue"
                             android:src="@drawable/ic_calendar"
                             android:contentDescription="Select Month"
-                            app:tint="#2563EB"/>
+                            app:tint="?attr/colorPrimary"/>
 
                         <ImageButton
                             android:id="@+id/btnDownload"
@@ -104,7 +104,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/card_stroke_color"
                         app:cardBackgroundColor="@color/white"
                         android:layout_marginBottom="20dp">
 
@@ -137,7 +139,7 @@
                                     android:text="Customer Name"
                                     android:textSize="18sp"
                                     android:textStyle="bold"
-                                    android:textColor="#1E293B"/>
+                                    android:textColor="@color/black"/>
 
                                 <TextView
                                     android:id="@+id/tvDetailShop"
@@ -145,7 +147,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="Shop Name"
                                     android:textSize="14sp"
-                                    android:textColor="#64748B"
+                                    android:textColor="@color/textColorSecondary"
                                     android:layout_marginTop="2dp"/>
 
                                 <TextView
@@ -154,7 +156,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="+91 00000 00000"
                                     android:textSize="14sp"
-                                    android:textColor="#94A3B8"
+                                    android:textColor="@color/gray500"
                                     android:layout_marginTop="2dp"/>
                             </LinearLayout>
                         </LinearLayout>
@@ -174,7 +176,9 @@
                             android:layout_columnWeight="1"
                             android:layout_marginEnd="8dp"
                             app:cardCornerRadius="16dp"
-                            app:cardElevation="2dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/card_stroke_color"
                             app:cardBackgroundColor="#EFF6FF">
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -186,7 +190,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="Total Sales"
                                     android:textSize="12sp"
-                                    android:textColor="#3B82F6"/>
+                                    android:textColor="@color/brand_blue"/>
                                 <TextView
                                     android:id="@+id/tvGridTotalSales"
                                     android:layout_width="wrap_content"
@@ -194,7 +198,7 @@
                                     android:text="₹0.00"
                                     android:textSize="18sp"
                                     android:textStyle="bold"
-                                    android:textColor="#1E3A8A"
+                                    android:textColor="@color/brand_blue"
                                     android:layout_marginTop="4dp"/>
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
@@ -205,7 +209,9 @@
                             android:layout_columnWeight="1"
                             android:layout_marginStart="8dp"
                             app:cardCornerRadius="16dp"
-                            app:cardElevation="2dp"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/card_stroke_color"
                             app:cardBackgroundColor="#F0FDF4">
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -217,7 +223,7 @@
                                     android:layout_height="wrap_content"
                                     android:text="Paid Amount"
                                     android:textSize="12sp"
-                                    android:textColor="#16A34A"/>
+                                    android:textColor="@color/icon_green"/>
                                 <TextView
                                     android:id="@+id/tvGridPaidAmount"
                                     android:layout_width="wrap_content"
@@ -225,7 +231,7 @@
                                     android:text="₹0.00"
                                     android:textSize="18sp"
                                     android:textStyle="bold"
-                                    android:textColor="#064E3B"
+                                    android:textColor="@color/icon_green"
                                     android:layout_marginTop="4dp"/>
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
@@ -238,7 +244,7 @@
                         android:text="FINANCIAL BREAKDOWN"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:textColor="#64748B"
+                        android:textColor="@color/textColorSecondary"
                         android:layout_marginBottom="8dp"
                         android:layout_marginStart="4dp"
                         android:letterSpacing="0.05"/>
@@ -248,7 +254,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/card_stroke_color"
                         app:cardBackgroundColor="@color/white"
                         android:layout_marginBottom="20dp">
 
@@ -258,19 +266,19 @@
                             android:orientation="vertical"
                             android:padding="16dp">
 
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowOpeningDue" />
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowTotalSales" />
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowPaidAmount" />
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowDueAmount" />
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowCommission" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowOpeningDue" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowTotalSales" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowPaidAmount" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowDueAmount" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowCommission" />
 
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:background="#F1F5F9"
+                                android:background="@color/divider_line"
                                 android:layout_marginVertical="12dp"/>
 
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowRemainingDue" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowRemainingDue" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
@@ -281,7 +289,7 @@
                         android:text="VOLUME ANALYSIS"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:textColor="#64748B"
+                        android:textColor="@color/textColorSecondary"
                         android:layout_marginBottom="8dp"
                         android:layout_marginStart="4dp"
                         android:letterSpacing="0.05"/>
@@ -291,7 +299,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/card_stroke_color"
                         app:cardBackgroundColor="@color/white"
                         android:layout_marginBottom="32dp">
 
@@ -301,17 +311,17 @@
                             android:orientation="vertical"
                             android:padding="16dp">
 
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowMilkVolume" />
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowCurdVolume" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowMilkVolume" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowCurdVolume" />
 
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:background="#F1F5F9"
+                                android:background="@color/divider_line"
                                 android:layout_marginVertical="12dp"/>
 
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowAvgMilk" />
-                            <include layout="@layout/row_summary_item" android:id="@+id/rowAvgCurd" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowAvgMilk" />
+                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowAvgCurd" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
@@ -325,7 +335,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
-        app:menu="@menu/menu_admin_drawer" />
+        app:menu="@menu/menu_admin_drawer"
+        app:itemIconTint="@color/textColorSecondary"
+        app:itemTextColor="@color/black"
+        app:elevation="0dp" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/spacing_large">
 
                     <!-- Header Action Buttons -->
                     <LinearLayout
@@ -36,7 +36,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="@dimen/spacing_large">
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAddExpense"
@@ -46,14 +46,14 @@
                             android:layout_weight="1"
                             android:text="Add Expense"
                             android:textAllCaps="false"
-                            app:backgroundTint="#FFC107"
-                            android:textColor="@color/black"
-                            android:layout_marginEnd="12dp"
-                            android:textSize="13sp"
+                            app:backgroundTint="@color/icon_orange"
+                            android:textColor="@color/white"
+                            android:layout_marginEnd="@dimen/spacing_medium"
+                            android:textSize="@dimen/text_size_small"
                             android:textStyle="bold"
-                            app:cornerRadius="12dp"
+                            app:cornerRadius="@dimen/card_corner_radius_medium"
                             app:icon="@drawable/ic_plus"
-                            app:iconTint="@color/black"
+                            app:iconTint="@color/white"
                             app:iconSize="18dp"
                             app:iconGravity="textStart"/>
 
@@ -65,11 +65,11 @@
                             android:layout_weight="1"
                             android:text="Expenses"
                             android:textAllCaps="false"
-                            app:backgroundTint="#00BCD4"
+                            app:backgroundTint="@color/brand_blue"
                             android:textColor="@color/white"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_size_small"
                             android:textStyle="bold"
-                            app:cornerRadius="12dp"
+                            app:cornerRadius="@dimen/card_corner_radius_medium"
                             app:icon="@drawable/ic_menu"
                             app:iconSize="18dp"
                             app:iconTint="@color/white"
@@ -82,14 +82,14 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="20dp">
+                        android:layout_marginBottom="@dimen/spacing_xlarge">
 
                         <com.google.android.material.textfield.TextInputLayout
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1.2"
-                            android:layout_marginEnd="6dp"
+                            android:layout_marginEnd="@dimen/spacing_xsmall"
                             app:hintEnabled="false"
                             app:boxCornerRadiusTopStart="10dp"
                             app:boxCornerRadiusTopEnd="10dp"
@@ -104,7 +104,8 @@
                                 android:layout_height="42dp"
                                 android:inputType="none"
                                 android:text="February"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
+                                android:textColor="@color/black"
                                 android:paddingStart="10dp"
                                 android:paddingEnd="32dp"
                                 android:gravity="center_vertical"
@@ -116,7 +117,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:layout_marginEnd="6dp"
+                            android:layout_marginEnd="@dimen/spacing_xsmall"
                             app:hintEnabled="false"
                             app:boxCornerRadiusTopStart="10dp"
                             app:boxCornerRadiusTopEnd="10dp"
@@ -131,7 +132,8 @@
                                 android:layout_height="42dp"
                                 android:inputType="none"
                                 android:text="2025"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
+                                android:textColor="@color/black"
                                 android:paddingStart="10dp"
                                 android:paddingEnd="32dp"
                                 android:gravity="center_vertical"
@@ -144,7 +146,7 @@
                             android:layout_width="42dp"
                             android:layout_height="42dp"
                             android:padding="0dp"
-                            app:backgroundTint="#2962FF"
+                            app:backgroundTint="@color/brand_blue"
                             app:cornerRadius="10dp"
                             app:icon="@drawable/ic_search"
                             app:iconSize="20dp"
@@ -162,11 +164,11 @@
                             android:id="@+id/btnResetFilters"
                             android:layout_width="36dp"
                             android:layout_height="36dp"
-                            android:layout_marginStart="4dp"
+                            android:layout_marginStart="@dimen/spacing_tiny"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/ic_close"
                             app:tint="@color/textColorSecondary"
-                            android:padding="6dp"
+                            android:padding="@dimen/spacing_xsmall"
                             android:scaleType="fitCenter"/>
                     </LinearLayout>
 
@@ -178,15 +180,15 @@
                         android:columnCount="2"
                         android:columnOrderPreserved="false">
 
-                        <include android:id="@+id/statCash" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
-                        <include android:id="@+id/statBank" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
-                        <include android:id="@+id/statDues" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
-                        <include android:id="@+id/statNetCash" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
-                        <include android:id="@+id/statExpenses" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
-                        <include android:id="@+id/statProfit" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
-                        <include android:id="@+id/statStockValue" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
-                        <include android:id="@+id/statRAmount" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
-                        <include android:id="@+id/statNetProfit" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="4dp"/>
+                        <include android:id="@+id/statCash" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
+                        <include android:id="@+id/statBank" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
+                        <include android:id="@+id/statDues" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
+                        <include android:id="@+id/statNetCash" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
+                        <include android:id="@+id/statExpenses" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
+                        <include android:id="@+id/statProfit" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
+                        <include android:id="@+id/statStockValue" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
+                        <include android:id="@+id/statRAmount" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
+                        <include android:id="@+id/statNetProfit" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny"/>
 
                     </GridLayout>
 
@@ -195,11 +197,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Company Dues"
-                        android:textColor="#FFC107"
+                        android:textColor="@color/black"
                         android:textStyle="bold"
-                        android:textSize="13sp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"/>
+                        android:textSize="@dimen/text_size_small"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:layout_marginBottom="@dimen/spacing_small"/>
 
                     <!-- Indicators (Dots) -->
                     <LinearLayout
@@ -208,7 +210,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:layout_marginBottom="8dp"/>
+                        android:layout_marginBottom="@dimen/spacing_small"/>
 
                     <!-- Horizontal Sliding Cards -->
                     <androidx.recyclerview.widget.RecyclerView
@@ -224,36 +226,37 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Total Dues: ₹0.00"
-                        android:textColor="#D32F2F"
+                        android:textColor="@color/brand_red"
                         android:textStyle="bold"
                         android:gravity="center"
-                        android:padding="12dp"
-                        android:textSize="13sp"/>
+                        android:padding="@dimen/spacing_medium"
+                        android:textSize="@dimen/text_size_small"/>
 
                     <!-- Bank Balance Update -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        app:cardCornerRadius="@dimen/card_corner_radius_large"
+                        app:cardElevation="0dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#E0E0E0">
+                        app:strokeColor="@color/card_stroke_color"
+                        app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="16dp">
+                            android:padding="@dimen/spacing_large">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Bank Balance"
-                                android:textColor="#00BCD4"
+                                android:textColor="@color/black"
                                 android:textStyle="bold"
-                                android:textSize="13sp"
-                                android:layout_marginBottom="16dp"/>
+                                android:textSize="@dimen/text_size_small"
+                                android:layout_marginBottom="@dimen/spacing_large"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -269,9 +272,11 @@
                                     android:background="@drawable/bg_edit_text"
                                     android:hint="e.g. 5697.27"
                                     android:inputType="numberDecimal"
-                                    android:paddingStart="16dp"
-                                    android:paddingEnd="16dp"
-                                    android:textSize="12sp" />
+                                    android:textColor="@color/black"
+                                    android:textColorHint="@color/textColorSecondary"
+                                    android:paddingStart="@dimen/spacing_large"
+                                    android:paddingEnd="@dimen/spacing_large"
+                                    android:textSize="@dimen/text_size_body_small" />
 
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnUpdateBank"
@@ -279,11 +284,12 @@
                                     android:layout_height="52dp"
                                     android:text="Update"
                                     android:textAllCaps="false"
-                                    app:backgroundTint="#00BCD4"
-                                    android:layout_marginStart="12dp"
+                                    app:backgroundTint="@color/brand_blue"
+                                    android:textColor="@color/white"
+                                    android:layout_marginStart="@dimen/spacing_medium"
                                     android:textStyle="bold"
-                                    android:textSize="12sp"
-                                    app:cornerRadius="12dp"/>
+                                    android:textSize="@dimen/text_size_body_small"
+                                    app:cornerRadius="@dimen/spacing_medium"/>
                             </LinearLayout>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -292,36 +298,37 @@
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="2dp"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:layout_marginBottom="@dimen/spacing_large"
+                        app:cardCornerRadius="@dimen/card_corner_radius_large"
+                        app:cardElevation="0dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#E0E0E0">
+                        app:strokeColor="@color/card_stroke_color"
+                        app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="16dp">
+                            android:padding="@dimen/spacing_large">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Cash In Counter"
-                                android:textColor="#2196F3"
+                                android:textColor="@color/black"
                                 android:textStyle="bold"
-                                android:textSize="13sp"
-                                android:layout_marginBottom="16dp"/>
+                                android:textSize="@dimen/text_size_small"
+                                android:layout_marginBottom="@dimen/spacing_large"/>
 
                              <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Notes"
-                                android:textColor="#2196F3"
-                                android:textSize="12sp"
+                                android:textColor="@color/brand_blue"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold"
-                                android:layout_marginBottom="12dp"/>
+                                android:layout_marginBottom="@dimen/spacing_medium"/>
 
                             <GridLayout
                                 android:id="@+id/gridNotes"
@@ -339,11 +346,12 @@
                                 android:layout_height="52dp"
                                 android:text="Save Cash Counts"
                                 android:textAllCaps="false"
-                                app:backgroundTint="#2196F3"
-                                android:layout_marginTop="24dp"
+                                app:backgroundTint="@color/brand_blue"
+                                android:textColor="@color/white"
+                                android:layout_marginTop="@dimen/spacing_xlarge"
                                 android:textStyle="bold"
-                                android:textSize="13sp"
-                                app:cornerRadius="12dp"
+                                android:textSize="@dimen/text_size_small"
+                                app:cornerRadius="@dimen/spacing_medium"
                                 app:icon="@drawable/ic_save"
                                 app:iconGravity="textStart"
                                 app:iconSize="20dp"/>

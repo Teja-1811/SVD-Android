@@ -5,7 +5,7 @@
     android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background"
+    android:background="@color/white"
     tools:context=".ui.customer.fragment.CustomerPaymentFragment">
 
     <ScrollView
@@ -26,7 +26,7 @@
                 android:text="Make Payment"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="@color/textColorPrimary" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -41,9 +41,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="1dp"
-                app:strokeColor="#E0E0E0"
+                app:strokeColor="@color/card_stroke_color"
+                app:cardBackgroundColor="@color/white"
                 android:layout_marginBottom="24dp">
 
                 <LinearLayout
@@ -78,7 +79,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="#EEEEEE"
+                        android:background="@color/divider_line"
                         android:layout_marginHorizontal="16dp"/>
 
                     <LinearLayout
@@ -110,8 +111,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
-                app:strokeWidth="0dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/card_stroke_color"
                 app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
@@ -126,7 +128,7 @@
                         android:text="Enter Payment Amount"
                         android:textSize="12sp"
                         android:textStyle="bold"
-                        android:textColor="@color/textColorPrimary"
+                        android:textColor="@color/black"
                         android:layout_marginBottom="16dp"/>
 
                     <RelativeLayout
@@ -140,7 +142,7 @@
                             android:text="₹"
                             android:textSize="24sp"
                             android:textStyle="bold"
-                            android:textColor="@color/icon_blue"
+                            android:textColor="@color/brand_blue"
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="8dp"/>
 
@@ -154,15 +156,15 @@
                             android:background="@null"
                             android:textSize="24sp"
                             android:textStyle="bold"
-                            android:textColor="@color/textColorPrimary"
-                            android:textColorHint="#CCCCCC"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/textColorSecondary"
                             android:paddingVertical="8dp"/>
                     </RelativeLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="@color/icon_blue"
+                        android:background="@color/brand_blue"
                         android:layout_marginTop="4dp"/>
 
                     <com.google.android.material.button.MaterialButton
@@ -175,8 +177,10 @@
                         android:textStyle="bold"
                         android:textAllCaps="false"
                         app:cornerRadius="12dp"
-                        app:backgroundTint="@color/icon_blue"
+                        app:backgroundTint="@color/brand_blue"
+                        android:textColor="@color/white"
                         app:icon="@drawable/ic_check"
+                        app:iconTint="@color/white"
                         app:iconGravity="textStart"/>
 
                     <TextView

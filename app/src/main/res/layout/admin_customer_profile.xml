@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background">
+    android:background="@color/bg_light_gray">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_large">
 
                 <!-- Basic Profile Card -->
                 <include
@@ -35,58 +35,58 @@
                     layout="@layout/admin_customer_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="@dimen/spacing_large"/>
 
                 <!-- Extra Details Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    android:layout_marginBottom="@dimen/spacing_xlarge"
+                    app:cardCornerRadius="@dimen/card_corner_radius_large"
+                    app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
-                    app:cardBackgroundColor="@color/card_background"
+                    app:cardBackgroundColor="@color/white"
                     android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp">
+                        android:padding="@dimen/spacing_large">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Additional Details"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_size_small"
                             android:textStyle="bold"
-                            android:textColor="@color/textColorPrimary"
-                            android:layout_marginBottom="12dp"/>
+                            android:textColor="@color/black"
+                            android:layout_marginBottom="@dimen/spacing_medium"/>
 
                         <!-- Customer ID -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginBottom="8dp">
+                            android:layout_marginBottom="@dimen/spacing_small">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Customer ID: "
                                 android:textStyle="bold"
-                                android:textSize="11sp"
-                                android:textColor="@color/textColorPrimary"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/black"/>
 
                             <TextView
                                 android:id="@+id/txtCustomerId"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="-"
-                                android:textSize="11sp"
-                                android:textColor="@color/text_item_value"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/textColorSecondary"/>
                         </LinearLayout>
 
                         <!-- Retailer ID -->
@@ -94,23 +94,23 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginBottom="8dp">
+                            android:layout_marginBottom="@dimen/spacing_small">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Retailer ID: "
                                 android:textStyle="bold"
-                                android:textSize="11sp"
-                                android:textColor="@color/textColorPrimary"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/black"/>
 
                             <TextView
                                 android:id="@+id/txtRetailerId"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="-"
-                                android:textSize="11sp"
-                                android:textColor="@color/text_item_value"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/textColorSecondary"/>
                         </LinearLayout>
 
                         <!-- Status -->
@@ -118,23 +118,23 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginBottom="8dp">
+                            android:layout_marginBottom="@dimen/spacing_small">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Status: "
                                 android:textStyle="bold"
-                                android:textSize="11sp"
-                                android:textColor="@color/textColorPrimary"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/black"/>
 
                             <TextView
                                 android:id="@+id/txtStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="-"
-                                android:textSize="11sp"
-                                android:textColor="@color/text_item_value"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/textColorSecondary"/>
                         </LinearLayout>
 
                         <!-- City -->
@@ -142,23 +142,23 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_marginBottom="8dp">
+                            android:layout_marginBottom="@dimen/spacing_small">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="City: "
                                 android:textStyle="bold"
-                                android:textSize="11sp"
-                                android:textColor="@color/textColorPrimary"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/black"/>
 
                             <TextView
                                 android:id="@+id/txtCity"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="-"
-                                android:textSize="11sp"
-                                android:textColor="@color/text_item_value"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/textColorSecondary"/>
                         </LinearLayout>
 
                         <!-- State -->
@@ -172,16 +172,16 @@
                                 android:layout_height="wrap_content"
                                 android:text="State: "
                                 android:textStyle="bold"
-                                android:textSize="11sp"
-                                android:textColor="@color/textColorPrimary"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/black"/>
 
                             <TextView
                                 android:id="@+id/txtState"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="-"
-                                android:textSize="11sp"
-                                android:textColor="@color/text_item_value"/>
+                                android:textSize="@dimen/text_size_caption"
+                                android:textColor="@color/textColorSecondary"/>
                         </LinearLayout>
 
                     </LinearLayout>
@@ -193,7 +193,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="24dp"/>
+                    android:layout_marginBottom="@dimen/spacing_xlarge"/>
 
                 <!-- Buttons Row -->
                 <LinearLayout
@@ -208,10 +208,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Update"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         app:icon="@drawable/ic_edit"
-                        app:backgroundTint="@color/icon_blue"
-                        android:layout_marginEnd="8dp"/>
+                        app:backgroundTint="@color/brand_blue"
+                        android:layout_marginEnd="@dimen/spacing_small"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnFreeze"
@@ -219,10 +219,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Freeze"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         app:icon="@drawable/ic_lock"
-                        app:backgroundTint="@color/icon_red"
-                        android:layout_marginStart="8dp"/>
+                        app:backgroundTint="@color/brand_red"
+                        android:layout_marginStart="@dimen/spacing_small"/>
 
                 </LinearLayout>
 

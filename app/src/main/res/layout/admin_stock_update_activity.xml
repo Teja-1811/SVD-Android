@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA">
+    android:background="@color/window_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,8 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:paddingTop="8dp"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            tools:listitem="@layout/admin_stock_update_item"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitUpdate"
@@ -29,7 +30,7 @@
             android:layout_margin="16dp"
             android:text="Update Stock Levels"
             android:textAllCaps="false"
-            android:backgroundTint="#00835F"
+            android:backgroundTint="@color/icon_green"
             app:cornerRadius="8dp"
             android:padding="12dp"
             android:textSize="16sp"
@@ -42,7 +43,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
-        app:menu="@menu/menu_admin_drawer" />
+        app:menu="@menu/menu_admin_drawer"
+        app:itemIconTint="@color/textColorSecondary"
+        app:itemTextColor="@color/black"
+        app:elevation="0dp" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

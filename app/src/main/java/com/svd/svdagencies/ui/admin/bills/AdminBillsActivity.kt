@@ -2,6 +2,7 @@ package com.svd.svdagencies.ui.admin.bills
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.widget.ArrayAdapter
@@ -18,14 +19,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.model.admin.Bills.AdminBill
 import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
 import com.svd.svdagencies.ui.admin.adapter.AdminBillAdapter
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import com.svd.svdagencies.utils.RefreshManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -71,6 +75,11 @@ class AdminBillsActivity : AdminBaseActivity() {
         rvBills = findViewById(R.id.rvBills)
         fabCreateBill = findViewById(R.id.fabCreateBill)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        
+        // Use RefreshManager to setup swipe refresh
+        RefreshManager.setupRefresh(swipeRefreshLayout) {
+            fetchBills()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -87,8 +96,11 @@ class AdminBillsActivity : AdminBaseActivity() {
                 }
                 startActivity(intent)
             },
+            onWhatsappClick = { bill ->
+                shareBillOnWhatsapp(bill)
+            },
             onDownloadClick = { bill ->
-                bill.id?.let { downloadBill(it) }
+                bill.id.let { downloadBill(it) }
             },
             onDeleteClick = { bill ->
                 showDeleteConfirmation(bill.id, bill.bill_number)
@@ -96,6 +108,50 @@ class AdminBillsActivity : AdminBaseActivity() {
         )
         rvBills.layoutManager = LinearLayoutManager(this)
         rvBills.adapter = billAdapter
+    }
+
+    private fun shareBillOnWhatsapp(bill: AdminBill) {
+        val customer = customers.find { it.name == bill.customer_name }
+        if (customer == null) {
+            Toast.makeText(this, "Customer details not found for sharing", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val phoneNumber = customer.phone
+        if (phoneNumber.isNullOrEmpty()) {
+            Toast.makeText(this, "Customer phone number not available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val due = customer.due ?: 0.0
+        val dueStatusMessage = if (due >= 0) {
+            "Current Due: ₹$due"
+        } else {
+            "Wallet Balance: ₹${Math.abs(due)}"
+        }
+
+        val message = """
+            *Invoice Details*
+            Bill #: ${bill.bill_number}
+            Date: ${bill.date}
+            Total Amount: ₹${bill.total_amount}
+            
+            *Customer Details*
+            Name: ${bill.customer_name}
+            $dueStatusMessage
+            
+            Visit us: www.svdagencies.shop
+            Thank you for your business!
+        """.trimIndent()
+
+        try {
+            val url = "https://api.whatsapp.com/send?phone=91$phoneNumber&text=" + URLEncoder.encode(message, "UTF-8")
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp not installed or error occurred", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showDeleteConfirmation(billId: Int?, billNumber: String?) {
@@ -162,10 +218,6 @@ class AdminBillsActivity : AdminBaseActivity() {
             val intent = Intent(this, CreateBillActivity::class.java)
             startActivity(intent)
         }
-        
-        swipeRefreshLayout.setOnRefreshListener {
-            fetchBills()
-        }
     }
 
     private fun showDatePickerDialog(isStartDate: Boolean) {
@@ -209,7 +261,7 @@ class AdminBillsActivity : AdminBaseActivity() {
     }
 
     private fun fetchBills() {
-        swipeRefreshLayout.isRefreshing = true
+        RefreshManager.startRefresh(swipeRefreshLayout)
         val selectedText = autoCompleteCustomer.text.toString()
         val customerId = if (selectedText.isNotEmpty()) {
             customers.find { "${it.name} (${it.shop_name})" == selectedText }?.id
@@ -225,7 +277,7 @@ class AdminBillsActivity : AdminBaseActivity() {
             } catch (e: Exception) {
                 Toast.makeText(this@AdminBillsActivity, "Error fetching bills: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
-                swipeRefreshLayout.isRefreshing = false
+                RefreshManager.stopRefresh(swipeRefreshLayout)
             }
         }
     }

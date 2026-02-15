@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Company
@@ -31,7 +30,6 @@ class AdminCompaniesActivity : AdminBaseActivity() {
         setupAdminLayout("Companies")
 
         setupRecyclerView()
-        setupSearch()
         setupSwipeRefresh()
         setupAddButton()
 
@@ -53,16 +51,6 @@ class AdminCompaniesActivity : AdminBaseActivity() {
             }
         )
         binding.rvCompanies.adapter = adapter
-    }
-
-    private fun setupSearch() {
-        binding.etSearchCompanies.addTextChangedListener { text ->
-            val query = text.toString().lowercase()
-            val filtered = allCompanies.filter { 
-                it.name.lowercase().contains(query)
-            }
-            adapter.submitList(filtered)
-        }
     }
 
     private fun setupSwipeRefresh() {

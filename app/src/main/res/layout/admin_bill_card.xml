@@ -4,17 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
+    android:layout_marginBottom="@dimen/spacing_medium"
+    app:cardCornerRadius="@dimen/card_corner_radius_small"
+    app:cardElevation="0dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#80BDBDBD">
+    app:strokeColor="@color/card_stroke_color"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="@dimen/spacing_medium">
 
         <!-- HEADER: Bill # and Date -->
         <LinearLayout
@@ -31,7 +32,7 @@
                 android:text="Bill #INV-000000"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="13sp"/>
+                android:textSize="@dimen/text_size_small"/>
 
             <TextView
                 android:id="@+id/tvBillDate"
@@ -41,11 +42,11 @@
                 android:background="@drawable/bg_qty_outline"
                 android:backgroundTint="@color/white"
                 android:textColor="@color/black"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+                android:paddingStart="@dimen/spacing_small"
+                android:paddingEnd="@dimen/spacing_small"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_small"
                 android:textStyle="bold"/>
         </LinearLayout>
 
@@ -54,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="@dimen/spacing_tiny">
             
             <TextView
                 android:layout_width="wrap_content"
@@ -62,15 +63,15 @@
                 android:text="Customer: "
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/text_size_small"/>
 
             <TextView
                 android:id="@+id/tvCustomerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Customer Name"
-                android:textColor="#555555"
-                android:textSize="12sp"/>
+                android:textColor="@color/textColorSecondary"
+                android:textSize="@dimen/text_size_small"/>
         </LinearLayout>
 
         <!-- Total -->
@@ -78,15 +79,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="@dimen/spacing_tiny">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Total: "
                 android:textStyle="bold"
-                android:textColor="#2196F3"
-                android:textSize="12sp"/>
+                android:textColor="@color/brand_blue"
+                android:textSize="@dimen/text_size_small"/>
 
             <TextView
                 android:id="@+id/tvTotalAmount"
@@ -94,8 +95,8 @@
                 android:layout_height="wrap_content"
                 android:text="₹0.00"
                 android:textStyle="bold"
-                android:textColor="#2196F3"
-                android:textSize="13sp"/>
+                android:textColor="@color/brand_blue"
+                android:textSize="@dimen/text_size_small"/>
         </LinearLayout>
 
         <!-- Profit -->
@@ -103,15 +104,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="@dimen/spacing_tiny">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profit: "
                 android:textStyle="bold"
-                android:textColor="#4CAF50"
-                android:textSize="12sp"/>
+                android:textColor="@color/icon_green"
+                android:textSize="@dimen/text_size_small"/>
 
             <TextView
                 android:id="@+id/tvProfitAmount"
@@ -119,8 +120,8 @@
                 android:layout_height="wrap_content"
                 android:text="₹0.00"
                 android:textStyle="bold"
-                android:textColor="#4CAF50"
-                android:textSize="13sp"/>
+                android:textColor="@color/icon_green"
+                android:textSize="@dimen/text_size_small"/>
         </LinearLayout>
 
         <!-- ACTION BUTTONS -->
@@ -128,7 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="@dimen/spacing_medium">
 
             <!-- View Button -->
             <ImageButton
@@ -136,12 +137,12 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/ic_eye"
-                android:tint="#2196F3"
+                app:tint="@color/brand_blue"
                 android:background="@drawable/bg_outline_blue"
-                android:padding="8dp"
+                android:padding="@dimen/spacing_small"
                 android:scaleType="fitCenter"/>
 
-            <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+            <Space android:layout_width="@dimen/spacing_small" android:layout_height="wrap_content"/>
 
             <!-- Edit Button -->
             <ImageButton
@@ -149,12 +150,25 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/ic_edit"
-                android:tint="#FF9800"
+                app:tint="@color/icon_orange"
                 android:background="@drawable/bg_outline_orange"
-                android:padding="8dp"
+                android:padding="@dimen/spacing_small"
                 android:scaleType="fitCenter"/>
 
-            <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+            <Space android:layout_width="@dimen/spacing_small" android:layout_height="wrap_content"/>
+
+            <!-- WhatsApp Share Button -->
+            <ImageButton
+                android:id="@+id/btnWhatsapp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_whatsapp"
+                app:tint="@color/icon_green"
+                android:background="@drawable/bg_outline_green"
+                android:padding="@dimen/spacing_small"
+                android:scaleType="fitCenter"/>
+
+            <Space android:layout_width="@dimen/spacing_small" android:layout_height="wrap_content"/>
 
             <!-- Download Button -->
             <ImageButton
@@ -162,12 +176,12 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/ic_download"
-                android:tint="#4CAF50"
-                android:background="@drawable/bg_outline_green"
-                android:padding="8dp"
+                app:tint="@color/brand_blue"
+                android:background="@drawable/bg_outline_blue"
+                android:padding="@dimen/spacing_small"
                 android:scaleType="fitCenter"/>
 
-            <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+            <Space android:layout_width="@dimen/spacing_small" android:layout_height="wrap_content"/>
 
             <!-- Delete Button -->
             <ImageButton
@@ -175,9 +189,9 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/ic_trash"
-                android:tint="#F44336"
+                app:tint="@color/brand_red"
                 android:background="@drawable/bg_outline_red"
-                android:padding="8dp"
+                android:padding="@dimen/spacing_small"
                 android:scaleType="fitCenter"/>
 
         </LinearLayout>

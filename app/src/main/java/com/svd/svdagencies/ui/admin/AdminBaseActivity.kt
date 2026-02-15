@@ -7,20 +7,19 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.svd.svdagencies.R
-import com.svd.svdagencies.ui.auth.LoginActivity
-import com.svd.svdagencies.utils.SessionManager
-import com.svd.svdagencies.ui.admin.customer.CustomersData
 import com.svd.svdagencies.ui.admin.bills.AdminBillsActivity
-import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
-import com.svd.svdagencies.ui.admin.stock.AdminStockActivity
 import com.svd.svdagencies.ui.admin.cashbook.AdminCashBookActivity
 import com.svd.svdagencies.ui.admin.companies.AdminCompaniesActivity
+import com.svd.svdagencies.ui.admin.customer.CustomersData
+import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
+import com.svd.svdagencies.ui.admin.stock.AdminStockActivity
+import com.svd.svdagencies.ui.auth.LoginActivity
+import com.svd.svdagencies.utils.SessionManager
 
 abstract class AdminBaseActivity : AppCompatActivity() {
 

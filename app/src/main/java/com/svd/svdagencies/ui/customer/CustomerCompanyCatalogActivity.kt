@@ -1,4 +1,4 @@
-package com.svd.svdagencies.ui.customer.fragment
+package com.svd.svdagencies.ui.customer
 
 import android.os.Bundle
 import android.view.View
@@ -7,12 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.databinding.CustomerCompanyCatalogBinding
-import com.svd.svdagencies.ui.admin.companies.CatalogAdapter
+import com.svd.svdagencies.ui.customer.adapter.CustomerCatalogAdapter
 import kotlinx.coroutines.launch
 
 class CustomerCompanyCatalogActivity : AppCompatActivity() {
     private lateinit var binding: CustomerCompanyCatalogBinding
-    private lateinit var adapter: CatalogAdapter
+    private lateinit var adapter: CustomerCatalogAdapter
     private var companyId: Int = -1
     private var companyName: String = ""
 
@@ -46,7 +46,7 @@ class CustomerCompanyCatalogActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = CatalogAdapter()
+        adapter = CustomerCatalogAdapter()
         binding.rvCatalogItems.adapter = adapter
     }
 

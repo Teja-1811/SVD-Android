@@ -15,16 +15,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_large">
 
             <!-- ================= WELCOME CARD ================= -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="6dp"
+                app:cardCornerRadius="@dimen/card_corner_radius_large"
+                app:cardElevation="@dimen/spacing_xsmall"
                 app:cardBackgroundColor="#6E63C5"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="@dimen/spacing_large">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -38,23 +38,23 @@
                         android:layout_height="110dp"
                         android:background="@drawable/circular_white_background"
                         android:src="@drawable/logo"
-                        android:layout_marginBottom="12dp"/>
+                        android:layout_marginBottom="@dimen/spacing_medium"/>
 
                     <TextView
                         android:id="@+id/tvWelcome"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Welcome back 👋"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/text_size_large"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
-                        android:layout_marginBottom="6dp"/>
+                        android:layout_marginBottom="@dimen/spacing_xsmall"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Manage your orders, track your account,\nand stay updated with \n Sri Vijaya Durga Milk Agencies"
-                        android:textSize="11sp"
+                        android:textSize="@dimen/text_size_small"
                         android:textColor="@android:color/white"
                         android:gravity="center"/>
                 </LinearLayout>
@@ -64,15 +64,15 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="4dp"
-                android:layout_marginBottom="12dp">
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                app:cardElevation="@dimen/spacing_tiny"
+                android:layout_marginBottom="@dimen/spacing_medium">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/editTextBackground"
-                    android:padding="16dp"
+                    android:padding="@dimen/spacing_large"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
@@ -81,7 +81,7 @@
                         android:layout_height="24dp"
                         android:src="@drawable/ic_rupee"
                         android:tint="@color/login_text_red"
-                        android:layout_marginEnd="12dp"/>
+                        android:layout_marginEnd="@dimen/spacing_medium"/>
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -92,7 +92,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Account Balance"
-                            android:textSize="11sp"
+                            android:textSize="@dimen/text_size_small"
                             android:textColor="@color/textColorSecondary"/>
 
                         <TextView
@@ -100,7 +100,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0.00"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_size_medium"
                             android:textStyle="bold"
                             android:textColor="@color/textColorPrimary"/>
                     </LinearLayout>
@@ -111,15 +111,15 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="4dp"
-                android:layout_marginBottom="12dp">
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                app:cardElevation="@dimen/spacing_tiny"
+                android:layout_marginBottom="@dimen/spacing_medium">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/editTextBackground"
-                    android:padding="16dp"
+                    android:padding="@dimen/spacing_large"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
@@ -128,7 +128,7 @@
                         android:layout_height="24dp"
                         android:src="@drawable/ic_shop"
                         android:tint="@color/icon_red"
-                        android:layout_marginEnd="12dp"/>
+                        android:layout_marginEnd="@dimen/spacing_medium"/>
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -139,7 +139,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shop Name"
-                            android:textSize="11sp"
+                            android:textSize="@dimen/text_size_small"
                             android:textColor="@color/textColorSecondary"/>
 
                         <TextView
@@ -147,7 +147,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shop Name"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/text_size_medium"
                             android:textStyle="bold"
                             android:textColor="@color/textColorPrimary"/>
                     </LinearLayout>
@@ -158,13 +158,13 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                app:cardElevation="@dimen/spacing_tiny">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:padding="@dimen/spacing_large"
                     android:background="@color/editTextBackground"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
@@ -174,14 +174,14 @@
                         android:layout_height="24dp"
                         android:src="@drawable/ic_check"
                         android:tint="@color/icon_green"
-                        android:layout_marginEnd="12dp"/>
+                        android:layout_marginEnd="@dimen/spacing_medium"/>
 
                     <TextView
                         android:id="@+id/tvStatus"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="Account Status : Active"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold"
                         android:textColor="@color/icon_green"/>
                 </LinearLayout>

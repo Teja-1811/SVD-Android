@@ -10,7 +10,8 @@
     app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#F0F0F0">
+    app:strokeColor="@color/editTextStroke"
+    app:cardBackgroundColor="@color/card_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,7 +25,7 @@
             android:layout_height="84dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="#F8F9FA"
+            app:cardBackgroundColor="@color/bg_light_gray"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -81,7 +82,7 @@
             android:id="@+id/tvPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#2E7D32"
+            android:textColor="@color/icon_green"
             android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -94,10 +95,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:background="@drawable/bg_qty_outline"
-            android:backgroundTint="#E8F5E9"
+            android:backgroundTint="@color/bg_light_green"
             android:paddingHorizontal="6dp"
             android:paddingVertical="2dp"
-            android:textColor="#2E7D32"
+            android:textColor="@color/icon_green"
             android:textSize="11sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -109,7 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="#F5F5F5"
+            android:background="@color/divider_line"
             app:layout_constraintTop_toBottomOf="@id/imageContainer" />
 
         <!-- QUANTITY CONTROLS -->
@@ -129,7 +130,7 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_qty_outline"
-                android:backgroundTint="#F5F5F5"
+                android:backgroundTint="@color/bg_light_gray"
                 android:src="@drawable/ic_minus"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
@@ -153,11 +154,11 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_qty_outline"
-                android:backgroundTint="#F5F5F5"
+                android:backgroundTint="@color/bg_light_gray"
                 android:src="@drawable/ic_plus"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
-                app:tint="#2E7D32" />
+                app:tint="@color/icon_green" />
         </LinearLayout>
 
         <!-- LINE TOTAL -->

@@ -12,15 +12,13 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.CustomerApi
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
-import com.svd.svdagencies.utils.Refreshable
+import com.svd.svdagencies.utils.RefreshManager
 import com.svd.svdagencies.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CustomerHomeFragment :
-    Fragment(R.layout.customer_home),
-    Refreshable {
+class CustomerHomeFragment : Fragment(R.layout.customer_home) {
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var tvWelcome: TextView
@@ -53,15 +51,14 @@ class CustomerHomeFragment :
         // API
         api = ApiClient.retrofit.create(CustomerApi::class.java)
         
-        swipeRefresh.setOnRefreshListener {
+        // Use RefreshManager to setup swipe refresh
+        RefreshManager.setupRefresh(swipeRefresh) {
             loadDashboard()
         }
 
         // Initial load
-        swipeRefresh.post {
-            swipeRefresh.isRefreshing = true
-            loadDashboard()
-        }
+        RefreshManager.startRefresh(swipeRefresh)
+        loadDashboard()
     }
 
     // ================= LOAD DASHBOARD =================
@@ -75,7 +72,7 @@ class CustomerHomeFragment :
             ) {
                 val context = context ?: return // Safe check
                 
-                swipeRefresh.isRefreshing = false
+                RefreshManager.stopRefresh(swipeRefresh)
                 
                 if (!response.isSuccessful) {
                     Toast.makeText(
@@ -110,7 +107,7 @@ class CustomerHomeFragment :
             override fun onFailure(call: Call<CustomerDashboardResponse>, t: Throwable) {
                 val context = context ?: return // Safe check
                 
-                swipeRefresh.isRefreshing = false
+                RefreshManager.stopRefresh(swipeRefresh)
                 Toast.makeText(
                     context,
                     "Network error: ${t.localizedMessage}",
@@ -118,10 +115,5 @@ class CustomerHomeFragment :
                 ).show()
             }
         })
-    }
-
-    // ================= PULL TO REFRESH =================
-    override fun onRefresh() {
-        loadDashboard()
     }
 }

@@ -21,7 +21,8 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -33,10 +34,11 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
                     app:strokeWidth="1dp"
-                    app:strokeColor="#E0E0E0">
+                    app:strokeColor="@color/card_stroke_color"
+                    app:cardBackgroundColor="@color/card_background">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -62,7 +64,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:inputType="none"
-                                    android:textSize="12sp" />
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black" />
                             </com.google.android.material.textfield.TextInputLayout>
 
                             <com.google.android.material.textfield.TextInputLayout
@@ -76,7 +79,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:inputType="none"
-                                    android:textSize="12sp" />
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black" />
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
@@ -87,14 +91,16 @@
                             android:layout_marginTop="12dp"
                             android:hint="Bill Date"
                             app:endIconMode="custom"
-                            app:endIconDrawable="@drawable/ic_calendar">
+                            app:endIconDrawable="@drawable/ic_calendar"
+                            app:endIconTint="@color/brand_red">
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tvBillDate"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:focusable="false"
                                 android:clickable="true"
-                                android:textSize="12sp"
+                                android:textSize="14sp"
+                                android:textColor="@color/black"
                                 tools:text="30-01-2026" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,10 +112,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
                     app:strokeWidth="1dp"
-                    app:strokeColor="#E0E0E0">
+                    app:strokeColor="@color/card_stroke_color"
+                    app:cardBackgroundColor="@color/card_background">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -122,7 +129,7 @@
                             android:layout_height="wrap_content"
                             android:text="Add Item to Bill"
                             android:textStyle="bold"
-                            android:textSize="13sp"
+                            android:textSize="16sp"
                             android:textColor="@color/black"
                             android:layout_marginBottom="16dp"/>
 
@@ -136,8 +143,8 @@
                                 android:id="@+id/etSearchItems"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:textAlignment="center"
+                                android:textSize="14sp"
+                                android:textColor="@color/black"
                                 android:maxLines="1"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -152,7 +159,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
-                                android:textSize="12sp" />
+                                android:textSize="14sp"
+                                android:textColor="@color/black" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <LinearLayout
@@ -175,7 +183,8 @@
                                     android:layout_height="wrap_content"
                                     android:text="0"
                                     android:enabled="false"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
                                     android:gravity="center" />
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -192,7 +201,8 @@
                                     android:layout_height="wrap_content"
                                     android:text="1"
                                     android:inputType="number"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
                                     android:gravity="center" />
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -208,7 +218,8 @@
                                     android:layout_height="wrap_content"
                                     android:text="0"
                                     android:inputType="numberDecimal"
-                                    android:textSize="12sp"
+                                    android:textSize="14sp"
+                                    android:textColor="@color/black"
                                     android:gravity="center" />
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
@@ -216,139 +227,157 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnAddItem"
                             android:layout_width="match_parent"
-                            android:layout_height="56dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Add Item to Bill"
+                            android:text="Add to List"
                             android:textAllCaps="false"
-                            android:textSize="12sp"
+                            android:textSize="14sp"
                             app:cornerRadius="8dp"
-                            app:icon="@drawable/ic_add"
-                            android:backgroundTint="#2E7D32" />
+                            app:backgroundTint="@color/brand_red"/>
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Billed Items Table Card -->
+                <!-- Bill Summary / Items List Section -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
                     app:strokeWidth="1dp"
-                    app:strokeColor="#E0E0E0">
+                    app:strokeColor="@color/card_stroke_color"
+                    app:cardBackgroundColor="@color/card_background">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="12dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Bill Summary"
+                            android:text="Items in this Bill"
                             android:textStyle="bold"
-                            android:textSize="13sp"
+                            android:textSize="16sp"
                             android:textColor="@color/black"
-                            android:layout_margin="16dp"/>
+                            android:layout_marginBottom="12dp"/>
 
-                        <HorizontalScrollView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <!-- Table Header -->
-                                <LinearLayout
-                                    android:layout_width="500dp"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:paddingVertical="12dp"
-                                    android:paddingHorizontal="8dp"
-                                    android:background="#F5F5F5"
-                                    android:weightSum="100">
-                                    <TextView android:layout_width="0dp" android:layout_weight="30" android:layout_height="wrap_content" android:text="Product" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black" android:gravity="start"/>
-                                    <TextView android:layout_width="0dp" android:layout_weight="11" android:layout_height="wrap_content" android:text="Price" android:textStyle="bold" android:gravity="center" android:textSize="11sp" android:textColor="@color/black"/>
-                                    <TextView android:layout_width="0dp" android:layout_weight="11" android:layout_height="wrap_content" android:text="Qty" android:textStyle="bold" android:gravity="center" android:textSize="11sp" android:textColor="@color/black"/>
-                                    <TextView android:layout_width="0dp" android:layout_weight="11" android:layout_height="wrap_content" android:text="Disc" android:textStyle="bold" android:gravity="center" android:textSize="11sp" android:textColor="@color/black"/>
-                                    <TextView android:layout_width="0dp" android:layout_weight="11" android:layout_height="wrap_content" android:text="TDA" android:textStyle="bold" android:gravity="center" android:textSize="11sp" android:textColor="@color/black"/>
-                                    <TextView android:layout_width="0dp" android:layout_weight="11" android:layout_height="wrap_content" android:text="Total" android:textStyle="bold" android:gravity="end" android:textSize="11sp" android:textColor="@color/black"/>
-                                    <TextView android:layout_width="0dp" android:layout_weight="15" android:layout_height="wrap_content" android:text="Action" android:textStyle="bold" android:gravity="center" android:textSize="11sp" android:textColor="@color/black"/>
-                                </LinearLayout>
-
-                                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" />
-
-                                <androidx.recyclerview.widget.RecyclerView
-                                    android:id="@+id/rvBillItems"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:minHeight="100dp"
-                                    android:nestedScrollingEnabled="false"
-                                    tools:listitem="@layout/admin_bill_summary" />
-
-                            </LinearLayout>
-                        </HorizontalScrollView>
-
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" />
-
-                        <!-- Table Footer / Total Row -->
+                        <!-- Header for Item Table -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp"
-                            android:background="#F9F9F9">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginBottom="4dp">
-                                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Total Quantity:" android:textSize="12sp"/>
-                                <TextView android:id="@+id/tvTotalQty" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textStyle="bold" android:textSize="12sp" android:textColor="@color/black"/>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_marginBottom="8dp">
-                                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Total Discount:" android:textSize="12sp"/>
-                                <TextView android:id="@+id/tvTotalDiscAmount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹0.00" android:textStyle="bold" android:textSize="12sp" android:textColor="@color/black"/>
-                            </LinearLayout>
-
-                            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0" android:layout_marginBottom="8dp"/>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-                                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Grand Total:" android:textStyle="bold" android:textSize="13sp" android:textColor="@color/black"/>
-                                <TextView android:id="@+id/tvGrandTotal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹0.00" android:textStyle="bold" android:textSize="13sp" android:textColor="#2E7D32"/>
-                            </LinearLayout>
+                            android:orientation="horizontal"
+                            android:background="@color/bg_light_gray"
+                            android:paddingVertical="8dp"
+                            android:paddingHorizontal="8dp"
+                            android:weightSum="100">
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="30" android:text="Item" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Prc" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Qty" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="D%" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="DA" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Tot" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Act" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
                         </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvBillItems"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            tools:listitem="@layout/admin_bill_summary"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/divider_line"
+                            android:layout_marginVertical="12dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="end"
+                            android:layout_marginTop="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Qty: "
+                                android:textSize="14sp"
+                                android:textColor="@color/textColorSecondary"/>
+                            <TextView
+                                android:id="@+id/tvTotalQty"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="end">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Discount: "
+                                android:textSize="14sp"
+                                android:textColor="@color/textColorSecondary"/>
+                            <TextView
+                                android:id="@+id/tvTotalDiscAmount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹0.00"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="end"
+                            android:layout_marginTop="4dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Grand Total: "
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"/>
+                            <TextView
+                                android:id="@+id/tvGrandTotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹0.00"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/brand_red"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGenerateBill"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="24dp"
+                            android:text="Generate Bill"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            android:paddingVertical="12dp"
+                            app:cornerRadius="8dp"
+                            app:backgroundTint="@color/icon_green"/>
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnGenerateBill"
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="24dp"
-                    android:text="GENERATE FINAL BILL"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="8dp"
-                    android:backgroundTint="@color/black" />
-
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
-
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -356,7 +385,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
-        app:menu="@menu/menu_admin_drawer"/>
+        app:menu="@menu/menu_admin_drawer"
+        app:itemIconTint="@color/textColorSecondary"
+        app:itemTextColor="@color/black"
+        app:elevation="0dp" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -21,43 +21,45 @@
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="@dimen/spacing_medium">
 
                     <!-- Bill Header Card -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="2dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                        app:cardElevation="0dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#E0E0E0">
+                        app:strokeColor="@color/card_stroke_color"
+                        app:cardBackgroundColor="@color/card_background">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="16dp">
+                            android:padding="@dimen/spacing_large">
 
                             <TextView
                                 android:id="@+id/tvCustomerName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/black"
-                                android:textSize="13sp"
+                                android:textSize="@dimen/text_size_small"
                                 android:textStyle="bold"
                                 tools:text="N Satyavathi" />
 
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:layout_marginVertical="12dp"
-                                android:background="#EEEEEE" />
+                                android:layout_marginVertical="@dimen/spacing_medium"
+                                android:background="@color/divider_line" />
 
                             <GridLayout
                                 android:layout_width="match_parent"
@@ -75,8 +77,8 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Bill Number"
-                                        android:textSize="11sp"
-                                        android:textColor="#757575" />
+                                        android:textSize="@dimen/text_size_caption"
+                                        android:textColor="@color/textColorSecondary" />
 
                                     <TextView
                                         android:id="@+id/tvBillNumber"
@@ -84,7 +86,7 @@
                                         android:layout_height="wrap_content"
                                         android:textColor="@color/black"
                                         android:textStyle="bold"
-                                        android:textSize="12sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         tools:text="#INV-20260130061157" />
                                 </LinearLayout>
 
@@ -99,8 +101,8 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Bill Date"
-                                        android:textSize="11sp"
-                                        android:textColor="#757575" />
+                                        android:textSize="@dimen/text_size_caption"
+                                        android:textColor="@color/textColorSecondary" />
 
                                     <TextView
                                         android:id="@+id/tvBillDate"
@@ -108,7 +110,7 @@
                                         android:layout_height="wrap_content"
                                         android:textColor="@color/black"
                                         android:textStyle="bold"
-                                        android:textSize="12sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         tools:text="2026-01-30" />
                                 </LinearLayout>
                             </GridLayout>
@@ -120,11 +122,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:layout_marginBottom="@dimen/spacing_small"
                         android:text="Financial Summary"
                         android:textStyle="bold"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/text_size_small"
                         android:textColor="@color/black" />
 
                     <GridLayout
@@ -138,25 +140,30 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp">
+                            android:layout_margin="@dimen/spacing_tiny"
+                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/card_stroke_color"
+                            app:cardBackgroundColor="@color/card_background">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:padding="12dp">
+                                android:padding="@dimen/spacing_medium">
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Total Amount"
-                                    android:textSize="11sp" />
+                                    android:textSize="@dimen/text_size_caption"
+                                    android:textColor="@color/textColorSecondary"/>
                                 <TextView
                                     android:id="@+id/tvTotalAmount"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/icon_blue"
+                                    android:textColor="@color/brand_blue"
                                     android:textStyle="bold"
-                                    android:textSize="12sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     tools:text="₹192.0" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
@@ -165,25 +172,30 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp">
+                            android:layout_margin="@dimen/spacing_tiny"
+                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/card_stroke_color"
+                            app:cardBackgroundColor="@color/card_background">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:padding="12dp">
+                                android:padding="@dimen/spacing_medium">
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Net Profit"
-                                    android:textSize="11sp" />
+                                    android:textSize="@dimen/text_size_caption"
+                                    android:textColor="@color/textColorSecondary"/>
                                 <TextView
                                     android:id="@+id/tvProfit"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textColor="#4CAF50"
+                                    android:textColor="@color/icon_green"
                                     android:textStyle="bold"
-                                    android:textSize="12sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     tools:text="₹22.2" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
@@ -192,25 +204,30 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp">
+                            android:layout_margin="@dimen/spacing_tiny"
+                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/card_stroke_color"
+                            app:cardBackgroundColor="@color/card_background">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:padding="12dp">
+                                android:padding="@dimen/spacing_medium">
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Opening Due"
-                                    android:textSize="11sp" />
+                                    android:textSize="@dimen/text_size_caption"
+                                    android:textColor="@color/textColorSecondary"/>
                                 <TextView
                                     android:id="@+id/tvOpeningDue"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textColor="#F44336"
+                                    android:textColor="@color/brand_red"
                                     android:textStyle="bold"
-                                    android:textSize="12sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     tools:text="₹18.0" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
@@ -219,25 +236,30 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp">
+                            android:layout_margin="@dimen/spacing_tiny"
+                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardElevation="0dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/card_stroke_color"
+                            app:cardBackgroundColor="@color/card_background">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:padding="12dp">
+                                android:padding="@dimen/spacing_medium">
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="Current Due"
-                                    android:textSize="11sp" />
+                                    android:textSize="@dimen/text_size_caption"
+                                    android:textColor="@color/textColorSecondary"/>
                                 <TextView
                                     android:id="@+id/tvCurrentDue"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textColor="#F44336"
+                                    android:textColor="@color/brand_red"
                                     android:textStyle="bold"
-                                    android:textSize="12sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     tools:text="₹210.0" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
@@ -247,51 +269,52 @@
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        app:cardCornerRadius="4dp"
-                        app:cardElevation="2dp"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#E0E0E0">
+                        app:strokeColor="@color/card_stroke_color"
+                        app:cardBackgroundColor="@color/card_background">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
-                            <!-- Blue Cyan Header -->
+                            <!-- Header -->
                             <TextView
                                 android:id="@+id/tvBillItemsCount"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="#00BCD4"
+                                android:background="@color/brand_blue"
                                 android:padding="10dp"
                                 android:text="Bill Items"
                                 android:textColor="@color/white"
                                 android:textStyle="bold"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 tools:text="Bill Items (2 items)" />
 
                             <!-- Table Column Headers -->
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="#FFFFFF"
+                                android:background="@color/card_background"
                                 android:orientation="horizontal"
-                                android:paddingVertical="8dp"
-                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="@dimen/spacing_small"
+                                android:paddingHorizontal="@dimen/spacing_medium"
                                 android:weightSum="100">
-                                <TextView android:layout_width="0dp" android:layout_weight="5" android:layout_height="wrap_content" android:text="#" android:textStyle="bold" android:textSize="10sp" android:textColor="@color/black"/>
-                                <TextView android:layout_width="0dp" android:layout_weight="45" android:layout_height="wrap_content" android:text="Item Name" android:textStyle="bold" android:textSize="10sp" android:textColor="@color/black"/>
-                                <TextView android:layout_width="0dp" android:layout_weight="10" android:layout_height="wrap_content" android:text="QTY" android:gravity="center" android:textStyle="bold" android:textSize="10sp" android:textColor="@color/black"/>
-                                <TextView android:layout_width="0dp" android:layout_weight="13" android:layout_height="wrap_content" android:text="Price/Unit" android:gravity="center" android:textStyle="bold" android:textSize="10sp" android:textColor="@color/black"/>
-                                <TextView android:layout_width="0dp" android:layout_weight="12" android:layout_height="wrap_content" android:text="Discount" android:gravity="center" android:textStyle="bold" android:textSize="10sp" android:textColor="@color/black"/>
-                                <TextView android:layout_width="0dp" android:layout_weight="15" android:layout_height="wrap_content" android:text="Total" android:gravity="end" android:textStyle="bold" android:textSize="10sp" android:textColor="@color/black"/>
+                                <TextView android:layout_width="0dp" android:layout_weight="5" android:layout_height="wrap_content" android:text="#" android:textStyle="bold" android:textSize="@dimen/text_size_micro" android:textColor="@color/black"/>
+                                <TextView android:layout_width="0dp" android:layout_weight="45" android:layout_height="wrap_content" android:text="Item Name" android:textStyle="bold" android:textSize="@dimen/text_size_micro" android:textColor="@color/black"/>
+                                <TextView android:layout_width="0dp" android:layout_weight="10" android:layout_height="wrap_content" android:text="QTY" android:gravity="center" android:textStyle="bold" android:textSize="@dimen/text_size_micro" android:textColor="@color/black"/>
+                                <TextView android:layout_width="0dp" android:layout_weight="13" android:layout_height="wrap_content" android:text="Price/Unit" android:gravity="center" android:textStyle="bold" android:textSize="@dimen/text_size_micro" android:textColor="@color/black"/>
+                                <TextView android:layout_width="0dp" android:layout_weight="12" android:layout_height="wrap_content" android:text="Discount" android:gravity="center" android:textStyle="bold" android:textSize="@dimen/text_size_micro" android:textColor="@color/black"/>
+                                <TextView android:layout_width="0dp" android:layout_weight="15" android:layout_height="wrap_content" android:text="Total" android:gravity="end" android:textStyle="bold" android:textSize="@dimen/text_size_micro" android:textColor="@color/black"/>
                             </LinearLayout>
 
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:background="#EEEEEE" />
+                                android:background="@color/divider_line" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvBillItems"
@@ -307,7 +330,7 @@
                                 android:background="#212121"
                                 android:orientation="horizontal"
                                 android:paddingVertical="10dp"
-                                android:paddingHorizontal="12dp"
+                                android:paddingHorizontal="@dimen/spacing_medium"
                                 android:gravity="center_vertical"
                                 android:weightSum="100">
                                 <View android:layout_width="0dp" android:layout_weight="73" android:layout_height="0dp" />
@@ -320,7 +343,7 @@
                                     android:gravity="end"
                                     android:textColor="@color/white"
                                     android:textStyle="bold"
-                                    android:textSize="11sp" />
+                                    android:textSize="@dimen/text_size_caption" />
                                 <TextView
                                     android:id="@+id/tvFooterTotalAmount"
                                     android:layout_width="0dp"
@@ -329,7 +352,7 @@
                                     android:gravity="end"
                                     android:textColor="@color/white"
                                     android:textStyle="bold"
-                                    android:textSize="11sp"
+                                    android:textSize="@dimen/text_size_caption"
                                     tools:text="₹192.00" />
                             </LinearLayout>
 
@@ -350,11 +373,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/white"
-            android:elevation="8dp"
+            android:background="@color/surface_background"
+            android:elevation="0dp"
             android:orientation="horizontal"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="12dp"
+            android:paddingHorizontal="@dimen/spacing_medium"
+            android:paddingVertical="@dimen/spacing_medium"
             android:weightSum="3">
 
             <com.google.android.material.button.MaterialButton
@@ -362,16 +385,16 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:layout_marginEnd="6dp"
+                android:layout_marginEnd="@dimen/spacing_xsmall"
                 android:text="Download"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_caption"
                 android:textAllCaps="false"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 app:icon="@drawable/ic_download"
                 app:iconSize="18dp"
                 app:iconGravity="textStart"
-                app:iconPadding="8dp"
+                app:iconPadding="@dimen/spacing_small"
                 app:cornerRadius="25dp"
                 android:backgroundTint="#E3F2FD"
                 android:textColor="#1976D2"
@@ -388,14 +411,14 @@
                 android:layout_weight="1"
                 android:layout_marginHorizontal="3dp"
                 android:text="Delete"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_caption"
                 android:textAllCaps="false"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 app:icon="@drawable/ic_trash"
                 app:iconSize="18dp"
                 app:iconGravity="textStart"
-                app:iconPadding="8dp"
+                app:iconPadding="@dimen/spacing_small"
                 app:cornerRadius="25dp"
                 android:backgroundTint="#FFEBEE"
                 android:textColor="#D32F2F"
@@ -410,22 +433,23 @@
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="@dimen/spacing_xsmall"
                 android:text="Edit Bill"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_caption"
                 android:textAllCaps="false"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 app:icon="@drawable/ic_edit"
                 app:iconSize="18dp"
                 app:iconGravity="textStart"
-                app:iconPadding="8dp"
+                app:iconPadding="@dimen/spacing_small"
                 app:cornerRadius="25dp"
-                android:backgroundTint="@color/icon_blue"
+                android:backgroundTint="@color/brand_blue"
                 android:textColor="@color/white"
                 app:iconTint="@color/white"
                 android:insetTop="0dp"
-                android:insetBottom="0dp" />
+                android:insetBottom="0dp"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
 
         </LinearLayout>
 
@@ -436,7 +460,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
-        app:menu="@menu/menu_admin_drawer" />
+        app:menu="@menu/menu_admin_drawer"
+        app:itemIconTint="@color/textColorSecondary"
+        app:itemTextColor="@color/black"
+        app:elevation="0dp" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -19,66 +19,8 @@
             android:background="@color/brand_red"
             app:elevation="0dp">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:titleEnabled="false">
+            <include layout="@layout/admin_toolbar" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="24dp">
-
-                    <include layout="@layout/admin_toolbar" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingHorizontal="24dp"
-                        android:paddingTop="8dp">
-
-                        <!-- Integrated Search Bar -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            app:cardCornerRadius="12dp"
-                            app:cardElevation="4dp"
-                            app:strokeWidth="0dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:paddingHorizontal="16dp">
-
-                                <ImageView
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:src="@drawable/ic_search"
-                                    app:tint="@color/gray500" />
-
-                                <EditText
-                                    android:id="@+id/etSearchCompanies"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1"
-                                    android:background="@null"
-                                    android:hint="Search by company name..."
-                                    android:textSize="14sp"
-                                    android:paddingHorizontal="12dp"
-                                    android:inputType="text"
-                                    android:maxLines="1" />
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -99,7 +41,7 @@
                     android:id="@+id/rvCompanies"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingTop="24dp"
+                    android:paddingTop="@dimen/spacing_large"
                     android:paddingBottom="100dp"
                     android:clipToPadding="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -113,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="24dp"
+            android:layout_margin="@dimen/spacing_large"
             android:text="New Company"
             android:textColor="@color/white"
             android:textAllCaps="false"
@@ -129,8 +71,12 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
         app:menu="@menu/menu_admin_drawer"
+        app:itemIconTint="@color/textColorSecondary"
+        app:itemTextColor="@color/black"
+        app:elevation="0dp"
         app:itemShapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MaterialComponents.Chip" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

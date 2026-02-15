@@ -30,23 +30,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_large">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Item Details"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/text_size_small"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="@dimen/spacing_large"/>
 
                 <!-- Item Image -->
                 <FrameLayout
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="@dimen/spacing_large">
 
                     <ImageView
                         android:id="@+id/imgItemPreview"
@@ -82,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Item Name *"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="@dimen/spacing_medium"
                     app:hintTextAppearance="@style/TextSize11"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -90,7 +90,7 @@
                         android:id="@+id/etItemName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         android:inputType="textCapWords"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,14 +98,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Item Code"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="@dimen/spacing_medium"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etItemCode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         android:inputType="textCapCharacters"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,32 +114,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Company"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_size_caption"
                     android:textColor="@color/gray500"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="@dimen/spacing_tiny"/>
 
                 <Spinner
                     android:id="@+id/spinnerCompany"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:background="@drawable/bg_edittext"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="@dimen/spacing_large"/>
 
                 <!-- Category Spinner -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Category"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_size_caption"
                     android:textColor="@color/gray500"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="@dimen/spacing_tiny"/>
 
                 <Spinner
                     android:id="@+id/spinnerCategory"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:background="@drawable/bg_edittext"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="@dimen/spacing_large"/>
 
                 <!-- Prices Row -->
                 <LinearLayout
@@ -153,14 +153,14 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Buying Price"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="@dimen/spacing_small"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etBuyingPrice"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/text_size_body_small"
                             android:inputType="numberDecimal"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -175,7 +175,7 @@
                             android:id="@+id/etSellingPrice"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/text_size_body_small"
                             android:inputType="numberDecimal"/>
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
@@ -184,15 +184,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="MRP"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginTop="@dimen/spacing_medium"
+                    android:layout_marginBottom="@dimen/spacing_medium"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etMrp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         android:inputType="numberDecimal"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -208,14 +208,14 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Stock Qty"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="@dimen/spacing_small"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStock"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/text_size_body_small"
                             android:inputType="numberDecimal"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -230,7 +230,7 @@
                             android:id="@+id/etPcs"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/text_size_body_small"
                             android:text="1"
                             android:inputType="number"/>
                     </com.google.android.material.textfield.TextInputLayout>
@@ -251,9 +251,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="16dp"
+            android:padding="@dimen/spacing_large"
             android:background="@color/surface_background"
-            android:elevation="4dp"
+            android:elevation="@dimen/spacing_tiny"
             android:gravity="end">
 
             <com.google.android.material.button.MaterialButton
@@ -262,17 +262,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_body_small"
                 android:textColor="@color/gray500"
                 app:strokeColor="@color/gray500"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginEnd="@dimen/spacing_large"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAddItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add Item"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_body_small"
                 app:backgroundTint="@color/icon_blue"/>
 
         </LinearLayout>

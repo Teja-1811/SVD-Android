@@ -4,20 +4,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginStart="4dp"
-    android:layout_marginEnd="4dp"
-    app:cardCornerRadius="12dp"
+    android:layout_marginBottom="@dimen/spacing_medium"
+    android:layout_marginTop="@dimen/spacing_tiny"
+    android:layout_marginStart="@dimen/spacing_tiny"
+    android:layout_marginEnd="@dimen/spacing_tiny"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:strokeWidth="1dp"
-    app:strokeColor="#E0E0E0"
-    app:cardElevation="3dp">
+    app:strokeColor="@color/card_stroke_color"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="@dimen/spacing_medium">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -29,7 +30,9 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 app:cardCornerRadius="18dp"
-                app:cardElevation="2dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/card_stroke_color"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true">
 
@@ -38,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_milk_placeholder"
-                    android:padding="6dp"
+                    android:padding="@dimen/spacing_xsmall"
                     android:scaleType="fitCenter"
                     android:background="@color/white"/>
             </com.google.android.material.card.MaterialCardView>
@@ -61,13 +64,13 @@
                 android:layout_alignParentTop="true"
                 android:text="57 in stock"
                 android:background="@drawable/bg_status_active"
-                android:backgroundTint="#4CAF50"
+                android:backgroundTint="@color/icon_green"
                 android:textColor="@color/white"
-                android:paddingStart="6dp"
-                android:paddingEnd="6dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="3dp"
-                android:textSize="10sp"
+                android:paddingStart="@dimen/spacing_xsmall"
+                android:paddingEnd="@dimen/spacing_xsmall"
+                android:paddingTop="@dimen/spacing_tiny"
+                android:paddingBottom="@dimen/spacing_tiny"
+                android:textSize="@dimen/text_size_micro"
                 android:textStyle="bold"/>
 
         </RelativeLayout>
@@ -78,19 +81,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Full Cream Milk 120 ML"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_body_small"
             android:maxLines="2"
             android:ellipsize="end"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="@dimen/spacing_small"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#F5F5F5"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"/>
+            android:background="@color/divider_line"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:layout_marginBottom="@dimen/spacing_small"/>
 
         <!-- Details Grid -->
         <GridLayout
@@ -108,14 +111,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Code"
-                    android:textSize="9sp"
-                    android:textColor="@color/gray500"/>
+                    android:textSize="@dimen/text_size_micro"
+                    android:textColor="@color/textColorSecondary"/>
                 <TextView
                     android:id="@+id/tvCode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="FCM120"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_size_caption"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -131,14 +134,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Company"
-                    android:textSize="9sp"
-                    android:textColor="@color/gray500"/>
+                    android:textSize="@dimen/text_size_micro"
+                    android:textColor="@color/textColorSecondary"/>
                 <TextView
                     android:id="@+id/tvCompany"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dodla"
-                    android:textSize="11sp"
+                    android:textSize="@dimen/text_size_caption"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -149,20 +152,20 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:orientation="vertical"
-                android:layout_marginTop="6dp">
+                android:layout_marginTop="@dimen/spacing_xsmall">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Buying"
-                    android:textSize="9sp"
-                    android:textColor="@color/gray500"/>
+                    android:textSize="@dimen/text_size_micro"
+                    android:textColor="@color/textColorSecondary"/>
                 <TextView
                     android:id="@+id/tvBuyingPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹8.16"
-                    android:textColor="#2196F3"
-                    android:textSize="11sp"
+                    android:textColor="@color/brand_blue"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"/>
             </LinearLayout>
 
@@ -173,20 +176,20 @@
                 android:layout_columnWeight="1"
                 android:orientation="vertical"
                 android:gravity="end"
-                android:layout_marginTop="6dp">
+                android:layout_marginTop="@dimen/spacing_xsmall">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Selling"
-                    android:textSize="9sp"
-                    android:textColor="@color/gray500"/>
+                    android:textSize="@dimen/text_size_micro"
+                    android:textColor="@color/textColorSecondary"/>
                 <TextView
                     android:id="@+id/tvSellingPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹9.00"
-                    android:textColor="#4CAF50"
-                    android:textSize="11sp"
+                    android:textColor="@color/icon_green"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"/>
             </LinearLayout>
 
@@ -196,20 +199,20 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:orientation="vertical"
-                android:layout_marginTop="6dp">
+                android:layout_marginTop="@dimen/spacing_xsmall">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="MRP"
-                    android:textSize="9sp"
-                    android:textColor="@color/gray500"/>
+                    android:textSize="@dimen/text_size_micro"
+                    android:textColor="@color/textColorSecondary"/>
                 <TextView
                     android:id="@+id/tvMrp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹10.00"
-                    android:textColor="#C2185B"
-                    android:textSize="11sp"
+                    android:textColor="@color/brand_red"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"/>
             </LinearLayout>
 
@@ -220,20 +223,20 @@
                 android:layout_columnWeight="1"
                 android:orientation="vertical"
                 android:gravity="end"
-                android:layout_marginTop="6dp">
+                android:layout_marginTop="@dimen/spacing_xsmall">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Margin"
-                    android:textSize="9sp"
-                    android:textColor="@color/gray500"/>
+                    android:textSize="@dimen/text_size_micro"
+                    android:textColor="@color/textColorSecondary"/>
                 <TextView
                     android:id="@+id/tvMargin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹0.84"
-                    android:textColor="#0097A7"
-                    android:textSize="11sp"
+                    android:textColor="@color/icon_blue"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"/>
             </LinearLayout>
 
@@ -244,7 +247,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:weightSum="2">
 
             <com.google.android.material.button.MaterialButton
@@ -254,19 +257,19 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:text="Update"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_caption"
                 android:textAllCaps="false"
-                android:textColor="#2E7D32"
-                app:strokeColor="#2E7D32"
-                app:cornerRadius="6dp"
-                android:layout_marginEnd="4dp"
+                android:textColor="@color/icon_green"
+                app:strokeColor="@color/icon_green"
+                app:cornerRadius="@dimen/spacing_xsmall"
+                android:layout_marginEnd="@dimen/spacing_tiny"
                 app:icon="@drawable/ic_edit"
                 app:iconSize="14dp"
-                app:iconTint="#2E7D32"
+                app:iconTint="@color/icon_green"
                 app:iconGravity="textStart"
-                app:iconPadding="4dp"
+                app:iconPadding="@dimen/spacing_tiny"
                 android:gravity="center"
-                android:padding="6dp"
+                android:padding="@dimen/spacing_xsmall"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"/>
 
@@ -277,19 +280,19 @@
                 android:layout_height="36dp"
                 android:layout_weight="1"
                 android:text="Deactivate"
-                android:textSize="10sp"
+                android:textSize="@dimen/text_size_micro"
                 android:textAllCaps="false"
-                android:textColor="#D32F2F"
-                app:strokeColor="#D32F2F"
-                app:cornerRadius="6dp"
-                android:layout_marginStart="4dp"
+                android:textColor="@color/brand_red"
+                app:strokeColor="@color/brand_red"
+                app:cornerRadius="@dimen/spacing_xsmall"
+                android:layout_marginStart="@dimen/spacing_tiny"
                 app:icon="@drawable/ic_lock"
                 app:iconSize="14dp"
-                app:iconTint="#D32F2F"
+                app:iconTint="@color/brand_red"
                 app:iconGravity="textStart"
-                app:iconPadding="4dp"
+                app:iconPadding="@dimen/spacing_tiny"
                 android:gravity="center"
-                android:padding="6dp"
+                android:padding="@dimen/spacing_xsmall"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"/>
 

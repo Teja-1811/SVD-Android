@@ -1,18 +1,55 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SVDAgency" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.SVDAgency" parent="Theme.Material3.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/brand_red</item>
-        <item name="colorPrimaryVariant">@color/brand_red</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/white</item>
+        <item name="colorOnPrimaryContainer">@color/brand_red_dark</item>
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/colorAccent</item>
-        <item name="colorSecondaryVariant">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondaryContainer">@color/white</item>
+        <item name="colorOnSecondaryContainer">@color/black</item>
 
-        <!-- Fix: Set status bar to brand red to avoid gap/overlap issues -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/brand_red</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorSurfaceVariant">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/black</item>
+
+        <item name="colorSurfaceContainer">@color/white</item>
+        <item name="colorSurfaceContainerHigh">@color/white</item>
+        <item name="colorSurfaceContainerHighest">@color/white</item>
+        <item name="colorSurfaceContainerLow">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/white</item>
+
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/brand_red</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <!-- Window Background -->
+        <item name="android:windowBackground">@color/window_background</item>
+
+        <!-- Material Card Styling -->
+        <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
+
+        <!-- Navigation View Styling -->
+        <item name="navigationViewStyle">@style/Widget.App.NavigationView</item>
+    </style>
+
+    <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/white</item>
+        <!-- Disabling elevation removes the surface tint in Material 3 -->
+        <item name="cardElevation">0dp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/card_stroke_color</item>
+    </style>
+
+    <style name="Widget.App.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="backgroundTint">@color/white</item>
+        <item name="elevation">0dp</item>
+        <item name="itemTextColor">@color/black</item>
+        <item name="itemIconTint">@color/textColorSecondary</item>
     </style>
 </resources>

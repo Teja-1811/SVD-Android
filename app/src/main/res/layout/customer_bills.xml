@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/billsSwipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/editTextBackground"
-        android:padding="16dp">
+        android:background="@color/white"
+        android:padding="@dimen/spacing_large">
 
         <!-- ================= FILTER ROW ================= -->
         <LinearLayout
@@ -18,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="@dimen/spacing_medium">
 
             <EditText
                 android:id="@+id/etMonth"
@@ -29,10 +30,10 @@
                 android:focusable="false"
                 android:clickable="true"
                 android:drawableEnd="@drawable/ic_calendar"
-                android:padding="12dp"
-                android:textSize="12sp"
+                android:padding="@dimen/spacing_medium"
+                android:textSize="@dimen/text_size_medium"
                 android:background="@drawable/bg_qty_outline"
-                android:textColor="@color/textColorPrimary"
+                android:textColor="@color/black"
                 android:textColorHint="@color/textColorSecondary"/>
 
             <Button
@@ -40,10 +41,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:text="Filter"
-                android:textSize="12sp"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="@color/icon_red"
-                android:textColor="@android:color/white"/>
+                android:textSize="@dimen/text_size_button"
+                android:layout_marginStart="@dimen/spacing_small"
+                android:backgroundTint="@color/brand_red"
+                android:textColor="@color/white"/>
         </LinearLayout>
 
         <!-- ================= STATS ROW ================= -->
@@ -51,26 +52,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="@dimen/spacing_medium">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="@dimen/spacing_small"
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/card_stroke_color"
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="@color/editTextBackground">
+                    android:padding="@dimen/spacing_large">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Bills"
-                        android:textSize="11sp"
+                        android:textSize="@dimen/text_size_small"
                         android:textColor="@color/textColorSecondary"/>
 
                     <TextView
@@ -78,30 +83,34 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold"
-                        android:textColor="@color/textColorPrimary"/>
+                        android:textColor="@color/black"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp">
+                android:layout_marginStart="@dimen/spacing_small"
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/card_stroke_color"
+                app:cardBackgroundColor="@color/white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:background="@color/editTextBackground">
+                    android:padding="@dimen/spacing_large">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Amount"
-                        android:textSize="11sp"
+                        android:textSize="@dimen/text_size_small"
                         android:textColor="@color/textColorSecondary"/>
 
                     <TextView
@@ -109,11 +118,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0.0"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold"
-                        android:textColor="@color/textColorPrimary"/>
+                        android:textColor="@color/black"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <TextView
@@ -121,9 +130,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="11sp"
-            android:layout_marginBottom="8dp"
-            android:textColor="@color/gray500"/>
+            android:textSize="@dimen/text_size_small"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:textColor="@color/textColorSecondary"/>
 
         <!-- ================= EMPTY STATE ================= -->
         <TextView
@@ -131,8 +140,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="No bills found"
-            android:textSize="12sp"
-            android:textColor="@color/gray500"
+            android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/textColorSecondary"
             android:gravity="center"
             android:visibility="gone"
             android:layout_marginTop="40dp"/>
@@ -144,7 +153,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:paddingBottom="8dp"/>
+            android:paddingBottom="@dimen/spacing_small"/>
 
     </LinearLayout>
 

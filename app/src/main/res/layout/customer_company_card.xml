@@ -1,131 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardCompany"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#F0F0F0">
+    app:strokeColor="@color/card_stroke_color"
+    app:cardBackgroundColor="@color/white"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:gravity="center"
+        android:padding="12dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/ivCompanyLogo"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_milk_placeholder" />
 
-            <!-- Company Logo -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardLogo"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#EEEEEE">
-                <ImageView
-                    android:id="@+id/ivCompanyLogo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="8dp"
-                    android:src="@drawable/ic_milk_placeholder"
-                    android:scaleType="fitCenter"/>
-            </com.google.android.material.card.MaterialCardView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/cardLogo"
-                android:layout_marginStart="16dp"
-                android:layout_centerVertical="true"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvCompanyName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Company Name"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"/>
-
-                <TextView
-                    android:id="@+id/tvWebsite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="visit website"
-                    android:textSize="12sp"
-                    android:textColor="@color/icon_blue"
-                    android:drawablePadding="4dp"
-                    app:drawableStartCompat="@drawable/ic_shop"
-                    app:drawableTint="@color/icon_blue"/>
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <!-- Stats Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#F5F5F5"
-            android:layout_marginVertical="12dp"/>
-
-        <!-- Stats Row -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvCompanyName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="8dp"
+            android:text="Company Name"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
-            <LinearLayout
-                android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tvWebsite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="visit website"
+            android:textSize="11sp"
+            android:textColor="@color/brand_blue"
+            android:layout_marginTop="2dp"
+            android:padding="4dp"
+            android:background="?attr/selectableItemBackground"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvItemCount"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Items"
-                    android:textSize="11sp"
-                    android:textColor="@color/textColorSecondary"/>
-                <TextView
-                    android:id="@+id/tvItemCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="34"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
+                android:text="0"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/textColorSecondary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" items"
+                android:textSize="11sp"
+                android:textColor="@color/textColorSecondary"/>
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnItems"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="8dp"
             android:text="View Catalog"
-            android:textSize="12sp"
+            android:textSize="11sp"
+            android:padding="0dp"
             android:textAllCaps="false"
-            app:icon="@drawable/ic_items"
-            app:iconGravity="textStart"
-            app:iconSize="16dp"
             app:cornerRadius="8dp"
-            app:backgroundTint="#F8F9FA"
-            android:textColor="@color/black"
-            app:rippleColor="#E0E0E0"
-            app:strokeWidth="1dp"
-            app:strokeColor="#EEEEEE"
-            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -20,6 +20,7 @@ import com.svd.svdagencies.data.model.admin.AdminDashboardResponse
 import com.svd.svdagencies.ui.admin.customer.CustomersData
 import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
 import com.svd.svdagencies.ui.admin.stock.AdminStockUpdateActivity
+import com.svd.svdagencies.utils.RefreshManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -90,17 +91,12 @@ class AdminDashboardActivity : AdminBaseActivity() {
             startActivity(Intent(this, AdminStockUpdateActivity::class.java))
         }
 
-        swipeRefresh.setColorSchemeResources(
-            R.color.status_bar,
-            R.color.icon_green,
-            R.color.icon_orange
-        )
-
-        swipeRefresh.setOnRefreshListener {
+        // Use RefreshManager to setup swipe refresh
+        RefreshManager.setupRefresh(swipeRefresh) {
             loadDashboard()
         }
 
-        swipeRefresh.isRefreshing = true
+        RefreshManager.startRefresh(swipeRefresh)
     }
 
     private fun setupStatCard(card: View, label: String, iconRes: Int, colorRes: Int) {
@@ -126,7 +122,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
                 response: Response<AdminDashboardResponse>
             ) {
                 if (isDestroyed) return
-                swipeRefresh.isRefreshing = false
+                RefreshManager.stopRefresh(swipeRefresh)
 
                 if (!response.isSuccessful) {
                     Toast.makeText(
@@ -183,7 +179,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
 
             override fun onFailure(call: Call<AdminDashboardResponse>, t: Throwable) {
                 if (isDestroyed) return
-                swipeRefresh.isRefreshing = false
+                RefreshManager.stopRefresh(swipeRefresh)
                 Toast.makeText(
                     this@AdminDashboardActivity,
                     "Network error: ${t.localizedMessage}",

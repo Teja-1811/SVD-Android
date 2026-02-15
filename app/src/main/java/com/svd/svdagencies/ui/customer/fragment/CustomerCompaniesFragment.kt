@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Company
 import com.svd.svdagencies.databinding.CustomerCompaniesBinding
+import com.svd.svdagencies.ui.customer.CustomerCompanyCatalogActivity
+import com.svd.svdagencies.ui.customer.adapter.CustomerCompaniesAdapter
 import kotlinx.coroutines.launch
 
 class CustomerCompaniesFragment : Fragment() {
@@ -68,15 +70,19 @@ class CustomerCompaniesFragment : Fragment() {
 
     private fun fetchCompanies() {
         binding.swipeRefresh.isRefreshing = true
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = ApiClient.customerApi.getCompanies()
                 allCompanies = response.companies
-                adapter.submitList(allCompanies)
+                _binding?.let { 
+                    adapter.submitList(allCompanies)
+                }
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                if (isAdded) {
+                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             } finally {
-                binding.swipeRefresh.isRefreshing = false
+                _binding?.swipeRefresh?.isRefreshing = false
             }
         }
     }

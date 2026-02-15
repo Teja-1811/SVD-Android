@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,9 +42,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
                     app:strokeWidth="1dp"
-                    app:strokeColor="#EEEEEE">
+                    app:strokeColor="@color/card_stroke_color"
+                    app:cardBackgroundColor="@color/white">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -58,7 +59,7 @@
                             android:layout_height="wrap_content"
                             android:text="Amount (₹)"
                             android:textStyle="bold"
-                            android:textColor="#424242"
+                            android:textColor="@color/black"
                             android:textSize="14sp"
                             android:layout_marginBottom="8dp"/>
 
@@ -69,7 +70,7 @@
                             android:hint="0.00"
                             android:inputType="numberDecimal"
                             android:background="@drawable/bg_qty_outline"
-                            android:backgroundTint="#F5F5F5"
+                            android:backgroundTint="@color/bg_light_gray"
                             android:padding="14dp"
                             android:textSize="18sp"
                             android:textStyle="bold"
@@ -81,7 +82,7 @@
                             android:layout_height="wrap_content"
                             android:text="Category"
                             android:textStyle="bold"
-                            android:textColor="#424242"
+                            android:textColor="@color/black"
                             android:textSize="14sp"
                             android:layout_marginTop="20dp"
                             android:layout_marginBottom="8dp"/>
@@ -91,7 +92,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:boxStrokeColor="@color/brand_red"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:boxBackgroundColor="@color/white">
 
                             <AutoCompleteTextView
                                 android:id="@+id/spinnerCategory"
@@ -99,6 +101,7 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
                                 android:hint="Select Category"
+                                android:textColor="@color/black"
                                 android:padding="14dp"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,7 +111,7 @@
                             android:layout_height="wrap_content"
                             android:text="Description (Optional)"
                             android:textStyle="bold"
-                            android:textColor="#424242"
+                            android:textColor="@color/black"
                             android:textSize="14sp"
                             android:layout_marginTop="20dp"
                             android:layout_marginBottom="8dp"/>
@@ -122,7 +125,8 @@
                             android:minLines="3"
                             android:gravity="top"
                             android:background="@drawable/bg_qty_outline"
-                            android:backgroundTint="#F5F5F5"
+                            android:backgroundTint="@color/bg_light_gray"
+                            android:textColor="@color/black"
                             android:padding="14dp"
                             android:textSize="15sp"/>
 
@@ -135,6 +139,7 @@
                             android:textStyle="bold"
                             android:textSize="16sp"
                             app:cornerRadius="12dp"
+                            android:textColor="@color/white"
                             app:backgroundTint="@color/brand_red"/>
 
                     </LinearLayout>

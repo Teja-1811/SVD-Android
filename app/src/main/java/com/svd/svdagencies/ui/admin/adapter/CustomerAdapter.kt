@@ -44,6 +44,14 @@ class CustomerAdapter(
             txtPhone.text = c.phone
             txtBalance.text = "₹ %.2f".format(c.due)
 
+            // Dynamic Balance Coloring
+            val due = c.due ?: 0.0
+            if (due >= 0) {
+                txtBalance.setTextColor(ContextCompat.getColor(root.context, R.color.brand_red))
+            } else {
+                txtBalance.setTextColor(ContextCompat.getColor(root.context, R.color.icon_green))
+            }
+
             // Freeze button visual state
             if (c.frozen == true) {
                 // Frozen State: Unfreeze (Green)
@@ -82,8 +90,18 @@ class CustomerAdapter(
             btnWhatsapp.setOnClickListener {
                 val context = root.context
                 val phoneNumber = c.phone
-                val dueAmount = "₹ %.2f".format(c.due)
-                val message = "Hello ${c.name},\nYour pending balance at ${c.shop_name} is $dueAmount.\nPlease pay at your earliest convenience."
+                
+                val absDue = Math.abs(due)
+                val formattedDue = "₹ %.2f".format(absDue)
+                
+                val statusMessage = if (due >= 0) {
+                    "Your pending balance is $formattedDue."
+                } else {
+                    "You have a wallet balance of $formattedDue."
+                }
+
+                // Removed shop name from the message as requested
+                val message = "Hello ${c.name},\n$statusMessage\n\nVisit us: www.svdagencies.shop\nThank you for your business!"
 
                 if (!phoneNumber.isNullOrEmpty()) {
                     try {

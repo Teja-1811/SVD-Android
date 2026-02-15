@@ -6,9 +6,10 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="3dp"
+    app:cardElevation="0dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#E0E0E0">
+    app:strokeColor="@color/card_stroke_color"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,14 +36,14 @@
                 android:layout_height="wrap_content"
                 android:text="Pending"
                 android:background="@drawable/bg_qty_outline"
-                android:backgroundTint="#FFC107"
+                android:backgroundTint="@color/icon_orange"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
                 android:textSize="11sp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/white"/>
         </LinearLayout>
 
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0"/>
+        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider_line"/>
 
         <!-- Details -->
         <LinearLayout
@@ -51,18 +52,36 @@
             android:orientation="vertical"
             android:padding="12dp">
 
-            <TextView android:id="@+id/tvCustomerName" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Customer: Test" android:textSize="13sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/tvCustomerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Customer: Test"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
 
-            <TextView android:id="@+id/tvOrderDate" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Order Date: Jan 16, 2026" android:textSize="12sp" android:layout_marginTop="4dp"/>
+            <TextView android:id="@+id/tvOrderDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Order Date: Jan 16, 2026"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/textColorSecondary"/>
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Items:" android:textStyle="bold" android:layout_marginTop="8dp" android:textSize="13sp"/>
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Items:"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:textSize="13sp"
+                android:textColor="@color/black"/>
 
             <!-- Items Table Header -->
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2.5" android:text="Item" android:textSize="11sp" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Qty" android:gravity="center" android:textSize="11sp" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Disc" android:gravity="center" android:textSize="11sp" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8" android:text="AQ" android:gravity="center" android:textSize="11sp" android:textStyle="bold"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2.5" android:text="Item" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/black"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Qty" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/black"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Disc" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/black"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8" android:text="AQ" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/black"/>
             </LinearLayout>
 
             <!-- Dynamic Items Container -->
@@ -81,20 +100,24 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Confirm"
-                app:backgroundTint="#2E7D32"
+                app:backgroundTint="@color/icon_green"
                 android:layout_marginEnd="4dp"
                 app:icon="@drawable/ic_check"
-                android:textSize="12sp"/>
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                app:iconTint="@color/white"/>
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Reject"
-                app:backgroundTint="#D32F2F"
+                app:backgroundTint="@color/brand_red"
                 android:layout_marginStart="4dp"
                 app:icon="@drawable/ic_close"
-                android:textSize="12sp"/>
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                app:iconTint="@color/white"/>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

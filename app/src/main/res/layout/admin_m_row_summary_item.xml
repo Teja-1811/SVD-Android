@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:text="Label"
         android:textSize="14sp"
-        android:textColor="#555"/>
+        android:textColor="@color/textColorSecondary"/>
 
     <TextView
         android:id="@+id/tvValue"

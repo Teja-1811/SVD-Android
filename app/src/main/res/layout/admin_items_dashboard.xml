@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background"
+    android:background="@color/white"
     tools:context=".ui.admin.items.AdminItemsActivity">
 
     <!-- MAIN CONTENT -->
@@ -35,7 +35,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="8dp"
-                    app:cardElevation="2dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/card_stroke_color"
+                    app:cardBackgroundColor="@color/white"
                     android:layout_marginBottom="12dp">
 
                     <LinearLayout
@@ -50,7 +53,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_search"
-                            app:tint="@color/gray500"/>
+                            app:tint="@color/textColorSecondary"/>
 
                         <EditText
                             android:id="@+id/etSearchItems"
@@ -58,6 +61,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:hint="Search items..."
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/textColorSecondary"
                             android:background="@null"
                             android:paddingHorizontal="12dp"
                             android:textSize="14sp"
@@ -84,7 +89,7 @@
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/admin_company_filter_item"/>
 
-                    <!-- Refresh/Reset Filter Button (Matched with Company Filter Size) -->
+                    <!-- Refresh/Reset Filter Button -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/btnResetFilter"
                         android:layout_width="60dp"
@@ -92,9 +97,9 @@
                         android:layout_marginStart="4dp"
                         android:layout_marginEnd="6dp"
                         app:cardCornerRadius="30dp"
-                        app:cardElevation="3dp"
+                        app:cardElevation="0dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#E0E0E0"
+                        app:strokeColor="@color/card_stroke_color"
                         android:clickable="true"
                         android:focusable="true">
                         <ImageView
@@ -102,7 +107,7 @@
                             android:layout_height="match_parent"
                             android:padding="14dp"
                             android:src="@drawable/ic_refresh"
-                            app:tint="#4CAF50"
+                            app:tint="@color/icon_green"
                             android:background="@color/white"/>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
