@@ -1,5 +1,6 @@
 package com.svd.svdagencies.data.api.customer
 
+import com.svd.svdagencies.data.model.customer.CatalogResponse
 import com.svd.svdagencies.data.model.customer.CategoryResponse
 import com.svd.svdagencies.data.model.customer.ProductResponse
 import retrofit2.Call
@@ -15,4 +16,10 @@ interface ProductApi {
     fun getProducts(
         @Query("category_id") categoryId: Int
     ): Call<List<ProductResponse>>
+
+    @GET("api/cataloge/")
+    suspend fun getCustomerCatalog(
+        @Query("company_id") companyId: Int?,
+        @Query("include_empty") includeEmpty: Boolean = false
+    ): CatalogResponse
 }

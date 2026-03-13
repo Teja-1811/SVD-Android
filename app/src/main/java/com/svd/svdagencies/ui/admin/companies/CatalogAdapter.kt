@@ -33,9 +33,10 @@ class CatalogAdapter : ListAdapter<CatalogItem, CatalogAdapter.CatalogViewHolder
             
             val formatter = NumberFormat.getCurrencyInstance(Locale("en", "IN"))
             binding.tvMrp.text = formatter.format(item.mrp)
+            binding.tvBuyingPrice.text = formatter.format(item.buyingPrice)
             binding.tvSellingPrice.text = formatter.format(item.sellingPrice)
 
-            val margin = item.mrp - item.sellingPrice
+            val margin = item.sellingPrice - item.buyingPrice
             binding.tvMargin.text = formatter.format(margin)
         }
     }

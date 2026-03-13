@@ -17,6 +17,7 @@ import com.svd.svdagencies.data.model.admin.Company
 import com.svd.svdagencies.data.model.admin.Items.AdminItem
 import com.svd.svdagencies.databinding.AdminItemAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +37,8 @@ class AddEditItemActivity : AdminBaseActivity() {
     private lateinit var categoryAdapter: ArrayAdapter<String>
     private lateinit var companyAdapter: ArrayAdapter<String>
     private var companies: List<Company> = emptyList()
+
+    private val categoryOrder = listOf("milk", "curd", "buckets", "cups", "ghee","bread", "drinks", "flavoured milk", "panner", "sweets", "others")
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -60,8 +63,6 @@ class AddEditItemActivity : AdminBaseActivity() {
             intent.getParcelableExtra("ITEM_TO_UPDATE")
         }
 
-        setupSpinners()
-
         if (itemToUpdate != null) {
             setupAdminLayout("Edit Item")
             binding.btnAddItem.text = "Update Item"
@@ -70,41 +71,56 @@ class AddEditItemActivity : AdminBaseActivity() {
             binding.btnAddItem.text = "Add Item"
         }
 
-        loadCompanies()
+        loadFilters()
         setupListeners()
     }
 
-    private fun setupSpinners() {
-        val categories = listOf("Milk", "Curd", "Butter Milk", "Paneer", "Other")
-        categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.spinnerCategory.adapter = categoryAdapter
-    }
-
-    private fun loadCompanies() {
+    private fun loadFilters() {
+        showScreenLoading()
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = ApiClient.adminCompaniesApi.getCompanies()
-                companies = response.companies
+                // Fetch Companies
+                val companiesResponse = ApiClient.adminCompaniesApi.getCompanies()
+                companies = companiesResponse.companies
                 val companyNames = companies.map { it.name }
+
+                // Fetch and sort Categories
+                val categories = ApiClient.adminItemsApi.getCategories()
+                val sortedCategories = sortCategories(categories)
 
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
+                        hideScreenLoading()
+                        
+                        // Setup Company Spinner
                         companyAdapter = ArrayAdapter(this@AddEditItemActivity, android.R.layout.simple_spinner_item, companyNames)
                         companyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         binding.spinnerCompany.adapter = companyAdapter
 
-                        // If editing, set the correct company selection
+                        // Setup Category Spinner
+                        categoryAdapter = ArrayAdapter(this@AddEditItemActivity, android.R.layout.simple_spinner_item, sortedCategories)
+                        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        binding.spinnerCategory.adapter = categoryAdapter
+
+                        // If editing, populate fields and set correct selections
                         itemToUpdate?.let { populateFields(it) }
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        Toast.makeText(this@AddEditItemActivity, "Failed to load companies", Toast.LENGTH_SHORT).show()
+                        hideScreenLoading()
+                        Toast.makeText(this@AddEditItemActivity, "Failed to load filters", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
+        }
+    }
+
+    private fun sortCategories(categories: List<String>): List<String> {
+        return categories.sortedBy { cat ->
+            val index = categoryOrder.indexOf(cat.lowercase())
+            if (index != -1) index else Int.MAX_VALUE
         }
     }
 
@@ -118,12 +134,16 @@ class AddEditItemActivity : AdminBaseActivity() {
         binding.etPcs.setText(item.pcs_count?.toString())
 
         // Set Category Selection
-        val catPos = categoryAdapter.getPosition(item.category)
-        if (catPos >= 0) binding.spinnerCategory.setSelection(catPos)
+        if (::categoryAdapter.isInitialized) {
+            val catPos = categoryAdapter.getPosition(item.category)
+            if (catPos >= 0) binding.spinnerCategory.setSelection(catPos)
+        }
 
         // Set Company Selection
-        val companyIndex = companies.indexOfFirst { it.name == item.company }
-        if (companyIndex >= 0) binding.spinnerCompany.setSelection(companyIndex)
+        if (::companyAdapter.isInitialized) {
+            val companyIndex = companies.indexOfFirst { it.name == item.company }
+            if (companyIndex >= 0) binding.spinnerCompany.setSelection(companyIndex)
+        }
 
         // Load Image
         if (!item.image.isNullOrEmpty()) {
@@ -162,7 +182,7 @@ class AddEditItemActivity : AdminBaseActivity() {
 
         // Get selected company ID
         val companyIndex = binding.spinnerCompany.selectedItemPosition
-        val companyId = if (companyIndex >= 0) companies[companyIndex].id.toString() else ""
+        val companyId = if (companyIndex >= 0 && companyIndex < companies.size) companies[companyIndex].id.toString() else ""
 
         if (name.isEmpty() || companyId.isEmpty()) {
             Toast.makeText(this, "Name and Company are required", Toast.LENGTH_SHORT).show()
@@ -170,7 +190,7 @@ class AddEditItemActivity : AdminBaseActivity() {
         }
 
         binding.btnAddItem.isEnabled = false
-        binding.progressBar.visibility = View.VISIBLE
+        showScreenLoading()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -200,6 +220,7 @@ class AddEditItemActivity : AdminBaseActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
+                        hideScreenLoading()
                         Toast.makeText(this@AddEditItemActivity, "Saved successfully", Toast.LENGTH_SHORT).show()
                         setResult(Activity.RESULT_OK)
                         finish()
@@ -209,8 +230,12 @@ class AddEditItemActivity : AdminBaseActivity() {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         binding.btnAddItem.isEnabled = true
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this@AddEditItemActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        hideScreenLoading()
+                        Toast.makeText(
+                            this@AddEditItemActivity,
+                            NetworkMessageUtils.friendlyMessage(e, "Failed to save item"),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

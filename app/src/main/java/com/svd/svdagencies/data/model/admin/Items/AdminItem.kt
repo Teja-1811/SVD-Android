@@ -16,7 +16,7 @@ data class AdminItem(
     val selling_price: String?,
     val buying_price: String?,
     val mrp: String?,
-    val stock_quantity: Double?,
+    val stock_quantity: Int?,
     val pcs_count: Int?,
     val image: String?,
     val frozen: Boolean

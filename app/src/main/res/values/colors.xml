@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Basic Colors -->
+    <!-- Basic Colors (True values) -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
 
     <!-- App Primary Colors -->
     <color name="colorPrimary">#D32F2F</color>
     <color name="colorPrimaryDark">#B71C1C</color>
     <color name="colorAccent">#FF5252</color>
-    <color name="window_background">#FFFFFF</color>
+
+    <!-- Semantic Colors (Light Mode) -->
+    <color name="window_background">#F5F5F5</color>
+    <color name="surface_background">#FFFFFF</color>
+    <color name="card_background">#FFFFFF</color>
     <color name="status_bar">#B71C1C</color>
+    <color name="toolbar_background">#FFFFFF</color>
+    <color name="toolbar_content_color">#000000</color>
+    <color name="drawer_background">#FFFFFF</color>
+    <color name="drawer_text_primary">#1A1A1A</color>
+    <color name="drawer_icon_default">#7A7A7A</color>
+    <color name="loading_overlay_scrim">#80FFFFFF</color>
 
     <!-- 🔴 BRAND COLORS -->
     <color name="brand_red">#D32F2F</color>
@@ -19,6 +30,7 @@
     <!-- Text Colors -->
     <color name="textColorPrimary">#000000</color>
     <color name="textColorSecondary">#757575</color>
+    <color name="gray400">#BDBDBD</color>
     <color name="gray500">#9E9E9E</color>
     <color name="red600">#E53935</color>
     <color name="text_item_value">#000000</color>
@@ -32,10 +44,8 @@
     <color name="icon_gray_btn">#757575</color>
 
     <!-- Surface / Background Colors -->
-    <color name="card_background">#FFFFFF</color>
     <color name="card_stroke_color">#E0E0E0</color>
     <color name="divider_line">#E0E0E0</color>
-    <color name="surface_background">#FFFFFF</color>
     <color name="surface_variant">#F5F5F5</color>
     <color name="on_surface_variant">#000000</color>
 
@@ -59,4 +69,16 @@
     <!-- Special Backgrounds -->
     <color name="bg_light_gray">#F5F5F5</color>
     <color name="bg_light_green">#E8F5E9</color>
+
+    <!-- Customer Home -->
+    <color name="customer_home_card_background">#FFFFFF</color>
+    <color name="customer_home_card_stroke">#E0E0E0</color>
+    <color name="customer_home_title">#111111</color>
+    <color name="customer_home_body">#6F6F6F</color>
+    <color name="customer_home_logo_badge">#FFFFFF</color>
+
+    <!-- User Home Fragment Colors -->
+    <color name="text_primary">#000000</color>
+    <color name="text_secondary">#757575</color>
+    <color name="error_red">#D32F2F</color>
 </resources>

@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Company Name"
-                android:textColor="@color/black"
+                android:textColor="@color/textColorPrimary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -117,10 +117,11 @@
                 android:layout_height="wrap_content"
                 android:text="Invoice: ₹0.00 | Paid: ₹0.00 | Due: ₹0.00"
                 android:gravity="center"
-                android:textColor="@color/black"
+                android:textColor="@color/textColorPrimary"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
+

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -19,9 +18,10 @@ import com.svd.svdagencies.ui.admin.customer.CustomersData
 import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
 import com.svd.svdagencies.ui.admin.stock.AdminStockActivity
 import com.svd.svdagencies.ui.auth.LoginActivity
+import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.utils.SessionManager
 
-abstract class AdminBaseActivity : AppCompatActivity() {
+abstract class AdminBaseActivity : BaseActivity() {
 
     protected lateinit var drawerLayout: DrawerLayout
 
@@ -121,6 +121,12 @@ abstract class AdminBaseActivity : AppCompatActivity() {
                     R.id.nav_stock -> {
                         if (this !is AdminStockActivity) {
                             startActivity(Intent(this, AdminStockActivity::class.java))
+                        }
+                        true
+                    }
+                    R.id.nav_subscriptions -> {
+                        if (this !is AdminSubscriptionsActivity) {
+                            startActivity(Intent(this, AdminSubscriptionsActivity::class.java))
                         }
                         true
                     }

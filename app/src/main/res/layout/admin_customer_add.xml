@@ -78,7 +78,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Customer Information"
                                 android:textStyle="bold"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textSize="14sp"/>
                         </LinearLayout>
 
@@ -105,7 +105,7 @@
                                 android:padding="12dp"
                                 android:hint="Enter Name"
                                 android:textSize="13sp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textColorHint="@color/gray500"
                                 android:inputType="textPersonName"
                                 android:layout_marginBottom="16dp"/>
@@ -127,7 +127,7 @@
                                 android:padding="12dp"
                                 android:hint="Enter Shop Name"
                                 android:textSize="13sp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textColorHint="@color/gray500"
                                 android:inputType="text"
                                 android:layout_marginBottom="16dp"/>
@@ -157,7 +157,7 @@
                                 android:padding="12dp"
                                 android:hint="Enter Retailer ID"
                                 android:textSize="13sp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textColorHint="@color/gray500"
                                 android:inputType="text"
                                 android:layout_marginBottom="16dp"/>
@@ -179,7 +179,7 @@
                                 android:padding="12dp"
                                 android:hint="+91"
                                 android:textSize="13sp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textColorHint="@color/gray500"
                                 android:inputType="phone"
                                 android:layout_marginBottom="16dp"/>
@@ -235,7 +235,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Shipping Address"
                                 android:textStyle="bold"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textSize="14sp"/>
                         </LinearLayout>
 
@@ -256,7 +256,7 @@
                             android:padding="12dp"
                             android:hint="Enter Flat / Building No"
                             android:textSize="13sp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:textColorHint="@color/gray500"
                             android:inputType="textPostalAddress"
                             android:layout_marginBottom="16dp"/>
@@ -278,7 +278,7 @@
                             android:padding="12dp"
                             android:hint="Enter Area / Locality"
                             android:textSize="13sp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:textColorHint="@color/gray500"
                             android:inputType="textPostalAddress"
                             android:layout_marginBottom="16dp"/>
@@ -313,7 +313,7 @@
                                     android:padding="12dp"
                                     android:hint="534427"
                                     android:textSize="13sp"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:textColorHint="@color/gray500"
                                     android:inputType="number"/>
                             </LinearLayout>
@@ -342,7 +342,7 @@
                                     android:padding="12dp"
                                     android:hint="GGL"
                                     android:textSize="13sp"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:textColorHint="@color/gray500"
                                     android:inputType="text"/>
                             </LinearLayout>
@@ -370,7 +370,7 @@
                                     android:padding="12dp"
                                     android:hint="AP"
                                     android:textSize="13sp"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:textColorHint="@color/gray500"
                                     android:inputType="text"/>
                             </LinearLayout>
@@ -424,11 +424,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
+        android:background="@color/surface_background"
         app:headerLayout="@layout/admin_nav_header"
         app:menu="@menu/menu_admin_drawer"
         app:itemIconTint="@color/textColorSecondary"
-        app:itemTextColor="@color/black"
+        app:itemTextColor="@color/textColorPrimary"
         app:elevation="0dp"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

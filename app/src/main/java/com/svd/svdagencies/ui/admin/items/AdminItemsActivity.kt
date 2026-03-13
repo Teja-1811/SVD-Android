@@ -1,5 +1,6 @@
 package com.svd.svdagencies.ui.admin.items
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -11,6 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -47,6 +49,12 @@ class AdminItemsActivity : AdminBaseActivity() {
 
     private val categoryOrder = listOf("milk", "curd", "buckets", "cups", "ghee", "flavoured milk", "panner", "sweets", "others")
 
+    private val addEditLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            loadItems(currentCategory)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.admin_items_dashboard)
@@ -73,9 +81,9 @@ class AdminItemsActivity : AdminBaseActivity() {
             onEditClick = { item -> 
                 val intent = Intent(this, AddEditItemActivity::class.java)
                 intent.putExtra("ITEM_TO_UPDATE", item)
-                startActivity(intent)
+                addEditLauncher.launch(intent)
             },
-            onFreezeClick = { item -> showToast("Freeze Item: ${item.name}") }
+            onFreezeClick = { item -> toggleItemFreeze(item) }
         )
         rvItems.layoutManager = LinearLayoutManager(this)
         rvItems.adapter = itemAdapter
@@ -98,7 +106,7 @@ class AdminItemsActivity : AdminBaseActivity() {
 
     private fun setupListeners() {
         btnAddItem.setOnClickListener {
-            startActivity(Intent(this, AddEditItemActivity::class.java))
+            addEditLauncher.launch(Intent(this, AddEditItemActivity::class.java))
         }
 
         btnResetFilter.setOnClickListener {
@@ -181,6 +189,26 @@ class AdminItemsActivity : AdminBaseActivity() {
                     if (!isDestroyed) {
                         swipeRefresh.isRefreshing = false
                         showToast("Error loading items")
+                    }
+                }
+            }
+        }
+    }
+
+    private fun toggleItemFreeze(item: AdminItem) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                ApiClient.adminItemsApi.toggleFreezeItem(item.id)
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) {
+                        showToast("Item status updated")
+                        loadItems(currentCategory)
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) {
+                        showToast("Error updating status: ${e.message}")
                     }
                 }
             }

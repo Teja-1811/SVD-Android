@@ -7,29 +7,29 @@
 
     <!-- First row -->
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/textColorPrimary"
         android:pathData="M4,6h12v2H4z"/>
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/textColorPrimary"
         android:pathData="M18,5h2v4h-2z"/>
 
     <!-- Second row -->
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/textColorPrimary"
         android:pathData="M4,11h12v2H4z"/>
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/textColorPrimary"
         android:pathData="M18,10h2v4h-2z"/>
 
     <!-- Third row -->
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/textColorPrimary"
         android:pathData="M4,16h12v2H4z"/>
 
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/textColorPrimary"
         android:pathData="M18,15h2v4h-2z"/>
 
 </vector>

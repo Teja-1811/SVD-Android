@@ -45,4 +45,9 @@ interface AdminItemsApi {
         @Part("pcs_count") pcsCount: RequestBody?,
         @Part image: MultipartBody.Part?
     ): Map<String, Any>
+
+    @POST("api/items/freeze-toggle/{id}/")
+    suspend fun toggleFreezeItem(
+        @Path("id") id: Int
+    ): Map<String, Any>
 }

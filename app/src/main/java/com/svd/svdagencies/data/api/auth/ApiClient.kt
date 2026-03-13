@@ -1,16 +1,9 @@
 package com.svd.svdagencies.data.api.auth
 
 import com.svd.svdagencies.App
-import com.svd.svdagencies.data.api.admin.AdminApi
-import com.svd.svdagencies.data.api.admin.AdminCompaniesApi
-import com.svd.svdagencies.data.api.admin.AdminItemsApi
-import com.svd.svdagencies.data.api.admin.AdminOrdersApi
-import com.svd.svdagencies.data.api.admin.AdminPaymentsApi
-import com.svd.svdagencies.data.api.admin.AdminStockApi
-import com.svd.svdagencies.data.api.admin.BillsDashboardApi
-import com.svd.svdagencies.data.api.admin.CashbookApi
-import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
+import com.svd.svdagencies.data.api.admin.*
 import com.svd.svdagencies.data.api.customer.CustomerApi
+import com.svd.svdagencies.data.api.customer.ProductApi
 import com.svd.svdagencies.utils.SessionManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -31,6 +24,7 @@ object ApiClient {
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
+        .retryOnConnectionFailure(true)
         .addInterceptor(AuthInterceptor(SessionManager(App.context)))
         .addInterceptor(logging)
         .build()
@@ -40,6 +34,7 @@ object ApiClient {
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
+        .retryOnConnectionFailure(true)
         .addInterceptor(logging)
         .build()
 
@@ -95,7 +90,15 @@ object ApiClient {
         retrofit.create(AdminStockApi::class.java)
     }
 
+    val subscriptionApi: SubscriptionApi by lazy {
+        retrofit.create(SubscriptionApi::class.java)
+    }
+
     val customerApi: CustomerApi by lazy {
         retrofit.create(CustomerApi::class.java)
+    }
+
+    val productApi: ProductApi by lazy {
+        retrofit.create(ProductApi::class.java)
     }
 }

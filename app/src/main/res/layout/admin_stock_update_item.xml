@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="4dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/card_background"
     app:strokeWidth="1dp"
-    app:strokeColor="@color/card_stroke_color"
-    app:cardBackgroundColor="@color/white">
+    app:strokeColor="#E0E0E0">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,38 +28,45 @@
                 android:id="@+id/tvItemName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Item Name"
-                android:textColor="@color/black"
+                android:text="Full Cream Milk 120 ML"
+                android:textColor="@color/textColorPrimary"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvCurrentStock"
+                android:id="@+id/tvCompanyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Current: 35"
+                android:text="Dodla Dairy"
                 android:textColor="@color/textColorSecondary"
                 android:textSize="12sp"
-                android:layout_marginTop="2dp"/>
+                android:layout_marginTop="2dp" />
         </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:hint="Crates"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-            app:boxStrokeColor="@color/brand_blue"
-            app:hintTextColor="@color/brand_blue"
-            app:boxBackgroundColor="@color/white">
+        <!-- Current Qty Badge -->
+        <TextView
+            android:id="@+id/tvCurrentStock"
+            android:layout_width="60dp"
+            android:layout_height="24dp"
+            android:background="@drawable/bg_badge_blue"
+            android:text="93"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginEnd="12dp" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etCrates"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:textColor="@color/black"
-                android:textSize="14sp"/>
-        </com.google.android.material.textfield.TextInputLayout>
+        <!-- Input Field -->
+        <EditText
+            android:id="@+id/etCrates"
+            android:layout_width="60dp"
+            android:layout_height="36dp"
+            android:background="@drawable/bg_qty_outline"
+            android:inputType="number"
+            android:text="0"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="14sp"
+            android:gravity="center" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

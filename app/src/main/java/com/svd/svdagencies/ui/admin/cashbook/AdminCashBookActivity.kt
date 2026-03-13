@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,7 @@ import com.svd.svdagencies.data.model.admin.Cashbook.SaveCashInRequest
 import com.svd.svdagencies.databinding.AdminCashbookBinding
 import com.svd.svdagencies.databinding.AdminStatCardBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -43,6 +45,17 @@ class AdminCashBookActivity : AdminBaseActivity() {
 
     private var selectedMonth: Int? = null
     private var selectedYear: Int? = null
+    private var shouldReloadOnResume = false
+
+    private val expenseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            loadDashboardData()
+        }
+    }
+
+    private val expenseHistoryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        loadDashboardData()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,11 +106,11 @@ class AdminCashBookActivity : AdminBaseActivity() {
         binding.btnUpdateCashIn.setOnClickListener { updateCashIn() }
         
         binding.btnAddExpense.setOnClickListener {
-            startActivity(Intent(this, AddExpenseActivity::class.java))
+            expenseLauncher.launch(Intent(this, AddExpenseActivity::class.java))
         }
         
         binding.btnViewExpenses.setOnClickListener {
-            startActivity(Intent(this, ViewExpensesActivity::class.java))
+            expenseHistoryLauncher.launch(Intent(this, ViewExpensesActivity::class.java))
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -111,6 +124,14 @@ class AdminCashBookActivity : AdminBaseActivity() {
         binding.btnResetFilters.setOnClickListener {
             resetFilters()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (shouldReloadOnResume) {
+            loadDashboardData()
+        }
+        shouldReloadOnResume = true
     }
 
     private fun setupIndicators(count: Int) {
@@ -237,10 +258,15 @@ class AdminCashBookActivity : AdminBaseActivity() {
                 populateUI(response)
             } catch (e: Exception) {
                 if (!isFinishing) {
-                    Toast.makeText(this@AdminCashBookActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@AdminCashBookActivity,
+                        NetworkMessageUtils.friendlyMessage(e, "Failed to load cashbook data"),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } finally {
                 binding.swipeRefresh.isRefreshing = false
+                hideScreenLoading()
             }
         }
     }
@@ -287,13 +313,19 @@ class AdminCashBookActivity : AdminBaseActivity() {
 
     private fun updateBankBalance() {
         val balance = binding.etBankBalance.text.toString().toDoubleOrNull() ?: return
+        showScreenLoading()
         lifecycleScope.launch {
             try {
                 ApiClient.cashbookApi.saveBankBalance(SaveBankBalanceRequest(balance))
                 Toast.makeText(this@AdminCashBookActivity, "Bank balance updated", Toast.LENGTH_SHORT).show()
                 loadDashboardData()
             } catch (e: Exception) {
-                Toast.makeText(this@AdminCashBookActivity, "Failed to update: ${e.message}", Toast.LENGTH_SHORT).show()
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AdminCashBookActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to update bank balance"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -313,13 +345,19 @@ class AdminCashBookActivity : AdminBaseActivity() {
             coin1 = 0
         )
 
+        showScreenLoading()
         lifecycleScope.launch {
             try {
                 ApiClient.cashbookApi.saveCashIn(request)
                 Toast.makeText(this@AdminCashBookActivity, "Cash Inventory synced successfully!", Toast.LENGTH_SHORT).show()
                 loadDashboardData()
             } catch (e: Exception) {
-                Toast.makeText(this@AdminCashBookActivity, "Sync failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AdminCashBookActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to sync cash inventory"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

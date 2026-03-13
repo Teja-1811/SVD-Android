@@ -14,27 +14,59 @@
 
         <include layout="@layout/admin_toolbar" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvUpdateStock"
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingTop="8dp"
-            android:clipToPadding="false"
-            tools:listitem="@layout/admin_stock_update_item"/>
+            android:layout_height="match_parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSubmitUpdate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Update Stock Levels"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/icon_green"
-            app:cornerRadius="8dp"
-            android:padding="12dp"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvUpdateStock"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="80dp"
+                    android:clipToPadding="false"
+                    tools:listitem="@layout/admin_stock_update_item" />
+
+                <!-- Transparent Bottom Action Container -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="16dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:background="@android:color/transparent">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubmitUpdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52dp"
+                        android:paddingHorizontal="32dp"
+                        android:text="Update Stock Levels"
+                        android:textAllCaps="false"
+                        android:backgroundTint="@color/brand_red"
+                        app:cornerRadius="26dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        app:icon="@drawable/ic_check"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconSize="20dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        app:elevation="6dp"
+                        style="@style/Widget.MaterialComponents.Button" />
+
+                </LinearLayout>
+            </FrameLayout>
+        </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
 
     </LinearLayout>
 
@@ -43,11 +75,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
+        android:background="@color/surface_background"
         app:headerLayout="@layout/admin_nav_header"
         app:menu="@menu/menu_admin_drawer"
         app:itemIconTint="@color/textColorSecondary"
-        app:itemTextColor="@color/black"
+        app:itemTextColor="@color/textColorPrimary"
         app:elevation="0dp" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

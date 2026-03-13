@@ -15,6 +15,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.stock.AdminStockDashboardResponse
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -82,7 +83,11 @@ class AdminStockActivity : AdminBaseActivity() {
 
             override fun onFailure(call: Call<AdminStockDashboardResponse>, t: Throwable) {
                 swipeRefresh.isRefreshing = false
-                Toast.makeText(this@AdminStockActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@AdminStockActivity,
+                    NetworkMessageUtils.friendlyMessage(t, "Failed to load stock"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }

@@ -53,10 +53,14 @@
         <activity android:name=".ui.admin.companies.AdminCompaniesActivity"/>
         <activity android:name=".ui.admin.companies.AddEditCompanyActivity"/>
         <activity android:name=".ui.admin.companies.CompanyCatalogActivity"/>
+        <activity android:name=".ui.admin.AdminSubscriptionsActivity"/>
+        <activity android:name=".ui.admin.AdminSubscriptionHistoryActivity"/>
+        <activity android:name=".ui.admin.AdminUserDeliveryActivity"/>
 
         <!-- Customer -->
         <activity android:name=".ui.customer.CustomerMainActivity"/>
         <activity android:name=".ui.customer.CustomerCompanyCatalogActivity"/>
+        <activity android:name=".ui.user.UserMainActivity"/>
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>

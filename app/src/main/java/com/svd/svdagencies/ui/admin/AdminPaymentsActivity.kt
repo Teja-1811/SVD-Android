@@ -9,6 +9,7 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.CustomerPaymentItem
 import com.svd.svdagencies.databinding.AdminCustomerPaymentBinding
 import com.svd.svdagencies.ui.admin.adapter.CustomerPaymentAdapter
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
 
 class AdminPaymentsActivity : AdminBaseActivity() {
@@ -85,18 +86,26 @@ class AdminPaymentsActivity : AdminBaseActivity() {
     }
 
     private fun updateStatus(paymentId: Int, status: String) {
+        showScreenLoading()
         lifecycleScope.launch {
             try {
                 val body = mapOf("status" to status)
                 val response = ApiClient.adminPaymentsApi.updatePaymentStatus(paymentId, body)
                 if (response["status"] == "success") {
+                    hideScreenLoading()
                     Toast.makeText(this@AdminPaymentsActivity, "Status updated", Toast.LENGTH_SHORT).show()
                     fetchPayments()
                 } else {
+                    hideScreenLoading()
                     Toast.makeText(this@AdminPaymentsActivity, "Failed to update: ${response["message"]}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AdminPaymentsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AdminPaymentsActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to update payment"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -113,17 +122,25 @@ class AdminPaymentsActivity : AdminBaseActivity() {
     }
 
     private fun deletePayment(paymentId: Int) {
+        showScreenLoading()
         lifecycleScope.launch {
             try {
                 val response = ApiClient.adminPaymentsApi.deletePayment(paymentId)
                 if (response["status"] == "success") {
+                    hideScreenLoading()
                     Toast.makeText(this@AdminPaymentsActivity, "Payment deleted", Toast.LENGTH_SHORT).show()
                     fetchPayments()
                 } else {
+                    hideScreenLoading()
                     Toast.makeText(this@AdminPaymentsActivity, "Failed to delete: ${response["message"]}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AdminPaymentsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AdminPaymentsActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to delete payment"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

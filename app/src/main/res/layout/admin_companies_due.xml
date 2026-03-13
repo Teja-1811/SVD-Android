@@ -70,7 +70,7 @@
                                 android:gravity="center_vertical"
                                 android:paddingHorizontal="16dp"
                                 android:text="February, 2025"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
                                 app:drawableEndCompat="@drawable/ic_calendar"
@@ -241,11 +241,12 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
+        android:background="@color/surface_background"
         app:headerLayout="@layout/admin_nav_header"
         app:menu="@menu/menu_admin_drawer"
         app:itemIconTint="@color/textColorSecondary"
-        app:itemTextColor="@color/black"
+        app:itemTextColor="@color/textColorPrimary"
         app:elevation="0dp"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
+

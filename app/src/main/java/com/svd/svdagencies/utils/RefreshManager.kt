@@ -1,8 +1,6 @@
 package com.svd.svdagencies.utils
 
-import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.svd.svdagencies.R
 
 /**
  * A central manager to handle SwipeRefreshLayout configuration and behavior across the app.
@@ -16,14 +14,6 @@ object RefreshManager {
         swipeRefreshLayout: SwipeRefreshLayout,
         onRefresh: () -> Unit
     ) {
-        // Standardize colors
-        swipeRefreshLayout.setColorSchemeResources(
-            R.color.status_bar,
-            R.color.icon_green,
-            R.color.icon_blue
-        )
-
-        // Set listener
         swipeRefreshLayout.setOnRefreshListener {
             onRefresh()
         }

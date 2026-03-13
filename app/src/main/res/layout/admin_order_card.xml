@@ -9,7 +9,7 @@
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/card_stroke_color"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/card_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:text="ORD-2026..."
                 android:textStyle="bold"
                 android:textSize="13sp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/textColorPrimary"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 android:text="Customer: Test"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="@color/textColorPrimary"/>
 
             <TextView android:id="@+id/tvOrderDate"
                 android:layout_width="match_parent"
@@ -74,14 +74,14 @@
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
                 android:textSize="13sp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/textColorPrimary"/>
 
             <!-- Items Table Header -->
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2.5" android:text="Item" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/black"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Qty" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/black"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Disc" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/black"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8" android:text="AQ" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/black"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2.5" android:text="Item" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/textColorPrimary"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Qty" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/textColorPrimary"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Disc" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/textColorPrimary"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8" android:text="AQ" android:gravity="center" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/textColorPrimary"/>
             </LinearLayout>
 
             <!-- Dynamic Items Container -->

@@ -65,7 +65,7 @@
                                     android:layout_height="wrap_content"
                                     android:inputType="none"
                                     android:textSize="14sp"
-                                    android:textColor="@color/black" />
+                                    android:textColor="@color/textColorPrimary" />
                             </com.google.android.material.textfield.TextInputLayout>
 
                             <com.google.android.material.textfield.TextInputLayout
@@ -80,7 +80,7 @@
                                     android:layout_height="wrap_content"
                                     android:inputType="none"
                                     android:textSize="14sp"
-                                    android:textColor="@color/black" />
+                                    android:textColor="@color/textColorPrimary" />
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
@@ -100,7 +100,7 @@
                                 android:focusable="false"
                                 android:clickable="true"
                                 android:textSize="14sp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 tools:text="30-01-2026" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -130,7 +130,7 @@
                             android:text="Add Item to Bill"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:layout_marginBottom="16dp"/>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -144,7 +144,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="14sp"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:maxLines="1"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -160,7 +160,7 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
                                 android:textSize="14sp"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/textColorPrimary" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <LinearLayout
@@ -184,7 +184,7 @@
                                     android:text="0"
                                     android:enabled="false"
                                     android:textSize="14sp"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:gravity="center" />
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -202,7 +202,7 @@
                                     android:text="1"
                                     android:inputType="number"
                                     android:textSize="14sp"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:gravity="center" />
                             </com.google.android.material.textfield.TextInputLayout>
 
@@ -219,7 +219,7 @@
                                     android:text="0"
                                     android:inputType="numberDecimal"
                                     android:textSize="14sp"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:gravity="center" />
                             </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
@@ -261,7 +261,7 @@
                             android:text="Items in this Bill"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:layout_marginBottom="12dp"/>
 
                         <!-- Header for Item Table -->
@@ -273,13 +273,13 @@
                             android:paddingVertical="8dp"
                             android:paddingHorizontal="8dp"
                             android:weightSum="100">
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="30" android:text="Item" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Prc" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Qty" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="D%" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="DA" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Tot" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Act" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/black"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="30" android:text="Item" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Prc" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Qty" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="D%" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="DA" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Tot" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Act" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
                         </LinearLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -314,7 +314,7 @@
                                 android:text="0"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/black"/>
+                                android:textColor="@color/textColorPrimary"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -335,7 +335,7 @@
                                 android:text="₹0.00"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/black"/>
+                                android:textColor="@color/textColorPrimary"/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -350,7 +350,7 @@
                                 android:text="Grand Total: "
                                 android:textSize="18sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/black"/>
+                                android:textColor="@color/textColorPrimary"/>
                             <TextView
                                 android:id="@+id/tvGrandTotal"
                                 android:layout_width="wrap_content"
@@ -385,11 +385,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/white"
+        android:background="@color/surface_background"
         app:headerLayout="@layout/admin_nav_header"
         app:menu="@menu/menu_admin_drawer"
         app:itemIconTint="@color/textColorSecondary"
-        app:itemTextColor="@color/black"
+        app:itemTextColor="@color/textColorPrimary"
         app:elevation="0dp" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

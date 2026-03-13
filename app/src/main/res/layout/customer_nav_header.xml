@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:padding="16dp"
-    android:background="@color/white">
+    android:background="@color/surface_background">
 
     <ImageView
         android:id="@+id/imgLogo"
@@ -28,7 +28,7 @@
             android:text="Welcome!"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="@color/textColorPrimary" />
 
         <TextView
             android:id="@+id/tvCustomerDetail"

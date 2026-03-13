@@ -15,6 +15,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.CustomerApi
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
+import com.svd.svdagencies.data.model.customer.GenericResponse
 import com.svd.svdagencies.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -169,11 +170,42 @@ class CustomerPaymentFragment : Fragment() {
         }
 
         val status = params["status"]
+        val txnId = params["txnref"] ?: params["tr"] ?: ""
 
         if (status.equals("success", true)) {
-            Toast.makeText(context, "Payment successful", Toast.LENGTH_SHORT).show()
+            val amount = getAmount() ?: return
+            sendPaymentDataToBackend(txnId, amount)
         } else {
             Toast.makeText(context, "Payment failed", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun sendPaymentDataToBackend(txnId: String, amount: String) {
+        val paymentData = mapOf(
+            "user_id" to userId.toString(),
+            "amount" to amount,
+            "transaction_id" to txnId,
+            "status" to "success"
+        )
+
+        api.recordCustomerPayment(paymentData).enqueue(object : Callback<GenericResponse> {
+            override fun onResponse(call: Call<GenericResponse>, response: Response<GenericResponse>) {
+                if (isAdded) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(context, "Payment updated successfully", Toast.LENGTH_LONG).show()
+                        etAmount.text.clear()
+                        loadDashboardData() // Refresh balances
+                    } else {
+                        Toast.makeText(context, "Payment updated failed on server", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
+                if (isAdded) {
+                    Toast.makeText(context, "Failed to update payment: ${t.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
     }
 }

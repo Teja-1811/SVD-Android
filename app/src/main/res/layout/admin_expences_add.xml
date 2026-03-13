@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/surface_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                     android:text="Add New Expense"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:textColor="@color/textColorPrimary"
                     android:layout_marginBottom="24dp"/>
 
                 <com.google.android.material.card.MaterialCardView
@@ -45,7 +45,7 @@
                     app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@color/card_background">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -59,7 +59,7 @@
                             android:layout_height="wrap_content"
                             android:text="Amount (₹)"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:textSize="14sp"
                             android:layout_marginBottom="8dp"/>
 
@@ -74,7 +74,7 @@
                             android:padding="14dp"
                             android:textSize="18sp"
                             android:textStyle="bold"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/textColorPrimary"/>
 
                         <!-- Category -->
                         <TextView
@@ -82,7 +82,7 @@
                             android:layout_height="wrap_content"
                             android:text="Category"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:textSize="14sp"
                             android:layout_marginTop="20dp"
                             android:layout_marginBottom="8dp"/>
@@ -93,7 +93,7 @@
                             android:layout_height="wrap_content"
                             app:boxStrokeColor="@color/brand_red"
                             app:hintEnabled="false"
-                            app:boxBackgroundColor="@color/white">
+                            app:boxBackgroundColor="@color/editTextBackground">
 
                             <AutoCompleteTextView
                                 android:id="@+id/spinnerCategory"
@@ -101,7 +101,7 @@
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
                                 android:hint="Select Category"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:padding="14dp"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -111,7 +111,7 @@
                             android:layout_height="wrap_content"
                             android:text="Description (Optional)"
                             android:textStyle="bold"
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:textSize="14sp"
                             android:layout_marginTop="20dp"
                             android:layout_marginBottom="8dp"/>
@@ -126,7 +126,7 @@
                             android:gravity="top"
                             android:background="@drawable/bg_qty_outline"
                             android:backgroundTint="@color/bg_light_gray"
-                            android:textColor="@color/black"
+                            android:textColor="@color/textColorPrimary"
                             android:padding="14dp"
                             android:textSize="15sp"/>
 

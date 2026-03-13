@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.svd.svdagencies.R
+import com.svd.svdagencies.utils.RefreshManager
 
 abstract class BaseRefreshFragment(
     layoutId: Int
@@ -17,23 +18,17 @@ abstract class BaseRefreshFragment(
 
         swipeRefresh = view.findViewById(R.id.swipeRefresh)
 
-        swipeRefresh.setColorSchemeResources(
-            R.color.status_bar,
-            R.color.icon_green,
-            R.color.icon_blue
-        )
-
-        swipeRefresh.setOnRefreshListener {
+        RefreshManager.setupRefresh(swipeRefresh) {
             refreshData()
         }
 
         // Load data when screen opens
-        swipeRefresh.isRefreshing = true
+        RefreshManager.startRefresh(swipeRefresh)
         loadData()
     }
 
     protected fun stopRefresh() {
-        swipeRefresh.isRefreshing = false
+        RefreshManager.stopRefresh(swipeRefresh)
     }
 
     abstract fun loadData()

@@ -12,5 +12,5 @@ interface AdminStockApi {
     fun getStockDashboard(): Call<AdminStockDashboardResponse>
 
     @POST("api/stock/update/")
-    fun updateStock(@Body body: Map<String, List<Map<String, Any>>>): Call<Map<String, Any>>
+    fun updateStock(@Body body: @JvmSuppressWildcards Map<String, List<Map<String, Any>>>): Call<Map<String, Any>>
 }

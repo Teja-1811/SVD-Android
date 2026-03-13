@@ -6,7 +6,7 @@
 
     <!-- Eye outline -->
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/textColorPrimary"
         android:pathData="
             M12,6
             C7,6 3.73,9.11 2,12
@@ -21,7 +21,7 @@
 
     <!-- Eye pupil -->
     <path
-        android:fillColor="#000000"
+        android:fillColor="@color/textColorPrimary"
         android:pathData="
             M12,10
             a2,2 0 1,0 0,4

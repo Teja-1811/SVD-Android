@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/surface_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:text="Expense History"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
+                android:textColor="@color/textColorPrimary"
                 android:layout_marginBottom="12dp"/>
 
             <!-- Filter Bar: Month & Year Selector -->
@@ -52,7 +52,7 @@
                     app:boxCornerRadiusTopEnd="10dp"
                     app:boxCornerRadiusBottomStart="10dp"
                     app:boxCornerRadiusBottomEnd="10dp"
-                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundColor="@color/editTextBackground"
                     app:boxStrokeColor="@color/divider_line">
 
                     <AutoCompleteTextView
@@ -62,7 +62,7 @@
                         android:inputType="none"
                         android:hint="Month"
                         android:textSize="12sp"
-                        android:textColor="@color/black"
+                        android:textColor="@color/textColorPrimary"
                         android:paddingStart="10dp"
                         android:paddingEnd="32dp"
                         android:gravity="center_vertical"
@@ -80,7 +80,7 @@
                     app:boxCornerRadiusTopEnd="10dp"
                     app:boxCornerRadiusBottomStart="10dp"
                     app:boxCornerRadiusBottomEnd="10dp"
-                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundColor="@color/editTextBackground"
                     app:boxStrokeColor="@color/divider_line">
 
                     <AutoCompleteTextView
@@ -90,7 +90,7 @@
                         android:inputType="none"
                         android:hint="Year"
                         android:textSize="12sp"
-                        android:textColor="@color/black"
+                        android:textColor="@color/textColorPrimary"
                         android:paddingStart="10dp"
                         android:paddingEnd="32dp"
                         android:gravity="center_vertical"
@@ -125,7 +125,7 @@
                 app:cardElevation="0dp"
                 app:strokeWidth="1dp"
                 app:strokeColor="@color/card_stroke_color"
-                app:cardBackgroundColor="@color/white">
+                app:cardBackgroundColor="@color/card_background">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <!-- List -->
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            <com.svd.svdagencies.utils.AppSwipeRefreshLayout
                 android:id="@+id/swipeRefresh"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -161,7 +161,7 @@
                     android:layout_height="match_parent"
                     tools:listitem="@layout/admin_expense_row"/>
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
 
         </LinearLayout>
     </LinearLayout>

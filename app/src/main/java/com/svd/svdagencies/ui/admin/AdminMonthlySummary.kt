@@ -1,18 +1,18 @@
 package com.svd.svdagencies.ui.admin
 
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.card.MaterialCardView
@@ -28,6 +28,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 import java.io.File
 import java.io.FileOutputStream
+import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,6 +37,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
     private lateinit var autoCustomer: AutoCompleteTextView
     private lateinit var etMonth: ImageButton
     private lateinit var btnDownload: ImageButton
+    private lateinit var btnWhatsappShare: ImageButton
     private lateinit var api: CustomerDashboardApi
 
     private lateinit var layoutResults: LinearLayout
@@ -49,7 +51,9 @@ class AdminMonthlySummary : AdminBaseActivity() {
     
     private var customersList: List<CustomerItem> = emptyList()
     private var selectedCustomerId: Int? = null
+    private var selectedCustomerArea: String = ""
     private val calendar = Calendar.getInstance()
+    private var currentSummary: MonthlySummaryResponse? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +66,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
         autoCustomer = findViewById(R.id.autoCustomer) ?: return
         etMonth = findViewById(R.id.etMonth) ?: return
         btnDownload = findViewById(R.id.btnDownload) ?: return
+        btnWhatsappShare = findViewById(R.id.btnWhatsappShare) ?: return
 
         layoutResults = findViewById(R.id.layoutResults) ?: return
         cardCustomerDetails = findViewById(R.id.cardCustomerDetails) ?: return
@@ -79,18 +84,42 @@ class AdminMonthlySummary : AdminBaseActivity() {
         btnDownload.setOnClickListener {
             downloadPdf()
         }
+
+        btnWhatsappShare.setOnClickListener {
+            if (currentSummary == null) {
+                Toast.makeText(this, "Please select a customer and month first", Toast.LENGTH_SHORT).show()
+            } else {
+                shareOnWhatsapp()
+            }
+        }
     }
 
     private fun showMonthPicker() {
-        val dpd = DatePickerDialog(this, { _, year, month, _ ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, month)
-            
-            // Auto fetch summary on date change
-            fetchSummary()
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-        
-        dpd.show()
+        val dialogView = layoutInflater.inflate(R.layout.admin_monthly_summary_year_picker, null)
+        val monthPicker = dialogView.findViewById<NumberPicker>(R.id.monthPicker)
+        val yearPicker = dialogView.findViewById<NumberPicker>(R.id.yearPicker)
+
+        val monthNames = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+        monthPicker.minValue = 0
+        monthPicker.maxValue = 11
+        monthPicker.displayedValues = monthNames
+        monthPicker.value = calendar.get(Calendar.MONTH)
+
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        yearPicker.minValue = currentYear - 5
+        yearPicker.maxValue = currentYear + 5
+        yearPicker.value = calendar.get(Calendar.YEAR)
+
+        AlertDialog.Builder(this)
+            .setTitle("Select Month and Year")
+            .setView(dialogView)
+            .setPositiveButton("OK") { _, _ ->
+                calendar.set(Calendar.YEAR, yearPicker.value)
+                calendar.set(Calendar.MONTH, monthPicker.value)
+                fetchSummary()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun loadCustomers() {
@@ -108,6 +137,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
                             val selectedName = adapter.getItem(position)
                             val customer = customersList.find { it.name == selectedName }
                             selectedCustomerId = customer?.id
+                            selectedCustomerArea = customer?.area ?: ""
                             
                             // Pre-fill customer details from list
                             customer?.let {
@@ -163,19 +193,10 @@ class AdminMonthlySummary : AdminBaseActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                Log.d("DownloadPdf", "Starting download for date: $date, customer: $customerId")
+                Log.d("DownloadPdf", "Starting download for date: $date, customer: $customerId, area: $selectedCustomerArea")
                 
-                // Construct parameters manually to verify URL structure if needed
-                // Based on API: @GET("milk_agency/generate-monthly-sales-pdf/")
-                val responseBody = api.downloadMonthlySalesPdf(date, customerId)
+                val responseBody = api.downloadMonthlySalesPdf(date, customerId, selectedCustomerArea)
                 
-                // Check if response is actually HTML (login page)
-                val responseString = withContext(Dispatchers.IO) {
-                    // Peek at the beginning of the stream to check for HTML
-                    // Caution: byteStream() can only be consumed once, but we can read it and save it.
-                    null
-                }
-
                 val fileName = "Monthly_Summary_${date}_$customerId.pdf"
                 val file = File(getExternalFilesDir(null), fileName)
                 
@@ -238,7 +259,45 @@ class AdminMonthlySummary : AdminBaseActivity() {
         }
     }
 
+    private fun shareOnWhatsapp() {
+        val summary = currentSummary ?: return
+        val phoneNumber = summary.customer.phone ?: return
+        
+        // Clean phone number (keep only digits)
+        val cleanPhone = phoneNumber.replace(Regex("[^0-9]"), "")
+        val finalPhone = if (cleanPhone.length == 10) "91$cleanPhone" else cleanPhone
+
+        val monthName = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(calendar.time)
+        val message = """
+            *Monthly Sales Summary - $monthName*
+            
+            *Customer:* ${summary.customer.name}
+            
+            *Financials:*
+            Opening Due: ₹${String.format("%.2f", summary.summary.opening_due)}
+            Total Sales: ₹${String.format("%.2f", summary.summary.total_sales)}
+            Paid Amount: ₹${String.format("%.2f", summary.summary.paid_amount)}
+            Net Due: ₹${String.format("%.2f", summary.summary.due_amount)}
+            Commission: ₹${String.format("%.2f", summary.commission.total_commission)}
+            *Remaining Balance: ₹${String.format("%.2f", summary.summary.remaining_due)}*
+            
+            *Volumes:*
+            Milk: ${String.format("%.2f", summary.volume.milk_volume)} L
+            Curd: ${String.format("%.2f", summary.volume.curd_volume)} L
+        """.trimIndent()
+
+        try {
+            val intent = Intent(Intent.ACTION_VIEW)
+            val url = "https://api.whatsapp.com/send?phone=$finalPhone&text=${URLEncoder.encode(message, "UTF-8")}"
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp not installed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun updateUI(data: MonthlySummaryResponse) {
+        currentSummary = data
         layoutResults.visibility = View.VISIBLE
         cardCustomerDetails.visibility = View.VISIBLE
         cardFinancialSummary.visibility = View.VISIBLE

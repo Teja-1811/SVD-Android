@@ -4,25 +4,25 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/brand_red</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">@color/white</item>
-        <item name="colorOnPrimaryContainer">@color/brand_red_dark</item>
+        <item name="colorPrimaryContainer">@color/brand_red_dark</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
 
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/colorAccent</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="colorSecondaryContainer">@color/white</item>
         <item name="colorOnSecondaryContainer">@color/black</item>
 
-        <item name="colorSurface">@color/white</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorSurfaceVariant">@color/white</item>
-        <item name="colorOnSurfaceVariant">@color/black</item>
+        <item name="colorSurface">@color/surface_background</item>
+        <item name="colorOnSurface">@color/textColorPrimary</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/textColorSecondary</item>
 
-        <item name="colorSurfaceContainer">@color/white</item>
-        <item name="colorSurfaceContainerHigh">@color/white</item>
-        <item name="colorSurfaceContainerHighest">@color/white</item>
-        <item name="colorSurfaceContainerLow">@color/white</item>
-        <item name="colorSurfaceContainerLowest">@color/white</item>
+        <item name="colorSurfaceContainer">@color/surface_background</item>
+        <item name="colorSurfaceContainerHigh">@color/surface_background</item>
+        <item name="colorSurfaceContainerHighest">@color/surface_background</item>
+        <item name="colorSurfaceContainerLow">@color/surface_background</item>
+        <item name="colorSurfaceContainerLowest">@color/surface_background</item>
 
         <!-- Status Bar -->
         <item name="android:statusBarColor">@color/brand_red</item>
@@ -36,20 +36,28 @@
 
         <!-- Navigation View Styling -->
         <item name="navigationViewStyle">@style/Widget.App.NavigationView</item>
+
+        <!-- Bottom Navigation Styling -->
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@color/white</item>
-        <!-- Disabling elevation removes the surface tint in Material 3 -->
-        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+        <item name="cardElevation">2dp</item>
         <item name="strokeWidth">1dp</item>
         <item name="strokeColor">@color/card_stroke_color</item>
     </style>
 
     <style name="Widget.App.NavigationView" parent="Widget.Material3.NavigationView">
-        <item name="backgroundTint">@color/white</item>
+        <item name="backgroundTint">@color/drawer_background</item>
         <item name="elevation">0dp</item>
-        <item name="itemTextColor">@color/black</item>
+        <item name="itemTextColor">@color/drawer_nav_item_colors</item>
+        <item name="itemIconTint">@color/drawer_nav_icon_colors</item>
+    </style>
+
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/surface_background</item>
+        <item name="itemTextColor">@color/textColorSecondary</item>
         <item name="itemIconTint">@color/textColorSecondary</item>
     </style>
 </resources>

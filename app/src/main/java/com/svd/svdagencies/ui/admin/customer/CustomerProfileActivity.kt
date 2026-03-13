@@ -14,6 +14,7 @@ import com.svd.svdagencies.data.model.admin.customerData.CustomerDetail
 import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
 import com.svd.svdagencies.databinding.AdminCustomerProfileBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -78,7 +79,7 @@ class CustomerProfileActivity : AdminBaseActivity() {
     private fun loadFullDetails(id: Int) {
         if (id == 0) return
 
-        binding.progressBar.visibility = View.VISIBLE
+        showScreenLoading()
         binding.cardDetails.visibility = View.GONE
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -86,17 +87,17 @@ class CustomerProfileActivity : AdminBaseActivity() {
                 val detail = api.getCustomerDetail(id)
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        binding.progressBar.visibility = View.GONE
+                        hideScreenLoading()
                         displayFullDetails(detail)
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        binding.progressBar.visibility = View.GONE
-                        val errorMsg = e.message ?: "Unknown error"
+                        hideScreenLoading()
+                        val errorMsg = NetworkMessageUtils.friendlyMessage(e, "Failed to load customer data")
                         Log.e("CustomerProfile", "Failed to load details", e)
-                        Toast.makeText(this@CustomerProfileActivity, "Load failed: $errorMsg", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@CustomerProfileActivity, errorMsg, Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -157,7 +158,11 @@ class CustomerProfileActivity : AdminBaseActivity() {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         binding.btnFreeze.isEnabled = true
-                        Toast.makeText(this@CustomerProfileActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@CustomerProfileActivity,
+                            NetworkMessageUtils.friendlyMessage(e, "Failed to update status"),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

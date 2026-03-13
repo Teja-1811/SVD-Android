@@ -66,7 +66,7 @@ class OrderProductAdapter(
         holder.etQty.setText(product.formatQuantity(qty))
 
         val base = ApiClient.BASE_URL.removeSuffix("/")
-        val productImg = product.image ?: ""
+        val productImg = product.image
         val url = if (productImg.startsWith("http")) {
             productImg
         } else {

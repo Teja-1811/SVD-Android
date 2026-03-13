@@ -10,86 +10,127 @@
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/card_stroke_color"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/card_background">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tvItemName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:text="Item Name"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/textColorPrimary"/>
 
-            <TextView
-                android:id="@+id/tvItemName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Item Name"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_line"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
 
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <!-- MRP -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp">
-
+                android:layout_columnWeight="1"
+                android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="MRP: "
-                    android:textSize="12sp"
+                    android:text="MRP"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
-
                 <TextView
                     android:id="@+id/tvMrp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹0.00"
-                    android:textSize="12sp"
-                    android:textColor="@color/gray500"
-                    android:layout_marginEnd="12dp"/>
+                    android:textSize="13sp"
+                    android:textColor="@color/textColorPrimary"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
+            <!-- Buying -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="end">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Selling Price: "
-                    android:textSize="12sp"
+                    android:text="Buying Price"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
+                <TextView
+                    android:id="@+id/tvBuyingPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₹0.00"
+                    android:textSize="13sp"
+                    android:textColor="@color/brand_blue"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
+            <!-- Selling -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Selling Price"
+                    android:textSize="11sp"
+                    android:textColor="@color/gray500"/>
                 <TextView
                     android:id="@+id/tvSellingPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹0.00"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
+                    android:textSize="14sp"
                     android:textColor="@color/icon_green"
-                    android:layout_marginEnd="12dp"/>
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
+            <!-- Margin -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="end"
+                android:layout_marginTop="12dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Margin: "
-                    android:textSize="12sp"
+                    android:text="Margin"
+                    android:textSize="11sp"
                     android:textColor="@color/gray500"/>
-
                 <TextView
                     android:id="@+id/tvMargin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₹0.00"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/brand_red"/>
+                    android:textSize="14sp"
+                    android:textColor="@color/brand_red"
+                    android:textStyle="bold"/>
             </LinearLayout>
-        </LinearLayout>
 
+        </GridLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

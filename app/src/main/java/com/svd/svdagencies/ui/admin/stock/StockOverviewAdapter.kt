@@ -38,7 +38,7 @@ class StockOverviewAdapter(private var items: List<StockItem>) :
         fun bind(item: StockItem) {
             tvItemName.text = item.name
             
-            val totalQty = item.stockQuantity.toInt()
+            val totalQty = item.stockQuantity
             val pcsCount = item.pcsCount ?: 1
             
             val calculatedCrates = totalQty / pcsCount
@@ -47,7 +47,15 @@ class StockOverviewAdapter(private var items: List<StockItem>) :
             tvCrates.text = calculatedCrates.toString()
             tvPackets.text = remainingPackets.toString()
             
-            tvValue.text = String.format(Locale.getDefault(), "₹%.2f", (item.stockQuantity * item.sellingPrice))
+            // If API provides a valid stockValue, use it; otherwise calculate from quantity and price
+            val calculatedValue = item.stockQuantity.toDouble() * item.sellingPrice
+            val displayValue = if (item.stockValue != null && item.stockValue > 0) {
+                item.stockValue
+            } else {
+                calculatedValue
+            }
+
+            tvValue.text = String.format(Locale.getDefault(), "₹%.2f", displayValue)
             
             // Toggle badge backgrounds
             tvCrates.setBackgroundResource(if (calculatedCrates > 0) R.drawable.bg_badge_blue else R.drawable.bg_badge_red)

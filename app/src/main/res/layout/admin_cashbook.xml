@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/surface_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
 
         <include layout="@layout/admin_toolbar" />
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -95,7 +95,7 @@
                             app:boxCornerRadiusTopEnd="10dp"
                             app:boxCornerRadiusBottomStart="10dp"
                             app:boxCornerRadiusBottomEnd="10dp"
-                            app:boxBackgroundColor="@color/white"
+                            app:boxBackgroundColor="@color/editTextBackground"
                             app:boxStrokeColor="@color/divider_line">
 
                             <AutoCompleteTextView
@@ -105,7 +105,7 @@
                                 android:inputType="none"
                                 android:text="February"
                                 android:textSize="@dimen/text_size_body_small"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:paddingStart="10dp"
                                 android:paddingEnd="32dp"
                                 android:gravity="center_vertical"
@@ -123,7 +123,7 @@
                             app:boxCornerRadiusTopEnd="10dp"
                             app:boxCornerRadiusBottomStart="10dp"
                             app:boxCornerRadiusBottomEnd="10dp"
-                            app:boxBackgroundColor="@color/white"
+                            app:boxBackgroundColor="@color/editTextBackground"
                             app:boxStrokeColor="@color/divider_line">
 
                             <AutoCompleteTextView
@@ -133,7 +133,7 @@
                                 android:inputType="none"
                                 android:text="2025"
                                 android:textSize="@dimen/text_size_body_small"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:paddingStart="10dp"
                                 android:paddingEnd="32dp"
                                 android:gravity="center_vertical"
@@ -197,7 +197,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Company Dues"
-                        android:textColor="@color/black"
+                        android:textColor="@color/textColorPrimary"
                         android:textStyle="bold"
                         android:textSize="@dimen/text_size_small"
                         android:layout_marginTop="@dimen/spacing_large"
@@ -241,7 +241,7 @@
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
                         app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/white">
+                        app:cardBackgroundColor="@color/card_background">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -253,7 +253,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Bank Balance"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textStyle="bold"
                                 android:textSize="@dimen/text_size_small"
                                 android:layout_marginBottom="@dimen/spacing_large"/>
@@ -272,7 +272,7 @@
                                     android:background="@drawable/bg_edit_text"
                                     android:hint="e.g. 5697.27"
                                     android:inputType="numberDecimal"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:textColorHint="@color/textColorSecondary"
                                     android:paddingStart="@dimen/spacing_large"
                                     android:paddingEnd="@dimen/spacing_large"
@@ -304,7 +304,7 @@
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
                         app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/white">
+                        app:cardBackgroundColor="@color/card_background">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -316,7 +316,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Cash In Counter"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textStyle="bold"
                                 android:textSize="@dimen/text_size_small"
                                 android:layout_marginBottom="@dimen/spacing_large"/>
@@ -361,7 +361,7 @@
 
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView

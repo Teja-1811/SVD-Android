@@ -53,10 +53,11 @@ interface CustomerDashboardApi {
         @Query("customer_id") customerId: Int?
     ): MonthlySummaryResponse
 
+    // Updated URL path and parameter names to match backend: api/sales/monthly-summary/pdf/
     @GET("api/sales/monthly-summary/pdf/")
     suspend fun downloadMonthlySalesPdf(
         @Query("date") date: String,
-        @Query("customer") customerId: Int,
-        @Query("area") area: String = ""
+        @Query("customer_id") customerId: Int,
+        @Query("area") area: String
     ): ResponseBody
 }

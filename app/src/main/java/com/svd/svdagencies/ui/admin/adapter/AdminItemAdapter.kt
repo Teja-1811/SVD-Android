@@ -1,12 +1,14 @@
 package com.svd.svdagencies.ui.admin.adapter
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
@@ -62,6 +64,23 @@ class AdminItemAdapter(
             tvMrp.text = "₹%.2f".format(item.mrpValue)
             tvMargin.text = "₹%.2f".format(item.margin)
             tvStock.text = "${item.stock_quantity ?: 0} in stock"
+
+            // Update status button based on frozen state
+            if (item.frozen) {
+                btnStatus.text = "Activate"
+                btnStatus.setIconResource(R.drawable.ic_unlock)
+                val greenColor = ContextCompat.getColor(itemView.context, R.color.icon_green)
+                btnStatus.setTextColor(greenColor)
+                btnStatus.strokeColor = ColorStateList.valueOf(greenColor)
+                btnStatus.iconTint = ColorStateList.valueOf(greenColor)
+            } else {
+                btnStatus.text = "Deactivate"
+                btnStatus.setIconResource(R.drawable.ic_lock)
+                val redColor = ContextCompat.getColor(itemView.context, R.color.brand_red)
+                btnStatus.setTextColor(redColor)
+                btnStatus.strokeColor = ColorStateList.valueOf(redColor)
+                btnStatus.iconTint = ColorStateList.valueOf(redColor)
+            }
 
             // Loading company logo using Glide
             val companyLogoUrl = item.logo

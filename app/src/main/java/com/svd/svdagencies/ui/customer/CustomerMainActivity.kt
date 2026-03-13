@@ -19,6 +19,7 @@ import com.svd.svdagencies.utils.SessionManager
 class CustomerMainActivity : AppCompatActivity() {
 
     private lateinit var toolbar: MaterialToolbar
+    private lateinit var bottomNav: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class CustomerMainActivity : AppCompatActivity() {
         }
 
         // ================= BOTTOM NAV =================
-        val bottomNav = findViewById<BottomNavigationView>(R.id.customerBottomNav)
+        bottomNav = findViewById(R.id.customerBottomNav)
 
         if (savedInstanceState == null) {
             loadFragment(CustomerHomeFragment(), "Home")
@@ -55,7 +56,7 @@ class CustomerMainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.nav_home -> loadFragment(CustomerHomeFragment(), "Home")
                 R.id.nav_companies -> loadFragment(CustomerCompaniesFragment(), "Companies")
-                R.id.nav_orders -> loadFragment(CustomerOrdersFragment(), "Orders")
+                R.id.nav_orders -> loadFragment(CustomerOrdersFragment.newInstance(), "Orders")
                 R.id.nav_bills -> loadFragment(CustomerBillsFragment(), "Bills")
                 R.id.nav_payment -> loadFragment(CustomerPaymentFragment(), "Payment")
             }
@@ -66,6 +67,11 @@ class CustomerMainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_customer_toolbar, menu)
         return true
+    }
+
+    fun openOrdersScreen(editLatestOrder: Boolean = false) {
+        bottomNav.menu.findItem(R.id.nav_orders).isChecked = true
+        loadFragment(CustomerOrdersFragment.newInstance(editLatestOrder), "Orders")
     }
 
     private fun loadFragment(fragment: Fragment, title: String) {

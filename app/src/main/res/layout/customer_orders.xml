@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<com.svd.svdagencies.utils.AppSwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -36,14 +36,13 @@
             </HorizontalScrollView>
 
             <TextView
-                android:id="@+id/tvCategoryTitle"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvOrderingWindow"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Milk"
-                android:textSize="@dimen/text_size_medium"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="@dimen/spacing_small"/>
+                android:layout_marginBottom="@dimen/spacing_medium"
+                android:text="Place or edit orders before 8:00 PM today."
+                android:textColor="@color/textColorSecondary"
+                android:textSize="@dimen/text_size_small" />
 
             <!-- PRODUCT LIST -->
             <androidx.recyclerview.widget.RecyclerView
@@ -131,4 +130,4 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</com.svd.svdagencies.utils.AppSwipeRefreshLayout>

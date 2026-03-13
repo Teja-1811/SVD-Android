@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SVDAgency" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.SVDAgency" parent="Theme.Material3.Dark.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/brand_red</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -11,19 +11,19 @@
         <item name="colorSecondary">@color/brand_red</item>
         <item name="colorOnSecondary">@color/white</item>
 
-        <item name="colorSurface">@color/card_background</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorSurfaceVariant">@color/card_background</item>
-        <item name="colorOnSurfaceVariant">@color/black</item>
+        <item name="colorSurface">@color/surface_background</item>
+        <item name="colorOnSurface">@color/textColorPrimary</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/textColorSecondary</item>
 
-        <item name="colorSurfaceContainer">@color/white</item>
-        <item name="colorSurfaceContainerHigh">@color/white</item>
-        <item name="colorSurfaceContainerHighest">@color/white</item>
-        <item name="colorSurfaceContainerLow">@color/white</item>
-        <item name="colorSurfaceContainerLowest">@color/white</item>
+        <item name="colorSurfaceContainer">@color/surface_background</item>
+        <item name="colorSurfaceContainerHigh">@color/surface_background</item>
+        <item name="colorSurfaceContainerHighest">@color/surface_background</item>
+        <item name="colorSurfaceContainerLow">@color/surface_background</item>
+        <item name="colorSurfaceContainerLowest">@color/surface_background</item>
 
         <!-- Status Bar -->
-        <item name="android:statusBarColor">@color/brand_red</item>
+        <item name="android:statusBarColor">@color/status_bar</item>
         <item name="android:windowLightStatusBar">false</item>
 
         <!-- Window Background -->
@@ -34,5 +34,8 @@
 
         <!-- Navigation View Styling -->
         <item name="navigationViewStyle">@style/Widget.App.NavigationView</item>
+
+        <!-- Bottom Navigation Styling -->
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 </resources>

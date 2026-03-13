@@ -40,6 +40,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 
@@ -91,6 +92,7 @@ dependencies {
     
     // Image Loading
     implementation(libs.glide)
+    implementation(libs.glide.okhttp)
     kapt(libs.glide.compiler)
     
     // Utilities

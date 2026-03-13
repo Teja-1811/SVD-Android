@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.svd.svdagencies.utils.AppSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
@@ -17,176 +17,320 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_large">
 
-            <!-- ================= WELCOME CARD ================= -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_large"
+                app:cardBackgroundColor="@color/customer_home_card_background"
                 app:cardCornerRadius="@dimen/card_corner_radius_large"
                 app:cardElevation="@dimen/spacing_xsmall"
-                app:cardBackgroundColor="#6E63C5"
-                android:layout_marginBottom="@dimen/spacing_large">
+                app:strokeColor="@color/customer_home_card_stroke"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp"
-                    android:gravity="center">
+                    android:background="@color/customer_home_card_background"
+                    android:padding="20dp">
 
-                    <ImageView
-                        android:layout_width="110dp"
-                        android:layout_height="110dp"
-                        android:background="@drawable/circular_white_background"
-                        android:src="@drawable/logo"
-                        android:layout_marginBottom="@dimen/spacing_medium"/>
-
-                    <TextView
-                        android:id="@+id/tvWelcome"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Welcome back 👋"
-                        android:textSize="@dimen/text_size_large"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/white"
-                        android:layout_marginBottom="@dimen/spacing_xsmall"/>
+                        android:baselineAligned="false"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvWelcome"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:maxLines="2"
+                                android:text="Welcome back"
+                                android:textColor="@color/customer_home_title"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:lineSpacingExtra="2dp"
+                                android:maxLines="4"
+                                android:text="Track your balance, review your shop details and stay updated with Sri Vijaya Durga Milk Agencies."
+                                android:textColor="@color/customer_home_body"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:layout_marginStart="12dp">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:cardBackgroundColor="@color/customer_home_logo_badge"
+                                app:cardCornerRadius="22dp"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/customer_home_card_stroke"
+                                app:strokeWidth="1dp" />
+
+                            <ImageView
+                                android:layout_width="54dp"
+                                android:layout_height="54dp"
+                                android:layout_gravity="center"
+                                android:background="@drawable/circular_white_background"
+                                android:padding="3dp"
+                                android:src="@drawable/logo" />
+                        </FrameLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/customer_home_card_stroke" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Manage your orders, track your account,\nand stay updated with \n Sri Vijaya Durga Milk Agencies"
-                        android:textSize="@dimen/text_size_small"
-                        android:textColor="@android:color/white"
-                        android:gravity="center"/>
+                        android:layout_marginTop="14dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:background="@drawable/circular_white_background"
+                            android:backgroundTint="@color/icon_green" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:maxLines="2"
+                            android:text="Your account details are synced and ready."
+                            android:textColor="@color/customer_home_body"
+                            android:textSize="12sp" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ================= INFO CARD : BALANCE ================= -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                app:cardBackgroundColor="@color/customer_home_card_background"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
                 app:cardElevation="@dimen/spacing_tiny"
-                android:layout_marginBottom="@dimen/spacing_medium">
+                app:strokeColor="@color/customer_home_card_stroke"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/editTextBackground"
-                    android:padding="@dimen/spacing_large"
+                    android:gravity="center_vertical"
+                    android:background="@color/customer_home_card_background"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:padding="@dimen/spacing_large">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
+                        android:layout_marginEnd="@dimen/spacing_medium"
                         android:src="@drawable/ic_rupee"
-                        android:tint="@color/login_text_red"
-                        android:layout_marginEnd="@dimen/spacing_medium"/>
+                        android:tint="@color/login_text_red" />
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Account Balance"
-                            android:textSize="@dimen/text_size_small"
-                            android:textColor="@color/textColorSecondary"/>
+                            android:textColor="@color/customer_home_body"
+                            android:textSize="@dimen/text_size_small" />
 
                         <TextView
                             android:id="@+id/tvBalance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0.00"
+                            android:textColor="@color/customer_home_title"
                             android:textSize="@dimen/text_size_medium"
-                            android:textStyle="bold"
-                            android:textColor="@color/textColorPrimary"/>
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ================= INFO CARD : SHOP ================= -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                app:cardBackgroundColor="@color/customer_home_card_background"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
                 app:cardElevation="@dimen/spacing_tiny"
-                android:layout_marginBottom="@dimen/spacing_medium">
+                app:strokeColor="@color/customer_home_card_stroke"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/editTextBackground"
-                    android:padding="@dimen/spacing_large"
+                    android:gravity="center_vertical"
+                    android:background="@color/customer_home_card_background"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:padding="@dimen/spacing_large">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
+                        android:layout_marginEnd="@dimen/spacing_medium"
                         android:src="@drawable/ic_shop"
-                        android:tint="@color/icon_red"
-                        android:layout_marginEnd="@dimen/spacing_medium"/>
+                        android:tint="@color/icon_red" />
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shop Name"
-                            android:textSize="@dimen/text_size_small"
-                            android:textColor="@color/textColorSecondary"/>
+                            android:textColor="@color/customer_home_body"
+                            android:textSize="@dimen/text_size_small" />
 
                         <TextView
                             android:id="@+id/tvShop"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Shop Name"
+                            android:textColor="@color/customer_home_title"
                             android:textSize="@dimen/text_size_medium"
-                            android:textStyle="bold"
-                            android:textColor="@color/textColorPrimary"/>
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ================= INFO CARD : STATUS ================= -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                app:cardBackgroundColor="@color/customer_home_card_background"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="@dimen/spacing_tiny">
+                app:cardElevation="@dimen/spacing_tiny"
+                app:strokeColor="@color/customer_home_card_stroke"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/spacing_large"
-                    android:background="@color/editTextBackground"
+                    android:background="@color/customer_home_card_background"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_large">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Latest Order"
+                        android:textColor="@color/customer_home_title"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvOrderWindow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Place or edit orders before 8:00 PM today."
+                        android:textColor="@color/customer_home_body"
+                        android:textSize="@dimen/text_size_small" />
+
+                    <TextView
+                        android:id="@+id/tvLatestOrderTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:text="Ready for today's order?"
+                        android:textColor="@color/customer_home_title"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvLatestOrderSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Place a fresh order between 9:00 AM and 8:00 PM."
+                        android:textColor="@color/customer_home_body"
+                        android:textSize="@dimen/text_size_small" />
+
+                    <TextView
+                        android:id="@+id/tvLatestOrderItems"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:lineSpacingExtra="2dp"
+                        android:text="Your latest order will appear here after checkout."
+                        android:textColor="@color/customer_home_body"
+                        android:textSize="@dimen/text_size_small" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLatestOrderAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:text="Place Order"
+                        android:textAllCaps="false"
+                        app:backgroundTint="@color/icon_green"
+                        app:cornerRadius="@dimen/card_corner_radius_medium" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/customer_home_card_background"
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                app:cardElevation="@dimen/spacing_tiny"
+                app:strokeColor="@color/customer_home_card_stroke"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:background="@color/customer_home_card_background"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:padding="@dimen/spacing_large">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
+                        android:layout_marginEnd="@dimen/spacing_medium"
                         android:src="@drawable/ic_check"
-                        android:tint="@color/icon_green"
-                        android:layout_marginEnd="@dimen/spacing_medium"/>
+                        android:tint="@color/icon_green" />
 
                     <TextView
                         android:id="@+id/tvStatus"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Account Status : Active"
+                        android:textColor="@color/icon_green"
                         android:textSize="@dimen/text_size_medium"
-                        android:textStyle="bold"
-                        android:textColor="@color/icon_green"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</com.svd.svdagencies.utils.AppSwipeRefreshLayout>

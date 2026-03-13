@@ -6,7 +6,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/surface_background">
 
     <LinearLayout
         android:orientation="vertical"
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -104,7 +104,7 @@
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
                         app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/white">
+                        app:cardBackgroundColor="@color/card_background">
 
                         <LinearLayout
                             android:orientation="horizontal"
@@ -124,7 +124,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="Pending Orders"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textSize="@dimen/text_size_medium"
                                 android:layout_marginStart="@dimen/spacing_medium"
                                 android:textStyle="bold"/>
@@ -134,7 +134,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="@color/black"
+                                android:textColor="@color/textColorPrimary"
                                 android:textSize="@dimen/text_size_large"
                                 android:textStyle="bold"
                                 android:layout_marginEnd="@dimen/spacing_large"/>
@@ -158,7 +158,7 @@
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
                         app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/white">
+                        app:cardBackgroundColor="@color/card_background">
 
                         <LinearLayout
                             android:orientation="vertical"
@@ -184,7 +184,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:text="Not Ordered Today"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:textSize="@dimen/text_size_medium"
                                     android:layout_marginStart="@dimen/spacing_medium"
                                     android:textStyle="bold"/>
@@ -194,7 +194,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="0"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:textStyle="bold"
                                     android:textSize="@dimen/text_size_large"/>
                             </LinearLayout>
@@ -219,7 +219,7 @@
 
                 </LinearLayout>
             </ScrollView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -227,7 +227,10 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/drawer_background"
         app:headerLayout="@layout/admin_nav_header"
+        app:itemIconTint="@color/drawer_nav_icon_colors"
+        app:itemTextColor="@color/drawer_nav_item_colors"
         app:menu="@menu/menu_admin_drawer"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

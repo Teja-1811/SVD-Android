@@ -1,5 +1,6 @@
 package com.svd.svdagencies.ui.admin.cashbook
 
+import android.app.Activity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -9,6 +10,7 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseRequest
 import com.svd.svdagencies.databinding.AdminExpencesAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
 
 class AddExpenseActivity : AdminBaseActivity() {
@@ -75,6 +77,8 @@ class AddExpenseActivity : AdminBaseActivity() {
         }
 
         val request = ExpenseRequest(amount, category, description)
+        binding.btnSaveExpense.isEnabled = false
+        showScreenLoading()
 
         lifecycleScope.launch {
             try {
@@ -85,13 +89,22 @@ class AddExpenseActivity : AdminBaseActivity() {
                 }
 
                 if (response["success"] == true) {
+                    setResult(Activity.RESULT_OK)
                     Toast.makeText(this@AddExpenseActivity, "Expense saved successfully", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
+                    binding.btnSaveExpense.isEnabled = true
+                    hideScreenLoading()
                     Toast.makeText(this@AddExpenseActivity, "Failed to save expense", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@AddExpenseActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                binding.btnSaveExpense.isEnabled = true
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AddExpenseActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to save expense"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

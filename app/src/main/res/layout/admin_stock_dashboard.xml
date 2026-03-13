@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/surface_background"
     tools:context=".ui.admin.stock.AdminStockActivity">
 
     <!-- MAIN CONTENT -->
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -59,7 +59,7 @@
                                 android:orientation="horizontal"
                                 android:padding="12dp"
                                 android:gravity="center_vertical"
-                                android:background="@color/white">
+                                android:background="@color/surface_background">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
@@ -115,7 +115,7 @@
                                 android:orientation="horizontal"
                                 android:padding="12dp"
                                 android:gravity="center_vertical"
-                                android:background="@color/white">
+                                android:background="@color/surface_background">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
@@ -171,7 +171,7 @@
                                 android:orientation="horizontal"
                                 android:padding="12dp"
                                 android:gravity="center_vertical"
-                                android:background="@color/white">
+                                android:background="@color/surface_background">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
@@ -227,7 +227,7 @@
                                 android:orientation="horizontal"
                                 android:padding="12dp"
                                 android:gravity="center_vertical"
-                                android:background="@color/white">
+                                android:background="@color/surface_background">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
@@ -305,7 +305,7 @@
                             app:cardElevation="0dp"
                             app:strokeWidth="1dp"
                             app:strokeColor="@color/card_stroke_color"
-                            app:cardBackgroundColor="@color/white">
+                            app:cardBackgroundColor="@color/card_background">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -330,7 +330,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="8dp"
                                         android:text="Top 10 Items by Stock Value"
-                                        android:textColor="@color/black"
+                                        android:textColor="@color/textColorPrimary"
                                         android:textStyle="bold" />
                                 </LinearLayout>
 
@@ -351,7 +351,7 @@
                             app:cardElevation="0dp"
                             app:strokeWidth="1dp"
                             app:strokeColor="@color/card_stroke_color"
-                            app:cardBackgroundColor="@color/white">
+                            app:cardBackgroundColor="@color/card_background">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -376,7 +376,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="8dp"
                                         android:text="Company-wise Stock Value"
-                                        android:textColor="@color/black"
+                                        android:textColor="@color/textColorPrimary"
                                         android:textStyle="bold" />
                                 </LinearLayout>
 
@@ -398,7 +398,7 @@
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
                         app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/white">
+                        app:cardBackgroundColor="@color/card_background">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -423,7 +423,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="8dp"
                                     android:text="Current Stock Overview"
-                                    android:textColor="@color/black"
+                                    android:textColor="@color/textColorPrimary"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -499,7 +499,7 @@
 
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
     </LinearLayout>
 
     <!-- DRAWER -->

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/tvItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="Full Cream Milk 500 ML"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/tvQuantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="20"
+        android:textSize="10sp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnEditItem"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0dp"
+            android:text="Edit"
+            android:textAllCaps="false"
+            android:textSize="8sp"
+            app:strokeColor="@color/brand_blue" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeleteItem"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="2dp"
+            android:padding="0dp"
+            android:text="Delete"
+            android:textAllCaps="false"
+            android:textColor="@color/brand_red"
+            android:textSize="8sp"
+            app:strokeColor="@color/brand_red" />
+
+    </LinearLayout>
+</LinearLayout>

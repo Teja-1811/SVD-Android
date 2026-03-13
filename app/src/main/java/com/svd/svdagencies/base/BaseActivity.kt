@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.svd.svdagencies.ui.auth.LoginActivity
+import com.svd.svdagencies.utils.LoadingOverlayManager
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -21,5 +22,13 @@ open class BaseActivity : AppCompatActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
+    }
+
+    protected fun showScreenLoading() {
+        LoadingOverlayManager.show(this)
+    }
+
+    protected fun hideScreenLoading() {
+        LoadingOverlayManager.hide(this)
     }
 }

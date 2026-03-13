@@ -21,6 +21,7 @@ import com.svd.svdagencies.data.model.admin.Bills.BillItemForCreation
 import com.svd.svdagencies.data.model.admin.Bills.CreateBillRequest
 import com.svd.svdagencies.data.model.admin.Bills.EditBillRequest
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -194,6 +195,7 @@ class CreateBillActivity : AdminBaseActivity() {
 
     private fun fetchInitialData() {
         lifecycleScope.launch {
+            showScreenLoading()
             try {
                 val customersDeferred = async { ApiClient.billsDashboardApi.getCustomersForBill() }
                 val itemsDeferred = async { fetchAllAvailableItems() }
@@ -253,7 +255,13 @@ class CreateBillActivity : AdminBaseActivity() {
                 }
 
             } catch (e: Exception) {
-                Toast.makeText(this@CreateBillActivity, "Error fetching data: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@CreateBillActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to load bill data"),
+                    Toast.LENGTH_LONG
+                ).show()
+            } finally {
+                hideScreenLoading()
             }
         }
     }
@@ -315,17 +323,27 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private fun saveBill() {
+        btnGenerateBill.isEnabled = false
+        showScreenLoading()
         lifecycleScope.launch {
             try {
                 if (billId == null) createBill() else editBill(billId!!)
             } catch (e: Exception) {
-                Toast.makeText(this@CreateBillActivity, "Error saving bill: ${e.message}", Toast.LENGTH_SHORT).show()
+                btnGenerateBill.isEnabled = true
+                hideScreenLoading()
+                Toast.makeText(
+                    this@CreateBillActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to save bill"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
     private suspend fun createBill() {
         if (selectedCustomer == null) {
+            btnGenerateBill.isEnabled = true
+            hideScreenLoading()
             Toast.makeText(this, "Please select a customer", Toast.LENGTH_SHORT).show()
             return
         }
@@ -333,6 +351,8 @@ class CreateBillActivity : AdminBaseActivity() {
 
         val billItems = itemAdapter.getItems().filter { it.itemId != 0 }
         if (billItems.isEmpty()) {
+            btnGenerateBill.isEnabled = true
+            hideScreenLoading()
             Toast.makeText(this, "Please add at least one item", Toast.LENGTH_SHORT).show()
             return
         }
@@ -344,6 +364,8 @@ class CreateBillActivity : AdminBaseActivity() {
             billItems.map { it.discount }
         )
         ApiClient.billsDashboardApi.createBill(request)
+        btnGenerateBill.isEnabled = true
+        hideScreenLoading()
         Toast.makeText(this, "Bill created successfully!", Toast.LENGTH_SHORT).show()
         finish()
     }
@@ -351,6 +373,8 @@ class CreateBillActivity : AdminBaseActivity() {
     private suspend fun editBill(id: Int) {
         val billItems = itemAdapter.getItems().filter { it.itemId != 0 }
         if (billItems.isEmpty()) {
+            btnGenerateBill.isEnabled = true
+            hideScreenLoading()
             Toast.makeText(this, "Please add at least one item", Toast.LENGTH_SHORT).show()
             return
         }
@@ -363,6 +387,8 @@ class CreateBillActivity : AdminBaseActivity() {
             invoiceDate = tvBillDate.text.toString()
         )
         ApiClient.billsDashboardApi.editBill(id, request)
+        btnGenerateBill.isEnabled = true
+        hideScreenLoading()
         Toast.makeText(this, "Bill updated successfully!", Toast.LENGTH_SHORT).show()
         finish()
     }

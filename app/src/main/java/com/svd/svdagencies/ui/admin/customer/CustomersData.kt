@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
@@ -47,6 +48,11 @@ class CustomersData : AdminBaseActivity() {
     private lateinit var tvEmptyState: TextView
 
     private var allCustomers: List<CustomerItem> = emptyList()
+    private var shouldReloadOnResume = false
+
+    private val addCustomerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
+        loadCustomers()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +66,6 @@ class CustomersData : AdminBaseActivity() {
 
         initViews()
         setupListeners()
-
-        swipeRefreshLayout.isRefreshing = true
         loadCustomers()
     }
 
@@ -104,8 +108,16 @@ class CustomersData : AdminBaseActivity() {
 
         fabAddCustomer.setOnClickListener {
             val intent = Intent(this, AddCustomerActivity::class.java)
-            startActivity(intent)
+            addCustomerLauncher.launch(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (shouldReloadOnResume) {
+            loadCustomers()
+        }
+        shouldReloadOnResume = true
     }
 
     private fun loadCustomers() {

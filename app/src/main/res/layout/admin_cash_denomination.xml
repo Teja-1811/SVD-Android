@@ -28,7 +28,7 @@
         android:textSize="14sp"
         android:gravity="center"
         android:hint="0"
-        android:textColor="@color/black"
+        android:textColor="@color/textColorPrimary"
         android:textColorHint="@color/gray500"/>
 
     <TextView

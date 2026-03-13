@@ -10,6 +10,7 @@ import com.svd.svdagencies.data.model.admin.customerData.AddCustomerRequest
 import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
 import com.svd.svdagencies.databinding.AdminCustomerAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -118,6 +119,7 @@ class AddCustomerActivity : AdminBaseActivity() {
         )
 
         binding.btnAddCustomer.isEnabled = false
+        showScreenLoading()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -125,6 +127,7 @@ class AddCustomerActivity : AdminBaseActivity() {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         binding.btnAddCustomer.isEnabled = true
+                        hideScreenLoading()
                         if (response.success) {
                             Toast.makeText(this@AddCustomerActivity, response.message, Toast.LENGTH_SHORT).show()
                             setResult(Activity.RESULT_OK)
@@ -138,7 +141,12 @@ class AddCustomerActivity : AdminBaseActivity() {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         binding.btnAddCustomer.isEnabled = true
-                        Toast.makeText(this@AddCustomerActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        hideScreenLoading()
+                        Toast.makeText(
+                            this@AddCustomerActivity,
+                            NetworkMessageUtils.friendlyMessage(e, "Failed to save customer"),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

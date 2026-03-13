@@ -60,15 +60,19 @@ class CustomerCompanyCatalogActivity : AppCompatActivity() {
         binding.swipeRefresh.isRefreshing = true
         lifecycleScope.launch {
             try {
-                // We use the same API as admin to fetch company items as it's publicly accessible or part of the shared logic
-                val items = ApiClient.adminCompaniesApi.getCompanyItems(companyId)
-                if (items.isEmpty()) {
+                val response = ApiClient.productApi.getCustomerCatalog(companyId)
+                
+                // The API returns a CatalogResponse which contains categories.
+                // For a specific company catalog, we flatten the products from all categories.
+                val allProducts = response.catalog.flatMap { it.products }
+                
+                if (allProducts.isEmpty()) {
                     binding.rvCatalogItems.visibility = View.GONE
                     binding.llEmptyState.visibility = View.VISIBLE
                 } else {
                     binding.rvCatalogItems.visibility = View.VISIBLE
                     binding.llEmptyState.visibility = View.GONE
-                    adapter.submitList(items)
+                    adapter.submitList(allProducts)
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@CustomerCompanyCatalogActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()

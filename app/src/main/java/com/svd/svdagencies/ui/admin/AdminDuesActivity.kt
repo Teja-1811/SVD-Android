@@ -17,6 +17,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.SaveDailyPaymentsRequest
 import com.svd.svdagencies.ui.admin.adapter.CompanyPaymentsAdapter
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -97,6 +98,7 @@ class AdminDuesActivity : AdminBaseActivity() {
 
     private fun loadPaymentsDashboard(year: Int, month: Int) {
         lifecycleScope.launch {
+            showScreenLoading()
             try {
                 val response = ApiClient.adminPaymentsApi.getPaymentsDashboard(year, month)
                 tvTotalInvoice.text = "₹${response.grand_total_invoice}"
@@ -107,7 +109,14 @@ class AdminDuesActivity : AdminBaseActivity() {
                 adapter.updateList(allCompanyPayments)
 
             } catch (e: Exception) {
-                Toast.makeText(this@AdminDuesActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@AdminDuesActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to load payments"),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } finally {
+                btnSaveAll.isEnabled = true
+                hideScreenLoading()
             }
         }
     }
@@ -116,13 +125,21 @@ class AdminDuesActivity : AdminBaseActivity() {
         val dataMap = adapter.getPaymentDataWithContext(currentYear, currentMonth)
         if (dataMap.isEmpty()) return
 
+        btnSaveAll.isEnabled = false
+        showScreenLoading()
         lifecycleScope.launch {
             try {
                 ApiClient.adminPaymentsApi.saveDailyPayments(SaveDailyPaymentsRequest(currentYear, currentMonth, dataMap))
                 Toast.makeText(this@AdminDuesActivity, "Saved Successfully!", Toast.LENGTH_SHORT).show()
                 loadPaymentsDashboard(currentYear, currentMonth)
             } catch (e: Exception) {
-                Toast.makeText(this@AdminDuesActivity, "Save failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                btnSaveAll.isEnabled = true
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AdminDuesActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to save payments"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

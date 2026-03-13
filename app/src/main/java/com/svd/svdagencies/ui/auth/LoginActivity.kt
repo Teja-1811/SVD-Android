@@ -1,7 +1,9 @@
 package com.svd.svdagencies.ui.auth
 
 import android.content.Intent
+import android.os.Handler
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -20,6 +22,8 @@ import com.svd.svdagencies.data.api.auth.LoginResponse
 import com.svd.svdagencies.ui.admin.AdminDashboardActivity
 import com.svd.svdagencies.ui.customer.CustomerMainActivity
 import com.svd.svdagencies.ui.delivery.DeliveryDashboardActivity
+import com.svd.svdagencies.ui.user.UserMainActivity
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.UserRole
 import retrofit2.Call
@@ -28,18 +32,17 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
+    private val loginButtonHandler = Handler(Looper.getMainLooper())
+    private var loginDotsRunnable: Runnable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.login)
+        setContentView(R.layout.activity_login)
 
         val session = SessionManager(this)
 
         session.getRole()?.let { role ->
-            when (role) {
-                UserRole.ADMIN -> startActivity(Intent(this, AdminDashboardActivity::class.java))
-                UserRole.CUSTOMER -> startActivity(Intent(this, CustomerMainActivity::class.java))
-                UserRole.DELIVERY -> startActivity(Intent(this, DeliveryDashboardActivity::class.java))
-            }
+            navigateToDashboard(role)
             finish()
             return
         }
@@ -78,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             btnLogin.isEnabled = false
-            btnLogin.text = "Signing In..."
+            startLoginLoadingAnimation(btnLogin)
 
             val request = LoginRequest(phone = username, password = password)
             Log.d("Login", "Sending request: phone=$username")
@@ -86,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
             api.login(request).enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     btnLogin.isEnabled = true
-                    btnLogin.text = "Sign In"
+                    stopLoginLoadingAnimation(btnLogin)
                     
                     if (!response.isSuccessful) {
                         val errorBody = response.errorBody()?.string()
@@ -108,13 +111,7 @@ class LoginActivity : AppCompatActivity() {
                     val body = response.body()
                     if (body != null && body.status == "success" && body.token != null) {
                         session.saveSession(body.token, body.role ?: "", body.user_id ?: -1)
-
-                        when (body.role) {
-                            UserRole.ADMIN -> startActivity(Intent(this@LoginActivity, AdminDashboardActivity::class.java))
-                            UserRole.CUSTOMER -> startActivity(Intent(this@LoginActivity, CustomerMainActivity::class.java))
-                            UserRole.DELIVERY -> startActivity(Intent(this@LoginActivity, DeliveryDashboardActivity::class.java))
-                            else -> Toast.makeText(this@LoginActivity, "Invalid role received", Toast.LENGTH_SHORT).show()
-                        }
+                        navigateToDashboard(body.role ?: "")
                         finish()
                     } else {
                         val msg = body?.message ?: "Login failed"
@@ -124,9 +121,13 @@ class LoginActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     btnLogin.isEnabled = true
-                    btnLogin.text = "Sign In"
+                    stopLoginLoadingAnimation(btnLogin)
                     Log.e("Login", "Network error", t)
-                    Toast.makeText(this@LoginActivity, "Network error: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@LoginActivity,
+                        NetworkMessageUtils.friendlyMessage(t, "Login failed"),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             })
         }
@@ -134,5 +135,48 @@ class LoginActivity : AppCompatActivity() {
         tvRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+    }
+
+    private fun startLoginLoadingAnimation(button: MaterialButton) {
+        button.icon = null
+        loginDotsRunnable?.let { loginButtonHandler.removeCallbacks(it) }
+
+        var dotCount = 0
+        loginDotsRunnable = object : Runnable {
+            override fun run() {
+                dotCount = (dotCount % 3) + 1
+                button.text = "Signing In" + ".".repeat(dotCount)
+                loginButtonHandler.postDelayed(this, 350)
+            }
+        }.also {
+            it.run()
+        }
+    }
+
+    private fun stopLoginLoadingAnimation(button: MaterialButton) {
+        loginDotsRunnable?.let { loginButtonHandler.removeCallbacks(it) }
+        loginDotsRunnable = null
+        button.text = "Sign In"
+        button.setIconResource(R.drawable.ic_arrow_forward)
+    }
+
+    override fun onDestroy() {
+        loginDotsRunnable?.let { loginButtonHandler.removeCallbacks(it) }
+        loginDotsRunnable = null
+        super.onDestroy()
+    }
+
+    private fun navigateToDashboard(role: String) {
+        val intent = when (role) {
+            UserRole.ADMIN -> Intent(this, AdminDashboardActivity::class.java)
+            UserRole.CUSTOMER -> Intent(this, CustomerMainActivity::class.java)
+            UserRole.USER -> Intent(this, UserMainActivity::class.java)
+            UserRole.DELIVERY -> Intent(this, DeliveryDashboardActivity::class.java)
+            else -> {
+                Toast.makeText(this, "Invalid role received", Toast.LENGTH_SHORT).show()
+                null
+            }
+        }
+        intent?.let { startActivity(it) }
     }
 }

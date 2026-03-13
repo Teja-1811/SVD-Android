@@ -10,5 +10,7 @@ data class CatalogItem(
     val name: String,
     @SerializedName("selling_price")
     val sellingPrice: Double,
+    @SerializedName("buying_price")
+    val buyingPrice: Double = 0.0,
     val mrp: Double
 ) : Parcelable

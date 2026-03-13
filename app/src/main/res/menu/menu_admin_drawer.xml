@@ -38,6 +38,11 @@
         android:icon="@drawable/ic_stock"/>
 
     <item
+        android:id="@+id/nav_subscriptions"
+        android:title="Subscriptions"
+        android:icon="@drawable/ic_subscription"/>
+
+    <item
         android:id="@+id/nav_dues"
         android:title="Dues"
         android:icon="@drawable/ic_payments"/>
