@@ -401,12 +401,11 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="?attr/colorSurface"
         android:layout_gravity="start"
-        android:background="@color/surface_background"
-        app:elevation="0dp"
         app:headerLayout="@layout/admin_nav_header"
-        app:itemIconTint="@color/textColorSecondary"
-        app:itemTextColor="@color/textColorPrimary"
-        app:menu="@menu/menu_admin_drawer" />
+        app:itemIconTint="@color/drawer_nav_icon_colors"
+        app:itemTextColor="@color/drawer_nav_item_colors"
+        app:menu="@menu/menu_admin_drawer"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

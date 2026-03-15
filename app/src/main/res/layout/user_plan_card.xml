@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_medium"
@@ -20,8 +19,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -39,81 +38,42 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvDuration"
+                    android:id="@+id/tvPlanTag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/bg_rounded_light_blue"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="6dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="6dp"
-                    android:text="Duration: 30 days"
-                    android:textColor="@color/icon_blue"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="@dimen/spacing_xsmall"
+                    android:text="Plan ID: 001"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="@dimen/text_size_body_small" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/brand_blue"
-                android:paddingLeft="12dp"
-                android:paddingTop="8dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="8dp"
-                android:text="Rs. 500.00"
-                android:textColor="@color/white"
-                android:textSize="12sp"
+                android:text="₹ 500/month"
+                android:textColor="@color/brand_blue"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <TextView
             android:id="@+id/tvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_small"
             android:text="Plan description"
             android:textColor="@color/textColorSecondary"
-            android:textSize="@dimen/text_size_body_small"
-            tools:text="A flexible morning delivery plan for households and retail customers." />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/spacing_medium"
-            android:layout_marginBottom="@dimen/spacing_medium"
-            android:background="@color/divider_line" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Plan Items"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPlanItems"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:nestedScrollingEnabled="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="2"
-            tools:listitem="@layout/admin_subscription_plan_item_row" />
+            android:textSize="@dimen/text_size_medium" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubscribe"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:text="Subscribe Now"
+            android:text="Select Plan"
             android:textAllCaps="false"
-            app:backgroundTint="@color/brand_red"
-            app:cornerRadius="14dp" />
-
+            android:textColor="@color/brand_blue" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -4,6 +4,7 @@ import com.svd.svdagencies.App
 import com.svd.svdagencies.data.api.admin.*
 import com.svd.svdagencies.data.api.customer.CustomerApi
 import com.svd.svdagencies.data.api.customer.ProductApi
+import com.svd.svdagencies.data.api.user.UserApi
 import com.svd.svdagencies.utils.SessionManager
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -100,5 +101,9 @@ object ApiClient {
 
     val productApi: ProductApi by lazy {
         retrofit.create(ProductApi::class.java)
+    }
+
+    val userApi: UserApi by lazy {
+        retrofit.create(UserApi::class.java)
     }
 }

@@ -17,9 +17,9 @@
     <color name="status_bar">#00000000</color>
     <color name="toolbar_background">#FF1E1E1E</color>
     <color name="toolbar_content_color">#FFFFFF</color>
-    <color name="drawer_background">#FFFFFFFF</color>
-    <color name="drawer_text_primary">#FF1A1A1A</color>
-    <color name="drawer_icon_default">#FF7A7A7A</color>
+    <color name="drawer_background">#FF1E1E1E</color>
+    <color name="drawer_text_primary">#FFFFFFFF</color>
+    <color name="drawer_icon_default">#FFB0B0B0</color>
     <color name="loading_overlay_scrim">#99202020</color>
 
     <!-- 🔴 BRAND COLORS -->

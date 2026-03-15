@@ -12,6 +12,9 @@
     <dimen name="text_size_xxlarge">20sp</dimen>
     <dimen name="text_size_huge">24sp</dimen>
     <dimen name="text_size_button">16sp</dimen>
+    <dimen name="text_size_body">15sp</dimen>
+    <dimen name="text_size_body_medium">14sp</dimen>
+    <dimen name="text_size_body_large">18sp</dimen>
 
     <!-- Standardized Spacings -->
     <dimen name="spacing_tiny">4dp</dimen>

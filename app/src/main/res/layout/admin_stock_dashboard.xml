@@ -80,7 +80,7 @@
                                         android:id="@+id/tvTotalItems"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="34"
+                                        android:text="0"
                                         android:textColor="@color/brand_blue"
                                         android:textSize="16sp"
                                         android:textStyle="bold"
@@ -136,7 +136,7 @@
                                         android:id="@+id/tvTotalValue"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="₹ 3,607"
+                                        android:text="₹0.00"
                                         android:textColor="@color/icon_green"
                                         android:textSize="16sp"
                                         android:textStyle="bold"
@@ -192,7 +192,7 @@
                                         android:id="@+id/tvLowStock"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="30"
+                                        android:text="0"
                                         android:textColor="@color/icon_orange"
                                         android:textSize="16sp"
                                         android:textStyle="bold"
@@ -270,7 +270,7 @@
                                             android:id="@+id/tvMovementOut"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Out: 33,857"
+                                            android:text="Out: 0"
                                             android:textColor="@color/brand_red"
                                             android:textSize="10sp"
                                             android:textStyle="bold" />
@@ -507,8 +507,11 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="?attr/colorSurface"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
-        app:menu="@menu/menu_admin_drawer" />
+        app:itemIconTint="@color/drawer_nav_icon_colors"
+        app:itemTextColor="@color/drawer_nav_item_colors"
+        app:menu="@menu/menu_admin_drawer"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

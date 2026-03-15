@@ -10,11 +10,14 @@
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/brand_red</item>
         <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/brand_red_dark</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
 
         <item name="colorSurface">@color/surface_background</item>
         <item name="colorOnSurface">@color/textColorPrimary</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnSurfaceVariant">@color/textColorSecondary</item>
+        <item name="colorBackground">@color/window_background</item>
 
         <item name="colorSurfaceContainer">@color/surface_background</item>
         <item name="colorSurfaceContainerHigh">@color/surface_background</item>
