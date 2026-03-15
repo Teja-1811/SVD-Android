@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_medium"
-    app:cardBackgroundColor="@color/card_background"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="20dp"
     app:cardElevation="0dp"
-    app:strokeColor="@color/card_stroke_color"
+    app:strokeColor="?attr/colorOutline"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -19,8 +19,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -33,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Basic"
-                    android:textColor="@color/textColorPrimary"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="@dimen/text_size_large"
                     android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_xsmall"
                     android:text="Plan ID: 001"
-                    android:textColor="@color/textColorSecondary"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:textSize="@dimen/text_size_body_small" />
             </LinearLayout>
 
@@ -51,8 +51,8 @@
                 android:id="@+id/tvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="₹ 500/month"
-                android:textColor="@color/brand_blue"
+                android:text="â‚¹ 500/month"
+                android:textColor="?attr/colorPrimary"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
             android:text="Plan description"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="@dimen/text_size_medium" />
 
         <com.google.android.material.button.MaterialButton
@@ -74,6 +74,6 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:text="Select Plan"
             android:textAllCaps="false"
-            android:textColor="@color/brand_blue" />
+            android:textColor="?attr/colorPrimary" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

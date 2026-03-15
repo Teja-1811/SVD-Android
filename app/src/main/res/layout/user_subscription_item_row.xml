@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Item Name"
-        android:textColor="@color/textColorPrimary"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="13sp" />
 
     <TextView
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Qty: 1"
-        android:textColor="@color/textColorSecondary"
+        android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="13sp"
         android:textStyle="bold" />
 

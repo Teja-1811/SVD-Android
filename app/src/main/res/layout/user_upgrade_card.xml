@@ -4,7 +4,7 @@
     android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/spacing_medium"
-    app:cardBackgroundColor="@color/card_background"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
     app:strokeWidth="0dp">
@@ -12,7 +12,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
         android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
@@ -21,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Diamond Plan"
-            android:textColor="@color/brand_red"
+            android:textColor="?attr/colorPrimary"
             android:textSize="@dimen/text_size_large"
             android:textStyle="bold" />
 
@@ -31,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Get 2L milk daily + Free Ghee sample"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp" />
 
         <LinearLayout
@@ -47,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Rs. 2,500/mo"
-                android:textColor="@color/textColorPrimary"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
 
@@ -59,7 +58,7 @@
                 android:padding="0dp"
                 android:text="Upgrade"
                 android:textAllCaps="false"
-                android:textColor="@color/brand_blue" />
+                android:textColor="?attr/colorPrimary" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
