@@ -170,7 +170,6 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
         val dialogBinding = AdminSubscriptionPlanAddBinding.inflate(LayoutInflater.from(this))
         dialogBinding.tvPlanDialogTitle.text = "Edit Subscription Plan"
         dialogBinding.etPlanName.setText(plan.name)
-        dialogBinding.etPlanPrice.setText(plan.price)
         dialogBinding.etPlanDuration.setText(plan.durationInDays.toString())
         dialogBinding.etPlanDescription.setText(plan.description)
 
@@ -193,11 +192,9 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
 
     private fun buildPlanPayload(dialogBinding: AdminSubscriptionPlanAddBinding): Map<String, Any>? {
         dialogBinding.tilPlanName.error = null
-        dialogBinding.tilPlanPrice.error = null
         dialogBinding.tilPlanDuration.error = null
 
         val name = dialogBinding.etPlanName.text?.toString()?.trim().orEmpty()
-        val priceText = dialogBinding.etPlanPrice.text?.toString()?.trim().orEmpty()
         val durationText = dialogBinding.etPlanDuration.text?.toString()?.trim().orEmpty()
         val description = dialogBinding.etPlanDescription.text?.toString()?.trim().orEmpty()
 
@@ -205,12 +202,6 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
 
         if (name.isEmpty()) {
             dialogBinding.tilPlanName.error = "Enter plan name"
-            hasError = true
-        }
-
-        val price = priceText.toDoubleOrNull()
-        if (price == null || price <= 0.0) {
-            dialogBinding.tilPlanPrice.error = "Enter a valid price"
             hasError = true
         }
 
@@ -224,12 +215,17 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
             return null
         }
 
-        return mapOf(
+        val payload = mutableMapOf<String, Any>(
             "name" to name,
-            "price" to price!!,
-            "duration_days" to duration!!,
-            "description" to description
+            "duration_in_days" to duration!!,
+            "duration_days" to duration
         )
+
+        if (description.isNotEmpty()) {
+            payload["description"] = description
+        }
+
+        return payload
     }
 
     private fun showAddItemDialog(plan: SubscriptionPlan) {
@@ -241,8 +237,13 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
 
         val view = LayoutInflater.from(this).inflate(R.layout.admin_subscription_add_plan_item, null)
         val etName = view.findViewById<AutoCompleteTextView>(R.id.etItemName)
-        val etQty = view.findViewById<EditText>(R.id.etStock) 
-        bindItemDropdown(etName)
+        val etQty = view.findViewById<EditText>(R.id.etStock)
+        val etPrice = view.findViewById<EditText>(R.id.etPrice)
+        val etPer = view.findViewById<AutoCompleteTextView>(R.id.etPer)
+        bindItemDropdown(etName) { item ->
+            etPrice.setText(item?.selling_price ?: "")
+        }
+        bindPerDropdown(etPer)
         
         AlertDialog.Builder(this)
             .setTitle("Add Item to ${plan.name}")
@@ -250,11 +251,23 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
             .setPositiveButton("Add") { _, _ ->
                 val name = etName.text.toString().trim()
                 val qty = etQty.text.toString()
-                if (name.isNotEmpty() && qty.isNotEmpty()) {
-                    val data = mapOf("item_name" to name, "quantity" to qty.toInt())
+                val priceText = etPrice.text.toString().trim()
+                val perValue = etPer.text.toString().trim().lowercase().ifEmpty { "day" }
+
+                val item = resolveItemByName(name)
+                val quantity = qty.toIntOrNull()
+                val price = priceText.toDoubleOrNull()
+
+                if (item != null && quantity != null && price != null) {
+                    val data = mapOf(
+                        "item" to item.id,
+                        "quantity" to quantity,
+                        "price" to price,
+                        "per" to perValue
+                    )
                     addItemToPlan(plan.id, data)
                 } else {
-                    Toast.makeText(this, "Select an item and enter quantity", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Select an item and enter quantity & price", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancel", null)
@@ -271,16 +284,34 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
         val view = LayoutInflater.from(this).inflate(R.layout.admin_subscription_add_plan_item, null)
         val etName = view.findViewById<AutoCompleteTextView>(R.id.etItemName)
         val etQty = view.findViewById<EditText>(R.id.etStock)
-        bindItemDropdown(etName)
+        val etPrice = view.findViewById<EditText>(R.id.etPrice)
+        val etPer = view.findViewById<AutoCompleteTextView>(R.id.etPer)
+        bindItemDropdown(etName) { item ->
+            etPrice.setText(item?.selling_price ?: "")
+        }
+        bindPerDropdown(etPer)
         etName.setText(item.itemName, false)
         etQty.setText(item.quantity.toString())
+        etPrice.setText(item.price ?: "")
+        etPer.setText(item.per ?: "day", false)
 
         AlertDialog.Builder(this)
             .setTitle("Edit Item")
             .setView(view)
             .setPositiveButton("Update") { _, _ ->
-                val data = mapOf("item_name" to etName.text.toString().trim(), "quantity" to etQty.text.toString().toInt())
-                updatePlanItem(item.id, data)
+                val quantity = etQty.text.toString().toIntOrNull()
+                val price = etPrice.text.toString().toDoubleOrNull()
+                val perValue = etPer.text.toString().trim().lowercase().ifEmpty { item.per ?: "day" }
+
+                if (quantity != null || price != null || perValue != (item.per ?: "day")) {
+                    val data = mutableMapOf<String, Any>()
+                    quantity?.let { data["quantity"] = it }
+                    price?.let { data["price"] = it }
+                    data["per"] = perValue
+                    updatePlanItem(item.id, data)
+                } else {
+                    Toast.makeText(this, "Enter quantity, price or cycle", Toast.LENGTH_SHORT).show()
+                }
             }
             .setNegativeButton("Cancel", null)
             .show()
@@ -385,7 +416,7 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
         })
     }
 
-    private fun bindItemDropdown(itemField: AutoCompleteTextView) {
+    private fun bindItemDropdown(itemField: AutoCompleteTextView, onItemSelected: (AdminItem?) -> Unit = {}) {
         val itemNames = allItems
             .map { it.name.trim() }
             .filter { it.isNotEmpty() }
@@ -398,6 +429,26 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
         itemField.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) itemField.showDropDown()
         }
+        itemField.setOnItemClickListener { _, _, position, _ ->
+            val name = adapter.getItem(position)
+            onItemSelected(resolveItemByName(name))
+        }
+    }
+
+    private fun resolveItemByName(name: String?): AdminItem? {
+        if (name.isNullOrBlank()) return null
+        return allItems.firstOrNull { it.name.equals(name, ignoreCase = true) }
+    }
+
+    private fun bindPerDropdown(perField: AutoCompleteTextView) {
+        val options = listOf("day", "week", "month")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, options)
+        perField.setAdapter(adapter)
+        perField.setOnClickListener { perField.showDropDown() }
+        perField.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) perField.showDropDown()
+        }
+        if (perField.text.isNullOrBlank()) perField.setText("day", false)
     }
 
     private fun fetchCustomersAndPlansForDialog() {
@@ -436,8 +487,8 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
 
                 if (startDate.isNotEmpty()) {
                     val data = mapOf(
-                        "customer_id" to customer.id,
-                        "plan_id" to plan.id,
+                        "customer" to customer.id,
+                        "plan" to plan.id,
                         "start_date" to startDate
                     )
                     assignSubscription(data)
@@ -485,14 +536,18 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
             .setView(dialogBinding.root)
             .setPositiveButton("Add") { _, _ ->
                 val amount = dialogBinding.etAmount.text.toString()
-                if (amount.isNotEmpty()) {
+                val method = dialogBinding.etMethod.text.toString().trim().ifEmpty { "CASH" }
+                val txnId = dialogBinding.etTxnId.text.toString().trim()
+
+                if (amount.isNotEmpty() && txnId.isNotEmpty()) {
                     val data = mapOf(
-                        "subscription_id" to sub.id,
-                        "customer_id" to sub.customerId,
                         "amount" to amount.toDouble(),
-                        "note" to dialogBinding.etNote.text.toString()
+                        "method" to method,
+                        "transaction_id" to txnId
                     )
                     addPayment(sub.id, data)
+                } else {
+                    Toast.makeText(this, "Enter amount and transaction id", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancel", null)
@@ -504,6 +559,7 @@ class AdminSubscriptionsActivity : AdminBaseActivity() {
             override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
                 if (response.isSuccessful) {
                     Toast.makeText(this@AdminSubscriptionsActivity, "Payment added", Toast.LENGTH_SHORT).show()
+                    loadData()
                 }
             }
             override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {}

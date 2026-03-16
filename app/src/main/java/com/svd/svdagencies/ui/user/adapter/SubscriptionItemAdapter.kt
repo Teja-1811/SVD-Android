@@ -32,10 +32,12 @@ class SubscriptionItemAdapter : RecyclerView.Adapter<SubscriptionItemAdapter.Ite
     inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val itemName = view.findViewById<TextView>(R.id.tvItemName)
         private val quantity = view.findViewById<TextView>(R.id.tvQuantity)
+        private val price = view.findViewById<TextView>(R.id.tvPrice)
 
         fun bind(item: UserSubscriptionItem) {
             itemName.text = item.itemName
             quantity.text = "Qty: ${formatQuantity(item.quantity)}"
+            price.text = formatPrice(item)
         }
 
         private fun formatQuantity(quantity: Double): String {
@@ -44,6 +46,20 @@ class SubscriptionItemAdapter : RecyclerView.Adapter<SubscriptionItemAdapter.Ite
             } else {
                 quantity.toString()
             }
+        }
+
+        private fun formatPrice(item: UserSubscriptionItem): String {
+            val per = item.per ?: "day"
+            val priceValue = item.price
+            return if (priceValue != null) {
+                "Rs. ${formatNumber(priceValue)} / $per"
+            } else {
+                "Rs. - / $per"
+            }
+        }
+
+        private fun formatNumber(value: Double): String {
+            return if (value % 1.0 == 0.0) value.toInt().toString() else "%.2f".format(value)
         }
     }
 }

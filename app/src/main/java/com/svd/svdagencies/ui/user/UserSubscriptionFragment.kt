@@ -1,20 +1,34 @@
 package com.svd.svdagencies.ui.user
 
 import android.os.Bundle
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.user.UserDashboardResponse
 import com.svd.svdagencies.data.model.user.UserSubscription
 import com.svd.svdagencies.data.repository.UserDashboardObserver
 import com.svd.svdagencies.data.repository.UserRepository
 import com.svd.svdagencies.ui.user.adapter.SubscriptionItemAdapter
+import com.svd.svdagencies.ui.user.adapter.SubscriptionPauseAdapter
+import com.svd.svdagencies.utils.SessionManager
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.Date
 import java.util.Locale
 
 class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashboardObserver {
@@ -33,10 +47,17 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
     private lateinit var rvSubItems: RecyclerView
     private lateinit var tvTotalItemsQty: TextView
     private lateinit var tvSubPrice: TextView
+    private lateinit var btnPauseSubscription: MaterialButton
+    private lateinit var rvPauseHistory: RecyclerView
+    private lateinit var tvPauseHistoryTitle: TextView
+
     private val itemsAdapter = SubscriptionItemAdapter()
+    private val pauseAdapter = SubscriptionPauseAdapter()
+    private lateinit var session: SessionManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        session = SessionManager(requireContext())
 
         cardActiveSubscription = view.findViewById(R.id.cardActiveSubscription)
         layoutNoSubscription = view.findViewById(R.id.layoutNoSubscription)
@@ -52,8 +73,19 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
         rvSubItems = view.findViewById(R.id.rvSubItems)
         tvTotalItemsQty = view.findViewById(R.id.tvTotalItemsQty)
         tvSubPrice = view.findViewById(R.id.tvSubPrice)
+        btnPauseSubscription = view.findViewById(R.id.btnPauseSubscription)
+        rvPauseHistory = view.findViewById(R.id.rvPauseHistory)
+        tvPauseHistoryTitle = view.findViewById(R.id.tvPauseHistoryTitle)
 
         rvSubItems.adapter = itemsAdapter
+        rvPauseHistory.layoutManager = LinearLayoutManager(requireContext())
+        rvPauseHistory.adapter = pauseAdapter
+
+        btnPauseSubscription.setOnClickListener {
+            UserRepository.getCachedDashboard()?.subscription?.let { sub ->
+                showPauseDialog(sub)
+            }
+        }
     }
 
     override fun onStart() {
@@ -68,6 +100,78 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
 
     override fun onDashboardUpdated(data: UserDashboardResponse) {
         updateSubscription(data.subscription)
+        if (data.subscriptionPauses.isEmpty()) {
+            rvPauseHistory.visibility = View.GONE
+            tvPauseHistoryTitle.visibility = View.GONE
+        } else {
+            rvPauseHistory.visibility = View.VISIBLE
+            tvPauseHistoryTitle.visibility = View.VISIBLE
+            pauseAdapter.submitList(data.subscriptionPauses)
+        }
+    }
+
+    private fun showPauseDialog(subscription: UserSubscription) {
+        val dialogView = layoutInflater.inflate(R.layout.user_subscription_pause, null)
+        val etPauseDate = dialogView.findViewById<TextInputEditText>(R.id.etPauseDate)
+        val etResumeDate = dialogView.findViewById<TextInputEditText>(R.id.etResumeDate)
+        val etReason = dialogView.findViewById<TextInputEditText>(R.id.etReason)
+        val tilReason = dialogView.findViewById<TextInputLayout>(R.id.tilReason)
+
+        val datePicker = { editText: TextInputEditText ->
+            val builder = MaterialDatePicker.Builder.datePicker()
+            builder.setTitleText("Select Date")
+            val picker = builder.build()
+            picker.addOnPositiveButtonClickListener { selection ->
+                val date = Date(selection)
+                val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                editText.setText(format.format(date))
+            }
+            picker.show(childFragmentManager, picker.toString())
+        }
+
+        etPauseDate.setOnClickListener { datePicker(etPauseDate) }
+        etResumeDate.setOnClickListener { datePicker(etResumeDate) }
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogView)
+            .setPositiveButton("Submit", null)
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        dialog.setOnShowListener {
+            val positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            positive.setOnClickListener {
+                val pauseDate = etPauseDate.text?.toString()?.trim()
+                val resumeDate = etResumeDate.text?.toString()?.trim()
+                val reason = etReason.text?.toString()?.trim()
+
+                if (pauseDate.isNullOrBlank() || resumeDate.isNullOrBlank()) {
+                    Toast.makeText(requireContext(), "Please select both dates", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                tilReason.error = null
+
+                UserRepository.pauseSubscription(
+                    userId = session.getUserId(),
+                    subscriptionId = subscription.id ?: return@setOnClickListener,
+                    pauseDate = pauseDate,
+                    resumeDate = resumeDate,
+                    reason = reason,
+                    onSuccess = {
+                        Toast.makeText(requireContext(), "Pause request submitted", Toast.LENGTH_SHORT).show()
+                        UserRepository.fetchDashboard(session.getUserId())
+                        dialog.dismiss()
+                    },
+                    onError = { message ->
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                    }
+                )
+            }
+        }
+
+        dialog.show()
     }
 
     private fun updateSubscription(subscription: UserSubscription) {

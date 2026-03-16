@@ -17,6 +17,11 @@
         android:title="Plans"/>
 
     <item
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/ic_cart"
+        android:title="Cart"/>
+
+    <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_person"
         android:title="Profile"/>

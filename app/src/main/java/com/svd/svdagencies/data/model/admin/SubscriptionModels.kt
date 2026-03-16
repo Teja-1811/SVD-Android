@@ -30,7 +30,9 @@ data class SubscriptionPlanItem(
     val id: Int,
     @SerializedName("item_id") val itemId: Int,
     @SerializedName("item_name") val itemName: String,
-    val quantity: Int
+    val quantity: Int,
+    val price: String? = null,
+    val per: String? = null
 )
 
 data class SubscriptionCustomer(

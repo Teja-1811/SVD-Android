@@ -1,58 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="260dp"
-    android:layout_height="140dp"
-    android:layout_marginEnd="@dimen/spacing_medium"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp"
-    app:cardBackgroundColor="?attr/colorSurface">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_medium"
+    app:cardBackgroundColor="@color/card_background"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/card_stroke_color"
+    app:strokeWidth="1dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/brand_blue"
-        android:padding="@dimen/spacing_medium">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_large">
 
-        <TextView
-            android:id="@+id/tvOfferTitle"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="20% OFF"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvOfferCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvOfferTitle"
-            android:layout_marginTop="4dp"
-            android:text="Use code: WELCOME20"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="12sp"
-            android:alpha="0.8"/>
+            <TextView
+                android:id="@+id/tvOfferTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Limited time offer"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvOfferCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_dashboard_chip"
+                android:paddingHorizontal="@dimen/spacing_small"
+                android:paddingVertical="2dp"
+                android:text="SVD50"
+                android:textColor="@color/brand_red"
+                android:textSize="@dimen/text_size_caption"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvOfferExpiry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:text="Expires on 01 Jan 2026"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_body_small" />
+
+        <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:text="Expires in 2 days"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="10sp"
-            android:textStyle="italic" />
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:text="Claim Offer"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/brand_red"
+            android:textColor="@color/white"
+            app:cornerRadius="12dp" />
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:alpha="0.3"
-            android:src="@drawable/ic_rupee"
-            app:tint="?attr/colorOnPrimary" />
-
-    </RelativeLayout>
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

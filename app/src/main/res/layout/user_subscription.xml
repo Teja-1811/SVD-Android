@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    android:fillViewport="true">
+    android:background="@color/window_background"
+    android:fillViewport="true"
+    android:visibility="visible"
+    tools:visibility="visible">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,24 +16,16 @@
         android:padding="@dimen/spacing_large"
         android:paddingBottom="@dimen/spacing_xlarge">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Subscription control"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="@dimen/text_size_huge"
-            android:textStyle="bold" />
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardActiveSubscription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="10dp"
-            app:cardBackgroundColor="?attr/colorSurface"
-            app:strokeColor="?attr/colorOutline"
-            app:strokeWidth="1dp">
+            app:cardBackgroundColor="@color/card_background"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/card_stroke_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,48 +37,52 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvSubPlanName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Premium Monthly Plan"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_xlarge"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvPlanType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_tiny"
+                            android:text="Monthly subscription"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="@dimen/text_size_caption" />
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/tvSubPlanName"
+                        android:id="@+id/tvSubStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Premium Monthly Plan"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="@dimen/text_size_xlarge"
+                        android:background="@drawable/bg_status_active"
+                        android:paddingStart="@dimen/spacing_small"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="@dimen/spacing_small"
+                        android:paddingBottom="4dp"
+                        android:text="ACTIVE"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
                         android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvPlanType"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xsmall"
-                        android:text="Monthly subscription"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="@dimen/text_size_body_small"
-                        android:textStyle="italic" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvSubStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:paddingStart="@dimen/spacing_small"
-                    android:paddingEnd="@dimen/spacing_small"
-                    android:paddingTop="@dimen/spacing_xsmall"
-                    android:paddingBottom="@dimen/spacing_xsmall"
-                    android:background="@drawable/bg_dashboard_chip"
-                    android:text="ACTIVE"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="@dimen/text_size_caption"
-                    android:textStyle="bold" />
-
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="@dimen/spacing_medium"
-                    android:background="?attr/colorOutline" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/spacing_large" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -100,19 +98,20 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="START"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_size_caption"
+                            android:alpha="0.7"
+                            android:text="START DATE"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="@dimen/text_size_micro"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvStartDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_xsmall"
+                            android:layout_marginTop="2dp"
                             android:text="01 Oct 2023"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="@dimen/text_size_medium"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_body"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -125,38 +124,38 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="END"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textSize="@dimen/text_size_caption"
+                            android:alpha="0.7"
+                            android:text="END DATE"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="@dimen/text_size_micro"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvEndDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing_xsmall"
+                            android:layout_marginTop="2dp"
                             android:text="31 Oct 2023"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textSize="@dimen/text_size_medium"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_body"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvNextRenewal"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
+                    android:layout_marginTop="@dimen/spacing_medium"
                     android:text="Next renewal: 01 Nov 2023"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="@dimen/text_size_body"
+                    android:textColor="@color/login_red_start"
+                    android:textSize="@dimen/text_size_body_small"
                     android:textStyle="bold" />
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="@dimen/spacing_medium"
-                    android:background="?attr/colorOutline" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/spacing_large" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -171,19 +170,19 @@
 
                         <TextView
                             android:id="@+id/tvDaysCompleted"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="Days completed"
-                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textColor="@color/text_secondary"
                             android:textSize="@dimen/text_size_caption" />
 
                         <TextView
                             android:id="@+id/tvDaysRemaining"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_small"
                             android:text="Days left"
-                            android:textColor="?attr/colorPrimary"
+                            android:textColor="@color/login_red_start"
                             android:textSize="@dimen/text_size_caption"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -192,18 +191,16 @@
                         android:id="@+id/subProgressBar"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:layout_marginTop="@dimen/spacing_xsmall"
-                        app:indicatorColor="?attr/colorPrimary"
-                        app:trackColor="?attr/colorSurfaceVariant"
-                        app:trackCornerRadius="4dp"
-                        app:trackThickness="8dp" />
+                        android:layout_marginTop="@dimen/spacing_small"
+                        app:indicatorColor="@color/login_red_start"
+                        app:trackColor="@color/bg_light_gray"
+                        app:trackCornerRadius="4dp" />
                 </LinearLayout>
 
-                <View
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginVertical="@dimen/spacing_medium"
-                    android:background="?attr/colorOutline" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/spacing_large" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -217,17 +214,18 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Total Qty: 0"
-                        android:textColor="?attr/colorOnSurface"
-                        android:textSize="@dimen/text_size_body" />
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_body"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvSubPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Rs. 0.00"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="@dimen/text_size_large" />
+                        android:textColor="@color/login_red_start"
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -237,33 +235,64 @@
                     android:layout_marginTop="@dimen/spacing_medium"
                     android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="3"
+                    tools:itemCount="2"
                     tools:listitem="@layout/user_subscription_item_row" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPauseSubscription"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_large"
+                    android:text="Pause Subscription"
+                    android:textColor="@color/login_red_start"
+                    app:strokeColor="@color/login_red_start"
+                    app:icon="@drawable/ic_pause"
+                    app:iconTint="@color/login_red_start" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tvPauseHistoryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xlarge"
+            android:text="Pause History"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPauseHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:nestedScrollingEnabled="false"
+            tools:itemCount="1"
+            tools:listitem="@layout/user_subscription_pause_item" />
 
         <LinearLayout
             android:id="@+id/layoutNoSubscription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:visibility="gone">
 
             <ImageView
-                android:layout_width="130dp"
-                android:layout_height="130dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:alpha="0.2"
                 android:src="@drawable/ic_subscription"
-                android:tint="?attr/colorOnSurfaceVariant" />
+                app:tint="@color/text_secondary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_medium"
                 android:text="No Active Subscription"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="@color/text_primary"
                 android:textSize="@dimen/text_size_large"
                 android:textStyle="bold" />
 
@@ -272,7 +301,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_small"
                 android:text="Explore plans to resume deliveries."
-                android:textColor="?attr/colorOnSurfaceVariant" />
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_body_small" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_large"
+                android:text="Explore Plans"
+                android:textAllCaps="false" />
         </LinearLayout>
 
     </LinearLayout>

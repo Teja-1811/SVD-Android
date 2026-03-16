@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.chip.Chip
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -229,6 +230,9 @@ class CustomersData : AdminBaseActivity() {
         val btnUpdate = dialog.findViewById<MaterialButton>(R.id.btnUpdate)
         val btnCancel = dialog.findViewById<MaterialButton>(R.id.btnCancel)
         val btnClose = dialog.findViewById<ImageView>(R.id.btnClose)
+        val chipAdd500 = dialog.findViewById<Chip>(R.id.chipAdd500)
+        val chipAdd1000 = dialog.findViewById<Chip>(R.id.chipAdd1000)
+        val chipClear = dialog.findViewById<Chip>(R.id.chipClear)
 
         txtName.text = customer.name
         txtBalance.text = "₹ %.2f".format(customer.due ?: 0.0)
@@ -236,6 +240,17 @@ class CustomersData : AdminBaseActivity() {
         val dismissListener = View.OnClickListener { dialog.dismiss() }
         btnCancel.setOnClickListener(dismissListener)
         btnClose.setOnClickListener(dismissListener)
+
+        fun adjustAmount(delta: Double) {
+            val current = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+            val updated = current + delta
+            etAmount.setText(String.format("%.2f", updated))
+            etAmount.setSelection(etAmount.text?.length ?: 0)
+        }
+
+        chipAdd500?.setOnClickListener { adjustAmount(500.0) }
+        chipAdd1000?.setOnClickListener { adjustAmount(1000.0) }
+        chipClear?.setOnClickListener { etAmount.text?.clear() }
 
         btnUpdate.setOnClickListener {
             val amountStr = etAmount.text.toString().trim()

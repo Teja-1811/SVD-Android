@@ -4,8 +4,8 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.user.UserDashboardResponse
 import com.svd.svdagencies.data.model.user.UserPlan
 import com.svd.svdagencies.data.model.user.UserPlansResponse
-import com.svd.svdagencies.data.model.user.UserProfileUpdateResponse
 import com.svd.svdagencies.data.model.user.UserCustomer
+import com.svd.svdagencies.data.model.user.UserProfileUpdateResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -174,6 +174,41 @@ object UserRepository {
                 }
             })
         }
+    }
+
+    fun pauseSubscription(
+        userId: Int,
+        subscriptionId: Int,
+        pauseDate: String? = null,
+        resumeDate: String? = null,
+        reason: String? = null,
+        action: String = "pause",
+        onSuccess: (() -> Unit)? = null,
+        onError: ((String) -> Unit)? = null
+    ) {
+        val payload = mutableMapOf<String, Any>(
+            "user_id" to userId,
+            "subscription_id" to subscriptionId,
+            "action" to action
+        )
+        pauseDate?.let { payload["pause_date"] = it }
+        resumeDate?.let { payload["resume_date"] = it }
+        reason?.let { payload["reason"] = it }
+
+        api.pauseSubscription(payload).enqueue(object : Callback<Map<String, Any>> {
+            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                if (response.isSuccessful) {
+                    onSuccess?.invoke()
+                } else {
+                    onError?.invoke("Pause request failed: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                if (call.isCanceled) return
+                onError?.invoke(t.localizedMessage ?: "Unable to reach server")
+            }
+        })
     }
 
     private fun notifyObservers(data: UserDashboardResponse) {

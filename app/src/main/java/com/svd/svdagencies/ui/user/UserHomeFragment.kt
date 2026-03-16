@@ -1,51 +1,49 @@
 package com.svd.svdagencies.ui.user
 
+import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.core.view.isVisible
+import android.widget.Toast
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.svd.svdagencies.R
+import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.user.UserDashboardResponse
 import com.svd.svdagencies.data.repository.UserDashboardObserver
 import com.svd.svdagencies.data.repository.UserRepository
-import com.svd.svdagencies.ui.user.adapter.SubscriptionHistoryAdapter
-import com.svd.svdagencies.ui.user.adapter.SubscriptionPauseAdapter
-import com.svd.svdagencies.ui.user.adapter.UserOfferAdapter
+import com.svd.svdagencies.ui.user.adapter.ProductSliderAdapter
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class UserHomeFragment : Fragment(R.layout.user_home), UserDashboardObserver {
 
     private lateinit var tvUserName: TextView
-    private lateinit var rvSpecialOffers: RecyclerView
-    private lateinit var rvSubscriptionHistory: RecyclerView
-    private lateinit var rvSubscriptionPauses: RecyclerView
-    private lateinit var tvHistoryEmpty: TextView
-    private lateinit var tvPausesEmpty: TextView
-
-    private val offerAdapter = UserOfferAdapter()
-    private val historyAdapter = SubscriptionHistoryAdapter()
-    private val pauseAdapter = SubscriptionPauseAdapter()
+    private lateinit var ttvLocation: TextView
+    private lateinit var chipGroupProductCategories: ChipGroup
+    private lateinit var rvProductSlider: RecyclerView
+    private val productAdapter = ProductSliderAdapter()
+    private var selectedProductCategory: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ttvLocation = view.findViewById(R.id.tvLocation)
         tvUserName = view.findViewById(R.id.tvUserName)
-        rvSpecialOffers = view.findViewById(R.id.rvSpecialOffers)
-        rvSubscriptionHistory = view.findViewById(R.id.rvSubscriptionHistory)
-        rvSubscriptionPauses = view.findViewById(R.id.rvSubscriptionPauses)
-        tvHistoryEmpty = view.findViewById(R.id.tvHistoryEmpty)
-        tvPausesEmpty = view.findViewById(R.id.tvPausesEmpty)
+        chipGroupProductCategories = view.findViewById(R.id.chipGroupProductCategories)
+        rvProductSlider = view.findViewById(R.id.rvProductSlider)
 
-        rvSpecialOffers.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvSpecialOffers.adapter = offerAdapter
+        rvProductSlider.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvProductSlider.adapter = productAdapter
 
-        rvSubscriptionHistory.layoutManager = LinearLayoutManager(requireContext())
-        rvSubscriptionHistory.adapter = historyAdapter
-
-        rvSubscriptionPauses.layoutManager = LinearLayoutManager(requireContext())
-        rvSubscriptionPauses.adapter = pauseAdapter
+        loadProductCategories()
     }
 
     override fun onStart() {
@@ -63,18 +61,67 @@ class UserHomeFragment : Fragment(R.layout.user_home), UserDashboardObserver {
     }
 
     private fun updateUI(data: UserDashboardResponse) {
+        ttvLocation.text = data.customer.area
         tvUserName.text = data.customer.name
+    }
 
-        offerAdapter.submitList(data.offers)
-        historyAdapter.submitList(data.subscriptionHistory)
-        pauseAdapter.submitList(data.subscriptionPauses)
+    private fun loadProductCategories() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val categories = try {
+                withContext(Dispatchers.IO) { ApiClient.adminItemsApi.getCategories() }
+            } catch (t: Throwable) {
+                showToast("Unable to load product categories")
+                emptyList()
+            }
+            if (categories.isNotEmpty()) {
+                populateCategoryChips(categories)
+            }
+        }
+    }
 
-        val hasHistory = data.subscriptionHistory.isNotEmpty()
-        tvHistoryEmpty.isVisible = !hasHistory
-        rvSubscriptionHistory.isVisible = hasHistory
+    private fun populateCategoryChips(categories: List<String>) {
+        val filtered = categories.filter { it.isNotBlank() }
+        if (filtered.isEmpty()) return
 
-        val hasPauses = data.subscriptionPauses.isNotEmpty()
-        tvPausesEmpty.isVisible = !hasPauses
-        rvSubscriptionPauses.isVisible = hasPauses
+        chipGroupProductCategories.removeAllViews()
+
+        filtered.forEach { category ->
+            val chip = Chip(requireContext()).apply {
+                text = category.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                tag = category
+                isCheckable = true
+                setOnClickListener { selectProductCategory(category) }
+            }
+
+            chipGroupProductCategories.addView(chip)
+        }
+
+        val defaultCategory = filtered.firstOrNull { it.equals("milk", true) } ?: filtered.first()
+        chipGroupProductCategories.children
+            .filterIsInstance<Chip>()
+            .firstOrNull { it.tag == defaultCategory }
+            ?.isChecked = true
+        selectProductCategory(defaultCategory)
+    }
+
+    private fun selectProductCategory(category: String) {
+        if (selectedProductCategory == category) return
+        selectedProductCategory = category
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val items = try {
+                withContext(Dispatchers.IO) { ApiClient.adminItemsApi.getItemsByCategory(category) }
+            } catch (t: Throwable) {
+                showToast("Unable to load $category products")
+                emptyList()
+            }
+            if (items.isEmpty()) showToast("No items under $category yet")
+            productAdapter.submitList(items)
+        }
+    }
+
+    private fun showToast(message: String) {
+        if (!isAdded) return
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 }

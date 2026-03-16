@@ -27,4 +27,9 @@ interface UserApi {
     fun updateProfile(
         @Body body: Map<String, @JvmSuppressWildcards Any>
     ): Call<UserProfileUpdateResponse>
+
+    @POST("api/user/payment/subscription/pause/")
+    fun pauseSubscription(
+        @Body body: Map<String, @JvmSuppressWildcards Any>
+    ): Call<Map<String, Any>>
 }

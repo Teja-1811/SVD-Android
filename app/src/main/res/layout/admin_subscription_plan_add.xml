@@ -43,27 +43,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilPlanPrice"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_medium"
-            android:hint="Price"
-            app:boxBackgroundMode="outline"
-            app:prefixText="Rs. ">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPlanPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:inputType="numberDecimal"
-                android:maxLines="1"
-                android:paddingTop="@dimen/spacing_medium"
-                android:paddingBottom="@dimen/spacing_medium" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPlanDuration"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -101,6 +80,14 @@
                 android:paddingTop="@dimen/spacing_medium"
                 android:paddingBottom="@dimen/spacing_medium" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:text="Plan price auto-calculates from item price x quantity and cycle (day/week/month)."
+            android:textColor="@color/textColorSecondary"
+            android:textSize="12sp" />
 
     </LinearLayout>
 </ScrollView>

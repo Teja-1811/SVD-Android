@@ -2,11 +2,16 @@ package com.svd.svdagencies.ui.customer
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
+import android.view.View
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.auth.LoginActivity
 import com.svd.svdagencies.ui.customer.fragment.CustomerBillsFragment
@@ -14,39 +19,72 @@ import com.svd.svdagencies.ui.customer.fragment.CustomerCompaniesFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerHomeFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerOrdersFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerPaymentFragment
+import com.svd.svdagencies.ui.user.CompanyDetailsActivity
+import com.svd.svdagencies.ui.user.ContactSupportActivity
+import com.svd.svdagencies.ui.user.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
 
 class CustomerMainActivity : AppCompatActivity() {
 
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
     private lateinit var toolbar: MaterialToolbar
+    private lateinit var tvToolbarTitle: TextView
+    private lateinit var btnMenu: ImageButton
+    private lateinit var btnLogout: ImageButton
     private lateinit var bottomNav: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.customer)
 
-        // ================= TOOLBAR =================
-        toolbar = findViewById<MaterialToolbar>(R.id.customerToolbar)
+        // UI Binding
+        drawerLayout = findViewById(R.id.customerDrawerLayout)
+        navigationView = findViewById(R.id.customerNavigationView)
+        toolbar = findViewById(R.id.customerToolbar)
+        tvToolbarTitle = findViewById(R.id.tvCustomerToolbarTitle)
+        btnMenu = findViewById(R.id.btnCustomerMenu)
+        btnLogout = findViewById(R.id.btnCustomerLogout)
+        bottomNav = findViewById(R.id.customerBottomNav)
+
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // LOGOUT
-        toolbar.setOnMenuItemClickListener { item ->
+        // Toolbar Actions
+        btnMenu.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        val headerView = navigationView.getHeaderView(0)
+        headerView.findViewById<View>(R.id.btnCloseDrawer).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        btnLogout.setOnClickListener {
+            handleLogout()
+        }
+
+        // Navigation Drawer Actions
+        navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.action_logout -> {
-                    SessionManager(this).logout()
-
-                    val intent = Intent(this, LoginActivity::class.java)
-                    intent.flags =
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
+                R.id.nav_terms -> {
+                    startActivity(Intent(this, TermsConditionsActivity::class.java))
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.nav_company -> {
+                    startActivity(Intent(this, CompanyDetailsActivity::class.java))
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.nav_support -> {
+                    startActivity(Intent(this, ContactSupportActivity::class.java))
+                    drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
                 else -> false
             }
         }
-
-        // ================= BOTTOM NAV =================
-        bottomNav = findViewById(R.id.customerBottomNav)
 
         if (savedInstanceState == null) {
             loadFragment(CustomerHomeFragment(), "Home")
@@ -64,9 +102,12 @@ class CustomerMainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_customer_toolbar, menu)
-        return true
+    private fun handleLogout() {
+        SessionManager(this).logout()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     fun openOrdersScreen(editLatestOrder: Boolean = false) {
@@ -75,7 +116,7 @@ class CustomerMainActivity : AppCompatActivity() {
     }
 
     private fun loadFragment(fragment: Fragment, title: String) {
-        toolbar.title = title
+        tvToolbarTitle.text = title
         supportFragmentManager.beginTransaction()
             .replace(R.id.customerFragmentContainer, fragment)
             .commit()

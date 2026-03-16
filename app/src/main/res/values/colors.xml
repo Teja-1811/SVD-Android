@@ -22,7 +22,7 @@
     <color name="drawer_icon_default">#7A7A7A</color>
     <color name="loading_overlay_scrim">#80FFFFFF</color>
 
-    <!-- 🔴 BRAND COLORS -->
+    <!-- BRAND COLORS -->
     <color name="brand_red">#D32F2F</color>
     <color name="brand_red_dark">#B71C1C</color>
     <color name="brand_blue">#2196F3</color>

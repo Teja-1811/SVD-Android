@@ -1,6 +1,8 @@
 package com.svd.svdagencies.ui.user
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -108,7 +110,7 @@ class UserProfileFragment : Fragment(R.layout.user_profile), UserDashboardObserv
             return
         }
 
-        val dialogView = layoutInflater.inflate(R.layout.dialog_user_profile_edit, null)
+        val dialogView = layoutInflater.inflate(R.layout.user_profile_edit, null)
         val nameInput = dialogView.findViewById<TextInputEditText>(R.id.inputName)
         val phoneInput = dialogView.findViewById<TextInputEditText>(R.id.inputPhone)
         val shopInput = dialogView.findViewById<TextInputEditText>(R.id.inputShop)
@@ -130,7 +132,6 @@ class UserProfileFragment : Fragment(R.layout.user_profile), UserDashboardObserv
         deliverySwitch.isChecked = profile.isDelivery
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Edit Profile")
             .setView(dialogView)
             .setPositiveButton("Save", null)
             .setNegativeButton("Cancel", null)
@@ -138,6 +139,7 @@ class UserProfileFragment : Fragment(R.layout.user_profile), UserDashboardObserv
 
         dialog.setOnShowListener {
             val positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             positive.setOnClickListener {
                 if (isUpdating) return@setOnClickListener
                 val updates = collectUpdates(

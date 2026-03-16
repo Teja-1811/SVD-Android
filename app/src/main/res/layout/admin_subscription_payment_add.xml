@@ -21,10 +21,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:hint="Note (Optional)">
+        android:hint="Payment Method (e.g. CASH/UPI)">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNote"
+            android:id="@+id/etMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapCharacters" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Transaction ID">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTxnId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />

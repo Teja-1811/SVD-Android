@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_terms"
+        android:title="Terms &amp; Conditions"
+        android:icon="@drawable/ic_save" />
+
+    <item
+        android:id="@+id/nav_company"
+        android:title="Company Details"
+        android:icon="@drawable/ic_shop" />
+
+    <item
+        android:id="@+id/nav_support"
+        android:title="Contact Support"
+        android:icon="@drawable/ic_phone" />
+</menu>

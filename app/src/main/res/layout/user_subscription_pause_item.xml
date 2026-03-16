@@ -3,54 +3,68 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/spacing_small"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="16dp"
-    app:strokeColor="?attr/colorOutline"
-    app:strokeWidth="1dp"
-    app:cardBackgroundColor="?attr/colorSurfaceVariant">
+    android:layout_marginBottom="@dimen/spacing_medium"
+    app:cardBackgroundColor="@color/card_background"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/card_stroke_color"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_medium">
+        android:padding="@dimen/spacing_large">
 
-        <TextView
-            android:id="@+id/tvPausePlan"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Plan Name"
-            android:textColor="?attr/colorOnSurface"
-            android:textStyle="bold"
-            android:textSize="@dimen/text_size_medium" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvPausePlan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Plan Name"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_body" />
+
+            <TextView
+                android:id="@+id/tvPauseStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/spacing_small"
+                android:paddingEnd="@dimen/spacing_small"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:background="@drawable/bg_status_yellow"
+                android:text="Paused"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvPauseDates"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
             android:text="Paused on 05 Feb 2025"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="@dimen/text_size_small"
-            android:layout_marginTop="@dimen/spacing_tiny" />
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_body_small" />
 
         <TextView
             android:id="@+id/tvPauseReason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="Reason: Seasonal break"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="@dimen/text_size_small"
-            android:layout_marginTop="@dimen/spacing_tiny" />
-
-        <TextView
-            android:id="@+id/tvPauseStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Resumed"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="@dimen/text_size_small"
-            android:layout_marginTop="@dimen/spacing_tiny" />
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_caption"
+            android:alpha="0.8" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

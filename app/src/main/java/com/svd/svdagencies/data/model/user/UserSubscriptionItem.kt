@@ -7,5 +7,7 @@ data class UserSubscriptionItem(
     val itemId: Int,
     @SerializedName("item_name")
     val itemName: String,
-    val quantity: Double = 0.0
+    val quantity: Double = 0.0,
+    val price: Double? = null,
+    val per: String? = null
 )

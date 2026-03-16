@@ -82,7 +82,7 @@ class CreateBillItemAdapter(
             tvPrice.text = "₹$sellingPriceStr"
             tvQty.text = billItem.quantity.toString()
             tvDisc.text = "₹${billItem.discount}"
-            tvDiscAmount.text = "₹${billItem.totalDiscount}"
+            tvDiscAmount.text = "₹%.2f".format(billItem.totalDiscount)
             
             val sellingPrice = sellingPriceStr.toDoubleOrNull() ?: 0.0
             val total = (sellingPrice * billItem.quantity) - billItem.totalDiscount

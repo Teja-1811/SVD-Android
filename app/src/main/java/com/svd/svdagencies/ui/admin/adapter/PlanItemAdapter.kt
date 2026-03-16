@@ -24,6 +24,8 @@ class PlanItemAdapter(
         holder.binding.apply {
             tvItemName.text = item.itemName
             tvQuantity.text = item.quantity.toString()
+            tvPrice.text = if (!item.price.isNullOrBlank()) "Rs. ${item.price}" else "Rs. -"
+            tvPer.text = "/${item.per ?: "day"}"
             btnEditItem.setOnClickListener { onEdit(item) }
             btnDeleteItem.setOnClickListener { onDelete(item) }
         }

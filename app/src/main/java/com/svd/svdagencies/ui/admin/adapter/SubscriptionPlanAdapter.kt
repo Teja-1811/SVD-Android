@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.svd.svdagencies.databinding.AdminSubscriptionPlanCardBinding
 import com.svd.svdagencies.data.model.admin.SubscriptionPlan
 import com.svd.svdagencies.data.model.admin.SubscriptionPlanItem
+import com.svd.svdagencies.databinding.AdminSubscriptionPlanCardBinding
 
 class SubscriptionPlanAdapter(
     private var plans: List<SubscriptionPlan>,
@@ -35,12 +35,11 @@ class SubscriptionPlanAdapter(
         val plan = plans[position]
         holder.binding.apply {
             tvPlanName.text = plan.name
-            tvPrice.text = "Price: ₹${plan.price}"
+            tvPrice.text = "Total: Rs. ${plan.price}"
             tvDuration.text = "Duration: ${plan.durationInDays} days"
             tvDescription.text = plan.description ?: ""
             tvDescription.visibility = if (plan.description.isNullOrEmpty()) View.GONE else View.VISIBLE
 
-            // Setup nested items list efficiently
             val itemsAdapter = PlanItemAdapter(plan.items ?: emptyList(), { item ->
                 onEditItem(plan, item)
             }, { item ->
@@ -56,7 +55,7 @@ class SubscriptionPlanAdapter(
     override fun getItemCount() = plans.size
 
     fun updateData(newPlans: List<SubscriptionPlan>) {
-        this.plans = newPlans
+        plans = newPlans
         notifyDataSetChanged()
     }
 }

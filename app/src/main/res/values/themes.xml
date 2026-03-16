@@ -40,6 +40,9 @@
 
         <!-- Bottom Navigation Styling -->
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+
+        <!-- Dialog Styling -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
@@ -60,5 +63,11 @@
         <item name="backgroundTint">@color/surface_background</item>
         <item name="itemTextColor">@color/textColorSecondary</item>
         <item name="itemIconTint">@color/textColorSecondary</item>
+    </style>
+
+    <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/surface_background</item>
+        <!-- Use windowBackground instead of surfaceTint to avoid build errors and fix the pinkish background -->
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>

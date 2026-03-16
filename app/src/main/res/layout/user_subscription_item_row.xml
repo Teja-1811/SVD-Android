@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingVertical="6dp">
+    android:paddingVertical="8dp">
 
     <TextView
         android:id="@+id/tvItemName"
@@ -12,16 +12,26 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Item Name"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="13sp" />
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/text_size_body_small" />
 
     <TextView
         android:id="@+id/tvQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Qty: 1"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:textSize="13sp"
+        android:textColor="@color/brand_red"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:text="Rs. 10/day"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_size_caption"
         android:textStyle="bold" />
 
 </LinearLayout>

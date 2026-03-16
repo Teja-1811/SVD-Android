@@ -4,10 +4,11 @@
     android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/spacing_medium"
-    app:cardBackgroundColor="?attr/colorSurface"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp">
+    app:cardBackgroundColor="@color/card_background"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/card_stroke_color"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Diamond Plan"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/brand_red"
             android:textSize="@dimen/text_size_large"
             android:textStyle="bold" />
 
@@ -30,8 +31,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Get 2L milk daily + Free Ghee sample"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="12sp" />
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_size_body_small" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,9 +46,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Rs. 2,500/mo"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="@dimen/text_size_medium"
+                android:text="\u20B9 2,500/mo"
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_size_body"
                 android:textStyle="bold" />
 
             <com.google.android.material.button.MaterialButton
@@ -58,7 +59,7 @@
                 android:padding="0dp"
                 android:text="Upgrade"
                 android:textAllCaps="false"
-                android:textColor="?attr/colorPrimary" />
+                android:textColor="@color/brand_red" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

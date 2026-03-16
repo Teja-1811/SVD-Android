@@ -8,4 +8,6 @@
     <string name="logo_content_description">Logo</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="no_account">Don\'t have account yet?</string>
+    <string name="product_image">Product image</string>
+    <string name="sample_product">Product name</string>
 </resources>
