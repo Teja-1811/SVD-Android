@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_large">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Review Items"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/btnCloseSheet"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:contentDescription="@android:string/cancel"
+            android:src="@drawable/ic_close" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCheckoutSummary"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:nestedScrollingEnabled="true"
+        tools:itemCount="4"
+        tools:listitem="@layout/user_cart_summary_item" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirmCheckout"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:text="Confirm"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/icon_green"
+        android:textColor="@color/white" />
+
+</LinearLayout>

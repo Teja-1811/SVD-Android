@@ -6,6 +6,7 @@ import com.svd.svdagencies.data.model.user.UserPlan
 import com.svd.svdagencies.data.model.user.UserPlansResponse
 import com.svd.svdagencies.data.model.user.UserCustomer
 import com.svd.svdagencies.data.model.user.UserProfileUpdateResponse
+import com.svd.svdagencies.data.model.user.UserSubscription
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -176,31 +177,79 @@ object UserRepository {
         }
     }
 
-    fun pauseSubscription(
+    fun pauseResumeSubscription(
         userId: Int,
-        subscriptionId: Int,
-        pauseDate: String? = null,
-        resumeDate: String? = null,
+        action: String,
         reason: String? = null,
-        action: String = "pause",
         onSuccess: (() -> Unit)? = null,
         onError: ((String) -> Unit)? = null
     ) {
         val payload = mutableMapOf<String, Any>(
             "user_id" to userId,
-            "subscription_id" to subscriptionId,
             "action" to action
         )
-        pauseDate?.let { payload["pause_date"] = it }
-        resumeDate?.let { payload["resume_date"] = it }
-        reason?.let { payload["reason"] = it }
+        if (action == "pause" && reason != null) {
+            payload["reason"] = reason
+        }
 
-        api.pauseSubscription(payload).enqueue(object : Callback<Map<String, Any>> {
+        api.pauseResumeSubscription(payload).enqueue(object : Callback<Map<String, Any>> {
             override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
                 if (response.isSuccessful) {
                     onSuccess?.invoke()
                 } else {
-                    onError?.invoke("Pause request failed: ${response.code()}")
+                    onError?.invoke("Request failed: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                if (call.isCanceled) return
+                onError?.invoke(t.localizedMessage ?: "Unable to reach server")
+            }
+        })
+    }
+
+    fun fetchCurrentSubscription(
+        customerId: Int,
+        onSuccess: (UserSubscription) -> Unit,
+        onError: ((String) -> Unit)? = null
+    ) {
+        api.getCurrentSubscription(customerId).enqueue(object : Callback<UserSubscription> {
+            override fun onResponse(call: Call<UserSubscription>, response: Response<UserSubscription>) {
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
+                        onSuccess(body)
+                    } else {
+                        onError?.invoke("Empty subscription data")
+                    }
+                } else {
+                    val errorMsg = buildString {
+                        append("Failed to fetch subscription: ${response.code()}")
+                        response.errorBody()?.string()?.let { append(" - ").append(it) }
+                    }
+                    android.util.Log.e("UserRepository", errorMsg)
+                    onError?.invoke(errorMsg)
+                }
+            }
+
+            override fun onFailure(call: Call<UserSubscription>, t: Throwable) {
+                android.util.Log.e("UserRepository", "Subscription fetch failed", t)
+                onError?.invoke(t.localizedMessage ?: "Unable to reach server")
+            }
+        })
+    }
+
+    fun prebookOrder(
+        request: com.svd.svdagencies.data.model.user.PrebookOrderRequest,
+        onSuccess: (() -> Unit)? = null,
+        onError: ((String) -> Unit)? = null
+    ) {
+        api.prebookOrder(request).enqueue(object : Callback<Map<String, Any>> {
+            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                if (response.isSuccessful) {
+                    onSuccess?.invoke()
+                } else {
+                    onError?.invoke("Prebooking failed: ${response.code()}")
                 }
             }
 

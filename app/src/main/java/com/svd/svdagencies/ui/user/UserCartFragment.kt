@@ -1,16 +1,238 @@
 package com.svd.svdagencies.ui.user
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.core.view.children
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.svd.svdagencies.R
+import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.ui.user.adapter.ProductSliderAdapter
+import com.svd.svdagencies.ui.user.adapter.UserCartAdapter
+import com.svd.svdagencies.utils.SessionManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale
+import java.time.LocalDate
+import android.app.DatePickerDialog
+import androidx.lifecycle.Observer
 
 class UserCartFragment : Fragment(R.layout.user_cart) {
 
+    private val cartViewModel: UserCartViewModel by activityViewModels()
+    private lateinit var session: SessionManager
+    private lateinit var tvEmptyCart: TextView
+    private lateinit var tvCartTotal: TextView
+    private lateinit var btnCheckout: MaterialButton
+    private lateinit var switchPrebook: MaterialSwitch
+    private lateinit var etPrebookDate: TextInputEditText
+    private lateinit var cardCartSummary: MaterialCardView
+    private lateinit var chipGroupCartCategories: ChipGroup
+    private lateinit var rvCartProducts: RecyclerView
+    private val productAdapter = ProductSliderAdapter(
+        onAddToCart = { item ->
+            cartViewModel.addToCart(item)
+            showToast("Added ${item.name} to cart")
+        },
+        onIncrease = { item -> cartViewModel.addToCart(item) },
+        onDecrease = { item -> cartViewModel.updateQuantity(item.id, cartViewModel.getQuantity(item.id) - 1) },
+        quantityProvider = { item -> cartViewModel.getQuantity(item.id) }
+    )
+    private var selectedCategory: String? = null
+    private var prebookEnabled = false
+    private var prebookDate: LocalDate? = null
+    private var checkoutDialog: BottomSheetDialog? = null
+    private var checkoutAdapter: UserCartAdapter? = null
+    private var checkoutObserver: Observer<List<com.svd.svdagencies.ui.user.model.CartItem>>? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // TODO: bind cart items once the data/model is ready
+
+        session = SessionManager(requireContext())
+        tvEmptyCart = view.findViewById(R.id.tvEmptyCart)
+        tvCartTotal = view.findViewById(R.id.tvCartTotal)
+        btnCheckout = view.findViewById(R.id.btnCheckout)
+        switchPrebook = view.findViewById(R.id.switchPrebook)
+        etPrebookDate = view.findViewById(R.id.etPrebookDate)
+        cardCartSummary = view.findViewById(R.id.cardCartSummary)
+        chipGroupCartCategories = view.findViewById(R.id.chipGroupCartCategories)
+        rvCartProducts = view.findViewById(R.id.rvCartProducts)
+
+        rvCartProducts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvCartProducts.adapter = productAdapter
+
+        cartViewModel.setAllowOutOfStock(false)
+
+        cartViewModel.cartItems.observe(viewLifecycleOwner) { items ->
+            val hasItems = items.isNotEmpty()
+            cardCartSummary.visibility = if (hasItems) View.VISIBLE else View.GONE
+            tvEmptyCart.visibility = if (hasItems) View.GONE else View.VISIBLE
+            productAdapter.refreshQuantities()
+        }
+
+        cartViewModel.totalAmount.observe(viewLifecycleOwner) { total ->
+            tvCartTotal.text = "\u20B9${String.format("%.2f", total)}"
+        }
+
+        cartViewModel.itemCount.observe(viewLifecycleOwner) { count ->
+            btnCheckout.text = if (count > 0) "Checkout ($count)" else "Checkout"
+        }
+
+        cartViewModel.itemCount.observe(viewLifecycleOwner) { count ->
+            btnCheckout.text = if (count > 0) "Checkout ($count)" else "Checkout"
+        }
+
+        btnCheckout.setOnClickListener { showCheckoutModal() }
+
+        switchPrebook.setOnCheckedChangeListener { _, isChecked ->
+            prebookEnabled = isChecked
+            togglePrebookMode(isChecked)
+        }
+
+        etPrebookDate.setOnClickListener { showDatePicker() }
+
+        loadCategories()
+    }
+
+    private fun loadCategories() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val categories = try {
+                withContext(Dispatchers.IO) { ApiClient.adminItemsApi.getCategories() }
+            } catch (t: Throwable) {
+                showToast("Unable to load categories")
+                emptyList()
+            }
+            populateCategoryChips(categories)
+        }
+    }
+
+    private fun populateCategoryChips(categories: List<String>) {
+        val filtered = categories.filter { it.isNotBlank() }
+        chipGroupCartCategories.removeAllViews()
+        if (filtered.isEmpty()) return
+
+        filtered.forEach { category ->
+            val chip = Chip(requireContext()).apply {
+                text = category.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                tag = category
+                isCheckable = true
+                setOnClickListener { selectCategory(category) }
+            }
+            chipGroupCartCategories.addView(chip)
+        }
+
+        val defaultCategory = filtered.firstOrNull { it.equals("milk", true) } ?: filtered.first()
+        chipGroupCartCategories.children
+            .filterIsInstance<Chip>()
+            .firstOrNull { it.tag == defaultCategory }
+            ?.isChecked = true
+        selectCategory(defaultCategory)
+    }
+
+    private fun selectCategory(category: String) {
+        if (selectedCategory == category) return
+        selectedCategory = category
+        viewLifecycleOwner.lifecycleScope.launch {
+            val items = try {
+                withContext(Dispatchers.IO) { ApiClient.adminItemsApi.getItemsByCategory(category) }
+            } catch (t: Throwable) {
+                showToast("Unable to load $category items")
+                emptyList()
+            }
+            productAdapter.submitList(items)
+        }
+    }
+
+    private fun showToast(message: String) {
+        if (!isAdded) return
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun togglePrebookMode(enabled: Boolean) {
+        etPrebookDate.visibility = if (enabled) View.VISIBLE else View.GONE
+        if (enabled && prebookDate == null) showDatePicker()
+        productAdapter.setAllowOutOfStock(enabled)
+        cartViewModel.setAllowOutOfStock(enabled)
+        checkoutAdapter?.setAllowOutOfStock(enabled)
+    }
+
+    private fun showDatePicker() {
+        val base = prebookDate ?: LocalDate.now().plusDays(1)
+        val picker = DatePickerDialog(
+            requireContext(),
+            { _, y, m, d ->
+                prebookDate = LocalDate.of(y, m + 1, d)
+                etPrebookDate.setText(prebookDate.toString())
+            },
+            base.year, base.monthValue - 1, base.dayOfMonth
+        )
+        picker.datePicker.minDate = System.currentTimeMillis()
+        picker.show()
+    }
+
+    private fun showCheckoutModal() {
+        val items = cartViewModel.cartItems.value.orEmpty()
+        if (items.isEmpty()) {
+            showToast("Your cart is empty")
+            return
+        }
+        checkoutObserver?.let { cartViewModel.cartItems.removeObserver(it) }
+        checkoutDialog?.dismiss()
+
+        val dialog = BottomSheetDialog(requireContext(), com.google.android.material.R.style.Theme_Material3_Light_BottomSheetDialog)
+        val view = layoutInflater.inflate(R.layout.user_checkout_bottom_sheet, null)
+        val rv = view.findViewById<RecyclerView>(R.id.rvCheckoutSummary)
+        val btnConfirm = view.findViewById<MaterialButton>(R.id.btnConfirmCheckout)
+        val btnClose = view.findViewById<View>(R.id.btnCloseSheet)
+
+        rv.layoutManager = LinearLayoutManager(requireContext())
+        val modalAdapter = UserCartAdapter(
+            onQuantityChanged = { id, qty -> cartViewModel.updateQuantity(id, qty) },
+            onRemove = { id -> cartViewModel.removeItem(id) }
+        ).also { it.setAllowOutOfStock(prebookEnabled) }
+        rv.adapter = modalAdapter
+        modalAdapter.submitList(items)
+        checkoutAdapter = modalAdapter
+
+        val observer = Observer<List<com.svd.svdagencies.ui.user.model.CartItem>> { list ->
+            checkoutAdapter?.submitList(list)
+            if (list.isEmpty()) dialog.dismiss()
+        }
+        checkoutObserver = observer
+        cartViewModel.cartItems.observe(viewLifecycleOwner, observer)
+
+        btnConfirm.setOnClickListener {
+            showToast("Order confirmed")
+            dialog.dismiss()
+        }
+
+        btnClose.setOnClickListener { dialog.dismiss() }
+
+        dialog.setContentView(view)
+        dialog.show()
+        val behavior = BottomSheetBehavior.from(view.parent as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.skipCollapsed = true
+        checkoutDialog = dialog
+        dialog.setOnDismissListener {
+            checkoutObserver?.let { cartViewModel.cartItems.removeObserver(it) }
+            checkoutObserver = null
+            checkoutAdapter = null
+            checkoutDialog = null
+        }
     }
 }

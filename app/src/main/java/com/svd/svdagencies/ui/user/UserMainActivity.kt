@@ -103,6 +103,7 @@ class UserMainActivity : AppCompatActivity() {
                 R.id.nav_home -> loadFragment(UserHomeFragment(), "SVD Agency")
                 R.id.nav_subscription -> loadFragment(UserSubscriptionFragment(), "Subscriptions")
                 R.id.nav_plans -> loadFragment(UserPlansFragment(), "Explore Plans")
+                R.id.nav_cart -> loadFragment(UserCartFragment(), "Cart")
                 R.id.nav_profile -> loadFragment(UserProfileFragment(), "My Profile")
             }
             true

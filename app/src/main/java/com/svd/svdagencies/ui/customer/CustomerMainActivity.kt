@@ -19,9 +19,9 @@ import com.svd.svdagencies.ui.customer.fragment.CustomerCompaniesFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerHomeFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerOrdersFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerPaymentFragment
-import com.svd.svdagencies.ui.user.CompanyDetailsActivity
-import com.svd.svdagencies.ui.user.ContactSupportActivity
 import com.svd.svdagencies.ui.user.TermsConditionsActivity
+import com.svd.svdagencies.ui.customer.CustomerCompanyDetailsActivity
+import com.svd.svdagencies.ui.customer.CustomerContactSupportActivity
 import com.svd.svdagencies.utils.SessionManager
 
 class CustomerMainActivity : AppCompatActivity() {
@@ -73,12 +73,12 @@ class CustomerMainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_company -> {
-                    startActivity(Intent(this, CompanyDetailsActivity::class.java))
+                    startActivity(Intent(this, CustomerCompanyDetailsActivity::class.java))
                     drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
                 R.id.nav_support -> {
-                    startActivity(Intent(this, ContactSupportActivity::class.java))
+                    startActivity(Intent(this, CustomerContactSupportActivity::class.java))
                     drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }

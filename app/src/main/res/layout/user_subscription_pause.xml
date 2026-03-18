@@ -4,83 +4,46 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="8dp"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="0dp"
     app:cardBackgroundColor="?attr/colorSurface"
-    app:strokeColor="?attr/colorOutline"
+    app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="22dp">
+        android:padding="24dp">
 
         <TextView
+            android:id="@+id/tvPauseTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Pause Subscription"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="6dp"/>
+            android:textColor="@color/text_primary"
+            android:layout_marginBottom="8dp"/>
 
         <TextView
+            android:id="@+id/tvPauseSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pick the pause window and add an optional note."
-            android:textSize="12sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginBottom="14dp"/>
+            android:text="Your subscription will be paused from today."
+            android:textSize="14sp"
+            android:textColor="@color/text_secondary"
+            android:layout_marginBottom="20dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Pause from"
-            app:startIconDrawable="@drawable/ic_calendar"
-            app:startIconTint="?attr/colorPrimary"
-            app:boxStrokeColor="?attr/colorPrimary"
-            android:layout_marginBottom="12dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPauseDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:inputType="none"
-                android:textColor="?attr/colorOnSurface"
-                android:textColorHint="?attr/colorOnSurfaceVariant"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Resume on"
-            app:startIconDrawable="@drawable/ic_calendar"
-            app:startIconTint="?attr/colorPrimary"
-            app:boxStrokeColor="?attr/colorPrimary"
-            android:layout_marginBottom="12dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etResumeDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:inputType="none"
-                android:textColor="?attr/colorOnSurface"
-                android:textColorHint="?attr/colorOnSurfaceVariant"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:id="@+id/tilReason"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Reason (optional)"
-            app:boxStrokeColor="?attr/colorPrimary"
-            android:layout_marginBottom="8dp">
+            android:hint="Reason for pausing"
+            app:boxStrokeColor="@color/login_red_start"
+            app:hintTextColor="@color/login_red_start"
+            android:layout_marginBottom="24dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etReason"
@@ -88,10 +51,36 @@
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:inputType="textMultiLine"
-                android:minLines="2"
-                android:textColor="?attr/colorOnSurface"
-                android:textColorHint="?attr/colorOnSurfaceVariant"/>
+                android:minLines="3"
+                android:textColor="@color/text_primary"/>
         </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/text_secondary"
+                app:strokeColor="@color/card_stroke_color" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Confirm"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/login_red_start"
+                android:textColor="@color/white" />
+        </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

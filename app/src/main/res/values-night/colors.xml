@@ -81,4 +81,5 @@
     <color name="text_primary">#FFFFFF</color>
     <color name="text_secondary">#B0B0B0</color>
     <color name="error_red">#EF5350</color>
+    <color name="green_status">#81C784</color>
 </resources>

@@ -1,168 +1,303 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="@color/window_background"
+    android:padding="16dp">
 
-    <!-- Sticky Header -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:title="Terms &amp; Conditions"
-        android:titleTextColor="?attr/colorOnSurface"
-        app:navigationIcon="@drawable/ic_back"
-        app:layout_scrollFlags="scroll|enterAlways"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:padding="16dp">
-
-        <LinearLayout
+        <!-- Header / Summary -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginBottom="8dp"
+            android:background="?attr/colorSurface"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="14dp"
+            app:strokeColor="@color/brand_red"
+            app:strokeWidth="1dp">
 
-            <!-- Operator Section -->
-
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                android:layout_marginBottom="10dp">
+                android:background="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Terms &amp; Conditions"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/text_primary" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="A quick overview of how we operate, accept payments, and support you."
+                    android:textSize="14sp"
+                    android:paddingTop="6dp"
+                    android:textColor="@color/text_secondary" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp">
 
-                    <TextView
-                        android:id="@+id/sectionOperator"
-                        android:text="1. Operator"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:drawableEnd="@drawable/ic_expand"
-                        android:padding="6dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/colorSurface"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        android:text="Payments"
+                        app:chipBackgroundColor="@color/surface_background"
+                        app:chipStrokeWidth="0dp"
+                        app:chipStrokeColor="@android:color/transparent" />
 
-                    <TextView
-                        android:id="@+id/operatorContent"
-                        android:text="Sri Vijaya Durga Milk Agencies (svdagencies.shop)"
-                        android:visibility="gone"
-                        android:textSize="14sp"
-                        android:paddingTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/colorSurface"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        android:layout_marginStart="6dp"
+                        android:text="Orders"
+                        app:chipBackgroundColor="@color/surface_background"
+                        app:chipStrokeWidth="0dp"
+                        app:chipStrokeColor="@android:color/transparent" />
 
+                    <com.google.android.material.chip.Chip
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/colorSurface"
+                        app:cardBackgroundColor="?attr/colorSurface"
+                        android:layout_marginStart="6dp"
+                        android:text="Support"
+                        app:chipBackgroundColor="@color/surface_background"
+                        app:chipStrokeWidth="0dp"
+                        app:chipStrokeColor="@android:color/transparent" />
                 </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-            </com.google.android.material.card.MaterialCardView>
+        <!-- Section 1: Introduction / Services / Responsibilities -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="?attr/colorSurface"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/text_secondary"
+            app:strokeWidth="0.5dp">
 
-
-            <!-- Orders Section -->
-
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                android:layout_marginBottom="10dp">
+                android:background="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/sectionOperator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_expand"
+                    android:drawablePadding="8dp"
+                    android:paddingVertical="6dp"
+                    android:text="1. Introduction, Services &amp; Responsibilities"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:padding="16dp"
+                    android:id="@+id/operatorContent"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/sectionOrders"
-                        android:text="2. Orders &amp; Payment"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:drawableEnd="@drawable/ic_expand"
-                        android:padding="6dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/ordersContent"
-                        android:text="Orders are verified and approved by the merchant. Payment is collected after delivery with up to 7-day credit. Cash and UPI are accepted."
-                        android:visibility="gone"
-                        android:textSize="14sp"
-                        android:paddingTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-
-            <!-- Contact Section -->
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp">
-
-                <LinearLayout
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:visibility="gone"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp">
 
                     <TextView
-                        android:id="@+id/sectionContact"
-                        android:text="3. Contact Information"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:drawableEnd="@drawable/ic_expand"
-                        android:padding="6dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <LinearLayout
-                        android:id="@+id/contactContent"
-                        android:visibility="gone"
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="8dp">
+                        android:text="Welcome to Sri Vijaya Durga Milk Agencies (svdagencies.shop). By using our app, services, or making payments, you agree to these Terms &amp; Conditions."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Email: svdagencies12@gmail.com"
-                            android:autoLink="email"
-                            android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Services: subscriptions, product supply, order management, and related features. Services may change or be discontinued without prior notice."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Phone: +91 9392890375"
-                            android:autoLink="phone"
-                            android:textSize="14sp"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Gundugolanu, Eluru, Andhra Pradesh"
-                            android:textSize="14sp"/>
-
-                    </LinearLayout>
-
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Your responsibilities: provide accurate details, keep credentials secure, and be accountable for all activity under your account."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
                 </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-            </com.google.android.material.card.MaterialCardView>
+        <!-- Section 2: Payments / Orders / Refunds / Cancellations -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="?attr/colorSurface"
+            app:cardBackgroundColor="?attr/colorSurface"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/text_secondary"
+            app:strokeWidth="0.5dp">
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-    </ScrollView>
+                <TextView
+                    android:id="@+id/sectionOrders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_expand"
+                    android:drawablePadding="8dp"
+                    android:paddingVertical="6dp"
+                    android:text="2. Payments, Orders, Refunds &amp; Cancellations"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <LinearLayout
+                    android:id="@+id/ordersContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="4dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Payment methods: UPI, Debit Card, Credit Card, Net Banking. Payments must clear before service activation unless credit is granted."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Transaction charges: credit cards may incur 1.5–2% + GST; other methods as applicable. These charges are non‑refundable."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Payment confirmation: funds must reach our account; banking/gateway updates may take 1–3 business days."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Refunds: convenience/processing fees are non‑refundable. Valid refunds are limited to failed transactions or service issues and processed within 5–10 business days. No refunds for user errors, incorrect entries, or partial use."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Subscriptions: valid for the chosen duration and non‑transferable. Orders confirmed cannot be modified or cancelled unless explicitly allowed."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Cancellation window: requests must be raised within the allowed window (if provided); late cancellations may be rejected."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ledger updates: transactions appear in your account ledger; delays can occur due to banks or gateways."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Disputes: report within 7 days; beyond this we may not accept claims. Company decisions are final."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Liability: not responsible for gateway failures, bank delays, network issues, or unauthorized access caused by user negligence."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Privacy: we protect your data and only share when legally required or with your consent."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Updates: we may modify these terms; continued use means you accept the changes."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Governing law: India; jurisdiction—courts of Guntur/Hyderabad."
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:lineSpacingExtra="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

@@ -70,6 +70,11 @@
     <color name="bg_light_gray">#F5F5F5</color>
     <color name="bg_light_green">#E8F5E9</color>
 
+    <!-- Backgrounds for status/badges (Light Mode) -->
+    <color name="bg_status_red_light">#FFFFFF</color>
+    <color name="bg_status_green_light">#FFFFFF</color>
+    <color name="bg_status_yellow_light">#FFFFFF</color>
+
     <!-- Customer Home -->
     <color name="customer_home_card_background">#FFFFFF</color>
     <color name="customer_home_card_stroke">#E0E0E0</color>
@@ -81,4 +86,5 @@
     <color name="text_primary">#000000</color>
     <color name="text_secondary">#757575</color>
     <color name="error_red">#D32F2F</color>
+    <color name="green_status">#4CAF50</color>
 </resources>

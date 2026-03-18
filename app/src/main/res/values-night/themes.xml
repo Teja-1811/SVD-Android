@@ -40,5 +40,14 @@
 
         <!-- Bottom Navigation Styling -->
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+
+        <!-- Dialog Styling -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+    </style>
+
+    <!-- Dialog Styling for Night Mode -->
+    <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/surface_background</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>

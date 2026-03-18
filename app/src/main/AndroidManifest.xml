@@ -60,6 +60,8 @@
         <!-- Customer / User -->
         <activity android:name=".ui.customer.CustomerMainActivity"/>
         <activity android:name=".ui.customer.CustomerCompanyCatalogActivity"/>
+        <activity android:name=".ui.customer.CustomerCompanyDetailsActivity"/>
+        <activity android:name=".ui.customer.CustomerContactSupportActivity"/>
         <activity android:name=".ui.user.UserMainActivity"/>
         <activity android:name=".ui.user.TermsConditionsActivity"/>
         <activity android:name=".ui.user.CompanyDetailsActivity"/>

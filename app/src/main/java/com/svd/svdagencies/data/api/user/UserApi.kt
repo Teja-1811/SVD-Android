@@ -4,6 +4,7 @@ import com.svd.svdagencies.data.model.user.UserDashboardResponse
 import com.svd.svdagencies.data.model.user.UserOffersResponse
 import com.svd.svdagencies.data.model.user.UserPlansResponse
 import com.svd.svdagencies.data.model.user.UserProfileUpdateResponse
+import com.svd.svdagencies.data.model.user.UserSubscription
 import kotlin.jvm.JvmSuppressWildcards
 import retrofit2.Call
 import retrofit2.http.Body
@@ -28,8 +29,18 @@ interface UserApi {
         @Body body: Map<String, @JvmSuppressWildcards Any>
     ): Call<UserProfileUpdateResponse>
 
-    @POST("api/user/payment/subscription/pause/")
-    fun pauseSubscription(
+    @POST("api/user/subscription/pause-resume/")
+    fun pauseResumeSubscription(
         @Body body: Map<String, @JvmSuppressWildcards Any>
     ): Call<Map<String, Any>>
+
+    @POST("api/user/prebook-order/")
+    fun prebookOrder(
+        @Body request: com.svd.svdagencies.data.model.user.PrebookOrderRequest
+    ): Call<Map<String, Any>>
+
+    @GET("api/user/current-subscription/")
+    fun getCurrentSubscription(
+        @Query("customer_id") customerId: Int
+    ): Call<UserSubscription>
 }

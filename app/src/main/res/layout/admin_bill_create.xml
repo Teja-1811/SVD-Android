@@ -38,11 +38,12 @@
                     app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
-                    app:cardBackgroundColor="@color/card_background">
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="?attr/colorSurface"
                         android:orientation="vertical"
                         android:padding="16dp">
 
@@ -116,11 +117,12 @@
                     app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
-                    app:cardBackgroundColor="@color/card_background">
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="?attr/colorSurface"
                         android:orientation="vertical"
                         android:padding="16dp">
 
@@ -247,11 +249,12 @@
                     app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
-                    app:cardBackgroundColor="@color/card_background">
+                    app:cardBackgroundColor="?attr/colorSurface">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="?attr/colorSurface"
                         android:orientation="vertical"
                         android:padding="12dp">
 
@@ -273,13 +276,13 @@
                             android:paddingVertical="8dp"
                             android:paddingHorizontal="8dp"
                             android:weightSum="100">
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="30" android:text="Item" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Prc" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Qty" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="D%" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="DA" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Tot" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
-                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="11" android:text="Act" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="29" android:text="Item" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="10" android:text="Prc" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="10" android:text="Qty" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="10" android:text="D%" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="10" android:text="DA" android:gravity="center" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="12" android:text="Tot" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
+                            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="12" android:text="Action" android:gravity="end" android:textStyle="bold" android:textSize="11sp" android:textColor="@color/textColorPrimary"/>
                         </LinearLayout>
 
                         <androidx.recyclerview.widget.RecyclerView

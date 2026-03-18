@@ -10,7 +10,5 @@ data class UserDashboardResponse(
     val subscriptionHistory: List<UserSubscriptionHistory> = emptyList(),
     @SerializedName("subscription_pauses")
     val subscriptionPauses: List<UserSubscriptionPause> = emptyList(),
-    val offers: List<UserOffer> = emptyList(),
-    @SerializedName("auto_upi")
-    val autoUpi: AutoUpiPayload? = null
+    val offers: List<UserOffer> = emptyList()
 )

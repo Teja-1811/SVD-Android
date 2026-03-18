@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="160dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/spacing_medium"
     android:layout_marginBottom="@dimen/spacing_small"
-    android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/card_background"
     app:cardCornerRadius="20dp"
     app:cardElevation="0dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="@color/card_stroke_color">
+    app:strokeColor="@color/card_stroke_color"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +39,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:id="@+id/tvStockBadge"
+                android:id="@+id/tvStock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|top"
@@ -49,7 +47,7 @@
                 android:background="@drawable/bg_status_active"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp"
-                android:text="Out of stock"
+                android:text="In stock"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="10sp"
@@ -62,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginHorizontal="4dp"
-            android:text="@string/sample_product"
+            android:text="Product name"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_size_body_small"
             android:textStyle="bold"
@@ -70,45 +68,23 @@
             android:ellipsize="end" />
 
         <TextView
-            android:id="@+id/tvProductPrice"
+            android:id="@+id/tvPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
             android:layout_marginTop="2dp"
-            android:text="\u20B9 0"
+            android:text="₹ 0.00"
             android:textColor="@color/brand_red"
             android:textSize="@dimen/text_size_body"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvStockInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginTop="2dp"
-            android:text="In stock"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_size_caption" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddToCart"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="38dp"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:text="Add to cart"
-            android:textAllCaps="false"
-            android:textColor="@color/brand_red"
-            app:strokeColor="@color/brand_red" />
-
         <LinearLayout
-            android:id="@+id/layoutQtyControls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:paddingHorizontal="4dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDecrease"
@@ -122,7 +98,7 @@
                 android:padding="0dp" />
 
             <TextView
-                android:id="@+id/tvQty"
+                android:id="@+id/tvQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
@@ -141,6 +117,16 @@
                 android:textAllCaps="false"
                 android:textSize="16sp"
                 android:padding="0dp" />
+
+            <TextView
+                android:id="@+id/btnRemove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Remove"
+                android:textColor="@color/brand_red"
+                android:textSize="@dimen/text_size_caption"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

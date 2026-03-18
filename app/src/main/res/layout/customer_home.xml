@@ -21,7 +21,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_large"
-                app:cardBackgroundColor="@color/customer_home_card_background"
+                android:background="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="@dimen/card_corner_radius_large"
                 app:cardElevation="@dimen/spacing_xsmall"
                 app:strokeColor="@color/customer_home_card_stroke"
@@ -31,7 +32,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@color/customer_home_card_background"
+                    android:background="?attr/colorSurface"
                     android:padding="20dp">
 
                     <LinearLayout
@@ -76,7 +77,8 @@
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                app:cardBackgroundColor="@color/customer_home_logo_badge"
+                                android:background="?attr/colorSurface"
+                                app:cardBackgroundColor="?attr/colorSurface"
                                 app:cardCornerRadius="22dp"
                                 app:cardElevation="0dp"
                                 app:strokeColor="@color/customer_home_card_stroke"
@@ -127,7 +129,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_medium"
-                app:cardBackgroundColor="@color/customer_home_card_background"
+                android:background="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
                 app:cardElevation="@dimen/spacing_tiny"
                 app:strokeColor="@color/customer_home_card_stroke"
@@ -137,7 +140,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:background="@color/customer_home_card_background"
+                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="@dimen/spacing_large">
 
@@ -176,7 +179,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_medium"
-                app:cardBackgroundColor="@color/customer_home_card_background"
+                android:background="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
                 app:cardElevation="@dimen/spacing_tiny"
                 app:strokeColor="@color/customer_home_card_stroke"
@@ -186,7 +190,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:background="@color/customer_home_card_background"
+                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="@dimen/spacing_large">
 
@@ -225,7 +229,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_medium"
-                app:cardBackgroundColor="@color/customer_home_card_background"
+                android:background="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
                 app:cardElevation="@dimen/spacing_tiny"
                 app:strokeColor="@color/customer_home_card_stroke"
@@ -234,7 +239,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/customer_home_card_background"
+                    android:background="?attr/colorSurface"
                     android:orientation="vertical"
                     android:padding="@dimen/spacing_large">
 
@@ -299,7 +304,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/customer_home_card_background"
+                android:background="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
                 app:cardElevation="@dimen/spacing_tiny"
                 app:strokeColor="@color/customer_home_card_stroke"
@@ -309,7 +315,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:background="@color/customer_home_card_background"
+                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="@dimen/spacing_large">
 

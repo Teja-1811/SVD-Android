@@ -4,18 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
     app:cardCornerRadius="24dp"
-    app:cardElevation="0dp"
+    app:cardElevation="2dp"
     app:cardUseCompatPadding="false"
-    app:cardBackgroundColor="@color/card_background"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:strokeWidth="1dp"
-    app:strokeColor="@color/card_stroke_color"
+    app:strokeColor="?attr/colorOutlineVariant"
     app:cardForegroundColor="@android:color/transparent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="?attr/colorSurface"
         android:padding="22dp">
 
         <!-- Header -->
@@ -30,7 +32,7 @@
                 android:text="Update Balance"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/textColorPrimary"/>
+                android:textColor="?attr/colorOnSurface"/>
 
             <ImageView
                 android:id="@+id/btnClose"
@@ -38,7 +40,7 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_add"
                 android:rotation="45"
-                app:tint="@color/textColorSecondary"
+                app:tint="?attr/colorOnSurfaceVariant"
                 android:layout_alignParentEnd="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
@@ -50,7 +52,7 @@
             android:layout_height="wrap_content"
             android:text="Apply a credit, collect a payment, or adjust dues."
             android:textSize="13sp"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="16dp"/>
 
         <!-- Customer -->
@@ -62,7 +64,7 @@
             android:textAllCaps="true"
             android:letterSpacing="0.08"
             android:textStyle="bold"
-            android:textColor="@color/textColorSecondary"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="6dp"/>
 
         <TextView
@@ -72,7 +74,7 @@
             android:text="Customer Name"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/textColorPrimary"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginBottom="16dp"/>
 
         <!-- Current balance pill -->
@@ -81,8 +83,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
             app:cardCornerRadius="16dp"
-            app:cardBackgroundColor="@color/surface_variant"
-            app:strokeColor="@color/card_stroke_color"
+            app:cardBackgroundColor="?attr/colorSurfaceVariant"
+            app:strokeColor="?attr/colorOutlineVariant"
             app:strokeWidth="1dp"
             app:cardElevation="0dp">
 
@@ -100,7 +102,7 @@
                     android:text="Current Balance"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textColor="@color/textColorPrimary"/>
+                    android:textColor="?attr/colorOnSurface"/>
 
                 <TextView
                     android:id="@+id/txtCurrentBalance"
@@ -124,7 +126,7 @@
             app:boxStrokeWidthFocused="2dp"
             app:prefixText="₹"
             app:helperText="Use negative value to record payout"
-            app:helperTextTextColor="@color/textColorSecondary"
+            app:helperTextTextColor="?attr/colorOnSurfaceVariant"
             android:layout_marginBottom="18dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -133,8 +135,8 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal|numberSigned"
                 android:textSize="15sp"
-                android:textColor="@color/textColorPrimary"
-                android:textColorHint="@color/textColorSecondary"/>
+                android:textColor="?attr/colorOnSurface"
+                android:textColorHint="?attr/colorOnSurfaceVariant"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Quick actions -->
@@ -151,8 +153,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="+500"
-                app:chipBackgroundColor="@color/surface_variant"
-                app:chipStrokeColor="@color/card_stroke_color"
+                app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                app:chipStrokeColor="?attr/colorOutlineVariant"
                 app:chipStrokeWidth="1dp"/>
 
             <com.google.android.material.chip.Chip
@@ -162,8 +164,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="+1000"
-                app:chipBackgroundColor="@color/surface_variant"
-                app:chipStrokeColor="@color/card_stroke_color"
+                app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                app:chipStrokeColor="?attr/colorOutlineVariant"
                 app:chipStrokeWidth="1dp"/>
 
             <com.google.android.material.chip.Chip
@@ -173,8 +175,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Clear"
-                app:chipBackgroundColor="@color/surface_variant"
-                app:chipStrokeColor="@color/card_stroke_color"
+                app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                app:chipStrokeColor="?attr/colorOutlineVariant"
                 app:chipStrokeWidth="1dp"/>
         </LinearLayout>
 

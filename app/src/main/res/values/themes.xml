@@ -67,7 +67,7 @@
 
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="colorSurface">@color/surface_background</item>
-        <!-- Use windowBackground instead of surfaceTint to avoid build errors and fix the pinkish background -->
+        <!-- Use transparent windowBackground to fix pinkish background -->
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>

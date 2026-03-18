@@ -81,10 +81,9 @@
             android:baselineAligned="false">
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/spacing_small"
+                android:minWidth="120dp"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/card_background"
@@ -95,7 +94,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_medium">
+                    android:padding="@dimen/spacing_medium"
+                    android:gravity="center">
 
                     <TextView
                         android:id="@+id/tvProfileDue"
@@ -110,77 +110,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Due"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="@dimen/text_size_caption"
-                        android:layout_marginTop="@dimen/spacing_xsmall" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_xsmall"
-                android:layout_marginEnd="@dimen/spacing_xsmall"
-                android:layout_weight="1"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/card_background"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/card_stroke_color">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_medium">
-
-                    <TextView
-                        android:id="@+id/tvAutoUpiStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Auto UPI"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Disabled"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="@dimen/text_size_caption"
-                        android:layout_marginTop="@dimen/spacing_xsmall" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_small"
-                android:layout_weight="1"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/card_background"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/card_stroke_color">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_medium">
-
-                    <TextView
-                        android:id="@+id/tvAutoUpiLimit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₹0.00"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="UPI Limit"
                         android:textColor="@color/text_secondary"
                         android:textSize="@dimen/text_size_caption"
                         android:layout_marginTop="@dimen/spacing_xsmall" />

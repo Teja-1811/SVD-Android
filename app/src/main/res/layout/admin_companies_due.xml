@@ -96,9 +96,9 @@
                             android:layout_margin="4dp"
                             app:cardCornerRadius="12dp"
                             app:cardElevation="0dp"
-                            app:cardBackgroundColor="#FFF3F3"
+                            app:cardBackgroundColor="?attr/colorSurface"
                             app:strokeWidth="1dp"
-                            app:strokeColor="#FFEBEE">
+                            app:strokeColor="?attr/colorOutlineVariant">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -130,9 +130,9 @@
                             android:layout_margin="4dp"
                             app:cardCornerRadius="12dp"
                             app:cardElevation="0dp"
-                            app:cardBackgroundColor="#F1F8E9"
+                            app:cardBackgroundColor="?attr/colorSurface"
                             app:strokeWidth="1dp"
-                            app:strokeColor="#DCEDC8">
+                            app:strokeColor="?attr/colorOutlineVariant">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -164,9 +164,9 @@
                             android:layout_margin="4dp"
                             app:cardCornerRadius="12dp"
                             app:cardElevation="0dp"
-                            app:cardBackgroundColor="#FFF8E1"
+                            app:cardBackgroundColor="?attr/colorSurface"
                             app:strokeWidth="1dp"
-                            app:strokeColor="#FFECB3">
+                            app:strokeColor="?attr/colorOutlineVariant">
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -248,4 +248,3 @@
         app:menu="@menu/menu_admin_drawer"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
-

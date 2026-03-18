@@ -32,8 +32,6 @@ class UserProfileFragment : Fragment(R.layout.user_profile), UserDashboardObserv
     private lateinit var tvProfileStatus: TextView
     private lateinit var tvProfileDue: TextView
     private lateinit var tvProfileRetailerId: TextView
-    private lateinit var tvAutoUpiStatus: TextView
-    private lateinit var tvAutoUpiLimit: TextView
     private lateinit var btnEditProfile: MaterialButton
     private lateinit var btnLogout: MaterialButton
     private var currentCustomer: UserCustomer? = null
@@ -50,8 +48,6 @@ class UserProfileFragment : Fragment(R.layout.user_profile), UserDashboardObserv
         tvProfileStatus = view.findViewById(R.id.tvProfileStatus)
         tvProfileDue = view.findViewById(R.id.tvProfileDue)
         tvProfileRetailerId = view.findViewById(R.id.tvProfileRetailerId)
-        tvAutoUpiStatus = view.findViewById(R.id.tvAutoUpiStatus)
-        tvAutoUpiLimit = view.findViewById(R.id.tvAutoUpiLimit)
         btnEditProfile = view.findViewById(R.id.btnEditProfile)
         btnLogout = view.findViewById(R.id.btnLogout)
 
@@ -97,10 +93,6 @@ class UserProfileFragment : Fragment(R.layout.user_profile), UserDashboardObserv
         tvProfileStatus.text = "Account Status: ${customer.accountStatus ?: "Unknown"}"
         tvProfileRetailerId.text = "Retailer ID: ${customer.retailerId ?: "—"}"
         tvProfileDue.text = "Due: ${formatCurrency(customer.due)}"
-
-        val enabled = data.autoUpi?.isActive == true
-        tvAutoUpiStatus.text = if (enabled) "Auto UPI: Enabled" else "Auto UPI: Disabled"
-        tvAutoUpiLimit.text = "Limit: ${formatCurrency(data.autoUpi?.maxAmount ?: 0.0)}"
     }
 
     private fun showEditProfileDialog() {
@@ -120,6 +112,8 @@ class UserProfileFragment : Fragment(R.layout.user_profile), UserDashboardObserv
         val stateInput = dialogView.findViewById<TextInputEditText>(R.id.inputState)
         val pinInput = dialogView.findViewById<TextInputEditText>(R.id.inputPin)
         val deliverySwitch = dialogView.findViewById<SwitchMaterial>(R.id.switchDelivery)
+        val btnSave = dialogView.findViewById<MaterialButton>(R.id.btnSave)
+        val btnCancel = dialogView.findViewById<MaterialButton>(R.id.btnCancel)
 
         nameInput.setText(profile.name)
         phoneInput.setText(profile.phone)
@@ -133,50 +127,50 @@ class UserProfileFragment : Fragment(R.layout.user_profile), UserDashboardObserv
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(dialogView)
-            .setPositiveButton("Save", null)
-            .setNegativeButton("Cancel", null)
             .create()
 
-        dialog.setOnShowListener {
-            val positive = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            positive.setOnClickListener {
-                if (isUpdating) return@setOnClickListener
-                val updates = collectUpdates(
-                    nameInput,
-                    phoneInput,
-                    shopInput,
-                    flatInput,
-                    areaInput,
-                    cityInput,
-                    stateInput,
-                    pinInput,
-                    deliverySwitch,
-                    profile
-                )
-                if (updates.isEmpty()) {
-                    Toast.makeText(requireContext(), "Nothing changed.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-                isUpdating = true
-                positive.isEnabled = false
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
 
-                UserRepository.updateProfile(
-                    userId = session.getUserId(),
-                    updates = updates,
-                    onSuccess = {
-                        Toast.makeText(requireContext(), "Profile updated.", Toast.LENGTH_SHORT).show()
-                        isUpdating = false
-                        dialog.dismiss()
-                    },
-                    onError = { message ->
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                        isUpdating = false
-                        positive.isEnabled = true
-                    }
-                )
+        btnSave.setOnClickListener {
+            if (isUpdating) return@setOnClickListener
+            val updates = collectUpdates(
+                nameInput,
+                phoneInput,
+                shopInput,
+                flatInput,
+                areaInput,
+                cityInput,
+                stateInput,
+                pinInput,
+                deliverySwitch,
+                profile
+            )
+            if (updates.isEmpty()) {
+                Toast.makeText(requireContext(), "Nothing changed.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            isUpdating = true
+            btnSave.isEnabled = false
+
+            UserRepository.updateProfile(
+                userId = session.getUserId(),
+                updates = updates,
+                onSuccess = {
+                    Toast.makeText(requireContext(), "Profile updated.", Toast.LENGTH_SHORT).show()
+                    isUpdating = false
+                    dialog.dismiss()
+                },
+                onError = { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    isUpdating = false
+                    btnSave.isEnabled = true
+                }
+            )
         }
 
         dialog.show()

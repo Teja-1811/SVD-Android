@@ -1,60 +1,36 @@
-package com.svd.svdagencies.ui.user
+package com.svd.svdagencies.ui.customer
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
 import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.auth.LoginActivity
 import com.svd.svdagencies.utils.SessionManager
 
-class ContactSupportActivity : AppCompatActivity() {
+class CustomerContactSupportActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.user)
+        setContentView(R.layout.customer)
 
-        val drawerLayout = findViewById<DrawerLayout>(R.id.userDrawerLayout)
-        val navigationView = findViewById<NavigationView>(R.id.userNavigationView)
-        findViewById<ImageButton>(R.id.btnUserMenu).setOnClickListener {
+        val drawerLayout = findViewById<DrawerLayout>(R.id.customerDrawerLayout)
+        findViewById<ImageButton>(R.id.btnCustomerMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        navigationView.setCheckedItem(R.id.nav_support)
-        navigationView.setNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_terms -> {
-                    startActivity(Intent(this, TermsConditionsActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                    true
-                }
-                R.id.nav_company -> {
-                    startActivity(Intent(this, CompanyDetailsActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                    true
-                }
-                R.id.nav_support -> {
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                    true
-                }
-                else -> false
-            }
-        }
-
         val session = SessionManager(this)
-        findViewById<ImageButton>(R.id.btnUserLogout).setOnClickListener {
+        findViewById<ImageButton>(R.id.btnCustomerLogout).setOnClickListener {
             session.logout()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -62,14 +38,11 @@ class ContactSupportActivity : AppCompatActivity() {
             finish()
         }
 
-        findViewById<TextView>(R.id.tvUserToolbarTitle).text = "Contact Support"
+        findViewById<TextView>(R.id.tvCustomerToolbarTitle).text = "Contact Support"
 
-        findViewById<SwipeRefreshLayout>(R.id.userSwipeRefresh).isEnabled = false
-        findViewById<BottomNavigationView>(R.id.userBottomNav).visibility = android.view.View.GONE
-        findViewById<ProgressBar>(R.id.userProgress).visibility = android.view.View.GONE
-        findViewById<TextView>(R.id.tvUserStatusMessage).visibility = android.view.View.GONE
+        findViewById<BottomNavigationView>(R.id.customerBottomNav).visibility = View.GONE
 
-        val container = findViewById<FrameLayout>(R.id.userFragmentContainer)
+        val container = findViewById<FrameLayout>(R.id.customerFragmentContainer)
         layoutInflater.inflate(R.layout.user_contact_support, container, true)
 
         val btnCall = findViewById<MaterialButton>(R.id.btnCall)

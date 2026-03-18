@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.user.UserSubscriptionPause
 
-class SubscriptionPauseAdapter : RecyclerView.Adapter<SubscriptionPauseAdapter.PauseViewHolder>() {
+class SubscriptionPauseAdapter(
+    private val onResumeClick: ((UserSubscriptionPause) -> Unit)? = null
+) : RecyclerView.Adapter<SubscriptionPauseAdapter.PauseViewHolder>() {
 
     private val pauses = mutableListOf<UserSubscriptionPause>()
 
@@ -34,12 +36,23 @@ class SubscriptionPauseAdapter : RecyclerView.Adapter<SubscriptionPauseAdapter.P
         private val dates = view.findViewById<TextView>(R.id.tvPauseDates)
         private val reason = view.findViewById<TextView>(R.id.tvPauseReason)
         private val status = view.findViewById<TextView>(R.id.tvPauseStatus)
+        private val btnResume = view.findViewById<View>(R.id.btnResumePause) // Assuming this exists or will be added
 
         fun bind(pause: UserSubscriptionPause) {
-            plan.text = pause.plan
-            dates.text = pause.pauseDate?.substringBefore("T")?.let { "Paused on $it" } ?: "Paused date not available"
-            reason.text = pause.reason?.let { "Reason: $it" } ?: "Reason not provided"
-            status.text = pause.status
+            plan.text = "Subscription Pause"
+            dates.text = "From: ${pause.pauseDate?.substringBefore("T") ?: "N/A"}"
+            reason.text = pause.reason ?: "No reason provided"
+            
+            if (pause.isResumed) {
+                status.text = "RESUMED"
+                status.setBackgroundResource(R.drawable.bg_status_green)
+                btnResume?.visibility = View.GONE
+            } else {
+                status.text = "PAUSED"
+                status.setBackgroundResource(R.drawable.bg_status_red)
+                btnResume?.visibility = View.VISIBLE
+                btnResume?.setOnClickListener { onResumeClick?.invoke(pause) }
+            }
         }
     }
 }

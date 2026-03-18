@@ -27,7 +27,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Plan Name"
+                android:text="Subscription Pause"
                 android:textColor="@color/text_primary"
                 android:textStyle="bold"
                 android:textSize="@dimen/text_size_body" />
@@ -41,8 +41,8 @@
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
                 android:background="@drawable/bg_status_yellow"
-                android:text="Paused"
-                android:textColor="@color/black"
+                android:text="PAUSED"
+                android:textColor="@color/white"
                 android:textSize="10sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -65,6 +65,23 @@
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_size_caption"
             android:alpha="0.8" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnResumePause"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_gravity="end"
+            android:text="Resume Now"
+            android:textSize="12sp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:minHeight="32dp"
+            android:textAllCaps="false"
+            android:textColor="@color/login_red_start"
+            app:strokeColor="@color/login_red_start"
+            android:visibility="gone" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
