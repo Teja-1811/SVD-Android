@@ -87,4 +87,7 @@
     <color name="text_secondary">#757575</color>
     <color name="error_red">#D32F2F</color>
     <color name="green_status">#4CAF50</color>
+
+    <!-- Bottom Nav -->
+    <color name="bottom_nav_active_color">@color/brand_red</color>
 </resources>

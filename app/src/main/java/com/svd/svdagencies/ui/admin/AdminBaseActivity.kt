@@ -112,6 +112,12 @@ abstract class AdminBaseActivity : BaseActivity() {
                         }
                         true
                     }
+                    R.id.nav_delivery_dashboard -> {
+                        if (this !is AdminUserDeliveryActivity) {
+                            startActivity(Intent(this, AdminUserDeliveryActivity::class.java))
+                        }
+                        true
+                    }
                     R.id.nav_items -> {
                         if (this !is AdminItemsActivity) {
                             startActivity(Intent(this, AdminItemsActivity::class.java))

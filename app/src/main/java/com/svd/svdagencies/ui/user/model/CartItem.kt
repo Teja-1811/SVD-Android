@@ -7,8 +7,8 @@ data class CartItem(
     val quantity: Int
 ) {
     fun unitPrice(): Double {
-        val selling = item.sellingPriceValue
         val mrp = item.mrpValue
-        return if (selling > 0) selling else mrp
+        val selling = item.sellingPriceValue
+        return if (mrp > 0) mrp else selling
     }
 }

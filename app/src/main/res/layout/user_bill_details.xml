@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/window_background">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/brand_red"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="@color/white"
+            app:title="Bill Details"
+            app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Header Info -->
+            <TextView
+                android:id="@+id/tvDetailInvoiceNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Invoice #12345"
+                android:textColor="@color/brand_red"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDetailDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Date: 2023-10-27"
+                android:textColor="@color/textColorSecondary" />
+
+            <!-- Financial Summary Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/divider_line"
+                app:strokeWidth="1dp">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:stretchColumns="1">
+
+                    <TableRow android:paddingVertical="4dp">
+                        <TextView
+                            android:text="Opening Due: "
+                            android:textColor="@color/textColorSecondary" />
+                        <TextView
+                            android:id="@+id/tvDetOpeningDue"
+                            android:gravity="end"
+                            android:text="₹0.00"
+                            android:textColor="@color/textColorPrimary"
+                            android:textStyle="bold" />
+                    </TableRow>
+
+                    <TableRow android:paddingVertical="4dp">
+                        <TextView
+                            android:text="Bill Amount: "
+                            android:textColor="@color/textColorSecondary" />
+                        <TextView
+                            android:id="@+id/tvDetTotalAmount"
+                            android:gravity="end"
+                            android:text="₹0.00"
+                            android:textColor="@color/textColorPrimary"
+                            android:textStyle="bold" />
+                    </TableRow>
+
+                    <TableRow android:paddingVertical="4dp">
+                        <TextView
+                            android:text="Last Paid: "
+                            android:textColor="@color/textColorSecondary" />
+                        <TextView
+                            android:id="@+id/tvDetLastPaid"
+                            android:gravity="end"
+                            android:text="₹0.00"
+                            android:textColor="@color/green_status"
+                            android:textStyle="bold" />
+                    </TableRow>
+
+                    <View
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="8dp"
+                        android:background="@color/divider_line" />
+
+                    <TableRow android:paddingVertical="4dp">
+                        <TextView
+                            android:text="Current Balance: "
+                            android:textColor="@color/textColorPrimary"
+                            android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/tvDetCurrentDue"
+                            android:gravity="end"
+                            android:text="₹0.00"
+                            android:textColor="@color/brand_red"
+                            android:textStyle="bold" />
+                    </TableRow>
+                </TableLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="Items"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Items List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBillItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/user_bill_item" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDownloadPdf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/brand_red"
+                android:padding="12dp"
+                android:text="Download PDF Invoice"
+                android:textColor="@color/white"
+                app:cornerRadius="8dp"
+                app:icon="@drawable/ic_download"
+                app:iconGravity="textStart"
+                app:iconTint="@color/white" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

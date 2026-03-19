@@ -10,4 +10,10 @@
     <string name="no_account">Don\'t have account yet?</string>
     <string name="product_image">Product image</string>
     <string name="sample_product">Product name</string>
+    <string name="label_order_date">Placed on %1$s</string>
+    <string name="format_currency">₹ %.2f</string>
+    <string name="title_subscriptions">Subscriptions</string>
+    <string name="title_bills">Bills</string>
+    <string name="title_plans">Plans</string>
+    <string name="title_explore_plans">Explore Plans</string>
 </resources>

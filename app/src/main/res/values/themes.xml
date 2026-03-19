@@ -13,17 +13,18 @@
         <item name="colorSecondaryContainer">@color/white</item>
         <item name="colorOnSecondaryContainer">@color/black</item>
 
-        <item name="colorSurface">@color/surface_background</item>
+        <!-- Force Surface to White in Light Mode -->
+        <item name="colorSurface">@color/white</item>
         <item name="colorOnSurface">@color/textColorPrimary</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnSurfaceVariant">@color/textColorSecondary</item>
-        <item name="colorBackground">@color/window_background</item>
+        <item name="android:colorBackground">@color/window_background</item>
 
-        <item name="colorSurfaceContainer">@color/surface_background</item>
-        <item name="colorSurfaceContainerHigh">@color/surface_background</item>
-        <item name="colorSurfaceContainerHighest">@color/surface_background</item>
-        <item name="colorSurfaceContainerLow">@color/surface_background</item>
-        <item name="colorSurfaceContainerLowest">@color/surface_background</item>
+        <item name="colorSurfaceContainer">@color/white</item>
+        <item name="colorSurfaceContainerHigh">@color/white</item>
+        <item name="colorSurfaceContainerHighest">@color/white</item>
+        <item name="colorSurfaceContainerLow">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/white</item>
 
         <!-- Status Bar -->
         <item name="android:statusBarColor">@color/brand_red</item>
@@ -32,42 +33,47 @@
         <!-- Window Background -->
         <item name="android:windowBackground">@color/window_background</item>
 
-        <!-- Material Card Styling -->
+        <!-- Material Component Styles -->
         <item name="materialCardViewStyle">@style/Widget.App.CardView</item>
-
-        <!-- Navigation View Styling -->
-        <item name="navigationViewStyle">@style/Widget.App.NavigationView</item>
-
-        <!-- Bottom Navigation Styling -->
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-
-        <!-- Dialog Styling -->
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Elevated">
-        <item name="cardBackgroundColor">@color/card_background</item>
-        <item name="cardElevation">2dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="cardElevation">0dp</item>
         <item name="strokeWidth">1dp</item>
         <item name="strokeColor">@color/card_stroke_color</item>
     </style>
 
     <style name="Widget.App.NavigationView" parent="Widget.Material3.NavigationView">
-        <item name="backgroundTint">@color/drawer_background</item>
+        <item name="backgroundTint">?attr/colorSurface</item>
         <item name="elevation">0dp</item>
         <item name="itemTextColor">@color/drawer_nav_item_colors</item>
         <item name="itemIconTint">@color/drawer_nav_icon_colors</item>
     </style>
 
     <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
-        <item name="backgroundTint">@color/surface_background</item>
-        <item name="itemTextColor">@color/textColorSecondary</item>
-        <item name="itemIconTint">@color/textColorSecondary</item>
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="backgroundTint">?attr/colorSurface</item>
+        <item name="elevation">0dp</item>
+        <item name="itemTextColor">@color/bottom_nav_selector</item>
+        <item name="itemIconTint">@color/bottom_nav_selector</item>
+        <item name="itemRippleColor">@color/brand_red</item>
     </style>
 
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-        <item name="colorSurface">@color/surface_background</item>
-        <!-- Use transparent windowBackground to fix pinkish background -->
+        <!-- Use explicit color to avoid resolution issues, matching night mode fix -->
+        <item name="colorSurface">@color/white</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Widget.App.BottomSheet</item>
+    </style>
+
+    <style name="Widget.App.BottomSheet" parent="Widget.Material3.BottomSheet">
+        <item name="backgroundTint">?attr/colorSurface</item>
     </style>
 </resources>

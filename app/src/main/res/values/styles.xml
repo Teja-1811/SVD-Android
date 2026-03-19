@@ -5,13 +5,25 @@
         <item name="colorPrimary">@color/brand_red</item>
         <item name="colorPrimaryVariant">@color/brand_red_dark</item>
         <item name="colorOnPrimary">@color/white</item>
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/icon_blue</item>
         <item name="colorSecondaryVariant">@color/icon_blue</item>
         <item name="colorOnSecondary">@color/black</item>
+
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <!-- Required Material attributes to avoid crashes in components -->
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/black</item>
     </style>
+
+    <style name="Theme.SVDAgencies.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.SVDAgencies.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="BottomNavigationView.Active" parent="@style/TextAppearance.AppCompat.Caption">
         <item name="android:textSize">11sp</item>

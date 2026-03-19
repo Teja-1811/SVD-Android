@@ -55,7 +55,7 @@ class UserCartAdapter(
         fun bind(cartItem: CartItem) {
             val item = cartItem.item
             val available = item.stock_quantity ?: 0
-            val unitPrice = if (item.sellingPriceValue > 0) item.sellingPriceValue else item.mrpValue
+            val unitPrice = cartItem.unitPrice()
 
             tvProductName.text = item.name
             tvPrice.text = "\u20B9${String.format("%.2f", unitPrice)}"

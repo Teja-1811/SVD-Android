@@ -22,6 +22,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.ui.user.adapter.ProductSliderAdapter
 import com.svd.svdagencies.ui.user.adapter.UserCartAdapter
+import com.svd.svdagencies.ui.user.adapter.PendingOrdersAdapter
 import com.svd.svdagencies.utils.SessionManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,12 +31,14 @@ import java.util.Locale
 import java.time.LocalDate
 import android.app.DatePickerDialog
 import androidx.lifecycle.Observer
+import android.widget.ProgressBar
 
 class UserCartFragment : Fragment(R.layout.user_cart) {
 
     private val cartViewModel: UserCartViewModel by activityViewModels()
     private lateinit var session: SessionManager
     private lateinit var tvEmptyCart: TextView
+    private lateinit var tvNoPendingOrders: TextView
     private lateinit var tvCartTotal: TextView
     private lateinit var btnCheckout: MaterialButton
     private lateinit var switchPrebook: MaterialSwitch
@@ -43,6 +46,20 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
     private lateinit var cardCartSummary: MaterialCardView
     private lateinit var chipGroupCartCategories: ChipGroup
     private lateinit var rvCartProducts: RecyclerView
+    private lateinit var rvPendingOrders: RecyclerView
+    private lateinit var pbPendingOrders: ProgressBar
+    private val pendingOrdersAdapter = PendingOrdersAdapter(
+        onUpdate = { orderId, items, deliveryDate ->
+            cartViewModel.updatePendingOrder(orderId, items, deliveryDate) { success, message ->
+                showToast(message)
+            }
+        },
+        onDelete = { orderId ->
+            cartViewModel.deletePendingOrder(orderId) { success, message ->
+                showToast(message)
+            }
+        }
+    )
     private val productAdapter = ProductSliderAdapter(
         onAddToCart = { item ->
             cartViewModel.addToCart(item)
@@ -64,6 +81,7 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
 
         session = SessionManager(requireContext())
         tvEmptyCart = view.findViewById(R.id.tvEmptyCart)
+        tvNoPendingOrders = view.findViewById(R.id.tvNoPendingOrders)
         tvCartTotal = view.findViewById(R.id.tvCartTotal)
         btnCheckout = view.findViewById(R.id.btnCheckout)
         switchPrebook = view.findViewById(R.id.switchPrebook)
@@ -71,9 +89,14 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
         cardCartSummary = view.findViewById(R.id.cardCartSummary)
         chipGroupCartCategories = view.findViewById(R.id.chipGroupCartCategories)
         rvCartProducts = view.findViewById(R.id.rvCartProducts)
+        rvPendingOrders = view.findViewById(R.id.rvPendingOrders)
+        pbPendingOrders = view.findViewById(R.id.pbPendingOrders)
 
         rvCartProducts.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         rvCartProducts.adapter = productAdapter
+
+        rvPendingOrders.layoutManager = LinearLayoutManager(requireContext())
+        rvPendingOrders.adapter = pendingOrdersAdapter
 
         cartViewModel.setAllowOutOfStock(false)
 
@@ -92,10 +115,6 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
             btnCheckout.text = if (count > 0) "Checkout ($count)" else "Checkout"
         }
 
-        cartViewModel.itemCount.observe(viewLifecycleOwner) { count ->
-            btnCheckout.text = if (count > 0) "Checkout ($count)" else "Checkout"
-        }
-
         btnCheckout.setOnClickListener { showCheckoutModal() }
 
         switchPrebook.setOnCheckedChangeListener { _, isChecked ->
@@ -106,6 +125,8 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
         etPrebookDate.setOnClickListener { showDatePicker() }
 
         loadCategories()
+        observePendingOrders()
+        cartViewModel.loadPendingOrders()
     }
 
     private fun loadCategories() {
@@ -164,7 +185,7 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
 
     private fun togglePrebookMode(enabled: Boolean) {
         etPrebookDate.visibility = if (enabled) View.VISIBLE else View.GONE
-        if (enabled && prebookDate == null) showDatePicker()
+        if (enabled && prebookDate == null) showDatePicker() else if (!enabled) prebookDate = null
         productAdapter.setAllowOutOfStock(enabled)
         cartViewModel.setAllowOutOfStock(enabled)
         checkoutAdapter?.setAllowOutOfStock(enabled)
@@ -193,7 +214,8 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
         checkoutObserver?.let { cartViewModel.cartItems.removeObserver(it) }
         checkoutDialog?.dismiss()
 
-        val dialog = BottomSheetDialog(requireContext(), com.google.android.material.R.style.Theme_Material3_Light_BottomSheetDialog)
+        // Use the app's custom theme to ensure surfaceTint is removed (fixing the pink background)
+        val dialog = BottomSheetDialog(requireContext(), R.style.ThemeOverlay_App_BottomSheetDialog)
         val view = layoutInflater.inflate(R.layout.user_checkout_bottom_sheet, null)
         val rv = view.findViewById<RecyclerView>(R.id.rvCheckoutSummary)
         val btnConfirm = view.findViewById<MaterialButton>(R.id.btnConfirmCheckout)
@@ -216,8 +238,21 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
         cartViewModel.cartItems.observe(viewLifecycleOwner, observer)
 
         btnConfirm.setOnClickListener {
-            showToast("Order confirmed")
-            dialog.dismiss()
+            val deliveryDate = if (prebookEnabled) {
+                prebookDate?.toString() ?: run {
+                    showToast("Select a delivery date for prebook")
+                    return@setOnClickListener
+                }
+            } else null
+
+            btnConfirm.isEnabled = false
+            btnConfirm.text = "Processing..."
+            cartViewModel.placeOrder(cartViewModel.cartItems.value.orEmpty(), deliveryDate) { success, message ->
+                showToast(message)
+                btnConfirm.isEnabled = true
+                btnConfirm.text = "Confirm Order"
+                if (success) dialog.dismiss()
+            }
         }
 
         btnClose.setOnClickListener { dialog.dismiss() }
@@ -233,6 +268,23 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
             checkoutObserver = null
             checkoutAdapter = null
             checkoutDialog = null
+        }
+    }
+
+    private fun observePendingOrders() {
+        cartViewModel.pendingOrders.observe(viewLifecycleOwner) { orders ->
+            val hasOrders = orders.isNotEmpty()
+            rvPendingOrders.visibility = if (hasOrders) View.VISIBLE else View.GONE
+            tvNoPendingOrders.visibility = if (hasOrders) View.GONE else View.VISIBLE
+            pendingOrdersAdapter.submitList(orders)
+        }
+
+        cartViewModel.pendingLoading.observe(viewLifecycleOwner) { loading ->
+            pbPendingOrders.visibility = if (loading) View.VISIBLE else View.GONE
+        }
+
+        cartViewModel.pendingError.observe(viewLifecycleOwner) { error ->
+            if (!error.isNullOrBlank()) showToast(error)
         }
     }
 }

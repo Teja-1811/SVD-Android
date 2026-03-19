@@ -19,6 +19,8 @@ object LoadingOverlayManager {
 
     private val overlays = WeakHashMap<Activity, FrameLayout>()
     private val visibleCounts = WeakHashMap<Activity, Int>()
+    private const val BLUR_RADIUS = 24f
+    private const val DIMMED_ALPHA = 0.55f
 
     fun show(anchor: View) {
         resolveActivity(anchor.context)?.let(::show)
@@ -98,14 +100,15 @@ object LoadingOverlayManager {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 child.setRenderEffect(
                     if (enabled) {
-                        RenderEffect.createBlurEffect(18f, 18f, Shader.TileMode.CLAMP)
+                        RenderEffect.createBlurEffect(BLUR_RADIUS, BLUR_RADIUS, Shader.TileMode.CLAMP)
                     } else {
                         null
                     }
                 )
             }
 
-            child.alpha = if (enabled) 0.72f else 1f
+            child.alpha = if (enabled) DIMMED_ALPHA else 1f
+            child.isEnabled = !enabled
         }
     }
 

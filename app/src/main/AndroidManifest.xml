@@ -66,6 +66,7 @@
         <activity android:name=".ui.user.TermsConditionsActivity"/>
         <activity android:name=".ui.user.CompanyDetailsActivity"/>
         <activity android:name=".ui.user.ContactSupportActivity"/>
+        <activity android:name=".ui.user.UserBillDetailActivity" />
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>

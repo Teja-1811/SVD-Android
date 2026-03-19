@@ -17,7 +17,7 @@
         <item name="colorOnSurface">@color/textColorPrimary</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
         <item name="colorOnSurfaceVariant">@color/textColorSecondary</item>
-        <item name="colorBackground">@color/window_background</item>
+        <item name="android:colorBackground">@color/window_background</item>
 
         <item name="colorSurfaceContainer">@color/surface_background</item>
         <item name="colorSurfaceContainerHigh">@color/surface_background</item>
@@ -47,6 +47,7 @@
 
     <!-- Dialog Styling for Night Mode -->
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <!-- Use explicit color to avoid resolution issues -->
         <item name="colorSurface">@color/surface_background</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>

@@ -24,7 +24,6 @@ class AppSwipeRefreshLayout @JvmOverloads constructor(
                 overlayVisible = true
                 LoadingOverlayManager.show(this)
             }
-            post { super.setRefreshing(false) }
         } else if (overlayVisible) {
             overlayVisible = false
             LoadingOverlayManager.hide(this)

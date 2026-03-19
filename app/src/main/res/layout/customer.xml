@@ -95,17 +95,23 @@
             android:id="@+id/customerBottomNav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/surface_background"
-            app:backgroundTint="@color/surface_background"
-            app:elevation="8dp"
+            style="@style/Widget.App.BottomNavigationView"
+            android:background="?attr/colorSurface"
+            app:backgroundTint="?attr/colorSurface"
+            app:elevation="0dp"
             app:itemIconTint="@color/bottom_nav_selector"
             app:itemTextColor="@color/bottom_nav_selector"
             app:labelVisibilityMode="labeled"
             app:itemIconSize="20dp"
-            app:itemTextAppearanceInactive="@style/BottomNavigationView.Inactive"
-            app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
             app:menu="@menu/menu_customer_bottom"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Add a thin divider to compensate for 0dp elevation -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_line"
+            app:layout_constraintBottom_toTopOf="@id/customerBottomNav" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

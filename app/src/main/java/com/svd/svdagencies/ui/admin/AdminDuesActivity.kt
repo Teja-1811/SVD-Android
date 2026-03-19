@@ -96,9 +96,11 @@ class AdminDuesActivity : AdminBaseActivity() {
         }, currentYear, currentMonth - 1, 1).show()
     }
 
-    private fun loadPaymentsDashboard(year: Int, month: Int) {
+    private fun loadPaymentsDashboard(year: Int, month: Int, showLoader: Boolean = true) {
         lifecycleScope.launch {
-            showScreenLoading()
+            if (showLoader) {
+                showScreenLoading()
+            }
             try {
                 val response = ApiClient.adminPaymentsApi.getPaymentsDashboard(year, month)
                 tvTotalInvoice.text = "₹${response.grand_total_invoice}"
@@ -116,7 +118,9 @@ class AdminDuesActivity : AdminBaseActivity() {
                 ).show()
             } finally {
                 btnSaveAll.isEnabled = true
-                hideScreenLoading()
+                if (showLoader) {
+                    hideScreenLoading()
+                }
             }
         }
     }
@@ -131,7 +135,8 @@ class AdminDuesActivity : AdminBaseActivity() {
             try {
                 ApiClient.adminPaymentsApi.saveDailyPayments(SaveDailyPaymentsRequest(currentYear, currentMonth, dataMap))
                 Toast.makeText(this@AdminDuesActivity, "Saved Successfully!", Toast.LENGTH_SHORT).show()
-                loadPaymentsDashboard(currentYear, currentMonth)
+                hideScreenLoading()
+                loadPaymentsDashboard(currentYear, currentMonth, showLoader = false)
             } catch (e: Exception) {
                 btnSaveAll.isEnabled = true
                 hideScreenLoading()

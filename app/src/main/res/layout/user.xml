@@ -35,8 +35,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_marginTop="15dp">
+                    android:layout_height="?attr/actionBarSize">
 
                     <ImageButton
                         android:id="@+id/btnUserMenu"
@@ -54,7 +53,7 @@
                         android:id="@+id/tvUserToolbarTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="SVD Agency"
+                        android:text="Home"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold"
@@ -82,7 +81,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <!-- SWIPE + FRAGMENT HOLDER -->
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout
             android:id="@+id/userSwipeRefresh"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -98,7 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
 
         <!-- GLOBAL LOADING / ERROR UI -->
         <ProgressBar
@@ -132,17 +131,17 @@
             android:id="@+id/userBottomNav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorSurface"
-            app:backgroundTint="?attr/colorSurface"
-            app:elevation="8dp"
-            app:itemIconTint="@color/bottom_nav_selector"
-            app:itemTextColor="@color/bottom_nav_selector"
-            app:labelVisibilityMode="labeled"
-            app:itemIconSize="20dp"
-            app:itemTextAppearanceInactive="@style/BottomNavigationView.Inactive"
-            app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
+            style="@style/Widget.App.BottomNavigationView"
             app:menu="@menu/menu_user_bottom"
+            app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Add a thin divider to compensate for 0dp elevation -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_line"
+            app:layout_constraintBottom_toTopOf="@id/userBottomNav" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -157,6 +156,6 @@
         app:menu="@menu/menu_customer_drawer"
         app:itemTextColor="@color/drawer_nav_item_colors"
         app:itemIconTint="@color/drawer_nav_icon_colors"
-        android:background="@color/drawer_background" />
+        android:background="?attr/colorSurface" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

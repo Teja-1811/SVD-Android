@@ -4,8 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Items.AdminItem
 import com.svd.svdagencies.ui.user.model.CartItem
+import com.svd.svdagencies.data.model.user.PendingOrder
+import com.svd.svdagencies.data.model.user.PendingOrderItem
+import com.svd.svdagencies.data.model.user.CreateOrderRequest
+import com.svd.svdagencies.data.model.user.OrderItemPayload
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 class UserCartViewModel : ViewModel() {
@@ -18,6 +25,18 @@ class UserCartViewModel : ViewModel() {
 
     private val _itemCount = MediatorLiveData<Int>().apply { value = 0 }
     val itemCount: LiveData<Int> = _itemCount
+
+    private val _pendingOrders = MutableLiveData<List<PendingOrder>>(emptyList())
+    val pendingOrders: LiveData<List<PendingOrder>> = _pendingOrders
+
+    private val _pendingLoading = MutableLiveData(false)
+    val pendingLoading: LiveData<Boolean> = _pendingLoading
+
+    private val _pendingError = MutableLiveData<String?>(null)
+    val pendingError: LiveData<String?> = _pendingError
+
+    private val _orderActionMessage = MutableLiveData<String?>()
+    val orderActionMessage: LiveData<String?> = _orderActionMessage
 
     private var allowOutOfStock: Boolean = false
 
@@ -79,9 +98,108 @@ class UserCartViewModel : ViewModel() {
         }
     }
 
-    private fun CartItem.unitPrice(): Double {
-        val selling = item.sellingPriceValue
-        val mrp = item.mrpValue
-        return if (selling > 0) selling else mrp
+    fun clearCart() {
+        _cartItems.value = emptyList()
+    }
+
+    fun loadPendingOrders() {
+        viewModelScope.launch {
+            _pendingLoading.value = true
+            try {
+                val response = ApiClient.userApi.getPendingOrders()
+                _pendingOrders.value = response.orders
+                _pendingError.value = null
+            } catch (t: Throwable) {
+                _pendingError.value = t.localizedMessage ?: "Unable to load pending orders"
+            } finally {
+                _pendingLoading.value = false
+            }
+        }
+    }
+
+    fun placeOrder(
+        items: List<CartItem>,
+        deliveryDate: String?,
+        onResult: (success: Boolean, message: String) -> Unit
+    ) {
+        if (items.isEmpty()) {
+            onResult(false, "Your cart is empty")
+            return
+        }
+        val payload = CreateOrderRequest(
+            items = items.map { OrderItemPayload(it.item.id, it.quantity, it.unitPrice()) },
+            delivery_date = deliveryDate
+        )
+
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.userApi.createOrder(payload)
+                val success = response.success
+                val message = response.message ?: if (success) "Order saved successfully" else "Order failed"
+                if (success) {
+                    clearCart()
+                    loadPendingOrders()
+                }
+                _orderActionMessage.value = message
+                onResult(success, message)
+            } catch (t: Throwable) {
+                val msg = t.localizedMessage ?: "Unable to place order"
+                _orderActionMessage.value = msg
+                onResult(false, msg)
+            }
+        }
+    }
+
+    fun updatePendingOrder(
+        orderId: Int,
+        items: List<PendingOrderItem>,
+        deliveryDate: String?,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        if (items.isEmpty()) {
+            onResult(false, "Add at least one item")
+            return
+        }
+
+        val payload = CreateOrderRequest(
+            items = items.map { OrderItemPayload(it.item_id, it.quantity, it.price) },
+            delivery_date = deliveryDate
+        )
+
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.userApi.editOrder(orderId, payload)
+                val success = response.success
+                val message = response.message ?: if (success) "Order updated" else "Update failed"
+                if (success) loadPendingOrders()
+                _orderActionMessage.value = message
+                onResult(success, message)
+            } catch (t: Throwable) {
+                val msg = t.localizedMessage ?: "Unable to update order"
+                _orderActionMessage.value = msg
+                onResult(false, msg)
+            }
+        }
+    }
+
+    fun deletePendingOrder(
+        orderId: Int,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.userApi.deleteOrder(orderId)
+                val success = (response["success"] as? Boolean) ?: false
+                val message = (response["message"] as? String)
+                    ?: if (success) "Order deleted" else "Deletion failed"
+                if (success) loadPendingOrders()
+                _orderActionMessage.value = message
+                onResult(success, message)
+            } catch (t: Throwable) {
+                val msg = t.localizedMessage ?: "Unable to delete order"
+                _orderActionMessage.value = msg
+                onResult(false, msg)
+            }
+        }
     }
 }

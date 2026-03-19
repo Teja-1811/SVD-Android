@@ -2,7 +2,6 @@ package com.svd.svdagencies.ui.user
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -102,7 +101,7 @@ class UserMainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.nav_home -> loadFragment(UserHomeFragment(), "SVD Agency")
                 R.id.nav_subscription -> loadFragment(UserSubscriptionFragment(), "Subscriptions")
-                R.id.nav_plans -> loadFragment(UserPlansFragment(), "Explore Plans")
+                R.id.nav_bills -> loadFragment(UserBillsFragment(), "My Bills")
                 R.id.nav_cart -> loadFragment(UserCartFragment(), "Cart")
                 R.id.nav_profile -> loadFragment(UserProfileFragment(), "My Profile")
             }

@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,10 +19,12 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.user.UserDashboardResponse
+import com.svd.svdagencies.data.model.user.UserPlan
 import com.svd.svdagencies.data.model.user.UserSubscription
 import com.svd.svdagencies.data.repository.UserDashboardObserver
 import com.svd.svdagencies.data.repository.UserRepository
 import com.svd.svdagencies.ui.user.adapter.SubscriptionItemAdapter
+import com.svd.svdagencies.ui.user.adapter.UserPlanAdapter
 import com.svd.svdagencies.utils.SessionManager
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -49,6 +52,12 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
     private lateinit var btnPauseSubscription: MaterialButton
     private lateinit var btnResumeSubscriptionCard: MaterialButton
     private lateinit var progressBar: View
+    
+    // Available Plans
+    private lateinit var rvAvailablePlans: RecyclerView
+    private lateinit var progressAvailablePlans: ProgressBar
+    private lateinit var availablePlansAdapter: UserPlanAdapter
+
     private var isLoading = false
     
     // No sub / Paused view elements
@@ -78,7 +87,6 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
         tvDaysRemaining = view.findViewById(R.id.tvDaysRemaining)
         subProgressBar = view.findViewById(R.id.subProgressBar)
         
-        // Use IDs from layout instead of .parent
         layoutDates = view.findViewById(R.id.layoutSubscriptionDates)
         layoutProgress = view.findViewById(R.id.layoutSubscriptionProgress)
         
@@ -94,6 +102,15 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
         tvNoSubMsg = view.findViewById(R.id.tvNoSubMsg)
         btnExplorePlans = view.findViewById(R.id.btnExplorePlans)
         btnResumeSubscription = view.findViewById(R.id.btnResumeSubscription)
+
+        // Available Plans Setup
+        rvAvailablePlans = view.findViewById(R.id.rvAvailablePlans)
+        progressAvailablePlans = view.findViewById(R.id.progressAvailablePlans)
+        availablePlansAdapter = UserPlanAdapter(
+            onViewPlan = { plan -> showPlanDetails(plan) },
+            onActivatePlan = { plan -> activatePlan(plan) }
+        )
+        rvAvailablePlans.adapter = availablePlansAdapter
 
         rvSubItems.adapter = itemsAdapter
 
@@ -111,10 +128,12 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
 
         swipeRefresh.setOnRefreshListener {
             loadSubscriptionData()
+            loadAvailablePlans()
         }
 
         // Initial load
         loadSubscriptionData()
+        loadAvailablePlans()
     }
 
     private fun loadSubscriptionData() {
@@ -143,6 +162,24 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
         )
     }
 
+    private fun loadAvailablePlans() {
+        progressAvailablePlans.visibility = View.VISIBLE
+        rvAvailablePlans.visibility = View.GONE
+
+        UserRepository.fetchPlans(
+            onSuccess = { plans ->
+                progressAvailablePlans.visibility = View.GONE
+                if (plans.isNotEmpty()) {
+                    availablePlansAdapter.submitList(plans)
+                    rvAvailablePlans.visibility = View.VISIBLE
+                }
+            },
+            onError = { _ ->
+                progressAvailablePlans.visibility = View.GONE
+            }
+        )
+    }
+
     override fun onStart() {
         super.onStart()
         UserRepository.registerObserver(this)
@@ -154,12 +191,10 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
     }
 
     override fun onDashboardUpdated(data: UserDashboardResponse) {
-        // When dashboard updates (e.g. after pause/resume), refresh data
         loadSubscriptionData()
     }
 
     private fun updateUI(subscription: UserSubscription, isPaused: Boolean, isActive: Boolean) {
-        // Bind common plan info first so paused state still shows details
         tvSubPlanName.text = subscription.planName ?: "Active Plan"
         tvPlanType.text = subscription.description ?: "Subscription Details"
 
@@ -168,7 +203,6 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
         itemsAdapter.submitList(subscription.items)
         tvSubPrice.text = formatCurrency(subscription.price)
 
-        // Dates/progress if present
         if (subscription.startDate != null && subscription.endDate != null) {
             layoutDates.visibility = View.VISIBLE
             layoutProgress.visibility = View.VISIBLE
@@ -246,7 +280,6 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
                 reason = reason,
                 onSuccess = {
                     Toast.makeText(requireContext(), "Subscription paused", Toast.LENGTH_SHORT).show()
-                    // Refresh dashboard first to update pause status, then reload subscription
                     UserRepository.fetchDashboard(
                         userId = session.getUserId(),
                         onSuccess = { loadSubscriptionData() },
@@ -316,10 +349,45 @@ class UserSubscriptionFragment : Fragment(R.layout.user_subscription), UserDashb
     private fun setLoading(state: Boolean) {
         isLoading = state
         progressBar.visibility = if (state) View.VISIBLE else View.GONE
-        // keep pull-to-refresh spinner off to avoid multiple loaders
         if (!state) swipeRefresh.isRefreshing = false
         btnPauseSubscription.isEnabled = !state
         btnResumeSubscriptionCard.isEnabled = !state
         btnResumeSubscription.isEnabled = !state
+    }
+
+    private fun showPlanDetails(plan: UserPlan) {
+        val dialogView = layoutInflater.inflate(R.layout.user_plan_details, null)
+        val tvName = dialogView.findViewById<TextView>(R.id.tvDialogPlanName)
+        val tvPrice = dialogView.findViewById<TextView>(R.id.tvDialogPlanPrice)
+        val tvDesc = dialogView.findViewById<TextView>(R.id.tvDialogPlanDescription)
+        val tvItems = dialogView.findViewById<TextView>(R.id.tvDialogPlanItems)
+        val btnClose = dialogView.findViewById<MaterialButton>(R.id.btnDialogClose)
+
+        tvName.text = plan.name
+        tvPrice.text = "Price: \u20B9 ${plan.price.toInt()} / month"
+        tvDesc.text = plan.description ?: "No description available."
+        
+        val itemsSb = StringBuilder()
+        if (plan.items.isNullOrEmpty()) {
+            itemsSb.append("No items listed for this plan.")
+        } else {
+            plan.items.forEach { itemsSb.appendLine("• ${it.itemName}  × ${formatQuantity(it.quantity.toDouble())}") }
+        }
+        tvItems.text = itemsSb.toString().trim()
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        btnClose.setOnClickListener { dialog.dismiss() }
+
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+        dialog.show()
+    }
+
+    private fun activatePlan(plan: UserPlan) {
+        Toast.makeText(requireContext(), "Activation for ${plan.name} coming soon.", Toast.LENGTH_SHORT).show()
     }
 }

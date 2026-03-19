@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.svd.svdagencies.utils.AppSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeRefresh"
@@ -334,6 +334,50 @@
                         android:visibility="gone" />
                 </LinearLayout>
 
+                <!-- AVAILABLE PLANS SECTION -->
+                <LinearLayout
+                    android:id="@+id/layoutAvailablePlans"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xlarge"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Available Plans"
+                        android:textColor="@color/text_primary"
+                        android:textSize="@dimen/text_size_xlarge"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_tiny"
+                        android:text="Choose a plan that fits your needs"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_caption" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvAvailablePlans"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:nestedScrollingEnabled="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="3"
+                        tools:listitem="@layout/user_plan_card" />
+
+                    <ProgressBar
+                        android:id="@+id/progressAvailablePlans"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/spacing_large"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -346,4 +390,4 @@
             android:visibility="gone" />
 
     </FrameLayout>
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</com.svd.svdagencies.utils.AppSwipeRefreshLayout>

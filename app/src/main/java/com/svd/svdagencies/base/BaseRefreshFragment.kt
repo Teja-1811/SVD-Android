@@ -16,19 +16,24 @@ abstract class BaseRefreshFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        swipeRefresh = view.findViewById(R.id.swipeRefresh)
-
-        RefreshManager.setupRefresh(swipeRefresh) {
-            refreshData()
+        // Try to find swipeRefresh in the current view
+        val sr = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefresh)
+        if (sr != null) {
+            swipeRefresh = sr
+            RefreshManager.setupRefresh(swipeRefresh) {
+                refreshData()
+            }
+            // Load data when screen opens
+            RefreshManager.startRefresh(swipeRefresh)
         }
-
-        // Load data when screen opens
-        RefreshManager.startRefresh(swipeRefresh)
+        
         loadData()
     }
 
     protected fun stopRefresh() {
-        RefreshManager.stopRefresh(swipeRefresh)
+        if (::swipeRefresh.isInitialized) {
+            RefreshManager.stopRefresh(swipeRefresh)
+        }
     }
 
     abstract fun loadData()

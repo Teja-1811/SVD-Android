@@ -11,14 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/brand_red"
-            app:elevation="0dp">
-            <include layout="@layout/admin_toolbar" />
-        </com.google.android.material.appbar.AppBarLayout>
+        <include layout="@layout/admin_toolbar" />
 
         <com.svd.svdagencies.utils.AppSwipeRefreshLayout
             android:id="@+id/swipeRefresh"
@@ -35,13 +28,208 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_medium">
+                    android:padding="16dp">
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
-                        android:layout_marginBottom="@dimen/spacing_medium"
+                        app:cardBackgroundColor="@color/brand_red"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="20dp">
+
+                            <TextView
+                                android:id="@+id/tvTodayLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="20 Mar 2026"
+                                android:textColor="#CCFFFFFF"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                tools:text="20 Mar 2026" />
+
+                            <TextView
+                                android:id="@+id/tvHeadline"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="Delivery command center"
+                                android:textColor="@color/white"
+                                android:textSize="24sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvSubHeadline"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:text="Track pending drops, completed handoffs, and subscription billing from one admin view."
+                                android:textColor="#E6FFFFFF"
+                                android:textSize="13sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="18dp"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_weight="1"
+                                    app:cardBackgroundColor="#14FFFFFF"
+                                    app:cardCornerRadius="18dp"
+                                    app:cardElevation="0dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:padding="14dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Pending"
+                                            android:textColor="#CCFFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/tvPendingCount"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="6dp"
+                                            android:text="0"
+                                            android:textColor="@color/white"
+                                            android:textSize="22sp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_weight="1"
+                                    app:cardBackgroundColor="#14FFFFFF"
+                                    app:cardCornerRadius="18dp"
+                                    app:cardElevation="0dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:padding="14dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Delivered"
+                                            android:textColor="#CCFFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/tvDeliveredCount"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="6dp"
+                                            android:text="0"
+                                            android:textColor="@color/white"
+                                            android:textSize="22sp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_weight="1"
+                                    app:cardBackgroundColor="#14FFFFFF"
+                                    app:cardCornerRadius="18dp"
+                                    app:cardElevation="0dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:padding="14dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Orders"
+                                            android:textColor="#CCFFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/tvOrdersCount"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="6dp"
+                                            android:text="0"
+                                            android:textColor="@color/white"
+                                            android:textSize="22sp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_weight="1"
+                                    app:cardBackgroundColor="#14FFFFFF"
+                                    app:cardCornerRadius="18dp"
+                                    app:cardElevation="0dp">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="vertical"
+                                        android:padding="14dp">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Subscriptions"
+                                            android:textColor="#CCFFFFFF"
+                                            android:textSize="12sp" />
+
+                                        <TextView
+                                            android:id="@+id/tvSubscriptionsCount"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="6dp"
+                                            android:text="0"
+                                            android:textColor="@color/white"
+                                            android:textSize="22sp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+                                </com.google.android.material.card.MaterialCardView>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         app:cardBackgroundColor="@color/card_background"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
@@ -52,72 +240,208 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="@dimen/spacing_large">
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Filters"
+                                android:textColor="@color/textColorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
                             <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Search by customer, phone or plan"
-                                app:boxBackgroundColor="@color/editTextBackground"
-                                app:boxBackgroundMode="filled"
-                                app:boxCornerRadiusBottomEnd="18dp"
-                                app:boxCornerRadiusBottomStart="18dp"
-                                app:boxCornerRadiusTopEnd="18dp"
-                                app:boxCornerRadiusTopStart="18dp"
-                                app:boxStrokeColor="@color/editTextStroke"
-                                app:endIconMode="custom"
-                                app:endIconDrawable="@drawable/ic_search"
-                                app:endIconTint="@color/textColorSecondary"
-                                app:hintTextColor="@color/textColorSecondary">
+                                android:layout_marginTop="12dp"
+                                android:hint="Search customer, phone, order or address"
+                                app:boxStrokeColor="@color/editTextStroke">
 
                                 <com.google.android.material.textfield.TextInputEditText
-                                    android:id="@+id/etSearchDelivery"
+                                    android:id="@+id/etSearchFilter"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:inputType="text"
-                                    android:maxLines="1"
-                                    android:paddingTop="14dp"
-                                    android:paddingBottom="14dp"
-                                    android:textColor="@color/editTextColor"
-                                    android:textColorHint="@color/textColorSecondary" />
+                                    android:maxLines="1" />
                             </com.google.android.material.textfield.TextInputLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:hint="Kind"
+                                    app:boxStrokeColor="@color/editTextStroke">
+
+                                    <AutoCompleteTextView
+                                        android:id="@+id/autoKindFilter"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="none" />
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:layout_weight="1"
+                                    android:hint="Status"
+                                    app:boxStrokeColor="@color/editTextStroke">
+
+                                    <AutoCompleteTextView
+                                        android:id="@+id/autoStatusFilter"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="none" />
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnDateFilter"
+                                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Any date"
+                                    android:textAllCaps="false" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnClearDate"
+                                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:text="Clear date"
+                                    android:textAllCaps="false" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:baselineAligned="false"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnApplyFilters"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Apply"
+                                    android:textAllCaps="false" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnResetFilters"
+                                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="12dp"
+                                    android:layout_weight="1"
+                                    android:text="Reset"
+                                    android:textAllCaps="false" />
+                            </LinearLayout>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvTodayDeliveries"
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tabLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@android:color/transparent"
+                        app:tabIndicator="@android:color/transparent"
+                        app:tabRippleColor="@android:color/transparent"
+                        app:tabSelectedTextColor="@color/brand_red"
+                        app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Button"
+                        app:tabTextColor="@color/textColorSecondary">
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pending" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Delivered" />
+                    </com.google.android.material.tabs.TabLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvDeliveries"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:clipToPadding="false"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/spacing_large"
-                        tools:listitem="@layout/admin_delivery_row" />
+                        android:paddingBottom="24dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_admin_delivery_dashboard" />
 
-                    <TextView
-                        android:id="@+id/tvEmptyState"
+                    <LinearLayout
+                        android:id="@+id/layoutEmpty"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:padding="32dp"
-                        android:text="No deliveries found for today"
-                        android:textColor="@color/textColorSecondary"
-                        android:visibility="gone" />
+                        android:orientation="vertical"
+                        android:padding="24dp"
+                        android:visibility="gone">
 
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/ic_delivery_dashboard"
+                            app:tint="@color/gray400" />
+
+                        <TextView
+                            android:id="@+id/tvEmptyTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="Nothing pending"
+                            android:textColor="@color/textColorPrimary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvEmptyMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:text="Fresh delivery updates will appear here."
+                            android:textColor="@color/textColorSecondary"
+                            android:textSize="14sp" />
+                    </LinearLayout>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
         </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
         android:layout_gravity="start"
+        android:background="?attr/colorSurface"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"
         app:itemTextColor="@color/drawer_nav_item_colors"
-        app:menu="@menu/menu_admin_drawer"/>
+        app:menu="@menu/menu_admin_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

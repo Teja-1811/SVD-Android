@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="colorBackground" format="reference|color" />
+    <!-- Standard Material attributes should not be redefined here as they are provided by the Material library -->
 </resources>

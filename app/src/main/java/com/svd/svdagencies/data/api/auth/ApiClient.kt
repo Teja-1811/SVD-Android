@@ -4,6 +4,7 @@ import com.svd.svdagencies.App
 import com.svd.svdagencies.data.api.admin.*
 import com.svd.svdagencies.data.api.customer.CustomerApi
 import com.svd.svdagencies.data.api.customer.ProductApi
+import com.svd.svdagencies.data.api.delivery.DeliveryApi
 import com.svd.svdagencies.data.api.user.UserApi
 import com.svd.svdagencies.utils.SessionManager
 import okhttp3.OkHttpClient
@@ -87,6 +88,10 @@ object ApiClient {
         retrofit.create(AdminOrdersApi::class.java)
     }
 
+    val adminDeliveryDashboardApi: AdminDeliveryDashboardApi by lazy {
+        retrofit.create(AdminDeliveryDashboardApi::class.java)
+    }
+
     val adminStockApi: AdminStockApi by lazy {
         retrofit.create(AdminStockApi::class.java)
     }
@@ -105,5 +110,9 @@ object ApiClient {
 
     val userApi: UserApi by lazy {
         retrofit.create(UserApi::class.java)
+    }
+
+    val deliveryApi: DeliveryApi by lazy {
+        retrofit.create(DeliveryApi::class.java)
     }
 }
