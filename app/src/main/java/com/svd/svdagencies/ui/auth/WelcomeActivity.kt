@@ -10,7 +10,7 @@ import com.svd.svdagencies.BuildConfig
 import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.admin.AdminDashboardActivity
 import com.svd.svdagencies.ui.customer.CustomerMainActivity
-import com.svd.svdagencies.ui.delivery.DeliveryDashboardActivity
+import com.svd.svdagencies.ui.delivery.DeliveryCreateBillActivity
 import com.svd.svdagencies.ui.user.UserMainActivity
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.UserRole
@@ -26,7 +26,7 @@ class WelcomeActivity : AppCompatActivity() {
                 UserRole.ADMIN -> Intent(this, AdminDashboardActivity::class.java)
                 UserRole.CUSTOMER -> Intent(this, CustomerMainActivity::class.java)
                 UserRole.USER -> Intent(this, UserMainActivity::class.java)
-                UserRole.DELIVERY -> Intent(this, DeliveryDashboardActivity::class.java)
+                UserRole.DELIVERY -> Intent(this, DeliveryCreateBillActivity::class.java)
                 else -> null
             }
             intent?.let {
