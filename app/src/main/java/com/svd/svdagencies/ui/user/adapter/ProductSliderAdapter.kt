@@ -69,9 +69,7 @@ class ProductSliderAdapter(
             tvProductName.text = item.name
             tvProductPrice.text = "\u20B9${item.mrp ?: "--"}"
 
-            val imageUrl = item.image?.let {
-                if (it.startsWith("http", ignoreCase = true)) it else "${ApiClient.BASE_URL.removeSuffix("/")}/${it.removePrefix("/")}"
-            } ?: ""
+            val imageUrl = ApiClient.getImageUrl(item.image)
 
             Glide.with(itemView)
                 .load(imageUrl)

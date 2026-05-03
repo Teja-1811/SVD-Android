@@ -57,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
         val btnLogin = findViewById<MaterialButton>(R.id.btnLogin)
         val tvRegister = findViewById<TextView>(R.id.tvRegister)
 
-        // Animation
         val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         val slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up)
 
@@ -68,7 +67,6 @@ class LoginActivity : AppCompatActivity() {
         passLayout.startAnimation(slideUp)
         btnLogin.startAnimation(slideUp)
 
-        // Using the dedicated authApi which bypasses the AuthInterceptor
         val api = ApiClient.authApi
 
         btnLogin.setOnClickListener {
@@ -90,27 +88,27 @@ class LoginActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                     btnLogin.isEnabled = true
                     stopLoginLoadingAnimation(btnLogin)
-                    
+
                     if (!response.isSuccessful) {
                         val errorBody = response.errorBody()?.string()
                         Log.e("Login", "Error response body: $errorBody")
-                        
+
                         val errorMessage = try {
                             val jsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
-                            jsonObject.get("message")?.asString 
+                            jsonObject.get("message")?.asString
                                 ?: jsonObject.get("detail")?.asString
                                 ?: "Error: ${response.code()}"
                         } catch (e: Exception) {
                             "Login Failed: ${response.code()}"
                         }
-                        
+
                         Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_LONG).show()
                         return
                     }
 
                     val body = response.body()
                     if (body != null && body.status == "success" && body.token != null) {
-                        session.saveSession(body.token, body.role ?: "", body.user_id ?: -1)
+                        session.saveSession(body.token, body.role ?: "", body.userId ?: -1)
                         navigateToDashboard(body.role ?: "")
                         finish()
                     } else {
@@ -148,9 +146,7 @@ class LoginActivity : AppCompatActivity() {
                 button.text = "Signing In" + ".".repeat(dotCount)
                 loginButtonHandler.postDelayed(this, 350)
             }
-        }.also {
-            it.run()
-        }
+        }.also { it.run() }
     }
 
     private fun stopLoginLoadingAnimation(button: MaterialButton) {

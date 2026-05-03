@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Items.AdminItem
-import com.svd.svdagencies.ui.user.model.CartItem
-import com.svd.svdagencies.data.model.user.PendingOrder
-import com.svd.svdagencies.data.model.user.PendingOrderItem
 import com.svd.svdagencies.data.model.user.CreateOrderRequest
 import com.svd.svdagencies.data.model.user.OrderItemPayload
+import com.svd.svdagencies.data.model.user.PendingOrder
+import com.svd.svdagencies.data.model.user.PendingOrderItem
+import com.svd.svdagencies.ui.user.model.CartItem
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
@@ -37,6 +37,12 @@ class UserCartViewModel : ViewModel() {
 
     private val _orderActionMessage = MutableLiveData<String?>()
     val orderActionMessage: LiveData<String?> = _orderActionMessage
+
+    private val _categories = MutableLiveData<List<String>>(emptyList())
+    val categories: LiveData<List<String>> = _categories
+
+    private val _itemsBySelectedCategory = MutableLiveData<List<AdminItem>>(emptyList())
+    val itemsBySelectedCategory: LiveData<List<AdminItem>> = _itemsBySelectedCategory
 
     private var allowOutOfStock: Boolean = false
 
@@ -119,16 +125,17 @@ class UserCartViewModel : ViewModel() {
 
     fun placeOrder(
         items: List<CartItem>,
-        deliveryDate: String?,
+        preorderDate: String?,
         onResult: (success: Boolean, message: String) -> Unit
     ) {
         if (items.isEmpty()) {
             onResult(false, "Your cart is empty")
             return
         }
-        val payload = CreateOrderRequest(
+
+        val payload = buildCreateOrderRequest(
             items = items.map { OrderItemPayload(it.item.id, it.quantity, it.unitPrice()) },
-            delivery_date = deliveryDate
+            preorderDate = preorderDate
         )
 
         viewModelScope.launch {
@@ -153,7 +160,7 @@ class UserCartViewModel : ViewModel() {
     fun updatePendingOrder(
         orderId: Int,
         items: List<PendingOrderItem>,
-        deliveryDate: String?,
+        preorderDate: String?,
         onResult: (Boolean, String) -> Unit
     ) {
         if (items.isEmpty()) {
@@ -161,9 +168,9 @@ class UserCartViewModel : ViewModel() {
             return
         }
 
-        val payload = CreateOrderRequest(
+        val payload = buildCreateOrderRequest(
             items = items.map { OrderItemPayload(it.item_id, it.quantity, it.price) },
-            delivery_date = deliveryDate
+            preorderDate = preorderDate
         )
 
         viewModelScope.launch {
@@ -201,5 +208,39 @@ class UserCartViewModel : ViewModel() {
                 onResult(false, msg)
             }
         }
+    }
+
+    fun loadCategories(onFailure: (String) -> Unit) {
+        if (!_categories.value.isNullOrEmpty()) return // Use cache
+
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.adminItemsApi.getCategories()
+                _categories.value = response.categories
+            } catch (t: Throwable) {
+                onFailure(t.localizedMessage ?: "Unable to load categories")
+            }
+        }
+    }
+
+    fun loadItemsByCategory(category: String, onFailure: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response = ApiClient.adminItemsApi.getItemsByCategory(category)
+                _itemsBySelectedCategory.value = response.items
+            } catch (t: Throwable) {
+                onFailure(t.localizedMessage ?: "Unable to load $category items")
+            }
+        }
+    }
+
+    private fun buildCreateOrderRequest(
+        items: List<OrderItemPayload>,
+        preorderDate: String?
+    ): CreateOrderRequest {
+        return CreateOrderRequest(
+            items = items,
+            deliveryDate = preorderDate?.takeIf { it.isNotBlank() }
+        )
     }
 }

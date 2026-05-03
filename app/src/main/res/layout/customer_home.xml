@@ -4,7 +4,7 @@
     android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/window_background">
+    android:background="@color/customer_shell_background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,19 +21,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_large"
-                android:background="?attr/colorSurface"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:cardCornerRadius="@dimen/card_corner_radius_large"
-                app:cardElevation="@dimen/spacing_xsmall"
-                app:strokeColor="@color/customer_home_card_stroke"
-                app:strokeWidth="1dp">
+                app:cardBackgroundColor="@color/transparent"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_customer_hero_card"
                     android:orientation="vertical"
-                    android:background="?attr/colorSurface"
-                    android:padding="20dp">
+                    android:padding="22dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -54,19 +52,19 @@
                                 android:layout_height="wrap_content"
                                 android:maxLines="2"
                                 android:text="Welcome back"
-                                android:textColor="@color/customer_home_title"
-                                android:textSize="18sp"
+                                android:textColor="@color/white"
+                                android:textSize="22sp"
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/tvPhone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:lineSpacingExtra="2dp"
-                                android:maxLines="4"
-                                android:text="Track your balance, review your shop details and stay updated with Sri Vijaya Durga Milk Agencies."
-                                android:textColor="@color/customer_home_body"
-                                android:textSize="12sp" />
+                                android:maxLines="2"
+                                android:text="Mobile"
+                                android:textColor="#FFF3EC"
+                                android:textSize="13sp" />
                         </LinearLayout>
 
                         <FrameLayout
@@ -77,11 +75,10 @@
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="?attr/colorSurface"
-                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardBackgroundColor="#1FFFFFFF"
                                 app:cardCornerRadius="22dp"
                                 app:cardElevation="0dp"
-                                app:strokeColor="@color/customer_home_card_stroke"
+                                app:strokeColor="#40FFFFFF"
                                 app:strokeWidth="1dp" />
 
                             <ImageView
@@ -94,33 +91,68 @@
                         </FrameLayout>
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@color/customer_home_card_stroke" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:gravity="center_vertical"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
                         android:orientation="horizontal">
 
-                        <View
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:background="@drawable/circular_white_background"
-                            android:backgroundTint="@color/icon_green" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:maxLines="2"
-                            android:text="Your account details are synced and ready."
-                            android:textColor="@color/customer_home_body"
-                            android:textSize="12sp" />
+                            android:layout_weight="1"
+                            android:background="#14FFFFFF"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Account Balance"
+                                android:textColor="#FFF3EC"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvBalance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="0.00"
+                                android:textColor="@color/white"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="12dp"
+                            android:layout_height="1dp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="#14FFFFFF"
+                            android:orientation="vertical"
+                            android:padding="14dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Account Status"
+                                android:textColor="#FFF3EC"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Active"
+                                android:textColor="@color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -129,81 +161,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_medium"
-                android:background="?attr/colorSurface"
-                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="@dimen/spacing_tiny"
-                app:strokeColor="@color/customer_home_card_stroke"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/customer_border_soft"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="@dimen/spacing_large">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="@dimen/spacing_medium"
-                        android:src="@drawable/ic_rupee"
-                        android:tint="@color/login_text_red" />
-
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Account Balance"
-                            android:textColor="@color/customer_home_body"
-                            android:textSize="@dimen/text_size_small" />
-
-                        <TextView
-                            android:id="@+id/tvBalance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0.00"
-                            android:textColor="@color/customer_home_title"
-                            android:textSize="@dimen/text_size_medium"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_medium"
-                android:background="?attr/colorSurface"
-                app:cardBackgroundColor="?attr/colorSurface"
-                app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="@dimen/spacing_tiny"
-                app:strokeColor="@color/customer_home_card_stroke"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:background="?attr/colorSurface"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/spacing_large">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="@dimen/spacing_medium"
-                        android:src="@drawable/ic_shop"
-                        android:tint="@color/icon_red" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -222,6 +197,20 @@
                             android:textSize="@dimen/text_size_medium"
                             android:textStyle="bold" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvStatusPill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_soft_badge"
+                        android:paddingStart="14dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="14dp"
+                        android:paddingBottom="8dp"
+                        android:text="Synced"
+                        android:textColor="@color/customer_badge_text"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -229,17 +218,215 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_medium"
-                android:background="?attr/colorSurface"
-                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="@dimen/spacing_tiny"
-                app:strokeColor="@color/customer_home_card_stroke"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/customer_border_soft"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/colorSurface"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_large">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quick Actions"
+                        android:textColor="@color/customer_home_title"
+                        android:textSize="@dimen/text_size_medium"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Jump straight into the screens you use most."
+                        android:textColor="@color/customer_home_body"
+                        android:textSize="13sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/actionPlaceOrder"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_quick_action"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/ic_orders"
+                                android:tint="@color/brand_red" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Orders"
+                                android:textColor="@color/customer_home_title"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Create or edit today's order"
+                                android:textColor="@color/customer_home_body"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="12dp"
+                            android:layout_height="1dp" />
+
+                        <LinearLayout
+                            android:id="@+id/actionBills"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_quick_action"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/ic_bill"
+                                android:tint="@color/icon_blue" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Bills"
+                                android:textColor="@color/customer_home_title"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="View invoices and downloads"
+                                android:textColor="@color/customer_home_body"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/actionPayment"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_quick_action"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/ic_payments"
+                                android:tint="@color/icon_green" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Payments"
+                                android:textColor="@color/customer_home_title"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Track dues and payment status"
+                                android:textColor="@color/customer_home_body"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <Space
+                            android:layout_width="12dp"
+                            android:layout_height="1dp" />
+
+                        <LinearLayout
+                            android:id="@+id/actionSupport"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_quick_action"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:src="@drawable/ic_phone"
+                                android:tint="@color/icon_orange" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Support"
+                                android:textColor="@color/customer_home_title"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="Raise queries or contact the team"
+                                android:textColor="@color/customer_home_body"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/customer_border_soft"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="@dimen/spacing_large">
 
@@ -296,7 +483,7 @@
                         android:layout_marginTop="@dimen/spacing_large"
                         android:text="Place Order"
                         android:textAllCaps="false"
-                        app:backgroundTint="@color/icon_green"
+                        app:backgroundTint="@color/brand_red"
                         app:cornerRadius="@dimen/card_corner_radius_medium" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -304,18 +491,17 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorSurface"
-                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="@dimen/spacing_tiny"
-                app:strokeColor="@color/customer_home_card_stroke"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/customer_border_soft"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:background="?attr/colorSurface"
                     android:orientation="horizontal"
                     android:padding="@dimen/spacing_large">
 
@@ -327,12 +513,12 @@
                         android:tint="@color/icon_green" />
 
                     <TextView
-                        android:id="@+id/tvStatus"
+                        android:id="@+id/tvStatusMessage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Account Status : Active"
+                        android:text="Account is active and ready for delivery updates"
                         android:textColor="@color/icon_green"
-                        android:textSize="@dimen/text_size_medium"
+                        android:textSize="@dimen/text_size_small"
                         android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

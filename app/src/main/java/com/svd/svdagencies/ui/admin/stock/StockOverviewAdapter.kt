@@ -39,7 +39,8 @@ class StockOverviewAdapter(private var items: List<StockItem>) :
             tvItemName.text = item.name
             
             val totalQty = item.stockQuantity
-            val pcsCount = item.pcsCount ?: 1
+            // Avoid division by zero if pcsCount is null or 0
+            val pcsCount = item.pcsCount?.takeIf { it > 0 } ?: 1
             
             val calculatedCrates = totalQty / pcsCount
             val remainingPackets = totalQty % pcsCount

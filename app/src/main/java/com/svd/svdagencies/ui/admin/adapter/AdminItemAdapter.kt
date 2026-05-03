@@ -83,20 +83,10 @@ class AdminItemAdapter(
             }
 
             // Loading company logo using Glide
-            val companyLogoUrl = item.logo
-            if (!companyLogoUrl.isNullOrEmpty()) {
-                val fullUrl = if (companyLogoUrl.startsWith("http")) {
-                    companyLogoUrl
-                } else {
-                    val baseUrl = ApiClient.BASE_URL.removeSuffix("/")
-                    if (companyLogoUrl.startsWith("/")) {
-                        "$baseUrl$companyLogoUrl"
-                    } else {
-                        "$baseUrl/$companyLogoUrl"
-                    }
-                }
+            val companyLogoUrl = ApiClient.getLogoUrl(item.logo)
+            if (companyLogoUrl.isNotEmpty()) {
                 Glide.with(itemView.context)
-                    .load(fullUrl)
+                    .load(companyLogoUrl)
                     .placeholder(R.drawable.ic_milk_placeholder)
                     .error(R.drawable.ic_milk_placeholder)
                     .into(imgCompanyLogo)
@@ -105,22 +95,11 @@ class AdminItemAdapter(
             }
 
             // Loading product image using Glide
-            val imageUrl = item.image
+            val imageUrl = ApiClient.getImageUrl(item.image)
             
-            if (!imageUrl.isNullOrEmpty()) {
-                val fullUrl = if (imageUrl.startsWith("http")) {
-                    imageUrl
-                } else {
-                    val baseUrl = ApiClient.BASE_URL.removeSuffix("/")
-                    if (imageUrl.startsWith("/")) {
-                        "$baseUrl$imageUrl"
-                    } else {
-                        "$baseUrl/$imageUrl"
-                    }
-                }
-
+            if (imageUrl.isNotEmpty()) {
                 Glide.with(itemView.context)
-                    .load(fullUrl)
+                    .load(imageUrl)
                     .placeholder(R.drawable.ic_milk_placeholder)
                     .error(R.drawable.ic_milk_placeholder)
                     .into(imgProduct)

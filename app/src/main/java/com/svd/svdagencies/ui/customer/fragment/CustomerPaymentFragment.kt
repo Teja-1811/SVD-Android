@@ -1,13 +1,15 @@
 package com.svd.svdagencies.ui.customer.fragment
 
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -15,7 +17,9 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.CustomerApi
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
-import com.svd.svdagencies.data.model.customer.GenericResponse
+import com.svd.svdagencies.data.model.customer.PaymentGatewayInitResponse
+import com.svd.svdagencies.data.model.customer.PaymentGatewayResultResponse
+import com.svd.svdagencies.ui.customer.PaytmNativeCheckoutActivity
 import com.svd.svdagencies.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,27 +30,20 @@ class CustomerPaymentFragment : Fragment() {
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var etAmount: EditText
     private lateinit var btnUpi: Button
-
     private lateinit var tvCurrentDue: TextView
     private lateinit var tvCurrentBalance: TextView
 
-    // 🔑 UPI Details
-    private val upiId = "svdmilkagency@ptyes"
-    private val payeeName = "Sri Vijaya Durga Milk Agencies"
-
     private lateinit var api: CustomerApi
     private lateinit var session: SessionManager
-    private var userId: Int = -1
 
-    // 🔄 UPI Result Launcher
-    private val upiLauncher =
+    private val paytmLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                handleUpiResponse(result.data?.getStringExtra("response"))
+            val paymentOrderId = result.data?.getStringExtra(PaytmNativeCheckoutActivity.EXTRA_PAYMENT_ORDER_ID).orEmpty()
+            if (result.resultCode == Activity.RESULT_OK && paymentOrderId.isNotBlank()) {
+                confirmGatewayPayment(paymentOrderId)
             } else {
-                context?.let {
-                    Toast.makeText(it, "Payment cancelled", Toast.LENGTH_SHORT).show()
-                }
+                showToast(getString(R.string.payment_cancelled))
+                loadDashboardData()
             }
         }
 
@@ -54,158 +51,167 @@ class CustomerPaymentFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.customer_payment, container, false)
-    }
+    ): View = inflater.inflate(R.layout.customer_payment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 🔗 Bind Views
         swipeRefresh = view.findViewById(R.id.swipeRefresh)
         etAmount = view.findViewById(R.id.etPayAmount)
         btnUpi = view.findViewById(R.id.btnPayUpi)
         tvCurrentDue = view.findViewById(R.id.tvCurrentDue)
         tvCurrentBalance = view.findViewById(R.id.tvCurrentBalance)
 
-        // Session
         session = SessionManager(requireContext())
-        userId = session.getUserId()
-
-        if (userId == -1) {
-            Toast.makeText(requireContext(), "Session expired", Toast.LENGTH_SHORT).show()
+        if (session.getUserId() == -1) {
+            showToast(getString(R.string.session_expired))
             return
         }
 
-        // API
-        api = ApiClient.retrofit.create(CustomerApi::class.java)
+        api = ApiClient.customerApi
 
-        // Initial load
+        btnUpi.setOnClickListener { startGatewayPayment() }
+        swipeRefresh.setOnRefreshListener { loadDashboardData() }
+
         loadDashboardData()
-
-        // 🎯 Actions
-        btnUpi.setOnClickListener { startUpiAppPayment() }
-        
-        swipeRefresh.setOnRefreshListener {
-            loadDashboardData()
-        }
     }
 
     private fun loadDashboardData() {
         swipeRefresh.isRefreshing = true
-        api.getDashboard(userId).enqueue(object : Callback<CustomerDashboardResponse> {
+        api.getDashboard().enqueue(object : Callback<CustomerDashboardResponse> {
             override fun onResponse(
                 call: Call<CustomerDashboardResponse>,
                 response: Response<CustomerDashboardResponse>
             ) {
-                val context = context ?: return
                 swipeRefresh.isRefreshing = false
                 if (!response.isSuccessful) {
-                    Toast.makeText(context, "Server error: ${response.code()}", Toast.LENGTH_LONG).show()
+                    showToast(getString(R.string.server_error_code, response.code()))
                     return
                 }
 
-                val customer = response.body() ?: return
-                val balance = customer.balance
-
-                if (balance > 0) {
-                    tvCurrentDue.text = String.format("₹%.2f", balance)
-                    tvCurrentBalance.text = "₹0.00"
-                } else {
-                    tvCurrentDue.text = "₹0.00"
-                    tvCurrentBalance.text = String.format("₹%.2f", -balance)
-                }
+                val dashboard = response.body() ?: return
+                val summary = dashboard.summary
+                tvCurrentDue.text = getString(R.string.format_currency, summary.outstandingDue)
+                tvCurrentBalance.text = getString(R.string.format_currency, summary.walletBalance)
             }
 
             override fun onFailure(call: Call<CustomerDashboardResponse>, t: Throwable) {
-                val context = context ?: return
                 swipeRefresh.isRefreshing = false
-                Toast.makeText(context, "Network error: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                showToast(
+                    getString(
+                        R.string.network_error_message,
+                        t.localizedMessage ?: getString(R.string.unable_to_reach_server)
+                    )
+                )
             }
         })
     }
 
-    // ------------------ VALIDATE AMOUNT ------------------
     private fun getAmount(): String? {
         val amount = etAmount.text.toString().trim()
         if (amount.isEmpty() || amount.toDoubleOrNull() == null || amount.toDouble() <= 0) {
-            Toast.makeText(requireContext(), "Enter valid amount", Toast.LENGTH_SHORT).show()
+            showToast(getString(R.string.enter_valid_amount))
             return null
         }
         return amount
     }
 
-    // ------------------ UPI APP PAYMENT ------------------
-    private fun startUpiAppPayment() {
+    private fun startGatewayPayment() {
         val amount = getAmount() ?: return
 
-        val uri = Uri.parse("upi://pay").buildUpon()
-            .appendQueryParameter("pa", upiId)
-            .appendQueryParameter("pn", payeeName)
-            .appendQueryParameter("tn", "Customer Payment")
-            .appendQueryParameter("am", amount)
-            .appendQueryParameter("cu", "INR")
-            .build()
-
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        val packageManager = activity?.packageManager ?: return
-        if (intent.resolveActivity(packageManager) != null) {
-            upiLauncher.launch(intent)
-        } else {
-            Toast.makeText(requireContext(), "No UPI app found", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // ------------------ HANDLE UPI RESPONSE ------------------
-    private fun handleUpiResponse(response: String?) {
-        val context = context ?: return
-        if (response == null) {
-            Toast.makeText(context, "Payment cancelled", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val params = response.split("&").associate { 
-            val p = it.split("=")
-            p[0].lowercase() to p.getOrElse(1) { "" }
-        }
-
-        val status = params["status"]
-        val txnId = params["txnref"] ?: params["tr"] ?: ""
-
-        if (status.equals("success", true)) {
-            val amount = getAmount() ?: return
-            sendPaymentDataToBackend(txnId, amount)
-        } else {
-            Toast.makeText(context, "Payment failed", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun sendPaymentDataToBackend(txnId: String, amount: String) {
         val paymentData = mapOf(
-            "user_id" to userId.toString(),
             "amount" to amount,
-            "transaction_id" to txnId,
-            "status" to "success"
+            "payment_for" to "GENERAL"
         )
 
-        api.recordCustomerPayment(paymentData).enqueue(object : Callback<GenericResponse> {
-            override fun onResponse(call: Call<GenericResponse>, response: Response<GenericResponse>) {
-                if (isAdded) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(context, "Payment updated successfully", Toast.LENGTH_LONG).show()
-                        etAmount.text.clear()
-                        loadDashboardData() // Refresh balances
-                    } else {
-                        Toast.makeText(context, "Payment updated failed on server", Toast.LENGTH_LONG).show()
-                    }
+        btnUpi.isEnabled = false
+        api.initiateGatewayPayment(paymentData).enqueue(object : Callback<PaymentGatewayInitResponse> {
+            override fun onResponse(
+                call: Call<PaymentGatewayInitResponse>,
+                response: Response<PaymentGatewayInitResponse>
+            ) {
+                if (!isAdded) return
+                btnUpi.isEnabled = true
+
+                val body = response.body()
+                if (response.isSuccessful && body?.success == true && body.canStartCheckout()) {
+                    paytmLauncher.launch(
+                        Intent(requireContext(), PaytmNativeCheckoutActivity::class.java).apply {
+                            putExtra(PaytmNativeCheckoutActivity.EXTRA_PAYMENT_ORDER_ID, body.paymentOrderId)
+                            putExtra(PaytmNativeCheckoutActivity.EXTRA_TXN_TOKEN, body.txnToken)
+                            putExtra(PaytmNativeCheckoutActivity.EXTRA_MID, body.mid)
+                            putExtra(PaytmNativeCheckoutActivity.EXTRA_AMOUNT, "%.2f".format(body.amount ?: amount.toDouble()))
+                            putExtra(PaytmNativeCheckoutActivity.EXTRA_CALLBACK_URL, body.callbackUrl)
+                            putExtra(PaytmNativeCheckoutActivity.EXTRA_CHECKOUT_HOST, body.checkoutHost)
+                        }
+                    )
+                } else {
+                    showToast(body?.error ?: getString(R.string.payment_update_failed), Toast.LENGTH_LONG)
                 }
             }
 
-            override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
-                if (isAdded) {
-                    Toast.makeText(context, "Failed to update payment: ${t.message}", Toast.LENGTH_LONG).show()
-                }
+            override fun onFailure(call: Call<PaymentGatewayInitResponse>, t: Throwable) {
+                if (!isAdded) return
+                btnUpi.isEnabled = true
+
+                showToast(
+                    getString(
+                        R.string.failed_to_update_payment,
+                        t.localizedMessage ?: getString(R.string.unable_to_reach_server)
+                    ),
+                    Toast.LENGTH_LONG
+                )
             }
         })
+    }
+
+    private fun confirmGatewayPayment(paymentOrderId: String) {
+        val paymentData = mapOf("payment_order_id" to paymentOrderId)
+        btnUpi.isEnabled = false
+        api.confirmGatewayPayment(paymentData).enqueue(object : Callback<PaymentGatewayResultResponse> {
+            override fun onResponse(
+                call: Call<PaymentGatewayResultResponse>,
+                response: Response<PaymentGatewayResultResponse>
+            ) {
+                if (!isAdded) return
+                btnUpi.isEnabled = true
+
+                val body = response.body()
+                if (response.isSuccessful && body?.isSuccess == true) {
+                    showToast(getString(R.string.payment_updated_successfully), Toast.LENGTH_LONG)
+                    etAmount.text.clear()
+                    loadDashboardData()
+                } else {
+                    showToast(body?.error ?: getString(R.string.payment_failed), Toast.LENGTH_LONG)
+                    loadDashboardData()
+                }
+            }
+
+            override fun onFailure(call: Call<PaymentGatewayResultResponse>, t: Throwable) {
+                if (!isAdded) return
+                btnUpi.isEnabled = true
+                showToast(
+                    getString(
+                        R.string.failed_to_update_payment,
+                        t.localizedMessage ?: getString(R.string.unable_to_reach_server)
+                    ),
+                    Toast.LENGTH_LONG
+                )
+            }
+        })
+    }
+
+    private fun PaymentGatewayInitResponse.canStartCheckout(): Boolean {
+        return !paymentOrderId.isNullOrBlank() &&
+            !txnToken.isNullOrBlank() &&
+            !mid.isNullOrBlank() &&
+            !callbackUrl.isNullOrBlank() &&
+            !checkoutHost.isNullOrBlank() &&
+            amount != null
+    }
+
+    private fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+        val appContext = context ?: return
+        Toast.makeText(appContext, message, duration).show()
     }
 }

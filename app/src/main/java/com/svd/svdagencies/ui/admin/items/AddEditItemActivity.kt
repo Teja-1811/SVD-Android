@@ -85,8 +85,8 @@ class AddEditItemActivity : AdminBaseActivity() {
                 val companyNames = companies.map { it.name }
 
                 // Fetch and sort Categories
-                val categories = ApiClient.adminItemsApi.getCategories()
-                val sortedCategories = sortCategories(categories)
+                val categoriesResponse = ApiClient.adminItemsApi.getCategories()
+                val sortedCategories = sortCategories(categoriesResponse.categories)
 
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
@@ -147,8 +147,7 @@ class AddEditItemActivity : AdminBaseActivity() {
 
         // Load Image
         if (!item.image.isNullOrEmpty()) {
-            val base = ApiClient.BASE_URL.removeSuffix("/")
-            val fullUrl = if (item.image.startsWith("http")) item.image else "$base/${item.image.removePrefix("/")}"
+            val fullUrl = ApiClient.getImageUrl(item.image)
             Glide.with(this).load(fullUrl).into(binding.imgItemPreview)
             binding.btnRemoveImage.visibility = View.VISIBLE
         }

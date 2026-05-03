@@ -3,6 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     
     <queries>
+        <package android:name="net.one97.paytm" />
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="upi" />
@@ -56,20 +57,26 @@
         <activity android:name=".ui.admin.AdminSubscriptionsActivity"/>
         <activity android:name=".ui.admin.AdminSubscriptionHistoryActivity"/>
         <activity android:name=".ui.admin.AdminUserDeliveryActivity"/>
+        <activity android:name=".ui.admin.AdminEnquiriesActivity"/>
 
         <!-- Customer / User -->
         <activity android:name=".ui.customer.CustomerMainActivity"/>
         <activity android:name=".ui.customer.CustomerCompanyCatalogActivity"/>
         <activity android:name=".ui.customer.CustomerCompanyDetailsActivity"/>
         <activity android:name=".ui.customer.CustomerContactSupportActivity"/>
+        <activity android:name=".ui.customer.CustomerRaisedQueriesActivity"/>
+        <activity android:name=".ui.customer.PaytmNativeCheckoutActivity"/>
+        <activity android:name=".ui.customer.PaytmCheckoutActivity"/>
         <activity android:name=".ui.user.UserMainActivity"/>
         <activity android:name=".ui.user.TermsConditionsActivity"/>
         <activity android:name=".ui.user.CompanyDetailsActivity"/>
         <activity android:name=".ui.user.ContactSupportActivity"/>
+        <activity android:name=".ui.user.RaisedQueriesActivity"/>
         <activity android:name=".ui.user.UserBillDetailActivity" />
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>
+        <activity android:name=".ui.delivery.DeliveryCreateBillActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

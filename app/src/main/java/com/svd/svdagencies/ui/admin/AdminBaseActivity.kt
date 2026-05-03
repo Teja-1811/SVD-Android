@@ -160,6 +160,12 @@ abstract class AdminBaseActivity : BaseActivity() {
                         }
                         true
                     }
+                    R.id.nav_enquiries -> {
+                        if (this !is AdminEnquiriesActivity) {
+                            startActivity(Intent(this, AdminEnquiriesActivity::class.java))
+                        }
+                        true
+                    }
                     else -> false
                 }
             }

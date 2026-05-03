@@ -1,16 +1,17 @@
 package com.svd.svdagencies.ui.user
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import android.content.Intent
+import android.view.View
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
@@ -42,14 +43,12 @@ class UserMainActivity : AppCompatActivity() {
         session = SessionManager(this)
         userId = session.getUserId()
 
-        // UI Binding
         drawerLayout = findViewById(R.id.userDrawerLayout)
         navigationView = findViewById(R.id.userNavigationView)
         toolbar = findViewById(R.id.userToolbar)
         tvToolbarTitle = findViewById(R.id.tvUserToolbarTitle)
         btnMenu = findViewById(R.id.btnUserMenu)
         btnLogout = findViewById(R.id.btnUserLogout)
-
         swipeRefresh = findViewById(R.id.userSwipeRefresh)
         bottomNav = findViewById(R.id.userBottomNav)
         userProgress = findViewById(R.id.userProgress)
@@ -58,31 +57,33 @@ class UserMainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // Toolbar Actions
         btnMenu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
+        }
+        navigationView.getHeaderView(0).findViewById<View>(R.id.btnCloseDrawer).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         btnLogout.setOnClickListener {
             handleLogout()
         }
 
-        // Navigation Drawer Actions
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_terms -> {
-                    startActivity(Intent(this, TermsConditionsActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(TermsConditionsActivity::class.java)
                     true
                 }
                 R.id.nav_company -> {
-                    startActivity(Intent(this, CompanyDetailsActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(CompanyDetailsActivity::class.java)
                     true
                 }
                 R.id.nav_support -> {
-                    startActivity(Intent(this, ContactSupportActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(ContactSupportActivity::class.java)
+                    true
+                }
+                R.id.nav_queries -> {
+                    openDrawerDestination(RaisedQueriesActivity::class.java)
                     true
                 }
                 else -> false
@@ -94,22 +95,34 @@ class UserMainActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState == null) {
-            loadFragment(UserHomeFragment(), "SVD Agency")
+            navigateToTab(R.id.nav_home)
         }
 
         bottomNav.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_home -> loadFragment(UserHomeFragment(), "SVD Agency")
-                R.id.nav_subscription -> loadFragment(UserSubscriptionFragment(), "Subscriptions")
-                R.id.nav_bills -> loadFragment(UserBillsFragment(), "My Bills")
-                R.id.nav_cart -> loadFragment(UserCartFragment(), "Cart")
-                R.id.nav_profile -> loadFragment(UserProfileFragment(), "My Profile")
-            }
+            navigateToTab(it.itemId)
             true
         }
 
         RefreshManager.startRefresh(swipeRefresh)
         refreshDashboard(showLoader = true)
+    }
+
+    fun navigateToTab(itemId: Int) {
+        if (bottomNav.selectedItemId != itemId) {
+            bottomNav.selectedItemId = itemId
+            return
+        }
+        showFragmentForMenuItem(itemId)
+    }
+
+    private fun showFragmentForMenuItem(itemId: Int) {
+        when (itemId) {
+            R.id.nav_home -> loadFragment(UserHomeFragment(), "SVD Agency")
+            R.id.nav_subscription -> loadFragment(UserSubscriptionFragment(), "Subscriptions")
+            R.id.nav_bills -> loadFragment(UserBillsFragment(), "My Bills")
+            R.id.nav_cart -> loadFragment(UserCartFragment(), "Cart")
+            R.id.nav_profile -> loadFragment(UserProfileFragment(), "My Profile")
+        }
     }
 
     private fun refreshDashboard(showLoader: Boolean) {
@@ -137,6 +150,7 @@ class UserMainActivity : AppCompatActivity() {
                 RefreshManager.stopRefresh(swipeRefresh)
                 tvStatusMessage.text = message
                 tvStatusMessage.visibility = View.VISIBLE
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         )
     }
@@ -147,6 +161,13 @@ class UserMainActivity : AppCompatActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
+    }
+
+    private fun openDrawerDestination(activityClass: Class<out AppCompatActivity>) {
+        drawerLayout.closeDrawer(GravityCompat.START)
+        drawerLayout.post {
+            startActivity(Intent(this, activityClass))
+        }
     }
 
     private fun loadFragment(fragment: Fragment, title: String) {

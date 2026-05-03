@@ -75,9 +75,7 @@ class UserCartAdapter(
             btnIncrease.isEnabled = inStock && cartItem.quantity < available
             btnDecrease.isEnabled = cartItem.quantity > 0
 
-            val imageUrl = item.image?.let {
-                if (it.startsWith("http", ignoreCase = true)) it else "${ApiClient.BASE_URL.removeSuffix("/")}/${it.removePrefix("/")}"
-            } ?: ""
+            val imageUrl = ApiClient.getImageUrl(item.image)
 
             Glide.with(itemView)
                 .load(imageUrl)

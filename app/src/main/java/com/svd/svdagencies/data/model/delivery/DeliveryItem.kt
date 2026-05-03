@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class DeliveryItem(
     val type: String, // "order" or "subscription"
     val id: Int,
+    @SerializedName("customer_id") val customerId: Int? = null,
     @SerializedName("order_number") val orderNumber: String? = null,
     @SerializedName("customer_name") val customerName: String,
     @SerializedName("delivery_date") val deliveryDate: String? = null,

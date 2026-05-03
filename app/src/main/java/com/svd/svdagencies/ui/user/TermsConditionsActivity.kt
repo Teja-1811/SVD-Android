@@ -28,6 +28,9 @@ class TermsConditionsActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.btnUserMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
+        navigationView.getHeaderView(0).findViewById<View>(R.id.btnCloseDrawer).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
 
         navigationView.setCheckedItem(R.id.nav_terms)
         navigationView.setNavigationItemSelectedListener { item ->
@@ -37,13 +40,15 @@ class TermsConditionsActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_company -> {
-                    startActivity(Intent(this, CompanyDetailsActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(drawerLayout, CompanyDetailsActivity::class.java)
                     true
                 }
                 R.id.nav_support -> {
-                    startActivity(Intent(this, ContactSupportActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(drawerLayout, ContactSupportActivity::class.java)
+                    true
+                }
+                R.id.nav_queries -> {
+                    openDrawerDestination(drawerLayout, RaisedQueriesActivity::class.java)
                     true
                 }
                 else -> false
@@ -67,7 +72,7 @@ class TermsConditionsActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvUserStatusMessage).visibility = View.GONE
 
         val container = findViewById<FrameLayout>(R.id.userFragmentContainer)
-        layoutInflater.inflate(R.layout.user_terms_conditions, container, true)
+        layoutInflater.inflate(R.layout.activity_terms_conditions, container, true)
 
         setupAccordion(R.id.sectionOperator, R.id.operatorContent)
         setupAccordion(R.id.sectionOrders, R.id.ordersContent)
@@ -83,6 +88,16 @@ class TermsConditionsActivity : AppCompatActivity() {
             } else {
                 content.visibility = View.VISIBLE
             }
+        }
+    }
+
+    private fun openDrawerDestination(
+        drawerLayout: DrawerLayout,
+        activityClass: Class<out AppCompatActivity>
+    ) {
+        drawerLayout.closeDrawer(GravityCompat.START)
+        drawerLayout.post {
+            startActivity(Intent(this, activityClass))
         }
     }
 }

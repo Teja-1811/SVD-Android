@@ -66,6 +66,12 @@ android {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
+
+    packaging {
+        resources {
+            excludes.add("assets/Payments-Loader.json")
+        }
+    }
 }
 
 dependencies {
@@ -80,6 +86,9 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.paytm.appinvokesdk:appinvokesdk:1.6.17") {
+        exclude(group = "com.squareup.okhttp3", module = "okhttp")
+    }
     
     // Architecture Components
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

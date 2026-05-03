@@ -137,8 +137,8 @@ class AdminItemsActivity : AdminBaseActivity() {
                 val companyDataList = companiesResponse.companies.map { CompanyData(it.name, it.logo) }
                 
                 // Fetch and sort categories
-                val categories = ApiClient.adminItemsApi.getCategories()
-                val sortedCategories = sortCategories(categories)
+                val categoriesResponse = ApiClient.adminItemsApi.getCategories()
+                val sortedCategories = sortCategories(categoriesResponse.categories)
 
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
@@ -176,11 +176,11 @@ class AdminItemsActivity : AdminBaseActivity() {
         swipeRefresh.isRefreshing = true
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val items = ApiClient.adminItemsApi.getItemsByCategory(category)
+                val response = ApiClient.adminItemsApi.getItemsByCategory(category)
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         swipeRefresh.isRefreshing = false
-                        allItems = items
+                        allItems = response.items
                         applyFilters()
                     }
                 }
@@ -284,8 +284,8 @@ class AdminItemsActivity : AdminBaseActivity() {
             private val card: MaterialCardView = itemView.findViewById(R.id.cardCompany)
 
             fun bind(company: CompanyData, isSelected: Boolean) {
-                val logoUrl = company.logo
-                val fullUrl = if (logoUrl.isNullOrEmpty()) "" else if (logoUrl.startsWith("http")) logoUrl else "${ApiClient.BASE_URL.removeSuffix("/")}/${logoUrl.removePrefix("/")}"
+                // For company logos, we use the logo helper
+                val fullUrl = ApiClient.getLogoUrl(company.logo)
                 
                 Glide.with(itemView.context)
                     .load(fullUrl)

@@ -5,20 +5,18 @@
     android:id="@+id/customerDrawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/window_background">
+        android:background="@drawable/bg_customer_shell">
 
-        <!-- ================= TOOLBAR ================= -->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/brand_red"
+            android:background="@color/transparent"
             app:elevation="0dp"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -27,105 +25,107 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
-                android:background="@color/brand_red"
-                app:contentInsetStart="0dp"
-                app:contentInsetLeft="0dp"
+                android:background="@color/transparent"
                 app:contentInsetEnd="0dp"
-                app:contentInsetRight="0dp">
+                app:contentInsetLeft="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetStart="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize">
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_customer_hero_card"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp">
 
                     <ImageButton
                         android:id="@+id/btnCustomerMenu"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
+                        android:layout_marginStart="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_menu"
-                        app:tint="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginStart="@dimen/spacing_small"/>
+                        app:tint="@color/white" />
 
                     <TextView
                         android:id="@+id/tvCustomerToolbarTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="SVD Agency"
+                        android:gravity="center"
+                        android:text="Customer Hub"
                         android:textColor="@color/white"
                         android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold"
-                        android:gravity="center"
-                        app:layout_constraintStart_toEndOf="@id/btnCustomerMenu"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/btnCustomerLogout"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintStart_toEndOf="@id/btnCustomerMenu"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
                         android:id="@+id/btnCustomerLogout"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
+                        android:layout_marginEnd="@dimen/spacing_small"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_logout"
-                        app:tint="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:layout_marginEnd="@dimen/spacing_small"/>
+                        app:tint="@color/white" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- FRAGMENT CONTAINER -->
         <FrameLayout
             android:id="@+id/customerFragmentContainer"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/appBarLayout"
             app:layout_constraintBottom_toTopOf="@id/customerBottomNav"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
 
-        <!-- ================= BOTTOM NAVIGATION ================= -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/customerBottomNav"
+            style="@style/Widget.App.BottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.App.BottomNavigationView"
-            android:background="?attr/colorSurface"
+            android:background="@color/white"
             app:backgroundTint="?attr/colorSurface"
             app:elevation="0dp"
+            app:itemIconSize="20dp"
             app:itemIconTint="@color/bottom_nav_selector"
             app:itemTextColor="@color/bottom_nav_selector"
             app:labelVisibilityMode="labeled"
-            app:itemIconSize="20dp"
-            app:menu="@menu/menu_customer_bottom"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/menu_customer_bottom" />
 
-        <!-- Add a thin divider to compensate for 0dp elevation -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/divider_line"
+            android:background="@color/customer_border_soft"
             app:layout_constraintBottom_toTopOf="@id/customerBottomNav" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Drawer Navigation View -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/customerNavigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
+        android:background="?attr/colorSurface"
         app:headerLayout="@layout/customer_nav_header"
-        app:menu="@menu/menu_customer_drawer"
-        app:itemTextColor="@color/drawer_nav_item_colors"
         app:itemIconTint="@color/drawer_nav_icon_colors"
-        android:background="@color/drawer_background" />
+        app:itemTextColor="@color/drawer_nav_item_colors"
+        app:menu="@menu/menu_customer_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

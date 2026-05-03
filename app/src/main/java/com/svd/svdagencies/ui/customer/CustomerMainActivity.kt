@@ -19,9 +19,10 @@ import com.svd.svdagencies.ui.customer.fragment.CustomerCompaniesFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerHomeFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerOrdersFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerPaymentFragment
-import com.svd.svdagencies.ui.user.TermsConditionsActivity
 import com.svd.svdagencies.ui.customer.CustomerCompanyDetailsActivity
 import com.svd.svdagencies.ui.customer.CustomerContactSupportActivity
+import com.svd.svdagencies.ui.customer.CustomerRaisedQueriesActivity
+import com.svd.svdagencies.ui.user.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
 
 class CustomerMainActivity : AppCompatActivity() {
@@ -68,18 +69,19 @@ class CustomerMainActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_terms -> {
-                    startActivity(Intent(this, TermsConditionsActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(TermsConditionsActivity::class.java)
                     true
                 }
                 R.id.nav_company -> {
-                    startActivity(Intent(this, CustomerCompanyDetailsActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(CustomerCompanyDetailsActivity::class.java)
                     true
                 }
                 R.id.nav_support -> {
-                    startActivity(Intent(this, CustomerContactSupportActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(CustomerContactSupportActivity::class.java)
+                    true
+                }
+                R.id.nav_queries -> {
+                    openDrawerDestination(CustomerRaisedQueriesActivity::class.java)
                     true
                 }
                 else -> false
@@ -113,6 +115,13 @@ class CustomerMainActivity : AppCompatActivity() {
     fun openOrdersScreen(editLatestOrder: Boolean = false) {
         bottomNav.menu.findItem(R.id.nav_orders).isChecked = true
         loadFragment(CustomerOrdersFragment.newInstance(editLatestOrder), "Orders")
+    }
+
+    private fun openDrawerDestination(activityClass: Class<out AppCompatActivity>) {
+        drawerLayout.closeDrawer(GravityCompat.START)
+        drawerLayout.post {
+            startActivity(Intent(this, activityClass))
+        }
     }
 
     private fun loadFragment(fragment: Fragment, title: String) {

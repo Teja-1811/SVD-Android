@@ -6,12 +6,12 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface_background">
+    android:background="@color/window_background">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <include
             layout="@layout/admin_toolbar"
@@ -21,188 +21,229 @@
         <com.svd.svdagencies.utils.AppSwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:fillViewport="true"
                 android:scrollbars="none">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_medium">
+                    android:paddingStart="@dimen/spacing_large"
+                    android:paddingTop="@dimen/spacing_medium"
+                    android:paddingEnd="@dimen/spacing_large"
+                    android:paddingBottom="@dimen/spacing_xlarge">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dashboard"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="@dimen/text_size_xxlarge"
+                        android:textStyle="bold" />
+
 
                     <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:columnCount="2"
+                        android:layout_marginTop="@dimen/spacing_medium"
                         android:alignmentMode="alignMargins"
-                        android:columnOrderPreserved="false">
+                        android:columnCount="2"
+                        android:columnOrderPreserved="false"
+                        android:useDefaultMargins="false">
 
-                        <!-- Customers -->
                         <include
                             android:id="@+id/cardCustomers"
                             layout="@layout/admin_stat_card"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="@dimen/spacing_small" />
+                            android:layout_marginEnd="@dimen/spacing_xsmall"
+                            android:layout_marginBottom="@dimen/spacing_medium" />
 
-                        <!-- Items -->
                         <include
                             android:id="@+id/cardItems"
                             layout="@layout/admin_stat_card"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="@dimen/spacing_small" />
+                            android:layout_marginStart="@dimen/spacing_xsmall"
+                            android:layout_marginBottom="@dimen/spacing_medium" />
 
-                        <!-- Sales Today -->
                         <include
                             android:id="@+id/cardSales"
                             layout="@layout/admin_stat_card"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="@dimen/spacing_small" />
+                            android:layout_marginEnd="@dimen/spacing_xsmall"
+                            android:layout_marginBottom="@dimen/spacing_medium" />
 
-                        <!-- Dues -->
                         <include
                             android:id="@+id/cardDues"
                             layout="@layout/admin_stat_card"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
-                            android:layout_margin="@dimen/spacing_small" />
-
+                            android:layout_marginStart="@dimen/spacing_xsmall"
+                            android:layout_marginBottom="@dimen/spacing_medium" />
                     </GridLayout>
 
-                    <!-- Update Stock Button -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnUpdateStock"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/spacing_small"
-                        android:text="Update Stock"
+                        android:layout_height="56dp"
+                        android:layout_marginBottom="@dimen/spacing_large"
+                        android:backgroundTint="@color/brand_red"
+                        android:text="Update Inventory Stock"
                         android:textAllCaps="false"
-                        android:padding="@dimen/spacing_medium"
-                        app:cornerRadius="@dimen/spacing_medium"
-                        app:icon="@drawable/ic_items"
-                        app:backgroundTint="@color/brand_red"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/text_size_button"
-                        android:textStyle="bold"/>
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold"
+                        app:cornerRadius="@dimen/card_corner_radius_small"
+                        app:icon="@drawable/ic_stock"
+                        app:iconGravity="textStart"
+                        app:iconPadding="@dimen/spacing_medium"
+                        app:iconTint="@color/white" />
 
-                    <!-- Pending Orders -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:text="Daily Operations"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold" />
+
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/spacing_small"
-                        app:cardCornerRadius="@dimen/spacing_large"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
+                        android:layout_marginBottom="@dimen/spacing_medium"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardElevation="@dimen/card_elevation_tiny"
                         app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/card_background">
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
-                            android:orientation="horizontal"
-                            android:padding="@dimen/spacing_large"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical">
+                            android:background="?attr/colorSurface"
+                            android:gravity="center_vertical"
+                            android:minHeight="76dp"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/spacing_large">
 
                             <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@drawable/bg_light_gray"
+                                android:padding="@dimen/spacing_small"
                                 android:src="@drawable/ic_orders"
-                                app:tint="@color/brand_red"/>
+                                app:tint="@color/brand_red" />
 
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Pending Orders"
-                                android:textColor="@color/textColorPrimary"
-                                android:textSize="@dimen/text_size_medium"
                                 android:layout_marginStart="@dimen/spacing_medium"
-                                android:textStyle="bold"/>
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                            <TextView
-                                android:id="@+id/tvPendingOrders"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="@color/textColorPrimary"
-                                android:textSize="@dimen/text_size_large"
-                                android:textStyle="bold"
-                                android:layout_marginEnd="@dimen/spacing_large"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pending Orders"
+                                    android:textColor="@color/textColorSecondary"
+                                    android:textSize="@dimen/text_size_small" />
+
+                                <TextView
+                                    android:id="@+id/tvPendingOrders"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/spacing_tiny"
+                                    android:text="0"
+                                    android:textColor="@color/textColorPrimary"
+                                    android:textSize="@dimen/text_size_xxlarge"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
 
                             <ImageButton
                                 android:id="@+id/btnViewOrders"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="@string/view_orders"
                                 android:src="@drawable/ic_eye"
-                                app:tint="@color/brand_red"/>
+                                app:tint="@color/brand_red" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Not Ordered Today -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/spacing_small"
-                        app:cardCornerRadius="@dimen/spacing_large"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardElevation="@dimen/card_elevation_tiny"
                         app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/card_background">
+                        app:strokeWidth="1dp">
 
                         <LinearLayout
-                            android:orientation="vertical"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="?attr/colorSurface"
+                            android:orientation="vertical"
                             android:padding="@dimen/spacing_large">
 
                             <LinearLayout
-                                android:orientation="horizontal"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="center_vertical">
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_width="28dp"
-                                    android:layout_height="28dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:background="@drawable/bg_light_gray"
+                                    android:padding="@dimen/spacing_small"
+                                    android:rotation="180"
                                     android:src="@drawable/ic_orders"
-                                    app:tint="@color/brand_red"
-                                    android:rotation="180"/>
+                                    app:tint="@color/textColorSecondary" />
 
-                                <TextView
+                                <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:text="Not Ordered Today"
-                                    android:textColor="@color/textColorPrimary"
-                                    android:textSize="@dimen/text_size_medium"
                                     android:layout_marginStart="@dimen/spacing_medium"
-                                    android:textStyle="bold"/>
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
-                                <TextView
-                                    android:id="@+id/tvNotOrdered"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="0"
-                                    android:textColor="@color/textColorPrimary"
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/text_size_large"/>
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Customers Not Ordered"
+                                        android:textColor="@color/textColorSecondary"
+                                        android:textSize="@dimen/text_size_small" />
+
+                                    <TextView
+                                        android:id="@+id/tvNotOrdered"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/spacing_tiny"
+                                        android:text="0"
+                                        android:textColor="@color/textColorPrimary"
+                                        android:textSize="@dimen/text_size_xxlarge"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
                             </LinearLayout>
 
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:layout_marginTop="@dimen/spacing_medium"
+                                android:layout_marginTop="@dimen/spacing_large"
                                 android:layout_marginBottom="@dimen/spacing_small"
                                 android:background="@color/divider_line" />
 
@@ -210,15 +251,69 @@
                                 android:id="@+id/layoutNoOrdersList"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
-                                <!-- Dynamic rows -->
-                            </LinearLayout>
+                                android:orientation="vertical"
+                                tools:ignore="UselessLeaf" />
 
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:text="Top Due Customers"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_medium"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardElevation="@dimen/card_elevation_tiny"
+                        app:strokeColor="@color/card_stroke_color"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:id="@+id/layoutTopDuesList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_large" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_medium"
+                        android:layout_marginBottom="@dimen/spacing_small"
+                        android:text="Top Stock Items"
+                        android:textColor="@color/textColorPrimary"
+                        android:textSize="@dimen/text_size_large"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardElevation="@dimen/card_elevation_tiny"
+                        app:strokeColor="@color/card_stroke_color"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:id="@+id/layoutTopStockList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_large" />
+                    </com.google.android.material.card.MaterialCardView>
+
                 </LinearLayout>
-            </ScrollView>
+            </androidx.core.widget.NestedScrollView>
         </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
     </LinearLayout>
 
@@ -226,11 +321,11 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
         android:layout_gravity="start"
+        android:background="?attr/colorSurface"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"
         app:itemTextColor="@color/drawer_nav_item_colors"
-        app:menu="@menu/menu_admin_drawer"/>
+        app:menu="@menu/menu_admin_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

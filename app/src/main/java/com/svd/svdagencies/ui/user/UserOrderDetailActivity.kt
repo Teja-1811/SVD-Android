@@ -11,7 +11,6 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.user.UserApi
 import com.svd.svdagencies.data.model.user.UserOrderDetailResponse
 import com.svd.svdagencies.ui.user.adapter.UserOrderItemAdapter
-import com.svd.svdagencies.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,7 +27,6 @@ class UserOrderDetailActivity : AppCompatActivity() {
     private lateinit var tvTotal: TextView
     private lateinit var rvItems: RecyclerView
 
-    private lateinit var sessionManager: SessionManager
     private lateinit var api: UserApi
     private var orderId: Int = -1
 
@@ -43,7 +41,6 @@ class UserOrderDetailActivity : AppCompatActivity() {
             return
         }
 
-        sessionManager = SessionManager(this)
         api = ApiClient.retrofit.create(UserApi::class.java)
 
         initViews()
@@ -70,8 +67,7 @@ class UserOrderDetailActivity : AppCompatActivity() {
     }
 
     private fun loadOrderDetails() {
-        val userId = sessionManager.getUserId()
-        api.getUserOrderDetail(orderId, userId).enqueue(object : Callback<UserOrderDetailResponse> {
+        api.getUserOrderDetail(orderId).enqueue(object : Callback<UserOrderDetailResponse> {
             override fun onResponse(call: Call<UserOrderDetailResponse>, response: Response<UserOrderDetailResponse>) {
                 if (response.isSuccessful && response.body() != null) {
                     displayOrder(response.body()!!)
@@ -93,14 +89,10 @@ class UserOrderDetailActivity : AppCompatActivity() {
         tvDate.text = "Ordered On: ${order.orderDate}"
         tvDeliveryDate.text = "Delivery Date: ${order.deliveryDate ?: "TBA"}"
         tvAddress.text = order.deliveryAddress ?: "No address provided"
-        
-        tvSubtotal.text = "₹%.2f".format(order.totalAmount)
-        tvDeliveryCharge.text = "₹%.2f".format(order.deliveryCharge)
-        
-        // Use approved total if available
+        tvSubtotal.text = "?%.2f".format(order.totalAmount)
+        tvDeliveryCharge.text = "?%.2f".format(order.deliveryCharge)
         val total = if (order.approvedTotalAmount > 0) order.approvedTotalAmount else (order.totalAmount + order.deliveryCharge)
-        tvTotal.text = "₹%.2f".format(total)
-
+        tvTotal.text = "?%.2f".format(total)
         rvItems.adapter = UserOrderItemAdapter(data.items)
     }
 }

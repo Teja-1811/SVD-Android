@@ -67,4 +67,9 @@
         android:title="Payments"
         android:icon="@drawable/ic_payments"/>
 
+    <item
+        android:id="@+id/nav_enquiries"
+        android:title="Enquiries"
+        android:icon="@drawable/ic_person"/>
+
 </menu>

@@ -1,6 +1,8 @@
 package com.svd.svdagencies.data.api.admin
 
+import com.svd.svdagencies.data.model.admin.Items.AdminCategoriesResponse
 import com.svd.svdagencies.data.model.admin.Items.AdminItem
+import com.svd.svdagencies.data.model.admin.Items.AdminItemsByCategoryResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -8,12 +10,12 @@ import retrofit2.http.*
 interface AdminItemsApi {
 
     @GET("api/items/categories/")
-    suspend fun getCategories(): List<String>
+    suspend fun getCategories(): AdminCategoriesResponse
 
     @GET("api/items/by-category/")
     suspend fun getItemsByCategory(
         @Query("category") category: String
-    ): List<AdminItem>
+    ): AdminItemsByCategoryResponse
 
     @Multipart
     @POST("api/items/add/")

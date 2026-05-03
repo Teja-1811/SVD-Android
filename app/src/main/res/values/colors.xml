@@ -81,6 +81,16 @@
     <color name="customer_home_title">#111111</color>
     <color name="customer_home_body">#6F6F6F</color>
     <color name="customer_home_logo_badge">#FFFFFF</color>
+    <color name="hero_start">#8E1F1F</color>
+    <color name="hero_end">#E24A37</color>
+    <color name="hero_accent">#FFD8A8</color>
+    <color name="customer_shell_background">#FCF6F2</color>
+    <color name="customer_surface_alt">#FFF5EF</color>
+    <color name="customer_positive_bg">#EAF7EE</color>
+    <color name="customer_warning_bg">#FFF2E3</color>
+    <color name="customer_info_bg">#EEF5FF</color>
+    <color name="customer_badge_text">#7A2F14</color>
+    <color name="customer_border_soft">#F0D7CC</color>
 
     <!-- User Home Fragment Colors -->
     <color name="text_primary">#000000</color>

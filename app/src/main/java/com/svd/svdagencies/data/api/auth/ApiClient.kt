@@ -15,17 +15,21 @@ import java.util.concurrent.TimeUnit
 
 object ApiClient {
 
-    const val BASE_URL = "https://svdagencies.shop/"
+    const val BASE_URL = "https://www.svdagencies.shop/"
 
     private val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = HttpLoggingInterceptor.Level.HEADERS // Only log headers to speed up responses
     }
+
+    private val cacheSize = (5 * 1024 * 1024).toLong() // 5 MB
+    private val cache = okhttp3.Cache(App.context.cacheDir, cacheSize)
 
     // Client for general API calls (includes AuthInterceptor)
     private val client = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
+        .cache(cache)
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
         .addInterceptor(AuthInterceptor(SessionManager(App.context)))
         .addInterceptor(logging)
@@ -33,9 +37,9 @@ object ApiClient {
 
     // Client specifically for Auth (NO AuthInterceptor to avoid interference)
     private val authClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
         .addInterceptor(logging)
         .build()
@@ -84,6 +88,10 @@ object ApiClient {
         retrofit.create(AdminPaymentsApi::class.java)
     }
 
+    val adminEnquiriesApi: AdminEnquiriesApi by lazy {
+        retrofit.create(AdminEnquiriesApi::class.java)
+    }
+
     val adminOrdersApi: AdminOrdersApi by lazy {
         retrofit.create(AdminOrdersApi::class.java)
     }
@@ -114,5 +122,33 @@ object ApiClient {
 
     val deliveryApi: DeliveryApi by lazy {
         retrofit.create(DeliveryApi::class.java)
+    }
+
+    /**
+     * Helper to construct full image URLs for items.
+     * The final path is expected to be BASE_URL + images/items/ + fileName
+     */
+    fun getImageUrl(path: String?): String {
+        if (path.isNullOrBlank()) return ""
+        if (path.startsWith("http", ignoreCase = true)) return path
+        
+        val cleanPath = path.removePrefix("/")
+        val finalPath = if (cleanPath.startsWith("images/items/")) {
+            cleanPath
+        } else {
+            "images/items/$cleanPath"
+        }
+        
+        return BASE_URL.removeSuffix("/") + "/" + finalPath
+    }
+
+    /**
+     * Helper to construct full logo URLs for companies.
+     */
+    fun getLogoUrl(path: String?): String {
+        if (path.isNullOrBlank()) return ""
+        if (path.startsWith("http", ignoreCase = true)) return path
+        val cleanPath = path.removePrefix("/")
+        return BASE_URL.removeSuffix("/") + "/" + cleanPath
     }
 }

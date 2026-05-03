@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -71,17 +70,14 @@ class UserBillDetailActivity : AppCompatActivity() {
         btnDownload = findViewById(R.id.btnDownloadPdf)
 
         rvItems.layoutManager = LinearLayoutManager(this)
-        
         btnDownload.setOnClickListener { downloadInvoice() }
     }
 
     private fun loadBillDetails() {
-        val userId = sessionManager.getUserId()
-        api.getUserBillDetail(billId, userId).enqueue(object : Callback<UserBillDetailResponse> {
+        api.getUserBillDetail(billId).enqueue(object : Callback<UserBillDetailResponse> {
             override fun onResponse(call: Call<UserBillDetailResponse>, response: Response<UserBillDetailResponse>) {
                 if (response.isSuccessful && response.body() != null) {
-                    val data = response.body()!!
-                    displayBill(data)
+                    displayBill(response.body()!!)
                 } else {
                     Toast.makeText(this@UserBillDetailActivity, "Failed to load details", Toast.LENGTH_SHORT).show()
                 }
@@ -97,16 +93,15 @@ class UserBillDetailActivity : AppCompatActivity() {
         val bill = data.bill
         tvInvoiceNum.text = "Invoice #${bill.invoiceNumber}"
         tvDate.text = "Date: ${bill.invoiceDate}"
-        tvOpeningDue.text = "₹%.2f".format(bill.openingDue)
-        tvTotalAmount.text = "₹%.2f".format(bill.totalAmount)
-        tvLastPaid.text = "₹%.2f".format(bill.lastPaid)
-        tvCurrentDue.text = "₹%.2f".format(bill.currentDue)
-
+        tvOpeningDue.text = "?%.2f".format(bill.openingDue)
+        tvTotalAmount.text = "?%.2f".format(bill.totalAmount)
+        tvLastPaid.text = "?%.2f".format(bill.lastPaid)
+        tvCurrentDue.text = "?%.2f".format(bill.currentDue)
         rvItems.adapter = UserBillItemAdapter(data.items)
     }
 
     private fun downloadInvoice() {
-        val url = "${ApiClient.retrofit.baseUrl()}api/user/bills/$billId/download/?user_id=${sessionManager.getUserId()}"
+        val url = "${ApiClient.retrofit.baseUrl()}api/user/bills/$billId/download/"
         val token = sessionManager.getToken()
 
         if (token == null) {
@@ -124,7 +119,6 @@ class UserBillDetailActivity : AppCompatActivity() {
 
             val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             downloadManager.enqueue(request)
-
             Toast.makeText(this, "Download started...", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Toast.makeText(this, "Download failed: ${e.message}", Toast.LENGTH_LONG).show()

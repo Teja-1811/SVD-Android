@@ -40,11 +40,7 @@ class CustomerCompaniesAdapter(
             binding.tvItemCount.text = company.totalItems.toString()
 
             if (!company.logo.isNullOrEmpty()) {
-                val imageUrl = if (company.logo.startsWith("http")) {
-                    company.logo
-                } else {
-                    ApiClient.BASE_URL + company.logo.removePrefix("/")
-                }
+                val imageUrl = ApiClient.getLogoUrl(company.logo)
                 Glide.with(binding.ivCompanyLogo.context)
                     .load(imageUrl)
                     .placeholder(R.drawable.ic_milk_placeholder)

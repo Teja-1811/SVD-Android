@@ -65,13 +65,7 @@ class OrderProductAdapter(
         holder.qtyWatcher?.let { holder.etQty.removeTextChangedListener(it) }
         holder.etQty.setText(product.formatQuantity(qty))
 
-        val base = ApiClient.BASE_URL.removeSuffix("/")
-        val productImg = product.image
-        val url = if (productImg.startsWith("http")) {
-            productImg
-        } else {
-            if (productImg.startsWith("/")) "$base$productImg" else "$base/$productImg"
-        }
+        val url = ApiClient.getImageUrl(product.image)
 
         Glide.with(holder.itemView.context)
             .load(url)

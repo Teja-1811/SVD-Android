@@ -1,47 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="24dp">
+    app:cardBackgroundColor="?attr/colorSurface"
+    app:cardCornerRadius="36dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Welcome"
-        android:textColor="@color/textColorPrimary"
-        android:textSize="@dimen/text_size_xlarge"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:text="Choose an option to continue"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="@dimen/text_size_medium" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogin"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="24dp"
-        android:text="Login"
-        android:textSize="@dimen/text_size_button"
-        app:cornerRadius="12dp" />
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRegister"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="12dp"
-        android:text="Register"
-        android:textSize="@dimen/text_size_button"
-        app:cornerRadius="12dp"
-        app:strokeColor="@color/card_stroke_color" />
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:alpha="0.2"
+            android:background="?attr/colorOnSurfaceVariant" />
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_soft_badge"
+            android:paddingStart="14dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="6dp"
+            android:text="Choose your path"
+            android:textColor="@color/customer_badge_text"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Welcome"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Sign in to continue or create a new account to start using the app."
+            android:textColor="@color/textColorSecondary"
+            android:textSize="14sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginTop="28dp"
+            android:text="Login"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            app:backgroundTint="@color/brand_red"
+            app:cornerRadius="28dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRegister"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginTop="12dp"
+            android:text="Register"
+            android:textAllCaps="false"
+            android:textColor="@color/brand_red"
+            android:textSize="18sp"
+            app:cornerRadius="28dp"
+            app:strokeColor="@color/customer_border_soft" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

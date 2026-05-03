@@ -316,10 +316,10 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private suspend fun fetchAllAvailableItems(): List<AdminItem> {
-        val categories = ApiClient.adminItemsApi.getCategories()
-        return categories.map { category ->
+        val response = ApiClient.adminItemsApi.getCategories()
+        return response.categories.map { category ->
             lifecycleScope.async { ApiClient.adminItemsApi.getItemsByCategory(category) }
-        }.awaitAll().flatten().distinctBy { it.id }
+        }.awaitAll().flatMap { it.items }.distinctBy { it.id }
     }
 
     private fun saveBill() {

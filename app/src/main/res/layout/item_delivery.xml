@@ -100,7 +100,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/surface_variant"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp">
 
@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
-                app:cardBackgroundColor="@color/surface_variant"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp">
 
@@ -169,7 +169,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:background="@color/surface_variant"
+            android:background="?attr/colorSurface"
             android:gravity="center_vertical"
             android:orientation="vertical"
             android:padding="12dp">
@@ -217,6 +217,18 @@
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
                 android:text="Mark Delivered" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnQuickBill"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Bill"
+                android:textColor="@color/brand_red"
+                app:icon="@drawable/ic_plus"
+                app:iconTint="@color/brand_red"
+                app:iconSize="16dp"/>
         </LinearLayout>
     </LinearLayout>
 

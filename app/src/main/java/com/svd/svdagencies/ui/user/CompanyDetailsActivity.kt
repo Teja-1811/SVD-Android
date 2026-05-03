@@ -29,13 +29,15 @@ class CompanyDetailsActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.btnUserMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
+        navigationView.getHeaderView(0).findViewById<android.view.View>(R.id.btnCloseDrawer).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
 
         navigationView.setCheckedItem(R.id.nav_company)
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_terms -> {
-                    startActivity(Intent(this, TermsConditionsActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(drawerLayout, TermsConditionsActivity::class.java)
                     true
                 }
                 R.id.nav_company -> {
@@ -43,8 +45,11 @@ class CompanyDetailsActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_support -> {
-                    startActivity(Intent(this, ContactSupportActivity::class.java))
-                    drawerLayout.closeDrawer(GravityCompat.START)
+                    openDrawerDestination(drawerLayout, ContactSupportActivity::class.java)
+                    true
+                }
+                R.id.nav_queries -> {
+                    openDrawerDestination(drawerLayout, RaisedQueriesActivity::class.java)
                     true
                 }
                 else -> false
@@ -68,13 +73,23 @@ class CompanyDetailsActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvUserStatusMessage).visibility = android.view.View.GONE
 
         val container = findViewById<FrameLayout>(R.id.userFragmentContainer)
-        layoutInflater.inflate(R.layout.user_company_details, container, true)
+        layoutInflater.inflate(R.layout.activity_company_details, container, true)
 
         findViewById<MaterialButton>(R.id.btnOpenMap).setOnClickListener {
             val gmmIntentUri = Uri.parse("geo:0,0?q=Sri+Vijaya+Durga+Milk+Agencies+Gundugolanu")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             startActivity(mapIntent)
+        }
+    }
+
+    private fun openDrawerDestination(
+        drawerLayout: DrawerLayout,
+        activityClass: Class<out AppCompatActivity>
+    ) {
+        drawerLayout.closeDrawer(GravityCompat.START)
+        drawerLayout.post {
+            startActivity(Intent(this, activityClass))
         }
     }
 }

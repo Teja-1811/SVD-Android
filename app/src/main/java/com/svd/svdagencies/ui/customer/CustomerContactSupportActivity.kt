@@ -13,10 +13,17 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
 import com.svd.svdagencies.R
+import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.model.customer.CustomerContactResponse
 import com.svd.svdagencies.ui.auth.LoginActivity
+import com.svd.svdagencies.ui.user.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CustomerContactSupportActivity : AppCompatActivity() {
 
@@ -25,8 +32,35 @@ class CustomerContactSupportActivity : AppCompatActivity() {
         setContentView(R.layout.customer)
 
         val drawerLayout = findViewById<DrawerLayout>(R.id.customerDrawerLayout)
+        val navigationView = findViewById<NavigationView>(R.id.customerNavigationView)
         findViewById<ImageButton>(R.id.btnCustomerMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
+        }
+        navigationView.getHeaderView(0).findViewById<View>(R.id.btnCloseDrawer).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navigationView.setCheckedItem(R.id.nav_support)
+        navigationView.setNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_terms -> {
+                    openDrawerDestination(drawerLayout, TermsConditionsActivity::class.java)
+                    true
+                }
+                R.id.nav_company -> {
+                    openDrawerDestination(drawerLayout, CustomerCompanyDetailsActivity::class.java)
+                    true
+                }
+                R.id.nav_support -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.nav_queries -> {
+                    openDrawerDestination(drawerLayout, CustomerRaisedQueriesActivity::class.java)
+                    true
+                }
+                else -> false
+            }
         }
 
         val session = SessionManager(this)
@@ -43,16 +77,17 @@ class CustomerContactSupportActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.customerBottomNav).visibility = View.GONE
 
         val container = findViewById<FrameLayout>(R.id.customerFragmentContainer)
-        layoutInflater.inflate(R.layout.user_contact_support, container, true)
+        layoutInflater.inflate(R.layout.activity_contact_support, container, true)
 
-        val btnCall = findViewById<MaterialButton>(R.id.btnCall)
-        val btnWhatsapp = findViewById<MaterialButton>(R.id.btnWhatsapp)
-        val btnEmail = findViewById<MaterialButton>(R.id.btnEmail)
+        val btnCall = findViewById<View>(R.id.btnCall)
+        val btnWhatsapp = findViewById<View>(R.id.btnWhatsapp)
+        val btnEmail = findViewById<View>(R.id.btnEmail)
         val btnSubmit = findViewById<MaterialButton>(R.id.btnSubmit)
 
         val inputSubject = findViewById<TextInputEditText>(R.id.inputSubject)
         val inputMessage = findViewById<TextInputEditText>(R.id.inputMessage)
-        val inputContact = findViewById<TextInputEditText>(R.id.inputContact)
+        val inputPhone = findViewById<TextInputEditText>(R.id.inputPhone)
+        val inputEmail = findViewById<TextInputEditText>(R.id.inputEmail)
 
         btnCall.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
@@ -74,14 +109,76 @@ class CustomerContactSupportActivity : AppCompatActivity() {
         }
 
         btnSubmit.setOnClickListener {
-            val subject = inputSubject.text.toString()
-            val message = inputMessage.text.toString()
-            if (subject.isBlank() || message.isBlank()) {
-                Toast.makeText(this, "Please fill in subject and message", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Support request sent successfully", Toast.LENGTH_SHORT).show()
-                finish()
+            val subject = inputSubject.text.toString().trim()
+            val message = inputMessage.text.toString().trim()
+            val phone = inputPhone.text.toString().trim()
+            val email = inputEmail.text.toString().trim()
+
+            if (subject.isBlank() || message.isBlank() || phone.isBlank()) {
+                Toast.makeText(this, "Please fill subject, message, and phone number", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            btnSubmit.isEnabled = false
+            btnSubmit.text = "Submitting..."
+
+            val body = mapOf(
+                "name" to "Customer_${session.getUserId()}",
+                "phone" to phone,
+                "email" to email,
+                "subject" to subject,
+                "message" to message
+            )
+
+            ApiClient.customerApi.submitContact(body).enqueue(object : Callback<CustomerContactResponse> {
+                override fun onResponse(
+                    call: Call<CustomerContactResponse>,
+                    response: Response<CustomerContactResponse>
+                ) {
+                    btnSubmit.isEnabled = true
+                    btnSubmit.text = "Submit Message"
+
+                    val payload = response.body()
+                    if (response.isSuccessful && payload?.success == true) {
+                        Toast.makeText(
+                            this@CustomerContactSupportActivity,
+                            payload.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        inputSubject.text?.clear()
+                        inputMessage.text?.clear()
+                        inputPhone.text?.clear()
+                        inputEmail.text?.clear()
+                        startActivity(Intent(this@CustomerContactSupportActivity, CustomerRaisedQueriesActivity::class.java))
+                    } else {
+                        Toast.makeText(
+                            this@CustomerContactSupportActivity,
+                            payload?.message ?: "Failed to submit support request",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<CustomerContactResponse>, t: Throwable) {
+                    btnSubmit.isEnabled = true
+                    btnSubmit.text = "Submit Message"
+                    Toast.makeText(
+                        this@CustomerContactSupportActivity,
+                        "Network error: ${t.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        }
+    }
+
+    private fun openDrawerDestination(
+        drawerLayout: DrawerLayout,
+        activityClass: Class<out AppCompatActivity>
+    ) {
+        drawerLayout.closeDrawer(GravityCompat.START)
+        drawerLayout.post {
+            startActivity(Intent(this, activityClass))
         }
     }
 }

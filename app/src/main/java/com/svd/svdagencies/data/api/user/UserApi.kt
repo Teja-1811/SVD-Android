@@ -19,58 +19,49 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface UserApi {
-    @GET("api/user/dashboard/full/")
-    fun getDashboard(
-        @Query("user_id") userId: Int
-    ): Call<UserDashboardResponse>
+    @GET("api/user/dashboard/")
+    fun getDashboard(): Call<UserDashboardResponse>
 
-    @GET("api/user/offers/active/")
+    @GET("api/user/offers/")
     fun getActiveOffers(): Call<UserOffersResponse>
 
-    @GET("api/user/plans/available/")
+    @GET("api/user/subscriptions/plans/")
     fun getAvailablePlans(): Call<UserPlansResponse>
 
-    @POST("api/user/profile/update/")
+    @POST("api/user/profile/")
     fun updateProfile(
         @Body body: Map<String, @JvmSuppressWildcards Any>
     ): Call<UserProfileUpdateResponse>
 
-    @POST("api/user/subscription/pause-resume/")
+    @POST("api/user/subscriptions/pause-resume/")
     fun pauseResumeSubscription(
         @Body body: Map<String, @JvmSuppressWildcards Any>
     ): Call<Map<String, Any>>
 
-    @POST("api/user/prebook-order/")
+    @POST("api/user/orders/create/")
     fun prebookOrder(
-        @Body request: com.svd.svdagencies.data.model.user.PrebookOrderRequest
-    ): Call<Map<String, Any>>
+        @Body request: CreateOrderRequest
+    ): Call<OrderActionResponse>
 
-    @GET("api/user/current-subscription/")
-    fun getCurrentSubscription(
-        @Query("customer_id") customerId: Int
-    ): Call<UserSubscription>
+    @GET("api/user/subscriptions/current/")
+    fun getCurrentSubscription(): Call<UserSubscription>
 
     @GET("api/user/orders/pending/")
     suspend fun getPendingOrders(): PendingOrdersResponse
 
     @GET("api/user/bills/")
-    fun getUserBills(
-        @Query("user_id") userId: Int
-    ): Call<UserBillsResponse>
+    fun getUserBills(): Call<UserBillsResponse>
 
     @GET("api/user/bills/{bill_id}/")
     fun getUserBillDetail(
-        @Path("bill_id") billId: Int,
-        @Query("user_id") userId: Int
+        @Path("bill_id") billId: Int
     ): Call<UserBillDetailResponse>
 
     @GET("api/user/orders/{order_id}/")
     fun getUserOrderDetail(
-        @Path("order_id") orderId: Int,
-        @Query("user_id") userId: Int
+        @Path("order_id") orderId: Int
     ): Call<UserOrderDetailResponse>
 
     @POST("api/user/orders/create/")

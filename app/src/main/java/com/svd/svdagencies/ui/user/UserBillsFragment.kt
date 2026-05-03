@@ -105,8 +105,7 @@ class UserBillsFragment : Fragment(R.layout.user_bills) {
         tvStatus.text = "Syncing..."
         RefreshManager.startRefresh(swipeRefresh)
 
-        val userId = sessionManager.getUserId()
-        api.getUserBills(userId).enqueue(object : Callback<UserBillsResponse> {
+        api.getUserBills().enqueue(object : Callback<UserBillsResponse> {
             override fun onResponse(call: Call<UserBillsResponse>, response: Response<UserBillsResponse>) {
                 if (!isAdded) return
                 RefreshManager.stopRefresh(swipeRefresh)
@@ -114,13 +113,10 @@ class UserBillsFragment : Fragment(R.layout.user_bills) {
                 if (response.isSuccessful && response.body() != null) {
                     val bills = response.body()!!.bills
                     adapter.updateData(bills)
-                    
                     tvEmpty.visibility = if (bills.isEmpty()) View.VISIBLE else View.GONE
                     tvTotalBills.text = bills.size.toString()
-                    
                     val currentDue = if (bills.isNotEmpty()) bills.first().currentDue else 0.0
-                    tvTotalAmount.text = "₹%.2f".format(currentDue)
-                    
+                    tvTotalAmount.text = "?%.2f".format(currentDue)
                     tvStatus.text = "Updated just now"
                 } else {
                     tvStatus.text = "Failed to load"
@@ -143,7 +139,7 @@ class UserBillsFragment : Fragment(R.layout.user_bills) {
 
     private fun downloadInvoice(bill: UserBill) {
         val context = context ?: return
-        val url = "${ApiClient.retrofit.baseUrl()}api/user/bills/${bill.id}/download/?user_id=${sessionManager.getUserId()}"
+        val url = "${ApiClient.retrofit.baseUrl()}api/user/bills/${bill.id}/download/"
         val token = sessionManager.getToken()
 
         if (token == null) {

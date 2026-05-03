@@ -19,8 +19,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="top">
+            android:gravity="top"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -50,14 +50,14 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="end">
+                android:gravity="end"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tvPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\u20B9 500/mo"
+                    android:text="Rs. 500/mo"
                     android:textColor="@color/brand_red"
                     android:textSize="@dimen/text_size_large"
                     android:textStyle="bold" />
@@ -66,7 +66,7 @@
                     android:id="@+id/tvFrequency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\u20B9 125 per delivery"
+                    android:text="Rs. 125 per delivery"
                     android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_size_micro" />
             </LinearLayout>
@@ -77,10 +77,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
+            android:lineSpacingExtra="2dp"
             android:text="Get fresh A2 milk delivered every morning before 7 AM."
             android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_size_body_small"
-            android:lineSpacingExtra="2dp" />
+            android:textSize="@dimen/text_size_body_small" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,8 +91,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="16dp"
@@ -146,10 +146,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_medium"
                 android:layout_weight="1"
-                android:text="Select Plan"
+                android:text="Buy Subscription"
                 android:textAllCaps="false"
                 android:backgroundTint="@color/brand_red"
                 android:textColor="@color/white" />
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
+

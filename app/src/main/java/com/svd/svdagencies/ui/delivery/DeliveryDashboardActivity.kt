@@ -43,6 +43,7 @@ class DeliveryDashboardActivity : BaseActivity() {
         setupRecyclerView()
         setupTabs()
         setupSwipeRefresh()
+        setupGenerateBill()
         loadDeliveries()
     }
 
@@ -63,9 +64,15 @@ class DeliveryDashboardActivity : BaseActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = DeliveryAdapter { item, newStatus ->
+        adapter = DeliveryAdapter({ item, newStatus ->
             updateStatus(item, newStatus)
-        }
+        }, { item ->
+            val intent = android.content.Intent(this, DeliveryCreateBillActivity::class.java).apply {
+                putExtra("customer_id", item.customerId)
+                putExtra("customer_name", item.customerName)
+            }
+            startActivity(intent)
+        })
         binding.rvDeliveries.adapter = adapter
     }
 
@@ -84,6 +91,12 @@ class DeliveryDashboardActivity : BaseActivity() {
 
     private fun setupSwipeRefresh() {
         binding.swipeRefresh.setOnRefreshListener { loadDeliveries() }
+    }
+
+    private fun setupGenerateBill() {
+        binding.btnGenerateBill.setOnClickListener {
+            startActivity(android.content.Intent(this, DeliveryCreateBillActivity::class.java))
+        }
     }
 
     private fun loadDeliveries() {

@@ -19,8 +19,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvOfferTitle"
@@ -46,23 +46,50 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tvOfferExpiry"
+            android:id="@+id/tvOfferDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_small"
-            android:text="Expires on 01 Jan 2026"
+            android:text="Offer details will appear here."
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_size_body_small" />
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvOfferSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xsmall"
+            android:text="Buy 1 and get more"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_body_small"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_medium"
-            android:text="Claim Offer"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/brand_red"
-            android:textColor="@color/white"
-            app:cornerRadius="12dp" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvOfferExpiry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Expires on 01 Jan 2026"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_size_body_small" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnUseOffer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/brand_red"
+                android:text="Use Offer"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:cornerRadius="12dp" />
+        </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

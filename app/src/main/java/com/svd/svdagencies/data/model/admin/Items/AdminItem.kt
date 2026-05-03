@@ -33,3 +33,11 @@ data class AdminItem(
     val margin: Double
         get() = sellingPriceValue - buyingPriceValue
 }
+
+data class AdminCategoriesResponse(
+    val categories: List<String>
+)
+
+data class AdminItemsByCategoryResponse(
+    val items: List<AdminItem>
+)

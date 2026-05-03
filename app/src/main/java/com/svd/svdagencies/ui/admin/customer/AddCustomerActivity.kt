@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.customerData.AddCustomerRequest
@@ -11,7 +12,6 @@ import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
 import com.svd.svdagencies.databinding.AdminCustomerAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -54,25 +54,21 @@ class AddCustomerActivity : AdminBaseActivity() {
         binding.etShopName.setText(customer.shop_name)
         binding.etPhone.setText(customer.phone)
         
-        if (customer.id != null) {
+        if (customer.id != null && customer.id != 0) {
              fetchFullDetailsAndPopulate(customer.id)
         }
     }
 
     private fun fetchFullDetailsAndPopulate(id: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch {
             try {
-                val detail = api.getCustomerDetail(id)
-                withContext(Dispatchers.Main) {
-                    if (!isDestroyed) {
-                        binding.etCity.setText(detail.city)
-                        binding.etState.setText(detail.state)
-                        binding.etRetailerId.setText(detail.retailer_id)
-                        binding.etArea.setText(detail.area)
-                        binding.etPinCode.setText(detail.pincode)
-                        binding.etAddressLine1.setText(detail.address)
-                    }
-                }
+                val detail = withContext(Dispatchers.IO) { api.getCustomerDetail(id) }
+                binding.etCity.setText(detail.city)
+                binding.etState.setText(detail.state)
+                binding.etRetailerId.setText(detail.retailer_id)
+                binding.etArea.setText(detail.area)
+                binding.etPinCode.setText(detail.pincode)
+                binding.etAddressLine1.setText(detail.address)
             } catch (e: Exception) {
                 // Ignore failure
             }
@@ -106,7 +102,7 @@ class AddCustomerActivity : AdminBaseActivity() {
         }
 
         val request = AddCustomerRequest(
-            customer_id = customerToUpdate?.id,
+            id = customerToUpdate?.id,
             name = name,
             shop_name = shopName,
             phone = phone,
@@ -121,34 +117,26 @@ class AddCustomerActivity : AdminBaseActivity() {
         binding.btnAddCustomer.isEnabled = false
         showScreenLoading()
 
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch {
             try {
-                val response = api.addOrUpdateCustomer(request)
-                withContext(Dispatchers.Main) {
-                    if (!isDestroyed) {
-                        binding.btnAddCustomer.isEnabled = true
-                        hideScreenLoading()
-                        if (response.success) {
-                            Toast.makeText(this@AddCustomerActivity, response.message, Toast.LENGTH_SHORT).show()
-                            setResult(Activity.RESULT_OK)
-                            finish()
-                        } else {
-                            Toast.makeText(this@AddCustomerActivity, response.message, Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                val response = withContext(Dispatchers.IO) { api.addOrUpdateCustomer(request) }
+                binding.btnAddCustomer.isEnabled = true
+                hideScreenLoading()
+                if (response.success) {
+                    Toast.makeText(this@AddCustomerActivity, response.message, Toast.LENGTH_SHORT).show()
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                } else {
+                    Toast.makeText(this@AddCustomerActivity, response.message, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    if (!isDestroyed) {
-                        binding.btnAddCustomer.isEnabled = true
-                        hideScreenLoading()
-                        Toast.makeText(
-                            this@AddCustomerActivity,
-                            NetworkMessageUtils.friendlyMessage(e, "Failed to save customer"),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
+                binding.btnAddCustomer.isEnabled = true
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AddCustomerActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to save customer"),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

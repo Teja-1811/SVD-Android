@@ -12,8 +12,10 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.navigation.NavigationView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.auth.LoginActivity
+import com.svd.svdagencies.ui.user.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
 
 class CustomerCompanyDetailsActivity : AppCompatActivity() {
@@ -23,8 +25,35 @@ class CustomerCompanyDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.customer)
 
         val drawerLayout = findViewById<DrawerLayout>(R.id.customerDrawerLayout)
+        val navigationView = findViewById<NavigationView>(R.id.customerNavigationView)
         findViewById<ImageButton>(R.id.btnCustomerMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
+        }
+        navigationView.getHeaderView(0).findViewById<android.view.View>(R.id.btnCloseDrawer).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+
+        navigationView.setCheckedItem(R.id.nav_company)
+        navigationView.setNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_terms -> {
+                    openDrawerDestination(drawerLayout, TermsConditionsActivity::class.java)
+                    true
+                }
+                R.id.nav_company -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.nav_support -> {
+                    openDrawerDestination(drawerLayout, CustomerContactSupportActivity::class.java)
+                    true
+                }
+                R.id.nav_queries -> {
+                    openDrawerDestination(drawerLayout, CustomerRaisedQueriesActivity::class.java)
+                    true
+                }
+                else -> false
+            }
         }
 
         val session = SessionManager(this)
@@ -41,13 +70,23 @@ class CustomerCompanyDetailsActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.customerBottomNav).visibility = View.GONE
 
         val container = findViewById<FrameLayout>(R.id.customerFragmentContainer)
-        layoutInflater.inflate(R.layout.user_company_details, container, true)
+        layoutInflater.inflate(R.layout.activity_company_details, container, true)
 
         findViewById<MaterialButton>(R.id.btnOpenMap).setOnClickListener {
             val gmmIntentUri = Uri.parse("geo:0,0?q=Sri+Vijaya+Durga+Milk+Agencies+Gundugolanu")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             startActivity(mapIntent)
+        }
+    }
+
+    private fun openDrawerDestination(
+        drawerLayout: DrawerLayout,
+        activityClass: Class<out AppCompatActivity>
+    ) {
+        drawerLayout.closeDrawer(GravityCompat.START)
+        drawerLayout.post {
+            startActivity(Intent(this, activityClass))
         }
     }
 }

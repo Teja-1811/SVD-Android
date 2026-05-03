@@ -14,4 +14,9 @@
         android:id="@+id/nav_support"
         android:title="Contact Support"
         android:icon="@drawable/ic_phone" />
+
+    <item
+        android:id="@+id/nav_queries"
+        android:title="Raised Queries"
+        android:icon="@drawable/ic_bill" />
 </menu>

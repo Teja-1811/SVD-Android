@@ -35,6 +35,8 @@ class AdminDashboardActivity : AdminBaseActivity() {
     private lateinit var tvPendingOrders: TextView
     private lateinit var tvNotOrdered: TextView
     private lateinit var layoutNoOrdersList: LinearLayout
+    private lateinit var layoutTopDuesList: LinearLayout
+    private lateinit var layoutTopStockList: LinearLayout
     private lateinit var btnViewOrders: ImageButton
     private lateinit var btnUpdateStock: Button
 
@@ -55,6 +57,8 @@ class AdminDashboardActivity : AdminBaseActivity() {
         tvPendingOrders = findViewById(R.id.tvPendingOrders)
         tvNotOrdered = findViewById(R.id.tvNotOrdered)
         layoutNoOrdersList = findViewById(R.id.layoutNoOrdersList)
+        layoutTopDuesList = findViewById(R.id.layoutTopDuesList)
+        layoutTopStockList = findViewById(R.id.layoutTopStockList)
         btnViewOrders = findViewById(R.id.btnViewOrders)
         btnUpdateStock = findViewById(R.id.btnUpdateStock)
 
@@ -134,17 +138,18 @@ class AdminDashboardActivity : AdminBaseActivity() {
                 }
 
                 val data = response.body() ?: return
+                val summary = data.summary
 
                 // ========= UPDATE DASHBOARD COUNTS =========
-                tvCustomers.text = data.customers.toString()
-                tvItems.text = data.items.toString()
-                tvSalesToday.text = "₹${data.sales_today}"
-                tvDues.text = "₹${data.dues}"
-                tvPendingOrders.text = data.pending_orders.toString()
+                tvCustomers.text = (summary?.customers ?: 0).toString()
+                tvItems.text = (summary?.items ?: 0).toString()
+                tvSalesToday.text = "₹${summary?.sales_today ?: 0.0}"
+                tvDues.text = "₹${summary?.dues ?: 0.0}"
+                tvPendingOrders.text = (summary?.pending_orders ?: 0).toString()
 
                 // ========= UPDATE NOT ORDERED COUNT =========
                 tvNotOrdered.text =
-                    data.customers_no_orders_today_count.toString()
+                    (summary?.customers_no_orders_today_count ?: 0).toString()
 
                 // ========= POPULATE LIST =========
                 layoutNoOrdersList.removeAllViews()
@@ -174,6 +179,32 @@ class AdminDashboardActivity : AdminBaseActivity() {
                     }
 
                     layoutNoOrdersList.addView(row)
+                }
+
+                // ========= POPULATE TOP DUES =========
+                layoutTopDuesList.removeAllViews()
+                data.top_due_customers?.forEach { customer ->
+                    val row = LayoutInflater.from(this@AdminDashboardActivity)
+                        .inflate(R.layout.admin_top_due_customer_item, layoutTopDuesList, false)
+                    
+                    row.findViewById<TextView>(R.id.txtCustomerName).text = customer.name
+                    row.findViewById<TextView>(R.id.txtCustomerPhone).text = customer.phone
+                    row.findViewById<TextView>(R.id.txtDueAmount).text = "₹${customer.actual_due}"
+                    
+                    layoutTopDuesList.addView(row)
+                }
+
+                // ========= POPULATE TOP STOCK =========
+                layoutTopStockList.removeAllViews()
+                data.top_stock_items?.forEach { item ->
+                    val row = LayoutInflater.from(this@AdminDashboardActivity)
+                        .inflate(R.layout.admin_top_stock_item, layoutTopStockList, false)
+                    
+                    row.findViewById<TextView>(R.id.txtItemName).text = item.name
+                    row.findViewById<TextView>(R.id.txtItemCategory).text = item.category
+                    row.findViewById<TextView>(R.id.txtStockQty).text = "${item.stock_quantity} pcs"
+                    
+                    layoutTopStockList.addView(row)
                 }
             }
 

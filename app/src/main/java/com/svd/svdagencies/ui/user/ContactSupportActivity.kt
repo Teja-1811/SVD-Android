@@ -3,6 +3,7 @@ package com.svd.svdagencies.ui.user
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ProgressBar
@@ -17,10 +18,20 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
 import com.svd.svdagencies.R
+import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.model.customer.CustomerContactResponse
 import com.svd.svdagencies.ui.auth.LoginActivity
 import com.svd.svdagencies.utils.SessionManager
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ContactSupportActivity : AppCompatActivity() {
+
+    companion object {
+        const val EXTRA_PREFILL_SUBJECT = "prefill_subject"
+        const val EXTRA_PREFILL_MESSAGE = "prefill_message"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +41,9 @@ class ContactSupportActivity : AppCompatActivity() {
         val navigationView = findViewById<NavigationView>(R.id.userNavigationView)
         findViewById<ImageButton>(R.id.btnUserMenu).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
+        }
+        navigationView.getHeaderView(0).findViewById<View>(R.id.btnCloseDrawer).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
         }
 
         navigationView.setCheckedItem(R.id.nav_support)
@@ -49,6 +63,11 @@ class ContactSupportActivity : AppCompatActivity() {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
+                R.id.nav_queries -> {
+                    startActivity(Intent(this, RaisedQueriesActivity::class.java))
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
                 else -> false
             }
         }
@@ -65,21 +84,26 @@ class ContactSupportActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvUserToolbarTitle).text = "Contact Support"
 
         findViewById<SwipeRefreshLayout>(R.id.userSwipeRefresh).isEnabled = false
-        findViewById<BottomNavigationView>(R.id.userBottomNav).visibility = android.view.View.GONE
-        findViewById<ProgressBar>(R.id.userProgress).visibility = android.view.View.GONE
-        findViewById<TextView>(R.id.tvUserStatusMessage).visibility = android.view.View.GONE
+        findViewById<BottomNavigationView>(R.id.userBottomNav).visibility = View.GONE
+        val progressBar = findViewById<ProgressBar>(R.id.userProgress)
+        progressBar.visibility = View.GONE
+        findViewById<TextView>(R.id.tvUserStatusMessage).visibility = View.GONE
 
         val container = findViewById<FrameLayout>(R.id.userFragmentContainer)
-        layoutInflater.inflate(R.layout.user_contact_support, container, true)
+        layoutInflater.inflate(R.layout.activity_contact_support, container, true)
 
-        val btnCall = findViewById<MaterialButton>(R.id.btnCall)
-        val btnWhatsapp = findViewById<MaterialButton>(R.id.btnWhatsapp)
-        val btnEmail = findViewById<MaterialButton>(R.id.btnEmail)
+        val btnCall = findViewById<View>(R.id.btnCall)
+        val btnWhatsapp = findViewById<View>(R.id.btnWhatsapp)
+        val btnEmail = findViewById<View>(R.id.btnEmail)
         val btnSubmit = findViewById<MaterialButton>(R.id.btnSubmit)
 
         val inputSubject = findViewById<TextInputEditText>(R.id.inputSubject)
         val inputMessage = findViewById<TextInputEditText>(R.id.inputMessage)
-        val inputContact = findViewById<TextInputEditText>(R.id.inputContact)
+        val inputPhone = findViewById<TextInputEditText>(R.id.inputPhone)
+        val inputEmail = findViewById<TextInputEditText>(R.id.inputEmail)
+
+        inputSubject.setText(intent.getStringExtra(EXTRA_PREFILL_SUBJECT).orEmpty())
+        inputMessage.setText(intent.getStringExtra(EXTRA_PREFILL_MESSAGE).orEmpty())
 
         btnCall.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
@@ -101,14 +125,58 @@ class ContactSupportActivity : AppCompatActivity() {
         }
 
         btnSubmit.setOnClickListener {
-            val subject = inputSubject.text.toString()
-            val message = inputMessage.text.toString()
-            if (subject.isBlank() || message.isBlank()) {
-                Toast.makeText(this, "Please fill in subject and message", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Support request sent successfully", Toast.LENGTH_SHORT).show()
-                finish()
+            val subject = inputSubject.text.toString().trim()
+            val message = inputMessage.text.toString().trim()
+            val phone = inputPhone.text.toString().trim()
+            val email = inputEmail.text.toString().trim()
+
+            if (subject.isEmpty() || message.isEmpty() || phone.isEmpty()) {
+                Toast.makeText(this, "Please fill subject, message, and phone number", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            progressBar.visibility = View.VISIBLE
+            btnSubmit.isEnabled = false
+
+            val body = mapOf(
+                "name" to "User_${session.getUserId()}",
+                "phone" to phone,
+                "email" to email,
+                "subject" to subject,
+                "message" to message
+            )
+
+            ApiClient.customerApi.submitContact(body).enqueue(object : Callback<CustomerContactResponse> {
+                override fun onResponse(call: Call<CustomerContactResponse>, response: Response<CustomerContactResponse>) {
+                    progressBar.visibility = View.GONE
+                    btnSubmit.isEnabled = true
+
+                    val payload = response.body()
+                    if (response.isSuccessful && payload?.success == true) {
+                        Toast.makeText(
+                            this@ContactSupportActivity,
+                            payload.message ?: "Support request sent successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        inputSubject.text?.clear()
+                        inputMessage.text?.clear()
+                        inputPhone.text?.clear()
+                        inputEmail.text?.clear()
+                    } else {
+                        Toast.makeText(
+                            this@ContactSupportActivity,
+                            payload?.message ?: "Failed to send: ${response.message()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<CustomerContactResponse>, t: Throwable) {
+                    progressBar.visibility = View.GONE
+                    btnSubmit.isEnabled = true
+                    Toast.makeText(this@ContactSupportActivity, "Network error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 }

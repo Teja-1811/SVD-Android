@@ -1,10 +1,14 @@
 package com.svd.svdagencies.data.repository
 
 import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.model.user.CreateOrderRequest
+import com.svd.svdagencies.data.model.user.OrderActionResponse
+import com.svd.svdagencies.data.model.user.OrderItemPayload
+import com.svd.svdagencies.data.model.user.PrebookOrderRequest
+import com.svd.svdagencies.data.model.user.UserCustomer
 import com.svd.svdagencies.data.model.user.UserDashboardResponse
 import com.svd.svdagencies.data.model.user.UserPlan
 import com.svd.svdagencies.data.model.user.UserPlansResponse
-import com.svd.svdagencies.data.model.user.UserCustomer
 import com.svd.svdagencies.data.model.user.UserProfileUpdateResponse
 import com.svd.svdagencies.data.model.user.UserSubscription
 import retrofit2.Call
@@ -49,7 +53,7 @@ object UserRepository {
     ) {
         lastDashboardCall?.cancel()
 
-        lastDashboardCall = api.getDashboard(userId).apply {
+        lastDashboardCall = api.getDashboard().apply {
             enqueue(object : Callback<UserDashboardResponse> {
                 override fun onResponse(
                     call: Call<UserDashboardResponse>,
@@ -127,9 +131,7 @@ object UserRepository {
             return
         }
 
-        val payload = updates.toMutableMap().apply {
-            put("user_id", userId)
-        }
+        val payload = updates.toMutableMap()
 
         cachedProfileCall?.cancel()
 
@@ -185,7 +187,6 @@ object UserRepository {
         onError: ((String) -> Unit)? = null
     ) {
         val payload = mutableMapOf<String, Any>(
-            "user_id" to userId,
             "action" to action
         )
         if (action == "pause" && reason != null) {
@@ -213,7 +214,7 @@ object UserRepository {
         onSuccess: (UserSubscription) -> Unit,
         onError: ((String) -> Unit)? = null
     ) {
-        api.getCurrentSubscription(customerId).enqueue(object : Callback<UserSubscription> {
+        api.getCurrentSubscription().enqueue(object : Callback<UserSubscription> {
             override fun onResponse(call: Call<UserSubscription>, response: Response<UserSubscription>) {
                 if (response.isSuccessful) {
                     val body = response.body()
@@ -240,20 +241,33 @@ object UserRepository {
     }
 
     fun prebookOrder(
-        request: com.svd.svdagencies.data.model.user.PrebookOrderRequest,
+        request: PrebookOrderRequest,
         onSuccess: (() -> Unit)? = null,
         onError: ((String) -> Unit)? = null
     ) {
-        api.prebookOrder(request).enqueue(object : Callback<Map<String, Any>> {
-            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+        val payload = CreateOrderRequest(
+            items = request.items.map { item ->
+                OrderItemPayload(
+                    itemId = item.itemId,
+                    quantity = item.quantity.toInt(),
+                )
+            },
+            deliveryDate = request.deliveryDate,
+        )
+
+        api.prebookOrder(payload).enqueue(object : Callback<OrderActionResponse> {
+            override fun onResponse(
+                call: Call<OrderActionResponse>,
+                response: Response<OrderActionResponse>
+            ) {
                 if (response.isSuccessful) {
                     onSuccess?.invoke()
                 } else {
-                    onError?.invoke("Prebooking failed: ${response.code()}")
+                    onError?.invoke(response.body()?.message ?: "Prebooking failed: ${response.code()}")
                 }
             }
 
-            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+            override fun onFailure(call: Call<OrderActionResponse>, t: Throwable) {
                 if (call.isCanceled) return
                 onError?.invoke(t.localizedMessage ?: "Unable to reach server")
             }

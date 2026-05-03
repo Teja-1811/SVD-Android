@@ -124,20 +124,20 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
 
         etPrebookDate.setOnClickListener { showDatePicker() }
 
-        loadCategories()
+        observeCategories()
         observePendingOrders()
+        
+        cartViewModel.loadCategories { showToast(it) }
         cartViewModel.loadPendingOrders()
     }
 
-    private fun loadCategories() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val categories = try {
-                withContext(Dispatchers.IO) { ApiClient.adminItemsApi.getCategories() }
-            } catch (t: Throwable) {
-                showToast("Unable to load categories")
-                emptyList()
-            }
+    private fun observeCategories() {
+        cartViewModel.categories.observe(viewLifecycleOwner) { categories ->
             populateCategoryChips(categories)
+        }
+        
+        cartViewModel.itemsBySelectedCategory.observe(viewLifecycleOwner) { items ->
+            productAdapter.submitList(items)
         }
     }
 
@@ -167,15 +167,7 @@ class UserCartFragment : Fragment(R.layout.user_cart) {
     private fun selectCategory(category: String) {
         if (selectedCategory == category) return
         selectedCategory = category
-        viewLifecycleOwner.lifecycleScope.launch {
-            val items = try {
-                withContext(Dispatchers.IO) { ApiClient.adminItemsApi.getItemsByCategory(category) }
-            } catch (t: Throwable) {
-                showToast("Unable to load $category items")
-                emptyList()
-            }
-            productAdapter.submitList(items)
-        }
+        cartViewModel.loadItemsByCategory(category) { showToast(it) }
     }
 
     private fun showToast(message: String) {

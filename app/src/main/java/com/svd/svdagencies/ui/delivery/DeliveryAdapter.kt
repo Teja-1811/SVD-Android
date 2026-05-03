@@ -12,7 +12,8 @@ import com.svd.svdagencies.databinding.ItemDeliveryBinding
 import java.util.Locale
 
 class DeliveryAdapter(
-    private val onUpdateStatus: (DeliveryItem, String) -> Unit
+    private val onUpdateStatus: (DeliveryItem, String) -> Unit,
+    private val onQuickBill: (DeliveryItem) -> Unit
 ) : RecyclerView.Adapter<DeliveryAdapter.ViewHolder>() {
 
     private var items = listOf<DeliveryItem>()
@@ -91,6 +92,9 @@ class DeliveryAdapter(
             }
             binding.btnDelivered.setOnClickListener {
                 onUpdateStatus(item, "delivered")
+            }
+            binding.btnQuickBill.setOnClickListener {
+                onQuickBill(item)
             }
         }
     }
