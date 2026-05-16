@@ -9,6 +9,7 @@ import com.svd.svdagencies.data.model.admin.Bills.CreateBillResponse
 import com.svd.svdagencies.data.model.admin.Bills.EditBillRequest
 import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.admin.customerData.GenericSuccessResponse
+import com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesResponse
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
@@ -41,8 +42,15 @@ interface BillsDashboardApi {
     ): GenericSuccessResponse
 
     @DELETE("api/bills/{bill_id}/delete/")
-    suspend fun deleteBill(@Path("bill_id") billId: Int): Map<String, Boolean>
+    suspend fun deleteBill(@Path("bill_id") billId: Int): Map<String, Any>
 
     @GET("api/bills/{bill_id}/download/")
     suspend fun downloadBill(@Path("bill_id") billId: Int): ResponseBody
+
+    @GET("api/bills/delivery-boys/summary/")
+    suspend fun getDeliveryAgentDues(
+        @Query("delivery_boy_id") deliveryBoyId: Int? = null,
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null
+    ): DeliveryAgentDuesResponse
 }

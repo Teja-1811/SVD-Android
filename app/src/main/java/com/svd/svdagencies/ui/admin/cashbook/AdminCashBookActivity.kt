@@ -17,9 +17,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Cashbook.CashbookDashboardResponse
+import com.svd.svdagencies.data.model.admin.Cashbook.DeliverySalaryAgent
+import com.svd.svdagencies.data.model.admin.Cashbook.DeliverySalaryPaymentRequest
 import com.svd.svdagencies.data.model.admin.Cashbook.SaveBankBalanceRequest
 import com.svd.svdagencies.data.model.admin.Cashbook.SaveCashInRequest
 import com.svd.svdagencies.databinding.AdminCashbookBinding
@@ -27,7 +30,9 @@ import com.svd.svdagencies.databinding.AdminStatCardBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class AdminCashBookActivity : AdminBaseActivity() {
 
@@ -46,6 +51,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
     private var selectedMonth: Int? = null
     private var selectedYear: Int? = null
     private var shouldReloadOnResume = false
+    private var salaryAgents: List<DeliverySalaryAgent> = emptyList()
 
     private val expenseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -111,6 +117,10 @@ class AdminCashBookActivity : AdminBaseActivity() {
         
         binding.btnViewExpenses.setOnClickListener {
             expenseHistoryLauncher.launch(Intent(this, ViewExpensesActivity::class.java))
+        }
+
+        binding.btnPayDeliverySalary.setOnClickListener {
+            showDeliverySalaryDialog()
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -283,6 +293,10 @@ class AdminCashBookActivity : AdminBaseActivity() {
         binding.statRAmount.tvStatValue.text = "₹%.2f".format(data.remaining_amount)
         binding.statNetProfit.tvStatValue.text = "₹%.2f".format(data.net_profit)
 
+        val salarySummary = data.delivery_salary
+        salaryAgents = salarySummary?.agents.orEmpty()
+        binding.tvDeliverySalaryDue.text = "Delivery salary due: ₹%.2f".format(salarySummary?.remaining_salary ?: 0.0)
+
         binding.etBankBalance.setText(data.bank_balance.toString())
 
         companyDueAdapter.update(data.company_dues)
@@ -356,6 +370,86 @@ class AdminCashBookActivity : AdminBaseActivity() {
                 Toast.makeText(
                     this@AdminCashBookActivity,
                     NetworkMessageUtils.friendlyMessage(e, "Failed to sync cash inventory"),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun showDeliverySalaryDialog() {
+        if (salaryAgents.isEmpty()) {
+            Toast.makeText(this, "No delivery agents found", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(32, 12, 32, 0)
+        }
+        val agentInput = android.widget.AutoCompleteTextView(this).apply {
+            hint = "Select delivery customer / agent"
+            setAdapter(
+                ArrayAdapter(
+                    this@AdminCashBookActivity,
+                    android.R.layout.simple_dropdown_item_1line,
+                    salaryAgents.map { "${it.agent_name ?: "Agent"} - Due ₹%.2f".format(it.remaining_salary) }
+                )
+            )
+            setThreshold(0)
+            inputType = android.text.InputType.TYPE_NULL
+            setOnClickListener { showDropDown() }
+            setOnFocusChangeListener { _, hasFocus -> if (hasFocus) showDropDown() }
+        }
+        val amountInput = EditText(this).apply {
+            hint = "Amount paid"
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+        }
+        val notesInput = EditText(this).apply { hint = "Notes" }
+
+        container.addView(agentInput)
+        container.addView(amountInput)
+        container.addView(notesInput)
+
+        var selectedAgent: DeliverySalaryAgent? = null
+        agentInput.setOnItemClickListener { _, _, position, _ ->
+            selectedAgent = salaryAgents.getOrNull(position)
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Record Delivery Salary")
+            .setView(container)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Save") { _, _ ->
+                val agent = selectedAgent
+                val amount = amountInput.text.toString().toDoubleOrNull()
+                if (agent == null || amount == null || amount <= 0) {
+                    Toast.makeText(this, "Select agent and valid amount", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                saveDeliverySalary(agent.agent_id, amount, notesInput.text.toString())
+            }
+            .show()
+    }
+
+    private fun saveDeliverySalary(agentId: Int, amount: Double, notes: String) {
+        showScreenLoading()
+        lifecycleScope.launch {
+            try {
+                ApiClient.cashbookApi.addDeliveryAgentSalary(
+                    DeliverySalaryPaymentRequest(
+                        delivery_agent_id = agentId,
+                        amount = amount,
+                        payment_date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date()),
+                        notes = notes
+                    )
+                )
+                Toast.makeText(this@AdminCashBookActivity, "Salary recorded", Toast.LENGTH_SHORT).show()
+                loadDashboardData()
+            } catch (e: Exception) {
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AdminCashBookActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to record salary"),
                     Toast.LENGTH_SHORT
                 ).show()
             }

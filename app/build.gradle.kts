@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -89,6 +90,10 @@ dependencies {
     implementation("com.paytm.appinvokesdk:appinvokesdk:1.6.17") {
         exclude(group = "com.squareup.okhttp3", module = "okhttp")
     }
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
     
     // Architecture Components
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

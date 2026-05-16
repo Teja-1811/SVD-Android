@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="@color/card_background">
 
     <View
         android:id="@+id/heroBackground"
@@ -21,7 +21,7 @@
         android:layout_height="132dp"
         android:layout_marginTop="44dp"
         android:background="@drawable/circular_white_background"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/card_background"
         android:padding="1dp"
         android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +86,7 @@
         android:layout_marginTop="28dp"
         android:layout_marginEnd="20dp"
         app:cardBackgroundColor="@color/customer_home_card_background"
-        app:cardCornerRadius="36dp"
+        app:cardCornerRadius="@dimen/card_corner_radius_small"
         app:cardElevation="0dp"
         app:strokeColor="@color/customer_home_card_stroke"
         app:strokeWidth="1dp"

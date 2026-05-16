@@ -34,11 +34,11 @@
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
                         app:strokeColor="@color/card_stroke_color"
-                        android:background="?attr/colorSurface"
+                        android:background="@color/card_background"
                         app:cardBackgroundColor="?attr/colorSurface">
 
                         <LinearLayout
@@ -146,7 +146,7 @@
                             app:cardElevation="0dp"
                             app:strokeWidth="1dp"
                             app:strokeColor="@color/card_stroke_color"
-                            android:background="?attr/colorSurface"
+                            android:background="@color/card_background"
                             app:cardBackgroundColor="?attr/colorSurface">
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -179,7 +179,7 @@
                             app:cardElevation="0dp"
                             app:strokeWidth="1dp"
                             app:strokeColor="@color/card_stroke_color"
-                            android:background="?attr/colorSurface"
+                            android:background="@color/card_background"
                             app:cardBackgroundColor="?attr/colorSurface">
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -212,7 +212,7 @@
                             app:cardElevation="0dp"
                             app:strokeWidth="1dp"
                             app:strokeColor="@color/card_stroke_color"
-                            android:background="?attr/colorSurface"
+                            android:background="@color/card_background"
                             app:cardBackgroundColor="?attr/colorSurface">
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -245,7 +245,7 @@
                             app:cardElevation="0dp"
                             app:strokeWidth="1dp"
                             app:strokeColor="@color/card_stroke_color"
-                            android:background="?attr/colorSurface"
+                            android:background="@color/card_background"
                             app:cardBackgroundColor="?attr/colorSurface">
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -275,11 +275,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_large"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
                         app:strokeColor="@color/card_stroke_color"
-                        android:background="?attr/colorSurface"
+                        android:background="@color/card_background"
                         app:cardBackgroundColor="?attr/colorSurface">
 
                         <LinearLayout
@@ -379,7 +379,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/surface_background"
+            android:background="@color/window_background"
             android:elevation="0dp"
             android:orientation="horizontal"
             android:paddingHorizontal="@dimen/spacing_medium"
@@ -463,7 +463,7 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
+        android:background="@color/card_background"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"

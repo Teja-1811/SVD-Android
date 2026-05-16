@@ -25,6 +25,7 @@ import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlin.math.ceil
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -312,7 +313,8 @@ class CreateBillActivity : AdminBaseActivity() {
 
         tvTotalQty.text = totalQty.toString()
         tvTotalDiscAmount.text = "₹%.2f".format(totalDiscount)
-        tvGrandTotal.text = "₹%.2f".format(grandTotal)
+        val roundedGrandTotal = ceil(grandTotal)
+        tvGrandTotal.text = "₹%.0f".format(roundedGrandTotal)
     }
 
     private suspend fun fetchAllAvailableItems(): List<AdminItem> {

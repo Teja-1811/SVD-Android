@@ -41,6 +41,7 @@ class AdminBillAdapter(
         private val tvBillNumber: TextView = itemView.findViewById(R.id.tvBillNumber)
         private val tvBillDate: TextView = itemView.findViewById(R.id.tvBillDate)
         private val tvCustomerName: TextView = itemView.findViewById(R.id.tvCustomerName)
+        private val tvGeneratedBy: TextView = itemView.findViewById(R.id.tvGeneratedBy)
         private val tvTotalAmount: TextView = itemView.findViewById(R.id.tvTotalAmount)
         private val tvProfitAmount: TextView = itemView.findViewById(R.id.tvProfitAmount)
         private val btnView: ImageButton = itemView.findViewById(R.id.btnView)
@@ -53,6 +54,7 @@ class AdminBillAdapter(
             tvBillNumber.text = "Bill #" + (bill.bill_number ?: "")
             tvBillDate.text = formatDate(bill.date)
             tvCustomerName.text = bill.customer_name ?: ""
+            tvGeneratedBy.text = bill.generatedBy?.name?.takeIf { it.isNotBlank() } ?: "Not recorded"
             tvTotalAmount.text = "₹" + bill.total_amount
             tvProfitAmount.text = "₹" + bill.profit
 

@@ -19,6 +19,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.auth.LoginRequest
 import com.svd.svdagencies.data.api.auth.LoginResponse
+import com.svd.svdagencies.notifications.PushRegistrationManager
 import com.svd.svdagencies.ui.admin.AdminDashboardActivity
 import com.svd.svdagencies.ui.customer.CustomerMainActivity
 import com.svd.svdagencies.ui.delivery.DeliveryCreateBillActivity
@@ -42,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
         val session = SessionManager(this)
 
         session.getRole()?.let { role ->
+            PushRegistrationManager.requestPermissionIfNeeded(this)
+            PushRegistrationManager.registerCurrentDevice(this)
             navigateToDashboard(role)
             finish()
             return
@@ -109,6 +112,8 @@ class LoginActivity : AppCompatActivity() {
                     val body = response.body()
                     if (body != null && body.status == "success" && body.token != null) {
                         session.saveSession(body.token, body.role ?: "", body.userId ?: -1)
+                        PushRegistrationManager.requestPermissionIfNeeded(this@LoginActivity)
+                        PushRegistrationManager.registerCurrentDevice(this@LoginActivity)
                         navigateToDashboard(body.role ?: "")
                         finish()
                     } else {

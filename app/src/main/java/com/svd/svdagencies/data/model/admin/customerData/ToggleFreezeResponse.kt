@@ -14,6 +14,8 @@ data class CustomerDetail(
     val city: String?,
     val state: String?,
     val area: String?,
+    val route_id: Int? = null,
+    val route_name: String? = null,
     val pincode: String?,
     val address: String?,
     val frozen: Boolean,

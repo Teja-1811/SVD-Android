@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:padding="@dimen/spacing_xlarge">
 
         <TextView
             android:id="@+id/tvRegisterTitle"
@@ -27,8 +27,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/spacing_xlarge"
             android:hint="Name"
+            app:boxBackgroundColor="@color/card_background"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_small"
+            app:boxStrokeColor="@color/card_stroke_color"
             app:layout_constraintTop_toBottomOf="@id/tvRegisterTitle">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -44,8 +50,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_large"
             android:hint="Mobile Number"
+            app:boxBackgroundColor="@color/card_background"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_small"
+            app:boxStrokeColor="@color/card_stroke_color"
             app:layout_constraintTop_toBottomOf="@id/tilName">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -61,8 +73,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_large"
             android:hint="Email"
+            app:boxBackgroundColor="@color/card_background"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_small"
+            app:boxStrokeColor="@color/card_stroke_color"
             app:layout_constraintTop_toBottomOf="@id/tilNumber">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -78,8 +96,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_large"
             android:hint="Password"
+            app:boxBackgroundColor="@color/card_background"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_small"
+            app:boxStrokeColor="@color/card_stroke_color"
             app:passwordToggleEnabled="true"
             app:layout_constraintTop_toBottomOf="@id/tilEmail">
 
@@ -96,8 +120,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_large"
             android:hint="Confirm Password"
+            app:boxBackgroundColor="@color/card_background"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_small"
+            app:boxStrokeColor="@color/card_stroke_color"
             app:passwordToggleEnabled="true"
             app:layout_constraintTop_toBottomOf="@id/tilPassword">
 
@@ -114,8 +144,14 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_large"
             android:hint="Address"
+            app:boxBackgroundColor="@color/card_background"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_small"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_small"
+            app:boxStrokeColor="@color/card_stroke_color"
             app:layout_constraintTop_toBottomOf="@id/tilCPassword">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -132,10 +168,10 @@
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/spacing_xlarge"
             android:text="Register"
             android:textSize="@dimen/text_size_button"
-            app:cornerRadius="12dp"
+            app:cornerRadius="@dimen/card_corner_radius_small"
             app:layout_constraintTop_toBottomOf="@id/tilAddress" />
 
         <LinearLayout
@@ -143,7 +179,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/spacing_xlarge"
             app:layout_constraintTop_toBottomOf="@id/btnRegister"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">

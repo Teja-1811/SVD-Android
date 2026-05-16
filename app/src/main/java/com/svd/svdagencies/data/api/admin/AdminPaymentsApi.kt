@@ -17,7 +17,7 @@ interface AdminPaymentsApi {
     @POST("api/payments/save-daily/")
     suspend fun saveDailyPayments(
         @Body request: SaveDailyPaymentsRequest
-    ): Map<String, Boolean>
+    ): Map<String, Any>
 
     @GET("api/payments/monthly-summary/")
     suspend fun getMonthlyPaymentSummary(

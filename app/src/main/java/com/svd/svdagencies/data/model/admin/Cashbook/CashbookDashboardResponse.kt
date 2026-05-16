@@ -13,7 +13,8 @@ data class CashbookDashboardResponse(
     val net_profit: Double,
     val net_cash: Double,
     val stock_value: Double,
-    val remaining_amount: Double
+    val remaining_amount: Double,
+    val delivery_salary: DeliverySalarySummary? = null
 )
 
 data class Denominations(
@@ -36,4 +37,27 @@ data class CompanyDue(
     val total_paid: Double,
     val total_due: Double,
     val last_updated: String
+)
+
+data class DeliverySalarySummary(
+    val agents: List<DeliverySalaryAgent> = emptyList(),
+    val salary_earned: Double = 0.0,
+    val salary_paid: Double = 0.0,
+    val remaining_salary: Double = 0.0
+)
+
+data class DeliverySalaryAgent(
+    val agent_id: Int,
+    val agent_name: String? = null,
+    val agent_phone: String? = null,
+    val salary_earned: Double = 0.0,
+    val salary_paid: Double = 0.0,
+    val remaining_salary: Double = 0.0
+)
+
+data class DeliverySalaryPaymentRequest(
+    val delivery_agent_id: Int,
+    val amount: Double,
+    val payment_date: String? = null,
+    val notes: String? = null
 )

@@ -57,8 +57,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                app:cardElevation="0dp"
                 app:strokeColor="@color/divider_line"
                 app:strokeWidth="1dp">
 
@@ -127,8 +127,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
+                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                app:cardElevation="0dp"
                 app:strokeColor="@color/divider_line"
                 app:strokeWidth="1dp">
 

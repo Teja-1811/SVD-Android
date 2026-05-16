@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_small"
-    android:background="?attr/colorSurface"
-    app:cardCornerRadius="@dimen/card_corner_radius_large"
+    android:background="@color/card_background"
+    app:cardCornerRadius="@dimen/card_corner_radius_small"
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/card_stroke_color"
@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSurface"
+        android:background="@color/card_background"
         android:orientation="horizontal">
 
         <!-- Left Blue Stroke Indicator -->

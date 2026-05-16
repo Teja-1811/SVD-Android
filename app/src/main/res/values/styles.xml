@@ -1,24 +1,25 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/brand_red</item>
         <item name="colorPrimaryVariant">@color/brand_red_dark</item>
         <item name="colorOnPrimary">@color/white</item>
 
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/icon_blue</item>
-        <item name="colorSecondaryVariant">@color/icon_blue</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/brand_blue</item>
+        <item name="colorSecondaryVariant">@color/brand_blue</item>
+        <item name="colorOnSecondary">@color/white</item>
 
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/brand_red</item>
+        <item name="android:windowBackground">@color/window_background</item>
 
         <!-- Required Material attributes to avoid crashes in components -->
-        <item name="colorSurface">@color/white</item>
-        <item name="colorOnSurface">@color/black</item>
+        <item name="colorSurface">@color/card_background</item>
+        <item name="colorOnSurface">@color/textColorPrimary</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
-        <item name="colorOnSurfaceVariant">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/textColorSecondary</item>
     </style>
 
     <style name="Theme.SVDAgencies.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

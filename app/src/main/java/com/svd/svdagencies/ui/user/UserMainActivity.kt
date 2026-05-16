@@ -28,13 +28,13 @@ class UserMainActivity : AppCompatActivity() {
     private lateinit var toolbar: MaterialToolbar
     private lateinit var tvToolbarTitle: TextView
     private lateinit var btnMenu: ImageButton
-    private lateinit var btnLogout: ImageButton
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var userProgress: ProgressBar
     private lateinit var tvStatusMessage: TextView
     private lateinit var session: SessionManager
     private var userId: Int = -1
+    private var activeTabId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +48,6 @@ class UserMainActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.userToolbar)
         tvToolbarTitle = findViewById(R.id.tvUserToolbarTitle)
         btnMenu = findViewById(R.id.btnUserMenu)
-        btnLogout = findViewById(R.id.btnUserLogout)
         swipeRefresh = findViewById(R.id.userSwipeRefresh)
         bottomNav = findViewById(R.id.userBottomNav)
         userProgress = findViewById(R.id.userProgress)
@@ -62,10 +61,6 @@ class UserMainActivity : AppCompatActivity() {
         }
         navigationView.getHeaderView(0).findViewById<View>(R.id.btnCloseDrawer).setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
-        }
-
-        btnLogout.setOnClickListener {
-            handleLogout()
         }
 
         navigationView.setNavigationItemSelectedListener { item ->
@@ -84,6 +79,10 @@ class UserMainActivity : AppCompatActivity() {
                 }
                 R.id.nav_queries -> {
                     openDrawerDestination(RaisedQueriesActivity::class.java)
+                    true
+                }
+                R.id.nav_logout -> {
+                    handleLogout()
                     true
                 }
                 else -> false
@@ -112,16 +111,19 @@ class UserMainActivity : AppCompatActivity() {
             bottomNav.selectedItemId = itemId
             return
         }
+        if (activeTabId == itemId) {
+            return
+        }
         showFragmentForMenuItem(itemId)
     }
 
     private fun showFragmentForMenuItem(itemId: Int) {
         when (itemId) {
-            R.id.nav_home -> loadFragment(UserHomeFragment(), "SVD Agency")
-            R.id.nav_subscription -> loadFragment(UserSubscriptionFragment(), "Subscriptions")
-            R.id.nav_bills -> loadFragment(UserBillsFragment(), "My Bills")
-            R.id.nav_cart -> loadFragment(UserCartFragment(), "Cart")
-            R.id.nav_profile -> loadFragment(UserProfileFragment(), "My Profile")
+            R.id.nav_home -> loadFragment(itemId, "user_home", "SVD Agency") { UserHomeFragment() }
+            R.id.nav_subscription -> loadFragment(itemId, "user_subscription", "Subscriptions") { UserSubscriptionFragment() }
+            R.id.nav_bills -> loadFragment(itemId, "user_bills", "My Bills") { UserBillsFragment() }
+            R.id.nav_cart -> loadFragment(itemId, "user_cart", "Cart") { UserCartFragment() }
+            R.id.nav_profile -> loadFragment(itemId, "user_profile", "My Profile") { UserProfileFragment() }
         }
     }
 
@@ -170,10 +172,16 @@ class UserMainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadFragment(fragment: Fragment, title: String) {
+    private fun loadFragment(itemId: Int, tag: String, title: String, createFragment: () -> Fragment) {
         tvToolbarTitle.text = title
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.userFragmentContainer, fragment)
-            .commit()
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        fragmentManager.fragments.forEach { transaction.hide(it) }
+
+        val fragment = fragmentManager.findFragmentByTag(tag) ?: createFragment().also {
+            transaction.add(R.id.userFragmentContainer, it, tag)
+        }
+        transaction.show(fragment).commit()
+        activeTabId = itemId
     }
 }

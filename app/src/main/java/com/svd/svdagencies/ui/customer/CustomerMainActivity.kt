@@ -34,6 +34,7 @@ class CustomerMainActivity : AppCompatActivity() {
     private lateinit var btnMenu: ImageButton
     private lateinit var btnLogout: ImageButton
     private lateinit var bottomNav: BottomNavigationView
+    private var activeTabId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,16 +90,16 @@ class CustomerMainActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState == null) {
-            loadFragment(CustomerHomeFragment(), "Home")
+            loadFragment(R.id.nav_home, "customer_home", "Home") { CustomerHomeFragment() }
         }
 
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_home -> loadFragment(CustomerHomeFragment(), "Home")
-                R.id.nav_companies -> loadFragment(CustomerCompaniesFragment(), "Companies")
-                R.id.nav_orders -> loadFragment(CustomerOrdersFragment.newInstance(), "Orders")
-                R.id.nav_bills -> loadFragment(CustomerBillsFragment(), "Bills")
-                R.id.nav_payment -> loadFragment(CustomerPaymentFragment(), "Payment")
+                R.id.nav_home -> loadFragment(it.itemId, "customer_home", "Home") { CustomerHomeFragment() }
+                R.id.nav_companies -> loadFragment(it.itemId, "customer_companies", "Companies") { CustomerCompaniesFragment() }
+                R.id.nav_orders -> loadFragment(it.itemId, "customer_orders", "Orders") { CustomerOrdersFragment.newInstance() }
+                R.id.nav_bills -> loadFragment(it.itemId, "customer_bills", "Bills") { CustomerBillsFragment() }
+                R.id.nav_payment -> loadFragment(it.itemId, "customer_payment", "Payment") { CustomerPaymentFragment() }
             }
             true
         }
@@ -114,7 +115,15 @@ class CustomerMainActivity : AppCompatActivity() {
 
     fun openOrdersScreen(editLatestOrder: Boolean = false) {
         bottomNav.menu.findItem(R.id.nav_orders).isChecked = true
-        loadFragment(CustomerOrdersFragment.newInstance(editLatestOrder), "Orders")
+        if (editLatestOrder) {
+            tvToolbarTitle.text = "Orders"
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.customerFragmentContainer, CustomerOrdersFragment.newInstance(true), "customer_orders_edit")
+                .commit()
+            activeTabId = R.id.nav_orders
+        } else {
+            loadFragment(R.id.nav_orders, "customer_orders", "Orders") { CustomerOrdersFragment.newInstance() }
+        }
     }
 
     private fun openDrawerDestination(activityClass: Class<out AppCompatActivity>) {
@@ -124,10 +133,19 @@ class CustomerMainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadFragment(fragment: Fragment, title: String) {
+    private fun loadFragment(itemId: Int, tag: String, title: String, createFragment: () -> Fragment) {
+        if (activeTabId == itemId) {
+            return
+        }
         tvToolbarTitle.text = title
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.customerFragmentContainer, fragment)
-            .commit()
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        fragmentManager.fragments.forEach { transaction.hide(it) }
+
+        val fragment = fragmentManager.findFragmentByTag(tag) ?: createFragment().also {
+            transaction.add(R.id.customerFragmentContainer, it, tag)
+        }
+        transaction.show(fragment).commit()
+        activeTabId = itemId
     }
 }

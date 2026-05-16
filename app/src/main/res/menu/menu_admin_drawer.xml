@@ -33,6 +33,11 @@
         android:icon="@drawable/ic_delivery_dashboard"/>
 
     <item
+        android:id="@+id/nav_agent_dues"
+        android:title="Agent Dues"
+        android:icon="@drawable/ic_money"/>
+
+    <item
         android:id="@+id/nav_items"
         android:title="Items"
         android:icon="@drawable/ic_items"/>

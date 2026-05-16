@@ -97,7 +97,7 @@ class AdminBillsActivity : AdminBaseActivity() {
                 startActivity(intent)
             },
             onWhatsappClick = { bill ->
-                shareBillOnWhatsapp(bill)
+                shareBillOnWhatsappLikeWebsite(bill)
             },
             onDownloadClick = { bill ->
                 bill.id.let { downloadBill(it) }
@@ -108,6 +108,69 @@ class AdminBillsActivity : AdminBaseActivity() {
         )
         rvBills.layoutManager = LinearLayoutManager(this)
         rvBills.adapter = billAdapter
+    }
+
+    private fun shareBillOnWhatsappLikeWebsite(bill: AdminBill) {
+        val customer = customers.find { it.name == bill.customer_name }
+        var phoneNumber = (bill.customerPhone ?: customer?.phone).orEmpty().trim()
+        if (phoneNumber.isEmpty()) {
+            Toast.makeText(this, "Customer phone number not available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (phoneNumber.length == 10) {
+            phoneNumber = "91$phoneNumber"
+        }
+
+        val customerName = bill.customer_name.orEmpty()
+        val agencyName = (bill.customerShopName ?: customer?.shop_name).orEmpty()
+        val invoiceNumber = bill.bill_number.orEmpty()
+        val invoiceDate = formatShareDate(bill.date)
+        val invoiceLink = bill.publicInvoiceUrl.orEmpty()
+        val due = bill.currentDue
+        val balanceLine = if (due < 0) {
+            "Wallet Balance: ₹${kotlin.math.abs(Math.round(due))}"
+        } else {
+            "Current Due: ₹%.2f".format(Locale.US, due)
+        }
+
+        val message = """
+            Dear $customerName${if (agencyName.isNotBlank()) " ($agencyName)" else ""},
+
+            Please find your invoice details below:
+
+            Invoice No: $invoiceNumber
+            Invoice Date: $invoiceDate
+            Invoice Link: $invoiceLink
+
+            $balanceLine
+
+            Thank you for your continued business with
+            Sri Vijaya Durga Milk Agencies.
+        """.trimIndent()
+
+        try {
+            val url = "https://api.whatsapp.com/send/?phone=$phoneNumber&text=" +
+                URLEncoder.encode(message, "UTF-8") +
+                "&type=phone_number&app_absent=0"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp not installed or error occurred", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun formatShareDate(dateString: String?): String {
+        if (dateString.isNullOrBlank()) return ""
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val outputFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
+            val date = inputFormat.parse(dateString)
+            if (date != null) outputFormat.format(date) else dateString
+        } catch (e: Exception) {
+            dateString
+        }
     }
 
     private fun shareBillOnWhatsapp(bill: AdminBill) {

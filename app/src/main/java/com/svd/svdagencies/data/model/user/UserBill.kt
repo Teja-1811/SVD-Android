@@ -11,7 +11,7 @@ data class UserBill(
     @SerializedName("invoice_number") val invoiceNumber: String,
     @SerializedName("invoice_date") val invoiceDate: String,
     @SerializedName("total_amount") val totalAmount: Double,
-    @SerializedName("opening_due") val openingDue: Double,
+    @SerializedName("opening_due", alternate = ["op_due_amount"]) val openingDue: Double,
     @SerializedName("profit") val profit: Double,
     @SerializedName("current_due") val currentDue: Double
 )
@@ -26,7 +26,7 @@ data class UserBillDetail(
     @SerializedName("invoice_number") val invoiceNumber: String,
     @SerializedName("invoice_date") val invoiceDate: String,
     @SerializedName("total_amount") val totalAmount: Double,
-    @SerializedName("opening_due") val openingDue: Double,
+    @SerializedName("opening_due", alternate = ["op_due_amount"]) val openingDue: Double,
     @SerializedName("last_paid") val lastPaid: Double,
     @SerializedName("profit") val profit: Double,
     @SerializedName("current_due") val currentDue: Double
@@ -34,11 +34,12 @@ data class UserBillDetail(
 
 data class UserBillItem(
     @SerializedName("item_id") val itemId: Int,
-    @SerializedName("code") val code: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("mrp") val mrp: Double,
+    @SerializedName("code", alternate = ["item_code"]) val code: String = "",
+    @SerializedName("name", alternate = ["item_name"]) val name: String = "",
+    @SerializedName("mrp") val mrp: Double = 0.0,
     @SerializedName("price_per_unit") val pricePerUnit: Double,
     @SerializedName("discount") val discount: Double,
+    @SerializedName("total_discount") val totalDiscount: Double = 0.0,
     @SerializedName("quantity") val quantity: Int,
     @SerializedName("total_amount") val totalAmount: Double
 )

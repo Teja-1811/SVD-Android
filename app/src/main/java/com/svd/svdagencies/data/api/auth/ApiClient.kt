@@ -1,6 +1,7 @@
 package com.svd.svdagencies.data.api.auth
 
 import com.svd.svdagencies.App
+import com.svd.svdagencies.BuildConfig
 import com.svd.svdagencies.data.api.admin.*
 import com.svd.svdagencies.data.api.customer.CustomerApi
 import com.svd.svdagencies.data.api.customer.ProductApi
@@ -18,7 +19,7 @@ object ApiClient {
     const val BASE_URL = "https://www.svdagencies.shop/"
 
     private val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.HEADERS // Only log headers to speed up responses
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
     private val cacheSize = (5 * 1024 * 1024).toLong() // 5 MB
@@ -122,6 +123,10 @@ object ApiClient {
 
     val deliveryApi: DeliveryApi by lazy {
         retrofit.create(DeliveryApi::class.java)
+    }
+
+    val pushApi: PushApi by lazy {
+        retrofit.create(PushApi::class.java)
     }
 
     /**

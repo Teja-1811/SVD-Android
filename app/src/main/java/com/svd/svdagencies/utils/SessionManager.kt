@@ -31,4 +31,18 @@ class SessionManager(context: Context) {
         Log.d("SessionManager", "Clearing session")
         prefs.edit().clear().apply()
     }
+
+    fun saveSelectedRoute(id: Int?, name: String?) {
+        prefs.edit()
+            .putInt("selected_route_id", id ?: -1)
+            .putString("selected_route_name", name)
+            .apply()
+    }
+
+    fun getSelectedRouteId(): Int? {
+        val id = prefs.getInt("selected_route_id", -1)
+        return if (id == -1) null else id
+    }
+
+    fun getSelectedRouteName(): String? = prefs.getString("selected_route_name", null)
 }

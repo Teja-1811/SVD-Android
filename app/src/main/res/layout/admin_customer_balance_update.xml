@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorSurface"
-    app:cardCornerRadius="24dp"
-    app:cardElevation="2dp"
+    android:background="@color/card_background"
+    app:cardCornerRadius="@dimen/card_corner_radius_small"
+    app:cardElevation="0dp"
     app:cardUseCompatPadding="false"
     app:cardBackgroundColor="?attr/colorSurface"
     app:strokeWidth="1dp"
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="?attr/colorSurface"
+        android:background="@color/card_background"
         android:padding="22dp">
 
         <!-- Header -->
@@ -82,7 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="18dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="@dimen/card_corner_radius_small"
             app:cardBackgroundColor="?attr/colorSurfaceVariant"
             app:strokeColor="?attr/colorOutlineVariant"
             app:strokeWidth="1dp"

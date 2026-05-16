@@ -2,6 +2,7 @@ package com.svd.svdagencies.data.api.admin
 
 import com.svd.svdagencies.data.model.admin.*
 import com.svd.svdagencies.data.model.admin.Cashbook.CashbookDashboardResponse
+import com.svd.svdagencies.data.model.admin.Cashbook.DeliverySalaryPaymentRequest
 import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseListResponse
 import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseRequest
 import com.svd.svdagencies.data.model.admin.Cashbook.SaveBankBalanceRequest
@@ -17,19 +18,22 @@ interface CashbookApi {
     ): CashbookDashboardResponse
 
     @POST("api/cashbook/save-cash/")
-    suspend fun saveCashIn(@Body request: SaveCashInRequest): Map<String, Boolean>
+    suspend fun saveCashIn(@Body request: SaveCashInRequest): Map<String, Any>
 
     @POST("api/cashbook/save-bank/")
-    suspend fun saveBankBalance(@Body request: SaveBankBalanceRequest): Map<String, Boolean>
+    suspend fun saveBankBalance(@Body request: SaveBankBalanceRequest): Map<String, Any>
 
     @POST("api/cashbook/add-expense/")
-    suspend fun addExpense(@Body request: ExpenseRequest): Map<String, Boolean>
+    suspend fun addExpense(@Body request: ExpenseRequest): Map<String, Any>
+
+    @POST("api/cashbook/delivery-agent-salary/")
+    suspend fun addDeliveryAgentSalary(@Body request: DeliverySalaryPaymentRequest): Map<String, Any>
 
     @PUT("api/cashbook/edit-expense/{id}/")
     suspend fun editExpense(
         @Path("id") id: Int,
         @Body request: ExpenseRequest
-    ): Map<String, Boolean>
+    ): Map<String, Any>
 
     @GET("api/cashbook/expenses/")
     suspend fun getExpenses(
@@ -38,5 +42,5 @@ interface CashbookApi {
     ): ExpenseListResponse
 
     @DELETE("api/cashbook/delete-expense/{id}/")
-    suspend fun deleteExpense(@Path("id") id: Int): Map<String, Boolean>
+    suspend fun deleteExpense(@Path("id") id: Int): Map<String, Any>
 }

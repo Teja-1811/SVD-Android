@@ -11,20 +11,14 @@ import com.google.android.material.tabs.TabLayout
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.AdminDeliveryDashboardResponse
 import com.svd.svdagencies.data.model.admin.AdminDeliveryEntry
-import com.svd.svdagencies.data.model.delivery.DeliveryUpdateRequest
-import com.svd.svdagencies.data.model.delivery.DeliveryUpdateResponse
 import com.svd.svdagencies.databinding.AdminUserDeliveryBinding
 import com.svd.svdagencies.ui.admin.adapter.AdminDeliveryDashboardAdapter
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 class AdminUserDeliveryActivity : AdminBaseActivity() {
@@ -78,9 +72,7 @@ class AdminUserDeliveryActivity : AdminBaseActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = AdminDeliveryDashboardAdapter { item, newStatus ->
-            updateStatus(item, newStatus)
-        }
+        adapter = AdminDeliveryDashboardAdapter()
         binding.rvDeliveries.layoutManager = LinearLayoutManager(this)
         binding.rvDeliveries.adapter = adapter
     }
@@ -235,64 +227,11 @@ class AdminUserDeliveryActivity : AdminBaseActivity() {
         }
     }
 
-    private fun updateStatus(item: AdminDeliveryEntry, newStatus: String) {
-        val request = DeliveryUpdateRequest(
-            type = item.type,
-            deliveryId = item.deliveryId,
-            orderId = item.orderId,
-            subscriptionOrderId = item.subscriptionOrderId,
-            status = newStatus,
-            deliveredAmount = if (newStatus == "delivered" && item.type == "order") {
-                item.grandTotal ?: item.totalAmount
-            } else {
-                null
-            },
-            deliveredAt = if (newStatus == "delivered") currentIsoTimestamp() else null
-        )
-
-        showScreenLoading()
-        ApiClient.deliveryApi.updateDelivery(request).enqueue(object : Callback<DeliveryUpdateResponse> {
-            override fun onResponse(
-                call: Call<DeliveryUpdateResponse>,
-                response: Response<DeliveryUpdateResponse>
-            ) {
-                hideScreenLoading()
-                if (response.isSuccessful && response.body()?.success == true) {
-                    Toast.makeText(
-                        this@AdminUserDeliveryActivity,
-                        response.body()?.message ?: "Delivery updated",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    loadDashboard()
-                } else {
-                    Toast.makeText(
-                        this@AdminUserDeliveryActivity,
-                        response.body()?.message ?: "Failed to update status",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-            override fun onFailure(call: Call<DeliveryUpdateResponse>, t: Throwable) {
-                hideScreenLoading()
-                Toast.makeText(
-                    this@AdminUserDeliveryActivity,
-                    NetworkMessageUtils.friendlyMessage(t, "Failed to update status"),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
-    }
-
     private fun formatDashboardDate(value: String): String {
         return runCatching {
             val parser = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
             formatter.format(parser.parse(value)!!)
         }.getOrDefault(value)
-    }
-
-    private fun currentIsoTimestamp(): String {
-        return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault()).format(Date())
     }
 }

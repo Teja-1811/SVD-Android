@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/card_background"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:paddingVertical="8dp"
@@ -15,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="30"
         android:text="Product Name"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_caption"
         android:textColor="@color/textColorPrimary" />
 
     <TextView
@@ -25,7 +26,7 @@
         android:layout_weight="11"
         android:text="₹0.00"
         android:gravity="center"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_caption"
         android:textColor="@color/textColorPrimary" />
 
     <TextView
@@ -35,7 +36,7 @@
         android:layout_weight="11"
         android:text="0"
         android:gravity="center"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_caption"
         android:textColor="@color/textColorPrimary" />
 
     <TextView
@@ -45,7 +46,7 @@
         android:layout_weight="11"
         android:text="0.0"
         android:gravity="center"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_caption"
         android:textColor="@color/textColorPrimary" />
 
     <TextView
@@ -55,7 +56,7 @@
         android:layout_weight="11"
         android:text="₹0.00"
         android:gravity="center"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_caption"
         android:textColor="@color/textColorPrimary" />
 
     <TextView
@@ -65,7 +66,7 @@
         android:layout_weight="11"
         android:text="₹0.00"
         android:gravity="end"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_caption"
         android:textStyle="bold"
         android:textColor="@color/textColorPrimary" />
 
@@ -73,15 +74,15 @@
         android:id="@+id/btnRemove"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="0dp"
-        android:layout_height="15dp"
+        android:layout_height="24dp"
         android:layout_weight="11"
         android:layout_marginStart="10dp"
-        android:text="delete"
+        android:text="Delete"
         android:textAllCaps="false"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_caption"
         android:padding="0dp"
         android:backgroundTint="@color/brand_red_dark"
-        app:cornerRadius="4dp"
+        app:cornerRadius="@dimen/card_corner_radius_small"
         android:insetTop="0dp"
         android:insetBottom="0dp" />
 

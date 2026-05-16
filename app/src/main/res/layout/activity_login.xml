@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="@color/card_background">
 
     <View
         android:id="@+id/loginHero"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 app:cardBackgroundColor="@color/customer_home_card_background"
-                app:cardCornerRadius="36dp"
+                app:cardCornerRadius="@dimen/card_corner_radius_small"
                 app:cardElevation="0dp"
                 app:strokeColor="@color/customer_home_card_stroke"
                 app:strokeWidth="1dp">

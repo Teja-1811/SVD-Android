@@ -1,5 +1,7 @@
 package com.svd.svdagencies.ui.admin
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -32,10 +34,43 @@ class AdminPaymentsActivity : AdminBaseActivity() {
     private fun setupRecyclerView() {
         adapter = CustomerPaymentAdapter(
             onUpdateStatus = { payment -> showUpdateStatusDialog(payment) },
-            onDelete = { payment -> showDeleteConfirmDialog(payment) }
+            onDelete = { payment -> showDeleteConfirmDialog(payment) },
+            onWhatsAppShare = { payment -> shareOnWhatsApp(payment) }
         )
         binding.rvPayments.layoutManager = LinearLayoutManager(this)
         binding.rvPayments.adapter = adapter
+    }
+
+    private fun shareOnWhatsApp(payment: CustomerPaymentItem) {
+        val message = """
+            Dear ${payment.customer_name ?: "Customer"},
+            Payment receipt details:
+            Amount: Rs.${payment.amount}
+            Transaction ID: ${payment.transaction_id ?: "N/A"}
+            Method: ${payment.payment_mode ?: "N/A"}
+            Status: ${payment.status ?: "N/A"}
+            Date: ${payment.created_at ?: "N/A"}
+            
+            Thank you for your payment.
+            Sri Vijaya Durga Milk Agencies.
+        """.trimIndent()
+
+        try {
+            var phone = payment.customer_phone?.replace("+", "")?.replace(" ", "") ?: ""
+            // Add Indian country code if missing
+            if (phone.length == 10) {
+                phone = "91$phone"
+            }
+
+            val uri = Uri.parse("https://api.whatsapp.com/send?phone=$phone&text=${Uri.encode(message)}")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        } catch (e: Exception) {
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.type = "text/plain"
+            intent.putExtra(Intent.EXTRA_TEXT, message)
+            startActivity(Intent.createChooser(intent, "Share via"))
+        }
     }
 
     private fun setupListeners() {

@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     
     <queries>
         <package android:name="net.one97.paytm" />
@@ -38,7 +39,9 @@
         <activity android:name=".ui.admin.customer.CustomerProfileActivity"/>
         <activity android:name=".ui.admin.customer.AddCustomerActivity"/>
         <activity android:name=".ui.admin.bills.AdminBillsActivity"/>
-        <activity android:name=".ui.admin.bills.CreateBillActivity"/>
+        <activity
+            android:name=".ui.admin.bills.CreateBillActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.admin.bills.AdminBillDetailActivity"/>
         <activity android:name=".ui.admin.AdminOrdersActivity"/>
         <activity android:name=".ui.admin.items.AdminItemsActivity"/>
@@ -57,6 +60,7 @@
         <activity android:name=".ui.admin.AdminSubscriptionsActivity"/>
         <activity android:name=".ui.admin.AdminSubscriptionHistoryActivity"/>
         <activity android:name=".ui.admin.AdminUserDeliveryActivity"/>
+        <activity android:name=".ui.admin.AdminDeliveryAgentDuesActivity"/>
         <activity android:name=".ui.admin.AdminEnquiriesActivity"/>
 
         <!-- Customer / User -->
@@ -76,7 +80,16 @@
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>
-        <activity android:name=".ui.delivery.DeliveryCreateBillActivity"/>
+        <activity android:name=".ui.delivery.DeliveryPaymentsActivity"/>
+        <activity android:name=".ui.delivery.DeliveryOverallReportActivity"/>
+        <activity
+            android:name=".ui.delivery.DeliveryCreateBillActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.delivery.DeliveryBillToCustomerActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ui.delivery.DeliveryBillHistoryActivity"/>
+        <activity android:name=".ui.delivery.DeliveryCustomerPaymentsActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -87,6 +100,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <service
+            android:name=".notifications.SvdFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
     </application>
 

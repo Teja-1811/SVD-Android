@@ -1,88 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Basic Colors (Keep them TRUE even in Dark Mode) -->
+    <!-- Keep the Android app aligned with the light backend dashboard in every system mode. -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
 
-    <!-- App Primary Colors -->
-    <color name="colorPrimary">#EF5350</color>
-    <color name="colorPrimaryDark">#D32F2F</color>
+    <color name="colorPrimary">#D32F2F</color>
+    <color name="colorPrimaryDark">#B71C1C</color>
     <color name="colorAccent">#FF5252</color>
 
-    <!-- Semantic Colors (Dark Mode) -->
-    <color name="window_background">#FF121212</color>
-    <color name="surface_background">#FF1E1E1E</color>
-    <color name="card_background">#FF1E1E1E</color>
-    <color name="status_bar">#00000000</color>
-    <color name="toolbar_background">#FF1E1E1E</color>
-    <color name="toolbar_content_color">#FFFFFF</color>
-    <color name="drawer_background">#FF1E1E1E</color>
-    <color name="drawer_text_primary">#FFFFFFFF</color>
-    <color name="drawer_icon_default">#FFB0B0B0</color>
-    <color name="loading_overlay_scrim">#99202020</color>
+    <color name="window_background">#F4F7F7</color>
+    <color name="surface_background">#F7F9F9</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="status_bar">#B71C1C</color>
+    <color name="toolbar_background">#FFFFFF</color>
+    <color name="toolbar_content_color">#17323A</color>
+    <color name="drawer_background">#FFFFFF</color>
+    <color name="drawer_text_primary">#17323A</color>
+    <color name="drawer_icon_default">#607D86</color>
+    <color name="loading_overlay_scrim">#80FFFFFF</color>
 
-    <!-- 🔴 BRAND COLORS -->
-    <color name="brand_red">#EF5350</color>
+    <color name="brand_red">#D32F2F</color>
     <color name="brand_red_dark">#B71C1C</color>
-    <color name="brand_blue">#64B5F6</color>
+    <color name="brand_blue">#16B5C8</color>
 
-    <!-- Text Colors -->
-    <color name="textColorPrimary">#FFFFFF</color>
-    <color name="textColorSecondary">#B0B0B0</color>
-    <color name="gray400">#757575</color>
-    <color name="gray500">#8E8E8E</color>
-    <color name="red600">#E57373</color>
-    <color name="text_item_value">#FFFFFF</color>
-    <color name="login_text_red">#EF5350</color>
+    <color name="textColorPrimary">#17323A</color>
+    <color name="textColorSecondary">#61727B</color>
+    <color name="gray400">#B9C4C8</color>
+    <color name="gray500">#8A989F</color>
+    <color name="red600">#E53935</color>
+    <color name="text_item_value">#17323A</color>
+    <color name="login_text_red">#D32F2F</color>
 
-    <!-- Icon / Status Colors -->
-    <color name="icon_orange">#FFCC80</color>
-    <color name="icon_blue">#90CAF9</color>
-    <color name="icon_red">#EF9A9A</color>
-    <color name="icon_green">#81C784</color>
-    <color name="icon_gray_btn">#B0B0B0</color>
+    <color name="icon_orange">#F6B21A</color>
+    <color name="icon_blue">#16B5C8</color>
+    <color name="icon_red">#E95D5D</color>
+    <color name="icon_green">#35BFA0</color>
+    <color name="icon_gray_btn">#66777F</color>
 
-    <!-- Surface / Background Colors -->
-    <color name="card_stroke_color">#333333</color>
-    <color name="divider_line">#333333</color>
-    <color name="surface_variant">#FF2A2A2A</color>
-    <color name="on_surface_variant">#FFFFFF</color>
+    <color name="card_stroke_color">#D9E0E2</color>
+    <color name="divider_line">#E3E9EB</color>
+    <color name="surface_variant">#EEF3F4</color>
+    <color name="on_surface_variant">#17323A</color>
 
-    <!-- Input Fields -->
-    <color name="editTextBackground">#FF252525</color>
-    <color name="editTextStroke">#444444</color>
-    <color name="editTextColor">#FFFFFF</color>
+    <color name="editTextBackground">#FFFFFF</color>
+    <color name="editTextStroke">#D9E0E2</color>
+    <color name="editTextColor">#17323A</color>
 
-    <!-- Login Gradient -->
-    <color name="login_red_start">#B71C1C</color>
-    <color name="login_red_end">#000000</color>
+    <color name="login_red_start">#D32F2F</color>
+    <color name="login_red_end">#B71C1C</color>
 
-    <!-- Dashboard Specific (Dark) -->
-    <color name="card_customers">#FF1E1E1E</color>
-    <color name="card_items">#FF1E1E1E</color>
-    <color name="card_sales">#FF1E1E1E</color>
+    <color name="card_customers">#FFFFFF</color>
+    <color name="card_items">#FFFFFF</color>
+    <color name="card_sales">#FFFFFF</color>
+    <color name="chip_unselected_border">#D9E0E2</color>
 
-    <!-- Chips -->
-    <color name="chip_unselected_border">#444444</color>
+    <color name="bg_light_gray">#F4F7F7</color>
+    <color name="bg_light_green">#E8F5E9</color>
+    <color name="bg_status_red_light">#FFFFFF</color>
+    <color name="bg_status_green_light">#FFFFFF</color>
+    <color name="bg_status_yellow_light">#FFFFFF</color>
 
-    <!-- Special Backgrounds -->
-    <color name="bg_light_gray">#FF2A2A2A</color>
-    <color name="bg_light_green">#1B3320</color>
+    <color name="customer_home_card_background">#FFFFFF</color>
+    <color name="customer_home_card_stroke">#D9E0E2</color>
+    <color name="customer_home_title">#17323A</color>
+    <color name="customer_home_body">#61727B</color>
+    <color name="customer_home_logo_badge">#FFFFFF</color>
+    <color name="hero_start">#8E1F1F</color>
+    <color name="hero_end">#E24A37</color>
+    <color name="hero_accent">#FFD8A8</color>
+    <color name="customer_shell_background">#FCF6F2</color>
+    <color name="customer_surface_alt">#FFF5EF</color>
+    <color name="customer_positive_bg">#EAF7EE</color>
+    <color name="customer_warning_bg">#FFF2E3</color>
+    <color name="customer_info_bg">#EEF5FF</color>
+    <color name="customer_badge_text">#7A2F14</color>
+    <color name="customer_border_soft">#F0D7CC</color>
 
-    <!-- Customer Home -->
-    <color name="customer_home_card_background">#FF1E1E1E</color>
-    <color name="customer_home_card_stroke">#FF3A3A3A</color>
-    <color name="customer_home_title">#FFFFFFFF</color>
-    <color name="customer_home_body">#FFB0B0B0</color>
-    <color name="customer_home_logo_badge">#FF262626</color>
+    <color name="text_primary">#17323A</color>
+    <color name="text_secondary">#61727B</color>
+    <color name="error_red">#D32F2F</color>
+    <color name="green_status">#4CAF50</color>
 
-    <!-- User Home Fragment Colors -->
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B0B0B0</color>
-    <color name="error_red">#EF5350</color>
-    <color name="green_status">#81C784</color>
-
-    <!-- Bottom Nav -->
-    <color name="bottom_nav_active_color">@color/white</color>
+    <color name="bottom_nav_active_color">@color/brand_red</color>
 </resources>

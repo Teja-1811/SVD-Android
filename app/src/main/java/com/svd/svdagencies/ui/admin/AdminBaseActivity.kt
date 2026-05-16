@@ -84,85 +84,91 @@ abstract class AdminBaseActivity : BaseActivity() {
                 when (item.itemId) {
                     R.id.nav_home -> {
                         if (this !is AdminDashboardActivity) {
-                            startActivity(Intent(this, AdminDashboardActivity::class.java))
+                            openAdminDestination(AdminDashboardActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_companies -> {
                         if (this !is AdminCompaniesActivity) {
-                            startActivity(Intent(this, AdminCompaniesActivity::class.java))
+                            openAdminDestination(AdminCompaniesActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_customers -> {
                         if (this !is CustomersData) {
-                            startActivity(Intent(this, CustomersData::class.java))
+                            openAdminDestination(CustomersData::class.java)
                         }
                         true
                     }
                     R.id.nav_bills -> {
                         if (this !is AdminBillsActivity) {
-                            startActivity(Intent(this, AdminBillsActivity::class.java))
+                            openAdminDestination(AdminBillsActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_orders -> {
                         if (this !is AdminOrdersActivity) {
-                            startActivity(Intent(this, AdminOrdersActivity::class.java))
+                            openAdminDestination(AdminOrdersActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_delivery_dashboard -> {
                         if (this !is AdminUserDeliveryActivity) {
-                            startActivity(Intent(this, AdminUserDeliveryActivity::class.java))
+                            openAdminDestination(AdminUserDeliveryActivity::class.java)
+                        }
+                        true
+                    }
+                    R.id.nav_agent_dues -> {
+                        if (this !is AdminDeliveryAgentDuesActivity) {
+                            openAdminDestination(AdminDeliveryAgentDuesActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_items -> {
                         if (this !is AdminItemsActivity) {
-                            startActivity(Intent(this, AdminItemsActivity::class.java))
+                            openAdminDestination(AdminItemsActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_stock -> {
                         if (this !is AdminStockActivity) {
-                            startActivity(Intent(this, AdminStockActivity::class.java))
+                            openAdminDestination(AdminStockActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_subscriptions -> {
                         if (this !is AdminSubscriptionsActivity) {
-                            startActivity(Intent(this, AdminSubscriptionsActivity::class.java))
+                            openAdminDestination(AdminSubscriptionsActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_dues -> {
                         if (this !is AdminDuesActivity) {
-                            startActivity(Intent(this, AdminDuesActivity::class.java))
+                            openAdminDestination(AdminDuesActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_cashbook -> {
                         if (this !is AdminCashBookActivity) {
-                             startActivity(Intent(this, AdminCashBookActivity::class.java))
+                             openAdminDestination(AdminCashBookActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_monthly_summary -> {
                         if (this !is AdminMonthlySummary) {
-                            startActivity(Intent(this, AdminMonthlySummary::class.java))
+                            openAdminDestination(AdminMonthlySummary::class.java)
                         }
                         true
                     }
                     R.id.nav_payments -> {
                         if (this !is AdminPaymentsActivity) {
-                            startActivity(Intent(this, AdminPaymentsActivity::class.java))
+                            openAdminDestination(AdminPaymentsActivity::class.java)
                         }
                         true
                     }
                     R.id.nav_enquiries -> {
                         if (this !is AdminEnquiriesActivity) {
-                            startActivity(Intent(this, AdminEnquiriesActivity::class.java))
+                            openAdminDestination(AdminEnquiriesActivity::class.java)
                         }
                         true
                     }
@@ -170,5 +176,13 @@ abstract class AdminBaseActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    private fun openAdminDestination(activityClass: Class<*>) {
+        val intent = Intent(this, activityClass).apply {
+            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        }
+        startActivity(intent)
+        overridePendingTransition(0, 0)
     }
 }
