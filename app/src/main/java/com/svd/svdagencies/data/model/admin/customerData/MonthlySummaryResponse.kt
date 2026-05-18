@@ -6,8 +6,7 @@ data class MonthlySummaryResponse(
     val days_in_month: Int,
     val customer: SummaryCustomer,
     val summary: SalesSummary,
-    val volume: VolumeSummary,
-    val commission: CommissionSummary
+    val volume: VolumeSummary
 )
 
 data class SummaryCustomer(
@@ -34,8 +33,3 @@ data class VolumeSummary(
     val avg_total_per_day: Double
 )
 
-data class CommissionSummary(
-    val milk_commission: Double,
-    val curd_commission: Double,
-    val total_commission: Double
-)

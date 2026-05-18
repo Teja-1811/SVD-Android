@@ -19,8 +19,6 @@ data class UserCustomer(
     val pinCode: String?,
     @SerializedName("account_status")
     val accountStatus: String?,
-    @SerializedName("is_commissioned")
-    val isCommissioned: Boolean = false,
     @SerializedName("is_delivery")
     val isDelivery: Boolean = false,
     val frozen: Boolean = false,

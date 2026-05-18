@@ -205,8 +205,6 @@
                             <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowTotalSales" />
                             <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowPaidAmount" />
                             <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowDueAmount" />
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowCommission" />
-
                             <View
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"

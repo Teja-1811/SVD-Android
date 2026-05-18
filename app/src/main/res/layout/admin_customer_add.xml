@@ -188,16 +188,6 @@
 
                         </LinearLayout>
 
-                        <!-- Is Commissioned Checkbox -->
-                        <CheckBox
-                            android:id="@+id/cbCommissioned"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Is Commissioned (Eligible for commission)"
-                            android:textSize="12sp"
-                            android:textColor="@color/textColorSecondary"
-                            android:buttonTint="@color/brand_blue"/>
-
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 

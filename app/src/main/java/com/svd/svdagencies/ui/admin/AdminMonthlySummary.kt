@@ -278,7 +278,6 @@ class AdminMonthlySummary : AdminBaseActivity() {
             Total Sales: ₹${String.format("%.2f", summary.summary.total_sales)}
             Paid Amount: ₹${String.format("%.2f", summary.summary.paid_amount)}
             Net Due: ₹${String.format("%.2f", summary.summary.due_amount)}
-            Commission: ₹${String.format("%.2f", summary.commission.total_commission)}
             *Remaining Balance: ₹${String.format("%.2f", summary.summary.remaining_due)}*
             
             *Volumes:*
@@ -312,7 +311,6 @@ class AdminMonthlySummary : AdminBaseActivity() {
         setupRow(findViewById(R.id.rowTotalSales), "Total Sales", "₹${String.format("%.2f", data.summary.total_sales)}")
         setupRow(findViewById(R.id.rowPaidAmount), "Paid Amount", "₹${String.format("%.2f", data.summary.paid_amount)}")
         setupRow(findViewById(R.id.rowDueAmount), "Net Due", "₹${String.format("%.2f", data.summary.due_amount)}")
-        setupRow(findViewById(R.id.rowCommission), "Total Commission", "- ₹${String.format("%.2f", data.commission.total_commission)}")
         setupRow(findViewById(R.id.rowRemainingDue), "Remaining Balance", "₹${String.format("%.2f", data.summary.remaining_due)}", true)
 
         // Volume Summary

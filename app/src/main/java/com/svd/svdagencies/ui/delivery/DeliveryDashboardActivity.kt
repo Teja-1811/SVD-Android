@@ -172,27 +172,36 @@ class DeliveryDashboardActivity : BaseActivity() {
             "${response.agent?.name ?: "Your"} Dues for $dateStr"
         }
 
-        binding.tvAgentBillCount.text = "Bills\n${summary.billCount}"
-        binding.tvAgentDeliveredAmount.text = "Total Sale\n${money(summary.totalAmount)}"
-        val submittedAmount = submittedAmount(summary)
-        val remainingAmount = when {
-            summary.remainingGeneratedAmount > 0.0 -> summary.remainingGeneratedAmount
-            else -> (summary.totalAmount - submittedAmount).coerceAtLeast(0.0)
-        }
-        binding.tvAgentCounterDue.text = "Submitted\n${money(submittedAmount)}"
-        binding.tvAgentCollectedAmount.text = "Collected\n${money(submittedAmount)}"
-        binding.tvAgentRemainingAmount.text = "Remaining\n${money(remainingAmount)}"
-        binding.tvAgentSelfBillAmount.text = "Bill Generator\n${money(summary.selfBillAmount)}"
-        binding.tvAgentProfit.text = "Profit\n${money(summary.totalProfit)}"
+        binding.tvAgentBillCount.text = "Generated Bills\n${summary.billCount}"
+        binding.tvAgentCounterDue.text = "Invoice Amount\n${money(summary.totalAmount)}"
+        binding.tvAgentDeliveredAmount.text = "Paid Amount\n${money(summary.totalPaid)}"
+        binding.tvAgentProfit.text = "Current Due\n${money(currentAgentDue(summary))}"
+        binding.tvAgentCollectedAmount.text = "Salary Earned\n${money(salaryEarned(summary))}"
+        binding.tvAgentRemainingAmount.text = "Salary Paid\n${money(summary.salaryPaid)}"
+        binding.tvAgentSelfBillAmount.text = "Pending Salary\n${money(pendingSalary(summary))}"
+        binding.tvAgentSubmittedAmount.text = "Customer Bills\n${summary.customerBillCount}"
+        binding.tvAgentDueAmount.text = "Self Bills\n${summary.selfBillCount}"
+        binding.tvAgentProfitAmount.text = "Items Sale\n${money(summary.relatedInvoiceAmount)}"
         agentItemAdapter.submitList(response.items)
+    }
+
+    private fun currentAgentDue(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
+        return if (summary.agentCurrentDue != 0.0) summary.agentCurrentDue else summary.totalDue
+    }
+
+    private fun salaryEarned(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
+        return if (summary.salaryEarned != 0.0) summary.salaryEarned else summary.totalProfit
+    }
+
+    private fun pendingSalary(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
+        return if (summary.pendingSalary != 0.0) summary.pendingSalary else summary.remainingSalary
     }
 
     private fun submittedAmount(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
         return when {
             summary.submittedAmount > 0.0 -> summary.submittedAmount
-            summary.collectedAmount > 0.0 -> summary.collectedAmount
             summary.counterSubmitAmount > 0.0 -> summary.counterSubmitAmount
-            else -> summary.totalPaid
+            else -> 0.0
         }
     }
 
@@ -280,5 +289,6 @@ class DeliveryDashboardActivity : BaseActivity() {
         return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calendar.time)
     }
 
-    private fun money(value: Double): String = "₹%.2f".format(Locale.US, value)
+    private fun money(value: Double): String = "Rs. %.2f".format(Locale.US, value)
 }
+
