@@ -2,6 +2,7 @@ package com.svd.svdagencies
 
 import android.app.Application
 import android.content.Context
+import com.svd.svdagencies.notifications.SvdFirebaseMessagingService
 
 class App : Application() {
 
@@ -9,6 +10,7 @@ class App : Application() {
         super.onCreate()
         instance = this
         context = applicationContext
+        SvdFirebaseMessagingService.ensureDefaultChannel(this)
     }
 
     companion object {

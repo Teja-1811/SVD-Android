@@ -34,6 +34,8 @@ class AdminPaymentsActivity : AdminBaseActivity() {
     private fun setupRecyclerView() {
         adapter = CustomerPaymentAdapter(
             onUpdateStatus = { payment -> showUpdateStatusDialog(payment) },
+            onMarkSuccess = { payment -> confirmStatusUpdate(payment, "success") },
+            onMarkFailure = { payment -> confirmStatusUpdate(payment, "failed") },
             onDelete = { payment -> showDeleteConfirmDialog(payment) },
             onWhatsAppShare = { payment -> shareOnWhatsApp(payment) }
         )
@@ -118,6 +120,16 @@ class AdminPaymentsActivity : AdminBaseActivity() {
             updateStatus(payment.id, newStatus)
         }
         builder.show()
+    }
+
+    private fun confirmStatusUpdate(payment: CustomerPaymentItem, status: String) {
+        val label = if (status == "success") "Success" else "Failure"
+        AlertDialog.Builder(this)
+            .setTitle("Mark payment as $label")
+            .setMessage("Verify ${payment.customer_name ?: "customer"} payment of Rs.${payment.amount} before marking $label.")
+            .setPositiveButton(label) { _, _ -> updateStatus(payment.id, status) }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun updateStatus(paymentId: Int, status: String) {

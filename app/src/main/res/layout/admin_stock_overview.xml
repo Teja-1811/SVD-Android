@@ -20,7 +20,7 @@
         android:ellipsize="end"/>
 
     <TextView
-        android:id="@+id/tvCrates"
+        android:id="@+id/tvCurrentStock"
         android:layout_width="80dp"
         android:layout_height="28dp"
         android:background="@drawable/bg_badge_blue"
@@ -32,13 +32,12 @@
         android:layout_marginHorizontal="2dp"/>
 
     <TextView
-        android:id="@+id/tvPackets"
+        android:id="@+id/tvBuyingPrice"
         android:layout_width="80dp"
-        android:layout_height="28dp"
-        android:background="@drawable/bg_badge_teal"
-        android:text="35"
-        android:textColor="@color/white"
-        android:textSize="11sp"
+        android:layout_height="wrap_content"
+        android:text="74.550"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="12sp"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginHorizontal="2dp"/>

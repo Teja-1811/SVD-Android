@@ -5,12 +5,17 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Body
+import retrofit2.http.Query
 
 interface AdminStockApi {
 
     @GET("api/stock/dashboard/")
-    fun getStockDashboard(): Call<AdminStockDashboardResponse>
+    fun getStockDashboard(
+        @Query("date") date: String? = null,
+        @Query("month") month: Int? = null,
+        @Query("year") year: Int? = null
+    ): Call<AdminStockDashboardResponse>
 
     @POST("api/stock/update/")
-    fun updateStock(@Body body: @JvmSuppressWildcards Map<String, List<Map<String, Any>>>): Call<Map<String, Any>>
+    fun updateStock(@Body body: @JvmSuppressWildcards Map<String, Any>): Call<Map<String, Any>>
 }

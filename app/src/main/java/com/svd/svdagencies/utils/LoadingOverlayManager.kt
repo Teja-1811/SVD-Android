@@ -18,7 +18,6 @@ import java.util.WeakHashMap
 object LoadingOverlayManager {
 
     private val overlays = WeakHashMap<Activity, FrameLayout>()
-    private val visibleCounts = WeakHashMap<Activity, Int>()
     private const val BLUR_RADIUS = 24f
     private const val DIMMED_ALPHA = 0.55f
 
@@ -32,9 +31,6 @@ object LoadingOverlayManager {
 
     fun show(activity: Activity) {
         val content = activity.findViewById<ViewGroup>(android.R.id.content) ?: return
-        val nextCount = (visibleCounts[activity] ?: 0) + 1
-        visibleCounts[activity] = nextCount
-
         val overlay = overlays[activity] ?: createOverlay(activity).also {
             overlays[activity] = it
             content.addView(it)
@@ -50,15 +46,9 @@ object LoadingOverlayManager {
     }
 
     fun hide(activity: Activity) {
-        val currentCount = visibleCounts[activity] ?: 0
-        if (currentCount <= 1) {
-            visibleCounts.remove(activity)
-            val content = activity.findViewById<ViewGroup>(android.R.id.content) ?: return
-            overlays[activity]?.visibility = View.GONE
-            applyBlur(content, overlays[activity], false)
-        } else {
-            visibleCounts[activity] = currentCount - 1
-        }
+        val content = activity.findViewById<ViewGroup>(android.R.id.content) ?: return
+        overlays[activity]?.visibility = View.GONE
+        applyBlur(content, overlays[activity], false)
     }
 
     private fun createOverlay(activity: Activity): FrameLayout {

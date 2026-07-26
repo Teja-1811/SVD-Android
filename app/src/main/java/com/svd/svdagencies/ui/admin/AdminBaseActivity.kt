@@ -13,6 +13,7 @@ import com.google.android.material.navigation.NavigationView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.admin.bills.AdminBillsActivity
 import com.svd.svdagencies.ui.admin.cashbook.AdminCashBookActivity
+import com.svd.svdagencies.ui.admin.cashbook.AdminStatementActivity
 import com.svd.svdagencies.ui.admin.companies.AdminCompaniesActivity
 import com.svd.svdagencies.ui.admin.customer.CustomersData
 import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
@@ -151,6 +152,12 @@ abstract class AdminBaseActivity : BaseActivity() {
                     R.id.nav_cashbook -> {
                         if (this !is AdminCashBookActivity) {
                              openAdminDestination(AdminCashBookActivity::class.java)
+                        }
+                        true
+                    }
+                    R.id.nav_statement -> {
+                        if (this !is AdminStatementActivity) {
+                            openAdminDestination(AdminStatementActivity::class.java)
                         }
                         true
                     }

@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 class AdminOrdersActivity : AdminBaseActivity() {
 
@@ -107,6 +108,8 @@ class AdminOrdersActivity : AdminBaseActivity() {
             holder.tvOrderId.text = "ORD-${order.order_id}"
             holder.tvCustomerName.text = "Customer: ${order.customer_name}"
             holder.tvOrderDate.text = "Order Date: ${order.order_date}"
+            holder.btnConfirm.isEnabled = true
+            holder.btnReject.isEnabled = true
 
             // Populate Items
             holder.layoutItems.removeAllViews()
@@ -131,13 +134,15 @@ class AdminOrdersActivity : AdminBaseActivity() {
             }
 
             holder.btnReject.setOnClickListener {
-                rejectOrder(order.order_id)
+                rejectOrder(order.order_id, holder)
             }
         }
 
         override fun getItemCount() = orders.size
 
         private fun confirmOrder(order: AdminOrder, holder: ViewHolder) {
+            if (!holder.btnConfirm.isEnabled) return
+
             val confirmItems = mutableListOf<ConfirmOrderItem>()
             
             for (i in 0 until holder.layoutItems.childCount) {
@@ -151,32 +156,67 @@ class AdminOrdersActivity : AdminBaseActivity() {
             }
 
             val request = ConfirmOrderRequest(confirmItems)
+            holder.btnConfirm.isEnabled = false
             
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val response = api.confirmOrder(order.order_id, request)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@AdminOrdersActivity, response.message, Toast.LENGTH_SHORT).show()
-                        loadOrders()
+                        val body = response.body()
+                        val message = body?.message
+                            ?: body?.error
+                            ?: response.errorBody()?.string()?.extractApiMessage()
+                            ?: "Confirm failed"
+
+                        Toast.makeText(this@AdminOrdersActivity, message, Toast.LENGTH_SHORT).show()
+                        if (response.isSuccessful && body?.success == true) {
+                            loadOrders()
+                        } else {
+                            holder.btnConfirm.isEnabled = true
+                        }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
+                        holder.btnConfirm.isEnabled = true
                         Toast.makeText(this@AdminOrdersActivity, "Confirm failed: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
 
-        private fun rejectOrder(orderId: Int) {
+        private fun String.extractApiMessage(): String? {
+            return runCatching {
+                val json = JSONObject(this)
+                json.optString("message")
+                    .ifBlank { json.optString("error") }
+                    .ifBlank { null }
+            }.getOrNull()
+        }
+
+        private fun rejectOrder(orderId: Int, holder: ViewHolder) {
+            if (!holder.btnReject.isEnabled) return
+            holder.btnReject.isEnabled = false
+
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    api.rejectOrder(orderId)
+                    val response = api.rejectOrder(orderId)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@AdminOrdersActivity, "Order Rejected", Toast.LENGTH_SHORT).show()
-                        loadOrders()
+                        val message = response.body()?.get("message")?.toString()
+                            ?: response.body()?.get("error")?.toString()
+                            ?: response.errorBody()?.string()?.extractApiMessage()
+                            ?: "Reject failed"
+
+                        Toast.makeText(this@AdminOrdersActivity, message, Toast.LENGTH_SHORT).show()
+                        val success = response.body()?.get("success") as? Boolean
+                        if (response.isSuccessful && success != false) {
+                            loadOrders()
+                        } else {
+                            holder.btnReject.isEnabled = true
+                        }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
+                        holder.btnReject.isEnabled = true
                         Toast.makeText(this@AdminOrdersActivity, "Reject failed: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }

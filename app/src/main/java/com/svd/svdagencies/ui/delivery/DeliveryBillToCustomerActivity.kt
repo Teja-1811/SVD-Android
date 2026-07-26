@@ -1,5 +1,7 @@
 package com.svd.svdagencies.ui.delivery
 
+import com.svd.svdagencies.utils.PaymentConfig
+
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -8,9 +10,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.zxing.BarcodeFormat
@@ -35,6 +39,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private lateinit var rvItemCatalog: RecyclerView
     private lateinit var btnGenerateBill: MaterialButton
     private lateinit var btnClearSelection: MaterialButton
+    private lateinit var toggleBillMode: MaterialButtonToggleGroup
     private lateinit var btnShowQr: ImageButton
     
     private lateinit var tvItemsTotal: TextView
@@ -58,6 +63,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private var selectedRouteId: Int? = null
     private var currentItemsTotal: Double = 0.0
     private var currentGrandTotal: Double = 0.0
+    private var billMode: String = BILL_MODE_REGULAR
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +98,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         rvItemCatalog = findViewById(R.id.rvItemCatalog)
         btnGenerateBill = findViewById(R.id.btnGenerateBill)
         btnClearSelection = findViewById(R.id.btnClearSelection)
+        toggleBillMode = findViewById(R.id.toggleBillMode)
         tvItemsTotal = findViewById(R.id.tvItemsTotal)
         tvOpeningDue = findViewById(R.id.tvOpeningDue)
         tvGrandTotal = findViewById(R.id.tvGrandTotal)
@@ -110,11 +117,17 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         catalogAdapter = DeliveryBillSelectAdapter { _, _ ->
             updateSummary()
         }
+        rvItemCatalog.layoutManager = GridLayoutManager(this, 2)
         rvItemCatalog.adapter = catalogAdapter
     }
 
     private fun setupListeners() {
         btnGenerateBill.setOnClickListener { generateBill() }
+        toggleBillMode.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+            billMode = if (checkedId == R.id.btnModeSpecial) BILL_MODE_SPECIAL else BILL_MODE_REGULAR
+            updateSummary()
+        }
         btnClearSelection.setOnClickListener {
             catalogAdapter.resetQuantities()
             etCollectedAmount.setText("")
@@ -266,15 +279,13 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             try {
                 val catalogResponse = ApiClient.deliveryApi.getBillItems(customerId).awaitResponse()
                 if (catalogResponse.isSuccessful) {
-                    val rawItems = catalogResponse.body()?.items ?: emptyList()
-                    val orderMap = mapOf(
-                        "fcm120" to 1, "tm160" to 2, "curd120" to 3, "fcm500" to 4,
-                        "curd450" to 5, "bm170" to 6, "sl140" to 7
-                    )
-                    availableItems = rawItems.sortedBy { 
+                    val responseBody = catalogResponse.body()
+                    val rawItems = responseBody?.items ?: emptyList()
+                    val orderMap = buildItemOrderMap(responseBody, rawItems)
+                    availableItems = rawItems.sortedWith(compareBy<DeliveryBillItem> {
                         val cleanCode = it.code.trim().lowercase()
-                        orderMap[cleanCode] ?: 999 
-                    }
+                        orderMap[cleanCode] ?: Int.MAX_VALUE
+                    }.thenBy { it.name.lowercase(Locale.ROOT) })
                     catalogAdapter.submitList(availableItems)
                     updateSummary()
                 }
@@ -293,13 +304,13 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         for (pair in selectedItems) {
             val item = pair.first
             val qty = pair.second
-            currentItemsTotal += (item.price) * qty
+            currentItemsTotal += discountedLineTotal(item, qty)
         }
         
         tvItemsTotal.text = "₹ %.2f".format(currentItemsTotal)
         
         currentGrandTotal = currentItemsTotal + openingDue
-        val roundedGrandTotal = kotlin.math.round(currentGrandTotal)
+        val roundedGrandTotal = kotlin.math.ceil(currentGrandTotal)
         tvGrandTotal.text = "₹ %.0f".format(roundedGrandTotal)
         currentGrandTotal = roundedGrandTotal
         
@@ -333,7 +344,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             tvBillInfo.visibility = android.view.View.VISIBLE
         }
 
-        val upiId = "9392890375@okbizaxis"
+        val upiId = PaymentConfig.UPI_ID
         val name = "Sri Vijay Durga Milk Agency"
         
         val paymentMsg = if (billNumber != null && customerName != null) {
@@ -414,8 +425,9 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                 val request = DeliveryGenerateBillRequest(
                     customerId = customerId,
                     billDate = getCurrentBillDate(),
-                    items = selectedItems.map { BillLineItem(it.first.itemId, it.second) },
-                    paidAmount = collectedAmountValue
+                    items = selectedItems.map { BillLineItem(it.first.itemId, it.second, discountForItem(it.first, it.second)) },
+                    paidAmount = collectedAmountValue,
+                    billMode = billMode
                 )
                 
                 val response = ApiClient.deliveryApi.generateBill(request).awaitResponse()
@@ -434,6 +446,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         )
                     }
                     
+                    catalogAdapter.applyStockDeductions(selectedItems)
                     resetLayout()
                 } else {
                     Toast.makeText(this@DeliveryBillToCustomerActivity, response.body()?.message ?: "Failed", Toast.LENGTH_SHORT).show()
@@ -461,5 +474,47 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private fun getCurrentBillDate(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return sdf.format(Calendar.getInstance().time)
+    }
+
+    private fun discountForItem(item: DeliveryBillItem, quantity: Int): Double {
+        val code = item.code.trim().lowercase(Locale.ROOT)
+        return when {
+            billMode != BILL_MODE_SPECIAL -> 0.0
+            code == ITEM_CODE_FCM500 -> FCM500_SPECIAL_DISCOUNT
+            code == ITEM_CODE_CURD450 -> CURD450_SPECIAL_DISCOUNT
+            code == ITEM_CODE_CURD120 && quantity >= CURD120_SPECIAL_MIN_QTY -> CURD120_SPECIAL_DISCOUNT
+            else -> 0.0
+        }
+    }
+
+    private fun discountedLineTotal(item: DeliveryBillItem, quantity: Int): Double {
+        val discountedPrice = (item.price - discountForItem(item, quantity)).coerceAtLeast(0.0)
+        return discountedPrice * quantity
+    }
+
+    private fun buildItemOrderMap(
+        responseBody: DeliveryBillItemsResponse?,
+        rawItems: List<DeliveryBillItem>
+    ): Map<String, Int> {
+        val orderedCodes = LinkedHashSet<String>()
+        responseBody?.allowedItemCodes
+            ?.map { it.trim().lowercase(Locale.ROOT) }
+            ?.filterTo(orderedCodes) { it.isNotBlank() }
+        rawItems
+            .map { it.code.trim().lowercase(Locale.ROOT) }
+            .filterTo(orderedCodes) { it.isNotBlank() }
+        return orderedCodes.mapIndexed { index, code -> code to index }.toMap()
+    }
+
+    companion object {
+        private const val BILL_MODE_REGULAR = "regular"
+        private const val BILL_MODE_SPECIAL = "special"
+        private const val ITEM_CODE_FCM500 = "fcm500"
+        private const val ITEM_CODE_CURD450 = "curd450"
+        private const val ITEM_CODE_CURD120 = "curd120"
+        private const val FCM500_SPECIAL_DISCOUNT = 0.5
+        private const val CURD450_SPECIAL_DISCOUNT = 0.3
+        private const val CURD120_SPECIAL_DISCOUNT = 0.25
+        private const val CURD120_SPECIAL_MIN_QTY = 96
     }
 }

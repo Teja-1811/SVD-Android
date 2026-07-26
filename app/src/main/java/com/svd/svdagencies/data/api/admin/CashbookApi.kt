@@ -7,6 +7,8 @@ import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseListResponse
 import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseRequest
 import com.svd.svdagencies.data.model.admin.Cashbook.SaveBankBalanceRequest
 import com.svd.svdagencies.data.model.admin.Cashbook.SaveCashInRequest
+import com.svd.svdagencies.data.model.admin.Cashbook.StatementResponse
+import okhttp3.ResponseBody
 import retrofit2.http.*
 
 interface CashbookApi {
@@ -22,6 +24,18 @@ interface CashbookApi {
 
     @POST("api/cashbook/save-bank/")
     suspend fun saveBankBalance(@Body request: SaveBankBalanceRequest): Map<String, Any>
+
+    @GET("api/cashbook/statement/")
+    suspend fun getStatement(
+        @Query("month") month: Int? = null,
+        @Query("year") year: Int? = null
+    ): StatementResponse
+
+    @GET("api/cashbook/statement/pdf/")
+    suspend fun downloadStatementPdf(
+        @Query("month") month: Int? = null,
+        @Query("year") year: Int? = null
+    ): ResponseBody
 
     @POST("api/cashbook/add-expense/")
     suspend fun addExpense(@Body request: ExpenseRequest): Map<String, Any>

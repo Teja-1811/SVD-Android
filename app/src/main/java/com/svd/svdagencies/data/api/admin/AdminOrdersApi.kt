@@ -5,6 +5,7 @@ import com.svd.svdagencies.data.model.admin.Orders.AdminOrderDetail
 import com.svd.svdagencies.data.model.admin.Orders.ConfirmOrderRequest
 import com.svd.svdagencies.data.model.admin.Orders.ConfirmOrderResponse
 import com.svd.svdagencies.data.model.admin.Orders.OrdersDashboardResponse
+import retrofit2.Response
 import retrofit2.http.*
 
 interface AdminOrdersApi {
@@ -19,8 +20,8 @@ interface AdminOrdersApi {
     suspend fun confirmOrder(
         @Path("order_id") orderId: Int,
         @Body request: ConfirmOrderRequest
-    ): ConfirmOrderResponse
+    ): Response<ConfirmOrderResponse>
 
     @POST("api/orders/{order_id}/cancel/")
-    suspend fun rejectOrder(@Path("order_id") orderId: Int): Map<String, Any>
+    suspend fun rejectOrder(@Path("order_id") orderId: Int): Response<Map<String, Any>>
 }

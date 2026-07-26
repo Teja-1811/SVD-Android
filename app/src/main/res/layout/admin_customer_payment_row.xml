@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="12dp"
-    android:layout_marginVertical="8dp"
-    app:cardCornerRadius="16dp"
+    android:layout_marginHorizontal="@dimen/spacing_medium"
+    android:layout_marginVertical="@dimen/spacing_small"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:cardElevation="0dp"
     app:strokeColor="@color/divider_line"
     app:strokeWidth="1dp">
@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_large">
 
         <!-- Header: Name & Phone -->
         <TextView
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="Customer Name"
             android:textColor="@color/textColorPrimary"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_size_xlarge"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="8886307827"
             android:textColor="@color/textColorSecondary"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvCustomer" />
 
@@ -41,14 +41,14 @@
             android:id="@+id/tvStatusBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_light_gray"
-            android:backgroundTint="#E0F2F1"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@drawable/bg_soft_badge"
+            android:backgroundTint="@color/customer_positive_bg"
+            android:paddingHorizontal="@dimen/spacing_medium"
+            android:paddingVertical="@dimen/spacing_tiny"
             android:text="success"
             android:textColor="#00695C"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_body_small"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvCustomerPhone" />
@@ -58,10 +58,10 @@
             android:id="@+id/tvAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_large"
             android:text="₹2000.00"
             android:textColor="@color/textColorPrimary"
-            android:textSize="22sp"
+            android:textSize="@dimen/text_size_huge"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvStatusBadge" />
@@ -71,7 +71,7 @@
             android:id="@+id/detailsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_large"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/tvAmount">
 
@@ -86,28 +86,28 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginEnd="@dimen/spacing_xsmall"
                     android:background="@drawable/bg_light_gray"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="@dimen/spacing_medium">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Transaction ID"
                         android:textColor="@color/textColorSecondary"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_body_small" />
 
                     <TextView
                         android:id="@+id/tvTxnId"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="@dimen/spacing_tiny"
                         android:ellipsize="middle"
                         android:singleLine="true"
                         android:text="PAY-BDF2C97502"
                         android:textColor="@color/textColorPrimary"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -116,33 +116,33 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginStart="6dp"
+                    android:layout_marginStart="@dimen/spacing_xsmall"
                     android:background="@drawable/bg_light_gray"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="@dimen/spacing_medium">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Method"
                         android:textColor="@color/textColorSecondary"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_body_small" />
 
                     <TextView
                         android:id="@+id/tvMethod"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="@dimen/spacing_tiny"
                         android:text="CASH"
                         android:textColor="@color/textColorPrimary"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="12dp" />
+                android:layout_height="@dimen/spacing_medium" />
 
             <!-- Row 2 -->
             <LinearLayout
@@ -155,26 +155,26 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginEnd="@dimen/spacing_xsmall"
                     android:background="@drawable/bg_light_gray"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="@dimen/spacing_medium">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Source"
                         android:textColor="@color/textColorSecondary"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_body_small" />
 
                     <TextView
                         android:id="@+id/tvSource"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="@dimen/spacing_tiny"
                         android:text="General"
                         android:textColor="@color/textColorPrimary"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -183,33 +183,33 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginStart="6dp"
+                    android:layout_marginStart="@dimen/spacing_xsmall"
                     android:background="@drawable/bg_light_gray"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="@dimen/spacing_medium">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Date"
                         android:textColor="@color/textColorSecondary"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/text_size_body_small" />
 
                     <TextView
                         android:id="@+id/tvDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="@dimen/spacing_tiny"
                         android:text="11 May 2026"
                         android:textColor="@color/textColorPrimary"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/text_size_medium"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="12dp" />
+                android:layout_height="@dimen/spacing_medium" />
 
             <!-- Full Width Status -->
             <LinearLayout
@@ -217,23 +217,23 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_light_gray"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:padding="@dimen/spacing_medium">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Status"
                     android:textColor="@color/textColorSecondary"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/text_size_body_small" />
 
                 <TextView
                     android:id="@+id/tvStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/spacing_tiny"
                     android:text="success"
                     android:textColor="@color/textColorPrimary"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -243,7 +243,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/spacing_xlarge"
             android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@id/detailsContainer">
 
@@ -253,15 +253,55 @@
                 android:layout_width="54dp"
                 android:layout_height="54dp"
                 android:background="@drawable/bg_light_gray"
-                android:backgroundTint="#E8F5E9"
+                android:backgroundTint="@color/bg_light_green"
                 android:contentDescription="WhatsApp"
-                android:padding="14dp"
+                android:padding="@dimen/spacing_large"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_whatsapp" />
 
             <Space
-                android:layout_width="12dp"
+                android:layout_width="@dimen/spacing_medium"
                 android:layout_height="wrap_content" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMarkSuccess"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_weight="1"
+                android:text="Success"
+                android:textAllCaps="false"
+                android:textColor="#00695C"
+                android:textSize="@dimen/text_size_body_small"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:backgroundTint="@color/customer_positive_bg"
+                app:cornerRadius="@dimen/card_corner_radius_small" />
+
+            <Space
+                android:id="@+id/spaceSuccessFailure"
+                android:layout_width="@dimen/spacing_medium"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMarkFailure"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_weight="1"
+                android:text="Failure"
+                android:textAllCaps="false"
+                android:textColor="#C62828"
+                android:textSize="@dimen/text_size_body_small"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:backgroundTint="#FFEBEE"
+                app:cornerRadius="@dimen/card_corner_radius_small" />
+
+            <Space
+                android:id="@+id/spaceFailureEdit"
+                android:layout_width="@dimen/spacing_medium"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
             <!-- Edit: Expanding Rounded Rect -->
             <ImageButton
@@ -272,13 +312,13 @@
                 android:background="@drawable/bg_light_gray"
                 android:backgroundTint="#E8EAF6"
                 android:contentDescription="Edit"
-                android:padding="14dp"
+                android:padding="@dimen/spacing_large"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_edit"
                 app:tint="#3F51B5" />
 
             <Space
-                android:layout_width="12dp"
+                android:layout_width="@dimen/spacing_medium"
                 android:layout_height="wrap_content" />
 
             <!-- Delete: Expanding Rounded Rect -->
@@ -290,7 +330,7 @@
                 android:background="@drawable/bg_light_gray"
                 android:backgroundTint="#FFEBEE"
                 android:contentDescription="Delete"
-                android:padding="14dp"
+                android:padding="@dimen/spacing_large"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_trash"
                 app:tint="#D32F2F" />

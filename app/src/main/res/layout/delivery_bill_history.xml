@@ -64,7 +64,7 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <com.svd.svdagencies.utils.AppSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -80,7 +80,7 @@
             android:clipToPadding="false"
             android:padding="8dp"
             tools:listitem="@layout/item_delivery_today_bill" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/layoutEmpty"

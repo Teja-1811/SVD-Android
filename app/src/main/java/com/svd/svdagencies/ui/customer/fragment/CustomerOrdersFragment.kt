@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -70,6 +73,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     private var pendingServerOrder: LatestCustomerOrder? = null
 
     private val currency = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("en-IN"))
+    private val gson = Gson()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -108,7 +112,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             if (!CustomerOrderWindow.isOpen()) {
                 Toast.makeText(
                     requireContext(),
-                    "Orders can be placed or edited only between 9:00 AM and 8:00 PM.",
+                    "Orders can be placed or edited only between 9:00 AM and 4:30 PM.",
                     Toast.LENGTH_SHORT
                 ).show()
                 return@setOnClickListener
@@ -153,7 +157,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         if (!CustomerOrderWindow.isOpen()) {
             Toast.makeText(
                 requireContext(),
-                "Orders can be placed or edited only between 9:00 AM and 8:00 PM.",
+                "Orders can be placed or edited only between 9:00 AM and 4:30 PM.",
                 Toast.LENGTH_SHORT
             ).show()
             return
@@ -238,7 +242,9 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                     return
                 }
 
-                val existingOrder = payload.orders.firstOrNull { !it.items.isNullOrEmpty() }
+                val existingOrder = payload.orders.firstOrNull {
+                    !it.items.isNullOrEmpty() && it.status !in setOf("cancelled", "rejected", "delivered")
+                }
 
                 if (existingOrder == null) {
                     clearPendingOrderState()
@@ -265,13 +271,13 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         swipeRefresh.isRefreshing = true
 
         val api = ApiClient.retrofit.create(ProductApi::class.java)
-        api.getCategories().enqueue(object : Callback<List<CategoryResponse>> {
+        api.getCategories().enqueue(object : Callback<JsonElement> {
             override fun onResponse(
-                call: Call<List<CategoryResponse>>,
-                response: Response<List<CategoryResponse>>
+                call: Call<JsonElement>,
+                response: Response<JsonElement>
             ) {
                 val context = context ?: return
-                val categories = response.body()
+                val categories = parseCategories(response.body())
 
                 if (categories.isNullOrEmpty()) {
                     swipeRefresh.isRefreshing = false
@@ -310,7 +316,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 }
             }
 
-            override fun onFailure(call: Call<List<CategoryResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
                 val context = context ?: return
                 swipeRefresh.isRefreshing = false
                 Toast.makeText(context, "Failed to load categories", Toast.LENGTH_SHORT).show()
@@ -322,15 +328,15 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         swipeRefresh.isRefreshing = true
 
         val api = ApiClient.retrofit.create(ProductApi::class.java)
-        api.getProducts(categoryId).enqueue(object : Callback<List<ProductResponse>> {
+        api.getProducts(categoryId).enqueue(object : Callback<JsonElement> {
             override fun onResponse(
-                call: Call<List<ProductResponse>>,
-                response: Response<List<ProductResponse>>
+                call: Call<JsonElement>,
+                response: Response<JsonElement>
             ) {
                 if (context == null) return
 
                 swipeRefresh.isRefreshing = false
-                val list = response.body() ?: return
+                val list = parseProducts(response.body())
 
                 viewModel.currentCategoryProducts.clear()
                 viewModel.currentCategoryProducts.addAll(list)
@@ -341,11 +347,33 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 updateSummary()
             }
 
-            override fun onFailure(call: Call<List<ProductResponse>>, t: Throwable) {
+            override fun onFailure(call: Call<JsonElement>, t: Throwable) {
                 if (context == null) return
                 swipeRefresh.isRefreshing = false
             }
         })
+    }
+
+    private fun parseCategories(body: JsonElement?): List<CategoryResponse> {
+        if (body == null || body.isJsonNull) return emptyList()
+        val json = if (body.isJsonObject && body.asJsonObject.has("categories")) {
+            body.asJsonObject.get("categories")
+        } else {
+            body
+        }
+        val type = object : TypeToken<List<CategoryResponse>>() {}.type
+        return runCatching { gson.fromJson<List<CategoryResponse>>(json, type) }.getOrDefault(emptyList())
+    }
+
+    private fun parseProducts(body: JsonElement?): List<ProductResponse> {
+        if (body == null || body.isJsonNull) return emptyList()
+        val json = if (body.isJsonObject && body.asJsonObject.has("products")) {
+            body.asJsonObject.get("products")
+        } else {
+            body
+        }
+        val type = object : TypeToken<List<ProductResponse>>() {}.type
+        return runCatching { gson.fromJson<List<ProductResponse>>(json, type) }.getOrDefault(emptyList())
     }
 
     private fun updateOrderWindowUi() {
@@ -368,7 +396,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         if (!CustomerOrderWindow.isOpen()) {
             Toast.makeText(
                 context,
-                "Latest order can be edited only between 9:00 AM and 8:00 PM.",
+                "Latest order can be edited only between 9:00 AM and 4:30 PM.",
                 Toast.LENGTH_SHORT
             ).show()
             return

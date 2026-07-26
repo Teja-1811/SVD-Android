@@ -1,8 +1,8 @@
 package com.svd.svdagencies.ui.customer.fragment
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.svd.svdagencies.R
@@ -18,8 +18,6 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.CustomerApi
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.customer.PaymentGatewayInitResponse
-import com.svd.svdagencies.data.model.customer.PaymentGatewayResultResponse
-import com.svd.svdagencies.ui.customer.PaytmNativeCheckoutActivity
 import com.svd.svdagencies.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,17 +33,6 @@ class CustomerPaymentFragment : Fragment() {
 
     private lateinit var api: CustomerApi
     private lateinit var session: SessionManager
-
-    private val paytmLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            val paymentOrderId = result.data?.getStringExtra(PaytmNativeCheckoutActivity.EXTRA_PAYMENT_ORDER_ID).orEmpty()
-            if (result.resultCode == Activity.RESULT_OK && paymentOrderId.isNotBlank()) {
-                confirmGatewayPayment(paymentOrderId)
-            } else {
-                showToast(getString(R.string.payment_cancelled))
-                loadDashboardData()
-            }
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -134,19 +121,10 @@ class CustomerPaymentFragment : Fragment() {
                 btnUpi.isEnabled = true
 
                 val body = response.body()
-                if (response.isSuccessful && body?.success == true && body.canStartCheckout()) {
-                    paytmLauncher.launch(
-                        Intent(requireContext(), PaytmNativeCheckoutActivity::class.java).apply {
-                            putExtra(PaytmNativeCheckoutActivity.EXTRA_PAYMENT_ORDER_ID, body.paymentOrderId)
-                            putExtra(PaytmNativeCheckoutActivity.EXTRA_TXN_TOKEN, body.txnToken)
-                            putExtra(PaytmNativeCheckoutActivity.EXTRA_MID, body.mid)
-                            putExtra(PaytmNativeCheckoutActivity.EXTRA_AMOUNT, "%.2f".format(body.amount ?: amount.toDouble()))
-                            putExtra(PaytmNativeCheckoutActivity.EXTRA_CALLBACK_URL, body.callbackUrl)
-                            putExtra(PaytmNativeCheckoutActivity.EXTRA_CHECKOUT_HOST, body.checkoutHost)
-                        }
-                    )
+                if (response.isSuccessful && body?.success == true && body.canStartUpiPayment()) {
+                    showUpiPaymentDialog(body)
                 } else {
-                    showToast(body?.error ?: getString(R.string.payment_update_failed), Toast.LENGTH_LONG)
+                    showToast(body?.error ?: body?.message ?: getString(R.string.payment_update_failed), Toast.LENGTH_LONG)
                 }
             }
 
@@ -165,49 +143,38 @@ class CustomerPaymentFragment : Fragment() {
         })
     }
 
-    private fun confirmGatewayPayment(paymentOrderId: String) {
-        val paymentData = mapOf("payment_order_id" to paymentOrderId)
-        btnUpi.isEnabled = false
-        api.confirmGatewayPayment(paymentData).enqueue(object : Callback<PaymentGatewayResultResponse> {
-            override fun onResponse(
-                call: Call<PaymentGatewayResultResponse>,
-                response: Response<PaymentGatewayResultResponse>
-            ) {
-                if (!isAdded) return
-                btnUpi.isEnabled = true
-
-                val body = response.body()
-                if (response.isSuccessful && body?.isSuccess == true) {
-                    showToast(getString(R.string.payment_updated_successfully), Toast.LENGTH_LONG)
-                    etAmount.text.clear()
-                    loadDashboardData()
-                } else {
-                    showToast(body?.error ?: getString(R.string.payment_failed), Toast.LENGTH_LONG)
-                    loadDashboardData()
-                }
-            }
-
-            override fun onFailure(call: Call<PaymentGatewayResultResponse>, t: Throwable) {
-                if (!isAdded) return
-                btnUpi.isEnabled = true
-                showToast(
-                    getString(
-                        R.string.failed_to_update_payment,
-                        t.localizedMessage ?: getString(R.string.unable_to_reach_server)
-                    ),
-                    Toast.LENGTH_LONG
-                )
-            }
-        })
+    private fun PaymentGatewayInitResponse.canStartUpiPayment(): Boolean {
+        return amount != null && (!upiUri.isNullOrBlank() || !qrPayload.isNullOrBlank())
     }
 
-    private fun PaymentGatewayInitResponse.canStartCheckout(): Boolean {
-        return !paymentOrderId.isNullOrBlank() &&
-            !txnToken.isNullOrBlank() &&
-            !mid.isNullOrBlank() &&
-            !callbackUrl.isNullOrBlank() &&
-            !checkoutHost.isNullOrBlank() &&
-            amount != null
+    private fun showUpiPaymentDialog(payment: PaymentGatewayInitResponse) {
+        val note = payment.paymentNote.orEmpty()
+        val updateMessage = payment.recordUpdateMessage ?: getString(R.string.payment_updated_successfully)
+        val message = buildString {
+            append("Amount: Rs.").append(String.format("%.2f", payment.amount ?: 0.0)).append("\n")
+            append("UPI ID: ").append(payment.upiId ?: "9392890375@axl")
+            if (note.isNotBlank()) append("\nNote: ").append(note)
+            append("\n\n").append(updateMessage)
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Pay Now with UPI")
+            .setMessage(message)
+            .setPositiveButton("Open PhonePe / UPI app") { _, _ -> openUpiApp(payment) }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun openUpiApp(payment: PaymentGatewayInitResponse) {
+        val upiUri = payment.upiUri ?: payment.qrPayload ?: return
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(upiUri)))
+            showToast(payment.recordUpdateMessage ?: getString(R.string.payment_updated_successfully), Toast.LENGTH_LONG)
+            etAmount.text.clear()
+            loadDashboardData()
+        } catch (_: Exception) {
+            showToast(getString(R.string.no_upi_app_found), Toast.LENGTH_LONG)
+        }
     }
 
     private fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {

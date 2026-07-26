@@ -27,7 +27,7 @@ interface CustomerApi {
         @Body body: Map<String, String>
     ): Call<PaymentGatewayInitResponse>
 
-    @POST("api/customer/payment/paytm/result/")
+    @POST("api/customer/payment/phonepe/result/")
     fun confirmGatewayPayment(
         @Body body: Map<String, String>
     ): Call<PaymentGatewayResultResponse>

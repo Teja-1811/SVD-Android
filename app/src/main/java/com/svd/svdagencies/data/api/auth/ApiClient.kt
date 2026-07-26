@@ -131,17 +131,18 @@ object ApiClient {
 
     /**
      * Helper to construct full image URLs for items.
-     * The final path is expected to be BASE_URL + images/items/ + fileName
      */
     fun getImageUrl(path: String?): String {
         if (path.isNullOrBlank()) return ""
         if (path.startsWith("http", ignoreCase = true)) return path
         
         val cleanPath = path.removePrefix("/")
-        val finalPath = if (cleanPath.startsWith("images/items/")) {
-            cleanPath
-        } else {
-            "images/items/$cleanPath"
+        val finalPath = when {
+            cleanPath.startsWith("media/", ignoreCase = true) -> cleanPath
+            cleanPath.startsWith("static/", ignoreCase = true) -> cleanPath
+            cleanPath.startsWith("images/", ignoreCase = true) -> cleanPath
+            cleanPath.startsWith("items_saved/", ignoreCase = true) -> "media/$cleanPath"
+            else -> "images/items/$cleanPath"
         }
         
         return BASE_URL.removeSuffix("/") + "/" + finalPath

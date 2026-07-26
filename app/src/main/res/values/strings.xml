@@ -21,18 +21,18 @@
     <string name="title_explore_plans">Explore Plans</string>
     <string name="query_contact_with_email">%1$s | %2$s</string>
     <string name="make_payment_title">Settle Your Due</string>
-    <string name="make_payment_subtitle">Pay securely through the same Paytm gateway used on the website.</string>
+    <string name="make_payment_subtitle">Pay directly to the agency PhonePe UPI ID and wait for admin verification.</string>
     <string name="payment_summary_title">Live Account Snapshot</string>
     <string name="current_due_label">Current Due</string>
     <string name="wallet_balance_label">Advance Balance</string>
     <string name="payment_entry_title">Enter Payment Amount</string>
     <string name="payment_entry_hint">Type the amount you are paying now</string>
-    <string name="payment_button_text">Pay With Paytm</string>
-    <string name="payment_apps_hint">Paytm opens a secure checkout and your due refreshes after confirmation.</string>
+    <string name="payment_button_text">Pay Now with UPI</string>
+    <string name="payment_apps_hint">Open PhonePe or any UPI app, pay to 9392890375@axl, and admin will verify the payment.</string>
     <string name="payment_tip_title">Before you pay</string>
     <string name="payment_tip_one">Use the same mobile number registered with your SVD account where possible.</string>
-    <string name="payment_tip_two">Wait for Paytm checkout to finish before leaving the screen.</string>
-    <string name="payment_tip_three">If the due does not refresh, pull down once to sync with the server.</string>
+    <string name="payment_tip_two">Use the payment note shown by the app so admin can match your payment.</string>
+    <string name="payment_tip_three">Your due will update after admin verifies the UPI payment.</string>
     <string name="payment_cancelled">Payment cancelled</string>
     <string name="session_expired">Session expired</string>
     <string name="server_error_code">Server error: %1$d</string>
@@ -42,7 +42,8 @@
     <string name="no_upi_app_found">No UPI app found</string>
     <string name="payment_failed">Payment failed</string>
     <string name="payment_missing_transaction">Payment reference missing. Please try again.</string>
-    <string name="payment_updated_successfully">Payment updated successfully</string>
+    <string name="payment_updated_successfully">Payment sent for admin verification</string>
     <string name="payment_update_failed">Payment update failed on server</string>
     <string name="failed_to_update_payment">Failed to update payment: %1$s</string>
+    <string name="payment_upi_label">UPI ID: 9392890375@axl</string>
 </resources>

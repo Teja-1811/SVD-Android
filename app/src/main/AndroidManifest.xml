@@ -4,7 +4,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     
     <queries>
-        <package android:name="net.one97.paytm" />
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="upi" />
@@ -50,6 +49,7 @@
         <activity android:name=".ui.admin.stock.AdminStockUpdateActivity"/>
         <activity android:name=".ui.admin.AdminDuesActivity"/>
         <activity android:name=".ui.admin.cashbook.AdminCashBookActivity"/>
+        <activity android:name=".ui.admin.cashbook.AdminStatementActivity"/>
         <activity android:name=".ui.admin.cashbook.AddExpenseActivity"/>
         <activity android:name=".ui.admin.cashbook.ViewExpensesActivity"/>
         <activity android:name=".ui.admin.AdminPaymentsActivity"/>
@@ -69,8 +69,7 @@
         <activity android:name=".ui.customer.CustomerCompanyDetailsActivity"/>
         <activity android:name=".ui.customer.CustomerContactSupportActivity"/>
         <activity android:name=".ui.customer.CustomerRaisedQueriesActivity"/>
-        <activity android:name=".ui.customer.PaytmNativeCheckoutActivity"/>
-        <activity android:name=".ui.customer.PaytmCheckoutActivity"/>
+        <activity android:name=".ui.customer.PhonePeCheckoutActivity"/>
         <activity android:name=".ui.user.UserMainActivity"/>
         <activity android:name=".ui.user.TermsConditionsActivity"/>
         <activity android:name=".ui.user.CompanyDetailsActivity"/>

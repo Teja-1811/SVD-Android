@@ -33,9 +33,103 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="16dp">
 
-                    <!-- STATS GRID (2x2) -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/card_stroke_color"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Date-wise Crate Records"
+                                android:textColor="@color/textColorPrimary"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvDateRecordsSubtitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Saved crates for selected date."
+                                android:textColor="@color/textColorSecondary"
+                                android:textSize="12sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:orientation="horizontal">
+
+                                <EditText
+                                    android:id="@+id/etRecordDate"
+                                    android:layout_width="0dp"
+                                    android:layout_height="42dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_weight="1"
+                                    android:background="@drawable/bg_stock_date_field"
+                                    android:clickable="true"
+                                    android:focusable="false"
+                                    android:gravity="center"
+                                    android:hint="Date"
+                                    android:inputType="none"
+                                    android:textColor="@color/textColorPrimary"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnManageStock"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="42dp"
+                                    android:minWidth="118dp"
+                                    android:paddingHorizontal="14dp"
+                                    android:text="Add / Edit"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/white"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    app:backgroundTint="@color/brand_red"
+                                    app:cornerRadius="8dp" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tvNoDateRecords"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:gravity="center"
+                                android:padding="12dp"
+                                android:text="No crate records found for this date."
+                                android:textColor="@color/textColorSecondary"
+                                android:visibility="gone" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvDateEntries"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:nestedScrollingEnabled="false"
+                                tools:listitem="@layout/admin_stock_info_item" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- STATS GRID -->
                     <androidx.gridlayout.widget.GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -295,6 +389,45 @@
                                     android:padding="4dp"/>
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
+
+                        <!-- Monthly Leakage Loss -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="0dp"
+                            app:layout_columnWeight="1"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/card_stroke_color"
+                            app:cardBackgroundColor="?attr/colorSurface">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Monthly Leakage Loss"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/textColorSecondary"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvMonthlyLeakage"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="Rs. 0.00"
+                                    android:textColor="@color/brand_red"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
                     </androidx.gridlayout.widget.GridLayout>
 
                     <!-- CHARTS SECTION -->
@@ -473,7 +606,7 @@
                                         <TextView
                                             android:layout_width="80dp"
                                             android:layout_height="wrap_content"
-                                            android:text="CRATES"
+                                            android:text="CURRENT"
                                             android:textColor="@color/white"
                                             android:textSize="11sp"
                                             android:textStyle="bold"
@@ -482,7 +615,7 @@
                                         <TextView
                                             android:layout_width="80dp"
                                             android:layout_height="wrap_content"
-                                            android:text="PACKETS"
+                                            android:text="BUYING"
                                             android:textColor="@color/white"
                                             android:textSize="11sp"
                                             android:textStyle="bold"
@@ -508,6 +641,59 @@
 
                                 </LinearLayout>
                             </HorizontalScrollView>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
+                        app:cardBackgroundColor="@color/card_background"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/card_stroke_color"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Leakage Register"
+                                android:textColor="@color/textColorPrimary"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:text="Track product leakage, stock reduction, and buying-price based loss."
+                                android:textColor="@color/textColorSecondary"
+                                android:textSize="13sp" />
+
+                            <TextView
+                                android:id="@+id/tvNoLeakage"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:gravity="center"
+                                android:padding="12dp"
+                                android:text="No leakage records found for the selected month."
+                                android:textColor="@color/textColorSecondary"
+                                android:visibility="gone" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvLeakageEntries"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:nestedScrollingEnabled="false"
+                                tools:listitem="@layout/admin_stock_info_item" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 

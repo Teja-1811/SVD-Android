@@ -17,6 +17,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.SaveDailyPaymentsRequest
 import com.svd.svdagencies.ui.admin.adapter.CompanyPaymentsAdapter
+import com.svd.svdagencies.utils.AppSwipeRefreshLayout
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -30,6 +31,7 @@ class AdminDuesActivity : AdminBaseActivity() {
     private lateinit var btnSaveAll: MaterialButton
     private lateinit var rvSummary: RecyclerView
     private lateinit var layoutIndicators: LinearLayout
+    private lateinit var swipeRefresh: AppSwipeRefreshLayout
     
     private lateinit var adapter: CompanyPaymentsAdapter
 
@@ -54,6 +56,7 @@ class AdminDuesActivity : AdminBaseActivity() {
         btnSaveAll = findViewById(R.id.btnSaveAll)
         rvSummary = findViewById(R.id.rvSummary)
         layoutIndicators = findViewById(R.id.layoutIndicators)
+        swipeRefresh = findViewById(R.id.swipeRefresh)
 
         // Indicators are not needed for vertical view
         layoutIndicators.visibility = View.GONE
@@ -85,6 +88,9 @@ class AdminDuesActivity : AdminBaseActivity() {
     private fun setupListeners() {
         tvDate.setOnClickListener { showMonthYearPicker() }
         btnSaveAll.setOnClickListener { saveAllChanges() }
+        swipeRefresh.setOnRefreshListener {
+            loadPaymentsDashboard(currentYear, currentMonth, showLoader = false)
+        }
     }
 
     private fun showMonthYearPicker() {
@@ -100,6 +106,8 @@ class AdminDuesActivity : AdminBaseActivity() {
         lifecycleScope.launch {
             if (showLoader) {
                 showScreenLoading()
+            } else {
+                swipeRefresh.isRefreshing = true
             }
             try {
                 val response = ApiClient.adminPaymentsApi.getPaymentsDashboard(year, month)
@@ -120,6 +128,8 @@ class AdminDuesActivity : AdminBaseActivity() {
                 btnSaveAll.isEnabled = true
                 if (showLoader) {
                     hideScreenLoading()
+                } else {
+                    swipeRefresh.isRefreshing = false
                 }
             }
         }
@@ -148,4 +158,6 @@ class AdminDuesActivity : AdminBaseActivity() {
             }
         }
     }
+
+    private fun money(value: Double): String = "₹%.2f".format(value)
 }

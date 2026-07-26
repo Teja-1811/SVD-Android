@@ -49,8 +49,6 @@ class CustomersData : AdminBaseActivity() {
     private lateinit var tvEmptyState: TextView
 
     private var allCustomers: List<CustomerItem> = emptyList()
-    private var shouldReloadOnResume = false
-
     private val addCustomerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
         loadCustomers()
     }
@@ -111,14 +109,6 @@ class CustomersData : AdminBaseActivity() {
             val intent = Intent(this, AddCustomerActivity::class.java)
             addCustomerLauncher.launch(intent)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (shouldReloadOnResume) {
-            loadCustomers()
-        }
-        shouldReloadOnResume = true
     }
 
     private fun loadCustomers() {

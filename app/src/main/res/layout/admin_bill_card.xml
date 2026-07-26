@@ -215,6 +215,19 @@
 
             <Space android:layout_width="@dimen/spacing_small" android:layout_height="wrap_content"/>
 
+            <!-- QR Button -->
+            <ImageButton
+                android:id="@+id/btnQR"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_qr_code"
+                app:tint="@color/brand_blue"
+                android:background="@drawable/bg_outline_blue"
+                android:padding="@dimen/spacing_small"
+                android:scaleType="fitCenter"/>
+
+            <Space android:layout_width="@dimen/spacing_small" android:layout_height="wrap_content"/>
+
             <!-- Delete Button -->
             <ImageButton
                 android:id="@+id/btnDelete"

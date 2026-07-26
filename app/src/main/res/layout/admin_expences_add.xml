@@ -53,6 +53,30 @@
                         android:orientation="vertical"
                         android:padding="20dp">
 
+                        <!-- Date -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Date"
+                            android:textStyle="bold"
+                            android:textColor="@color/textColorPrimary"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="8dp"/>
+
+                        <EditText
+                            android:id="@+id/etDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="yyyy-mm-dd"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:clickable="true"
+                            android:background="@drawable/bg_qty_outline"
+                            android:backgroundTint="@color/bg_light_gray"
+                            android:padding="14dp"
+                            android:textSize="16sp"
+                            android:textColor="@color/textColorPrimary"/>
+
                         <!-- Amount -->
                         <TextView
                             android:layout_width="wrap_content"
@@ -120,7 +144,7 @@
                             android:id="@+id/etDescription"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="e.g. Fuel, Rent, Repair..."
+                            android:hint="Optional note about this expense"
                             android:inputType="textMultiLine"
                             android:minLines="3"
                             android:gravity="top"

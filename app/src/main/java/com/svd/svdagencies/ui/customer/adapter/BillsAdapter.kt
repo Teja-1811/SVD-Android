@@ -26,6 +26,7 @@ class BillsAdapter(
         val tvBillDate: TextView = itemView.findViewById(R.id.tvInvoiceDate)
         val tvTotalAmount: TextView = itemView.findViewById(R.id.tvTotalAmount)
         val btnDownload: View = itemView.findViewById(R.id.btnDownloadBill)
+        val btnQR: View = itemView.findViewById(R.id.btnQR)
     }
 
     // ================= REQUIRED METHODS =================
@@ -43,6 +44,7 @@ class BillsAdapter(
         holder.tvTotalAmount.text = "₹%.2f".format(bill.amount)
 
         holder.btnDownload.setOnClickListener { onAction(bill, "download") }
+        holder.btnQR.setOnClickListener { onAction(bill, "qr") }
     }
 
     override fun getItemCount(): Int = bills.size

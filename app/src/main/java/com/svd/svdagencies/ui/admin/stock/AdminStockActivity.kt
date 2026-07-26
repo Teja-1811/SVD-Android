@@ -1,8 +1,13 @@
 package com.svd.svdagencies.ui.admin.stock
 
+import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.button.MaterialButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -19,6 +24,7 @@ import com.svd.svdagencies.utils.NetworkMessageUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AdminStockActivity : AdminBaseActivity() {
@@ -29,11 +35,23 @@ class AdminStockActivity : AdminBaseActivity() {
     private lateinit var tvLowStock: TextView
     private lateinit var tvMovementIn: TextView
     private lateinit var tvMovementOut: TextView
+    private lateinit var tvMonthlyLeakage: TextView
+    private lateinit var tvDateRecordsSubtitle: TextView
+    private lateinit var tvNoDateRecords: TextView
+    private lateinit var tvNoLeakage: TextView
+    private lateinit var etRecordDate: EditText
+    private lateinit var btnManageStock: MaterialButton
     
     private lateinit var barChart: BarChart
     private lateinit var pieChart: PieChart
     private lateinit var rvStockOverview: RecyclerView
+    private lateinit var rvDateEntries: RecyclerView
+    private lateinit var rvLeakageEntries: RecyclerView
     private lateinit var adapter: StockOverviewAdapter
+    private lateinit var dateEntryAdapter: StockDateEntryAdapter
+    private lateinit var leakageAdapter: StockLeakageAdapter
+    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    private var selectedDate = dateFormatter.format(Calendar.getInstance().time)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,15 +66,45 @@ class AdminStockActivity : AdminBaseActivity() {
         tvLowStock = findViewById(R.id.tvLowStock)
         tvMovementIn = findViewById(R.id.tvMovementIn)
         tvMovementOut = findViewById(R.id.tvMovementOut)
+        tvMonthlyLeakage = findViewById(R.id.tvMonthlyLeakage)
+        tvDateRecordsSubtitle = findViewById(R.id.tvDateRecordsSubtitle)
+        tvNoDateRecords = findViewById(R.id.tvNoDateRecords)
+        tvNoLeakage = findViewById(R.id.tvNoLeakage)
+        etRecordDate = findViewById(R.id.etRecordDate)
+        btnManageStock = findViewById(R.id.btnManageStock)
         
         barChart = findViewById(R.id.barChart)
         pieChart = findViewById(R.id.pieChart)
         rvStockOverview = findViewById(R.id.rvStockOverview)
+        rvDateEntries = findViewById(R.id.rvDateEntries)
+        rvLeakageEntries = findViewById(R.id.rvLeakageEntries)
+        etRecordDate.setText(selectedDate)
 
         // Setup RecyclerView
         adapter = StockOverviewAdapter(emptyList())
         rvStockOverview.layoutManager = LinearLayoutManager(this)
         rvStockOverview.adapter = adapter
+        rvStockOverview.isNestedScrollingEnabled = false
+
+        dateEntryAdapter = StockDateEntryAdapter(emptyList())
+        rvDateEntries.layoutManager = LinearLayoutManager(this)
+        rvDateEntries.adapter = dateEntryAdapter
+        rvDateEntries.isNestedScrollingEnabled = false
+
+        leakageAdapter = StockLeakageAdapter(emptyList())
+        rvLeakageEntries.layoutManager = LinearLayoutManager(this)
+        rvLeakageEntries.adapter = leakageAdapter
+        rvLeakageEntries.isNestedScrollingEnabled = false
+
+        etRecordDate.setOnClickListener {
+            showDatePicker()
+        }
+        btnManageStock.setOnClickListener {
+            startActivity(
+                Intent(this, AdminStockUpdateActivity::class.java)
+                    .putExtra("ENTRY_DATE", selectedDate)
+            )
+        }
 
         swipeRefresh.setOnRefreshListener {
             loadStockData()
@@ -68,7 +116,17 @@ class AdminStockActivity : AdminBaseActivity() {
     private fun loadStockData() {
         swipeRefresh.isRefreshing = true
 
-        ApiClient.adminStockApi.getStockDashboard().enqueue(object : Callback<AdminStockDashboardResponse> {
+        val calendar = Calendar.getInstance()
+        runCatching {
+            val parsed = dateFormatter.parse(selectedDate)
+            if (parsed != null) calendar.time = parsed
+        }
+
+        ApiClient.adminStockApi.getStockDashboard(
+            selectedDate,
+            calendar.get(Calendar.MONTH) + 1,
+            calendar.get(Calendar.YEAR)
+        ).enqueue(object : Callback<AdminStockDashboardResponse> {
             override fun onResponse(
                 call: Call<AdminStockDashboardResponse>,
                 response: Response<AdminStockDashboardResponse>
@@ -92,6 +150,26 @@ class AdminStockActivity : AdminBaseActivity() {
         })
     }
 
+    private fun showDatePicker() {
+        val calendar = Calendar.getInstance()
+        runCatching {
+            val parsed = dateFormatter.parse(selectedDate)
+            if (parsed != null) calendar.time = parsed
+        }
+        DatePickerDialog(
+            this,
+            { _, year, month, dayOfMonth ->
+                calendar.set(year, month, dayOfMonth)
+                selectedDate = dateFormatter.format(calendar.time)
+                etRecordDate.setText(selectedDate)
+                loadStockData()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
     private fun updateUI(data: AdminStockDashboardResponse) {
         // Update Summary Cards
         tvTotalItems.text = data.summary.totalItems.toString()
@@ -99,6 +177,18 @@ class AdminStockActivity : AdminBaseActivity() {
         tvLowStock.text = data.summary.lowStockCount.toString()
         tvMovementIn.text = String.format(Locale.getDefault(), "In: %.0f", data.summary.stockIn30d)
         tvMovementOut.text = String.format(Locale.getDefault(), "Out: %.0f", data.summary.stockOut30d)
+        tvMonthlyLeakage.text = String.format(Locale.getDefault(), "Rs. %.2f", data.summary.monthlyLoss)
+        selectedDate = data.selectedDate ?: selectedDate
+        etRecordDate.setText(selectedDate)
+        tvDateRecordsSubtitle.text = "Saved crates for $selectedDate with edit support for the same date."
+
+        dateEntryAdapter.updateList(data.dateEntries)
+        tvNoDateRecords.visibility = if (data.dateEntries.isEmpty()) View.VISIBLE else View.GONE
+        rvDateEntries.visibility = if (data.dateEntries.isEmpty()) View.GONE else View.VISIBLE
+
+        leakageAdapter.updateList(data.leakageEntries)
+        tvNoLeakage.visibility = if (data.leakageEntries.isEmpty()) View.VISIBLE else View.GONE
+        rvLeakageEntries.visibility = if (data.leakageEntries.isEmpty()) View.GONE else View.VISIBLE
 
         // Update Charts
         setupBarChart(data.topItems)

@@ -144,6 +144,20 @@ class CreateBillActivity : AdminBaseActivity() {
             if (selectedItem != null) {
                 val qty = etQty.text.toString().toIntOrNull() ?: 1
                 val disc = etDiscount.text.toString().toDoubleOrNull() ?: 0.0
+                val availableStock = selectedItem!!.stock_quantity ?: 0
+
+                if (qty <= 0) {
+                    Toast.makeText(this, "Enter a valid quantity", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (billId == null && qty > availableStock) {
+                    Toast.makeText(
+                        this,
+                        "Only $availableStock unit(s) available for ${selectedItem!!.name}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
                 
                 val totalDisc = disc * qty
                 
@@ -358,6 +372,16 @@ class CreateBillActivity : AdminBaseActivity() {
             Toast.makeText(this, "Please add at least one item", Toast.LENGTH_SHORT).show()
             return
         }
+        findOutOfStockLine(billItems)?.let { (item, _) ->
+            btnGenerateBill.isEnabled = true
+            hideScreenLoading()
+            Toast.makeText(
+                this,
+                "Only ${item.stock_quantity ?: 0} unit(s) available for ${item.name}",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
 
         val request = CreateBillRequest(
             customerId,
@@ -393,5 +417,16 @@ class CreateBillActivity : AdminBaseActivity() {
         hideScreenLoading()
         Toast.makeText(this, "Bill updated successfully!", Toast.LENGTH_SHORT).show()
         finish()
+    }
+
+    private fun findOutOfStockLine(billItems: List<BillItemForCreation>): Pair<AdminItem, Int>? {
+        for (billItem in billItems) {
+            val item = allAvailableItems.find { it.id == billItem.itemId } ?: continue
+            val availableStock = item.stock_quantity ?: 0
+            if (billItem.quantity > availableStock) {
+                return item to billItem.quantity
+            }
+        }
+        return null
     }
 }

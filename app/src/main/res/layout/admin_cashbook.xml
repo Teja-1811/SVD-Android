@@ -263,7 +263,7 @@
                         android:padding="@dimen/spacing_medium"
                         android:textSize="@dimen/text_size_small"/>
 
-                    <!-- Bank Balance Update -->
+                    <!-- Bank Balance Info -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -289,39 +289,14 @@
                                 android:textSize="@dimen/text_size_small"
                                 android:layout_marginBottom="@dimen/spacing_large"/>
 
-                            <LinearLayout
+                            <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical">
-
-                                <EditText
-                                    android:id="@+id/etBankBalance"
-                                    android:layout_width="0dp"
-                                    android:layout_height="52dp"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/bg_edit_text"
-                                    android:hint="e.g. 5697.27"
-                                    android:inputType="numberDecimal"
-                                    android:textColor="@color/textColorPrimary"
-                                    android:textColorHint="@color/textColorSecondary"
-                                    android:paddingStart="@dimen/spacing_large"
-                                    android:paddingEnd="@dimen/spacing_large"
-                                    android:textSize="@dimen/text_size_body_small" />
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/btnUpdateBank"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="52dp"
-                                    android:text="Update"
-                                    android:textAllCaps="false"
-                                    app:backgroundTint="@color/brand_blue"
-                                    android:textColor="@color/white"
-                                    android:layout_marginStart="@dimen/spacing_medium"
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/text_size_body_small"
-                                    app:cornerRadius="@dimen/spacing_medium"/>
-                            </LinearLayout>
+                                android:background="@drawable/bg_edit_text"
+                                android:padding="@dimen/spacing_large"
+                                android:text="Bank balance is updated automatically from Statement records."
+                                android:textColor="@color/textColorSecondary"
+                                android:textSize="@dimen/text_size_body_small" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 

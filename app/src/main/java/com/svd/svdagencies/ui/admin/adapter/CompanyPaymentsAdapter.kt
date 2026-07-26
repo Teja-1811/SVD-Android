@@ -19,7 +19,7 @@ class CompanyPaymentsAdapter(
 
     fun updateList(newCompanies: List<CompanyPayment>) {
         companies = newCompanies
-        // We don't clear recordsAdapters here to maintain the state of input fields
+        recordsAdapters.clear()
         notifyDataSetChanged()
     }
 

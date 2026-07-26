@@ -1,22 +1,26 @@
 package com.svd.svdagencies.ui.admin.bills
 
+import com.svd.svdagencies.utils.PaymentConfig
+
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.util.Log
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Bills.AdminBill
@@ -51,6 +55,7 @@ class AdminBillsActivity : AdminBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("AdminBillsActivity", "onCreate called")
         setContentView(R.layout.admin_bills_dashboard)
         setupAdminLayout("Bills")
 
@@ -59,11 +64,6 @@ class AdminBillsActivity : AdminBaseActivity() {
         setupListeners()
 
         fetchCustomers()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Auto-refresh when returning from Create or Detail screens
         fetchBills()
     }
 
@@ -104,6 +104,9 @@ class AdminBillsActivity : AdminBaseActivity() {
             },
             onDeleteClick = { bill ->
                 showDeleteConfirmation(bill.id, bill.bill_number)
+            },
+            onQRClick = { bill ->
+                showQRDialog(bill)
             }
         )
         rvBills.layoutManager = LinearLayoutManager(this)
@@ -324,6 +327,7 @@ class AdminBillsActivity : AdminBaseActivity() {
     }
 
     private fun fetchBills() {
+        Log.d("AdminBillsActivity", "fetchBills called")
         RefreshManager.startRefresh(swipeRefreshLayout)
         val selectedText = autoCompleteCustomer.text.toString()
         val customerId = if (selectedText.isNotEmpty()) {
@@ -343,5 +347,40 @@ class AdminBillsActivity : AdminBaseActivity() {
                 RefreshManager.stopRefresh(swipeRefreshLayout)
             }
         }
+    }
+
+    private fun showQRDialog(bill: AdminBill) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null)
+        val ivQrCode = dialogView.findViewById<ImageView>(R.id.ivQrCode)
+        val tvQrAmount = dialogView.findViewById<TextView>(R.id.tvQrAmount)
+        val tvBillInfo = dialogView.findViewById<TextView>(R.id.tvBillInfo)
+        val btnCloseQr = dialogView.findViewById<MaterialButton>(R.id.btnCloseQr)
+
+        val amount = try { bill.total_amount?.toDouble() ?: 0.0 } catch (e: Exception) { 0.0 }
+        val billNo = bill.bill_number ?: ""
+
+        tvQrAmount.text = "Amount: ₹%.2f".format(amount)
+        tvBillInfo.text = "Invoice: #$billNo"
+        tvBillInfo.visibility = View.VISIBLE
+
+        val upiId = PaymentConfig.UPI_ID
+        val name = "Sri Vijay Durga Milk Agency"
+        val upiUrl = "upi://pay?pa=$upiId&pn=${Uri.encode(name)}&am=${"%.2f".format(amount)}&cu=INR&tn=${Uri.encode(billNo)}"
+
+        try {
+            val barcodeEncoder = BarcodeEncoder()
+            val bitmap = barcodeEncoder.encodeBitmap(upiUrl, BarcodeFormat.QR_CODE, 512, 512)
+            ivQrCode.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error generating QR code", Toast.LENGTH_SHORT).show()
+        }
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogView)
+            .create()
+
+        btnCloseQr.setOnClickListener { dialog.dismiss() }
+        dialog.show()
     }
 }

@@ -14,59 +14,141 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvItemName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Full Cream Milk 120 ML"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvCompanyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Dodla Dairy"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tvItemName"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvCurrentStock"
+                android:layout_width="64dp"
+                android:layout_height="28dp"
+                android:background="@drawable/bg_badge_blue"
+                android:text="93"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvPcsCount"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Full Cream Milk 120 ML"
+                android:layout_weight="1"
+                android:text="Pcs / crate: 12"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tvBuyingPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Buying: 10.000"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etCrates"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_qty_outline"
+                android:gravity="center"
+                android:hint="Crates"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:text="0"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="14sp"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etDiscount"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_qty_outline"
+                android:gravity="center"
+                android:hint="Discount"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:text="0"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvQuantityPreview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Quantity: 0.000"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvCompanyName"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvValuePreview"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Dodla Dairy"
-                android:textColor="@color/textColorSecondary"
-                android:textSize="12sp"
-                android:layout_marginTop="2dp" />
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="Value: 0.000"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
         </LinearLayout>
-
-        <!-- Current Qty Badge -->
-        <TextView
-            android:id="@+id/tvCurrentStock"
-            android:layout_width="60dp"
-            android:layout_height="24dp"
-            android:background="@drawable/bg_badge_blue"
-            android:text="93"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:layout_marginEnd="12dp" />
-
-        <!-- Input Field -->
-        <EditText
-            android:id="@+id/etCrates"
-            android:layout_width="60dp"
-            android:layout_height="36dp"
-            android:background="@drawable/bg_qty_outline"
-            android:inputType="number"
-            android:text="0"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="14sp"
-            android:gravity="center" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

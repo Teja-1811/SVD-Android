@@ -1,5 +1,7 @@
 package com.svd.svdagencies.ui.user
 
+import com.svd.svdagencies.utils.PaymentConfig
+
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -16,6 +19,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.user.UserApi
@@ -73,6 +80,7 @@ class UserBillsFragment : Fragment(R.layout.user_bills) {
             when (action) {
                 "view" -> openBillDetails(bill)
                 "download" -> downloadInvoice(bill)
+                "qr" -> showQRDialog(bill)
             }
         }
         rvBills.layoutManager = LinearLayoutManager(requireContext())
@@ -174,5 +182,40 @@ class UserBillsFragment : Fragment(R.layout.user_bills) {
         } catch (e: Exception) {
             Toast.makeText(context, "No PDF viewer found", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showQRDialog(bill: UserBill) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null)
+        val ivQrCode = dialogView.findViewById<ImageView>(R.id.ivQrCode)
+        val tvQrAmount = dialogView.findViewById<TextView>(R.id.tvQrAmount)
+        val tvBillInfo = dialogView.findViewById<TextView>(R.id.tvBillInfo)
+        val btnCloseQr = dialogView.findViewById<MaterialButton>(R.id.btnCloseQr)
+
+        val amount = bill.totalAmount
+        val billNo = bill.invoiceNumber
+
+        tvQrAmount.text = "Amount: ₹%.2f".format(amount)
+        tvBillInfo.text = "Invoice: #$billNo"
+        tvBillInfo.visibility = View.VISIBLE
+
+        val upiId = PaymentConfig.UPI_ID
+        val name = "Sri Vijay Durga Milk Agency"
+        val upiUrl = "upi://pay?pa=$upiId&pn=${Uri.encode(name)}&am=${"%.2f".format(amount)}&cu=INR&tn=${Uri.encode(billNo)}"
+
+        try {
+            val barcodeEncoder = BarcodeEncoder()
+            val bitmap = barcodeEncoder.encodeBitmap(upiUrl, BarcodeFormat.QR_CODE, 512, 512)
+            ivQrCode.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Error generating QR code", Toast.LENGTH_SHORT).show()
+        }
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        btnCloseQr.setOnClickListener { dialog.dismiss() }
+        dialog.show()
     }
 }

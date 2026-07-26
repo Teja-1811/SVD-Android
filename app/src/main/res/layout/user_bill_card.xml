@@ -78,6 +78,19 @@
             app:layout_constraintStart_toEndOf="@id/tvOpDueLabel" />
 
         <ImageButton
+            android:id="@+id/btnQR"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_qr_code"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnDownloadBill"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:tint="@color/brand_red" />
+
+        <ImageButton
             android:id="@+id/btnDownloadBill"
             android:layout_width="40dp"
             android:layout_height="40dp"

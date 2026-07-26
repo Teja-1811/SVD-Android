@@ -40,6 +40,7 @@ class UserBillsAdapter(
         private val tvOpDue: TextView = itemView.findViewById(R.id.tvOpDueValue)
         private val btnDownload: ImageButton = itemView.findViewById(R.id.btnDownloadBill)
         private val btnView: MaterialButton = itemView.findViewById(R.id.btnViewBill)
+        private val btnQR: ImageButton = itemView.findViewById(R.id.btnQR)
 
         fun bind(bill: UserBill) {
             tvInvoiceNum.text = "#${bill.invoiceNumber}"
@@ -50,6 +51,7 @@ class UserBillsAdapter(
             itemView.setOnClickListener { onAction(bill, "view") }
             btnView.setOnClickListener { onAction(bill, "view") }
             btnDownload.setOnClickListener { onAction(bill, "download") }
+            btnQR.setOnClickListener { onAction(bill, "qr") }
         }
     }
 }

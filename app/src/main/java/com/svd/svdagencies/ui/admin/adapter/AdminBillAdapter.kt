@@ -17,7 +17,8 @@ class AdminBillAdapter(
     private val onEditClick: (AdminBill) -> Unit,
     private val onWhatsappClick: (AdminBill) -> Unit,
     private val onDownloadClick: (AdminBill) -> Unit,
-    private val onDeleteClick: (AdminBill) -> Unit
+    private val onDeleteClick: (AdminBill) -> Unit,
+    private val onQRClick: (AdminBill) -> Unit
 ) : RecyclerView.Adapter<AdminBillAdapter.BillViewHolder>() {
 
     fun updateList(newBills: List<AdminBill>) {
@@ -49,6 +50,7 @@ class AdminBillAdapter(
         private val btnWhatsapp: ImageButton = itemView.findViewById(R.id.btnWhatsapp)
         private val btnDownload: ImageButton = itemView.findViewById(R.id.btnDownload)
         private val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
+        private val btnQR: ImageButton = itemView.findViewById(R.id.btnQR)
 
         fun bind(bill: AdminBill) {
             tvBillNumber.text = "Bill #" + (bill.bill_number ?: "")
@@ -63,6 +65,7 @@ class AdminBillAdapter(
             btnWhatsapp.setOnClickListener { onWhatsappClick(bill) }
             btnDownload.setOnClickListener { onDownloadClick(bill) }
             btnDelete.setOnClickListener { onDeleteClick(bill) }
+            btnQR.setOnClickListener { onQRClick(bill) }
         }
 
         private fun formatDate(dateString: String?): String {

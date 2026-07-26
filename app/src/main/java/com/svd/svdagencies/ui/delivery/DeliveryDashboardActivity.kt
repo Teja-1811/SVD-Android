@@ -1,13 +1,20 @@
 package com.svd.svdagencies.ui.delivery
 
+import com.svd.svdagencies.utils.PaymentConfig
+
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.svd.svdagencies.R
 import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -51,8 +58,7 @@ class DeliveryDashboardActivity : BaseActivity() {
         setupRecyclerViews()
         setupSwipeRefresh()
         setupDatePicker()
-        
-        // refreshData() removed from onCreate as it is called in onResume
+        refreshData()
     }
 
     private fun setupDatePicker() {
@@ -79,11 +85,6 @@ class DeliveryDashboardActivity : BaseActivity() {
         binding.tvSelectedDate.text = apiDate(selectedDate)
     }
 
-    override fun onResume() {
-        super.onResume()
-        refreshData()
-    }
-
     private fun setupToolbar(toolbar: Toolbar, title: String) {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -94,7 +95,8 @@ class DeliveryDashboardActivity : BaseActivity() {
         // Today's Bills Adapter
         todayBillAdapter = DeliveryTodayBillAdapter(
             onViewBill = { bill -> showBillDetails(bill) },
-            onDeleteBill = { bill -> confirmDeleteBill(bill) }
+            onDeleteBill = { bill -> confirmDeleteBill(bill) },
+            onShowQR = { bill -> showQRDialog(bill) }
         )
         binding.rvTodayBills.apply {
             layoutManager = LinearLayoutManager(this@DeliveryDashboardActivity)
@@ -194,7 +196,7 @@ class DeliveryDashboardActivity : BaseActivity() {
     }
 
     private fun pendingSalary(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
-        return if (summary.pendingSalary != 0.0) summary.pendingSalary else summary.remainingSalary
+        return (salaryEarned(summary) - summary.salaryPaid).coerceAtLeast(0.0)
     }
 
     private fun submittedAmount(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
@@ -262,6 +264,41 @@ class DeliveryDashboardActivity : BaseActivity() {
         }
     }
 
+    private fun showQRDialog(bill: DeliveryTodayBill) {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null)
+        val ivQrCode = dialogView.findViewById<ImageView>(R.id.ivQrCode)
+        val tvQrAmount = dialogView.findViewById<TextView>(R.id.tvQrAmount)
+        val tvBillInfo = dialogView.findViewById<TextView>(R.id.tvBillInfo)
+        val btnCloseQr = dialogView.findViewById<MaterialButton>(R.id.btnCloseQr)
+
+        val amount = bill.totalAmount
+        val billNo = bill.billNumber ?: "#${bill.realId}"
+
+        tvQrAmount.text = "Amount: ${money(amount)}"
+        tvBillInfo.text = "Invoice: $billNo"
+        tvBillInfo.visibility = View.VISIBLE
+
+        val upiId = PaymentConfig.UPI_ID
+        val name = "Sri Vijay Durga Milk Agency"
+        val upiUrl = "upi://pay?pa=$upiId&pn=${Uri.encode(name)}&am=${"%.2f".format(amount)}&cu=INR&tn=${Uri.encode(billNo)}"
+
+        try {
+            val barcodeEncoder = BarcodeEncoder()
+            val bitmap = barcodeEncoder.encodeBitmap(upiUrl, BarcodeFormat.QR_CODE, 512, 512)
+            ivQrCode.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error generating QR code", Toast.LENGTH_SHORT).show()
+        }
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogView)
+            .create()
+
+        btnCloseQr.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
     private fun confirmDeleteBill(bill: DeliveryTodayBill) {
         MaterialAlertDialogBuilder(this)
             .setTitle("Delete Bill")
@@ -291,4 +328,3 @@ class DeliveryDashboardActivity : BaseActivity() {
 
     private fun money(value: Double): String = "Rs. %.2f".format(Locale.US, value)
 }
-

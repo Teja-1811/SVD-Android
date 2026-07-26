@@ -12,7 +12,8 @@ import java.util.Locale
 
 class DeliveryTodayBillAdapter(
     private val onViewBill: (DeliveryTodayBill) -> Unit,
-    private val onDeleteBill: (DeliveryTodayBill) -> Unit
+    private val onDeleteBill: (DeliveryTodayBill) -> Unit,
+    private val onShowQR: (DeliveryTodayBill) -> Unit
 ) : RecyclerView.Adapter<DeliveryTodayBillAdapter.ViewHolder>() {
 
     private var items = listOf<DeliveryTodayBill>()
@@ -39,6 +40,7 @@ class DeliveryTodayBillAdapter(
         private val tvBillAmount: TextView = view.findViewById(R.id.tvBillAmount)
         private val btnViewBill: MaterialButton = view.findViewById(R.id.btnViewBill)
         private val btnDeleteBill: MaterialButton = view.findViewById(R.id.btnDeleteBill)
+        private val btnQR: MaterialButton = view.findViewById(R.id.btnQR)
 
         fun bind(item: DeliveryTodayBill) {
             tvBillNumber.text = item.billNumber ?: "#${item.realId}"
@@ -46,6 +48,7 @@ class DeliveryTodayBillAdapter(
             tvBillAmount.text = String.format(Locale.getDefault(), "Rs. %.2f", item.totalAmount)
             btnViewBill.setOnClickListener { onViewBill(item) }
             btnDeleteBill.setOnClickListener { onDeleteBill(item) }
+            btnQR.setOnClickListener { onShowQR(item) }
         }
     }
 }

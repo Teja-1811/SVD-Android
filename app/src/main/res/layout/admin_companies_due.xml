@@ -22,198 +22,202 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.core.widget.NestedScrollView
+            <com.svd.svdagencies.utils.AppSwipeRefreshLayout
+                android:id="@+id/swipeRefresh"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="80dp"
-                android:fillViewport="true">
+                android:layout_height="match_parent">
 
-                <LinearLayout
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:fillViewport="true"
+                    android:paddingBottom="80dp">
 
-                    <!-- Filter & Month Picker Card -->
-                    <com.google.android.material.card.MaterialCardView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        app:cardCornerRadius="@dimen/card_corner_radius_small"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/card_background">
+                        android:orientation="vertical"
+                        android:padding="12dp">
 
-                        <LinearLayout
+                        <com.google.android.material.card.MaterialCardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Billing Period"
-                                android:textColor="@color/textColorSecondary"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                android:textAllCaps="true"
-                                android:layout_marginBottom="12dp"/>
-
-                            <TextView
-                                android:id="@+id/tvDate"
-                                android:layout_width="match_parent"
-                                android:layout_height="35dp"
-                                android:background="@drawable/bg_edittext"
-                                android:gravity="center_vertical"
-                                android:paddingHorizontal="16dp"
-                                android:text="February, 2025"
-                                android:textColor="@color/textColorPrimary"
-                                android:textSize="12sp"
-                                android:textStyle="bold"
-                                app:drawableEndCompat="@drawable/ic_calendar"
-                                app:drawableTint="@color/brand_red" />
-
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Summary Grid -->
-                    <GridLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:columnCount="3"
-                        android:alignmentMode="alignMargins"
-                        android:columnOrderPreserved="false"
-                        android:layout_marginBottom="10dp">
-
-                        <!-- Total Invoice -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_margin="4dp"
+                            android:layout_marginBottom="16dp"
+                            app:cardBackgroundColor="@color/card_background"
                             app:cardCornerRadius="@dimen/card_corner_radius_small"
                             app:cardElevation="0dp"
-                            app:cardBackgroundColor="?attr/colorSurface"
-                            app:strokeWidth="1dp"
-                            app:strokeColor="?attr/colorOutlineVariant">
+                            app:strokeColor="@color/card_stroke_color"
+                            app:strokeWidth="1dp">
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
+                                android:padding="12dp">
+
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="INVOICE"
-                                    android:textSize="10sp"
-                                    android:textColor="#C62828"/>
+                                    android:layout_marginBottom="12dp"
+                                    android:text="Billing Period"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/textColorSecondary"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
                                 <TextView
-                                    android:id="@+id/tvTotalInvoice"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="₹0.00"
+                                    android:id="@+id/tvDate"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="35dp"
+                                    android:background="@drawable/bg_edittext"
+                                    android:gravity="center_vertical"
+                                    android:paddingHorizontal="16dp"
+                                    android:text="February, 2025"
+                                    android:textColor="@color/textColorPrimary"
                                     android:textSize="12sp"
                                     android:textStyle="bold"
-                                    android:textColor="#C62828"/>
+                                    app:drawableEndCompat="@drawable/ic_calendar"
+                                    app:drawableTint="@color/brand_red" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 
-                        <!-- Total Paid -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="0dp"
+                        <GridLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="@dimen/card_corner_radius_small"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="?attr/colorSurface"
-                            app:strokeWidth="1dp"
-                            app:strokeColor="?attr/colorOutlineVariant">
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="PAID"
-                                    android:textSize="10sp"
-                                    android:textColor="#2E7D32"/>
-                                <TextView
-                                    android:id="@+id/tvTotalPaid"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="₹0.00"
-                                    android:textSize="12sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#2E7D32"/>
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
+                            android:layout_marginBottom="10dp"
+                            android:alignmentMode="alignMargins"
+                            android:columnCount="3"
+                            android:columnOrderPreserved="false">
 
-                        <!-- Total Due -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="0dp"
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="4dp"
+                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                                app:cardElevation="0dp"
+                                app:strokeColor="?attr/colorOutlineVariant"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="INVOICE"
+                                        android:textColor="#C62828"
+                                        android:textSize="10sp" />
+
+                                    <TextView
+                                        android:id="@+id/tvTotalInvoice"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="₹0.00"
+                                        android:textColor="#C62828"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="4dp"
+                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                                app:cardElevation="0dp"
+                                app:strokeColor="?attr/colorOutlineVariant"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="PAID"
+                                        android:textColor="#2E7D32"
+                                        android:textSize="10sp" />
+
+                                    <TextView
+                                        android:id="@+id/tvTotalPaid"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="₹0.00"
+                                        android:textColor="#2E7D32"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="4dp"
+                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                                app:cardElevation="0dp"
+                                app:strokeColor="?attr/colorOutlineVariant"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="DUE"
+                                        android:textColor="#F57F17"
+                                        android:textSize="10sp" />
+
+                                    <TextView
+                                        android:id="@+id/tvTotalDue"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="₹0.00"
+                                        android:textColor="#F57F17"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+                        </GridLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutIndicators"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_columnWeight="1"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="@dimen/card_corner_radius_small"
-                            app:cardElevation="0dp"
-                            app:cardBackgroundColor="?attr/colorSurface"
-                            app:strokeWidth="1dp"
-                            app:strokeColor="?attr/colorOutlineVariant">
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="12dp"
-                                android:gravity="center">
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="DUE"
-                                    android:textSize="10sp"
-                                    android:textColor="#F57F17"/>
-                                <TextView
-                                    android:id="@+id/tvTotalDue"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="₹0.00"
-                                    android:textSize="12sp"
-                                    android:textStyle="bold"
-                                    android:textColor="#F57F17"/>
-                            </LinearLayout>
-                        </com.google.android.material.card.MaterialCardView>
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="12dp"
+                            android:gravity="center"
+                            android:orientation="horizontal" />
 
-                    </GridLayout>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvSummary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            tools:listitem="@layout/admin_companies_due_card" />
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
+            </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
 
-                    <!-- Indicators (Dots) -->
-                    <LinearLayout
-                        android:id="@+id/layoutIndicators"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="12dp"/>
-
-                    <!-- Horizontal Sliding Cards -->
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvSummary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        tools:listitem="@layout/admin_companies_due_card" />
-
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-
-            <!-- Floating Action Save Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveAll"
                 android:layout_width="match_parent"
@@ -222,29 +226,26 @@
                 android:layout_margin="16dp"
                 android:text="Save Payments"
                 android:textAllCaps="false"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:backgroundTint="@color/brand_red"
                 app:cornerRadius="16dp"
                 app:elevation="4dp"
                 app:icon="@drawable/ic_save"
                 app:iconGravity="textStart"
-                app:iconSize="20dp"
-                app:backgroundTint="@color/brand_red"
-                android:textColor="@color/white"/>
-
+                app:iconSize="20dp" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/card_background"
         android:layout_gravity="start"
+        android:background="@color/card_background"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"
         app:itemTextColor="@color/drawer_nav_item_colors"
-        app:menu="@menu/menu_admin_drawer"/>
-
+        app:menu="@menu/menu_admin_drawer" />
 </androidx.drawerlayout.widget.DrawerLayout>

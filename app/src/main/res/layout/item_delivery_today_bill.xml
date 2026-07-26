@@ -71,6 +71,16 @@
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnQR"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QR"
+                android:textColor="@color/brand_red"
+                app:icon="@drawable/ic_qr_code"
+                app:iconTint="@color/brand_red" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnViewBill"
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"

@@ -69,6 +69,18 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/btnQR"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_qr_code"
+            app:tint="@color/brand_red"
+            android:layout_marginStart="12dp"
+            android:padding="2dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        <ImageView
             android:id="@+id/btnDownloadBill"
             android:layout_width="24dp"
             android:layout_height="24dp"

@@ -23,7 +23,6 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Cashbook.CashbookDashboardResponse
 import com.svd.svdagencies.data.model.admin.Cashbook.DeliverySalaryAgent
 import com.svd.svdagencies.data.model.admin.Cashbook.DeliverySalaryPaymentRequest
-import com.svd.svdagencies.data.model.admin.Cashbook.SaveBankBalanceRequest
 import com.svd.svdagencies.data.model.admin.Cashbook.SaveCashInRequest
 import com.svd.svdagencies.databinding.AdminCashbookBinding
 import com.svd.svdagencies.databinding.AdminStatCardBinding
@@ -50,7 +49,6 @@ class AdminCashBookActivity : AdminBaseActivity() {
 
     private var selectedMonth: Int? = null
     private var selectedYear: Int? = null
-    private var shouldReloadOnResume = false
     private var salaryAgents: List<DeliverySalaryAgent> = emptyList()
 
     private val expenseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -108,7 +106,6 @@ class AdminCashBookActivity : AdminBaseActivity() {
             })
         }
 
-        binding.btnUpdateBank.setOnClickListener { updateBankBalance() }
         binding.btnUpdateCashIn.setOnClickListener { updateCashIn() }
         
         binding.btnAddExpense.setOnClickListener {
@@ -134,14 +131,6 @@ class AdminCashBookActivity : AdminBaseActivity() {
         binding.btnResetFilters.setOnClickListener {
             resetFilters()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (shouldReloadOnResume) {
-            loadDashboardData()
-        }
-        shouldReloadOnResume = true
     }
 
     private fun setupIndicators(count: Int) {
@@ -297,8 +286,6 @@ class AdminCashBookActivity : AdminBaseActivity() {
         salaryAgents = salarySummary?.agents.orEmpty()
         binding.tvDeliverySalaryDue.text = "Delivery salary due: ₹%.2f".format(salarySummary?.remaining_salary ?: 0.0)
 
-        binding.etBankBalance.setText(data.bank_balance.toString())
-
         companyDueAdapter.update(data.company_dues)
         setupIndicators(data.company_dues.size)
         binding.tvTotalCompanyDues.text = "Total Company Dues: ₹%.2f".format(data.total_company_dues)
@@ -323,25 +310,6 @@ class AdminCashBookActivity : AdminBaseActivity() {
             et.setText(newText)
         }
         tv.text = "₹${count * note}"
-    }
-
-    private fun updateBankBalance() {
-        val balance = binding.etBankBalance.text.toString().toDoubleOrNull() ?: return
-        showScreenLoading()
-        lifecycleScope.launch {
-            try {
-                ApiClient.cashbookApi.saveBankBalance(SaveBankBalanceRequest(balance))
-                Toast.makeText(this@AdminCashBookActivity, "Bank balance updated", Toast.LENGTH_SHORT).show()
-                loadDashboardData()
-            } catch (e: Exception) {
-                hideScreenLoading()
-                Toast.makeText(
-                    this@AdminCashBookActivity,
-                    NetworkMessageUtils.friendlyMessage(e, "Failed to update bank balance"),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
     }
 
     private fun updateCashIn() {

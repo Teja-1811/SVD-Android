@@ -127,6 +127,7 @@ class ViewExpensesActivity : AdminBaseActivity() {
             putExtra("AMOUNT", expense.amount)
             putExtra("CATEGORY", expense.category)
             putExtra("DESCRIPTION", expense.description)
+            putExtra("DATE", expense.date)
         }
         startActivity(intent)
     }
@@ -156,8 +157,4 @@ class ViewExpensesActivity : AdminBaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadExpenses()
-    }
 }
