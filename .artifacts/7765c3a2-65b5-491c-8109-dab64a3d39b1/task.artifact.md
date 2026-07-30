@@ -1,0 +1,5 @@
+- [ ] Update `AdminSummaryAdapter.kt` to fix `etInvoice` unresolved reference
+    - [ ] Change `etInvoice` (EditText) to `tvInvoice` (TextView)
+    - [ ] Update `findViewById` to use `R.id.tvInvoice`
+    - [ ] Remove `invoiceWatcher` and related logic
+- [ ] Verify build by running `:app:compileDebugKotlin`
