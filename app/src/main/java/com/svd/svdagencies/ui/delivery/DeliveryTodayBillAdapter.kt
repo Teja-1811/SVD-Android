@@ -24,7 +24,7 @@ class DeliveryTodayBillAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_delivery_today_bill, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.delivery_today_bill, parent, false)
         return ViewHolder(view)
     }
 

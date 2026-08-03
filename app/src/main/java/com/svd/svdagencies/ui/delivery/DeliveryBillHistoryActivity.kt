@@ -99,7 +99,11 @@ class DeliveryBillHistoryActivity : BaseActivity() {
                         cardSummary.visibility = View.GONE
                     }
                 } else {
-                    Toast.makeText(this@DeliveryBillHistoryActivity, "Failed to load bills", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@DeliveryBillHistoryActivity,
+                        com.svd.svdagencies.utils.NetworkMessageUtils.parseError(response, "Failed to load bills"),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@DeliveryBillHistoryActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -110,7 +114,7 @@ class DeliveryBillHistoryActivity : BaseActivity() {
     }
 
     private fun showBillDetails(bill: DeliveryTodayBill) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_bill_details, null)
+        val dialogView = layoutInflater.inflate(R.layout.delivery_bill_details, null)
         val tvBillNumber = dialogView.findViewById<TextView>(R.id.tvDialogBillNumber)
         val tvTotalAmount = dialogView.findViewById<TextView>(R.id.tvDialogTotalAmount)
         val rvItems = dialogView.findViewById<RecyclerView>(R.id.rvBillDetailItems)
@@ -138,18 +142,7 @@ class DeliveryBillHistoryActivity : BaseActivity() {
                     detail?.let { res ->
                         tvTotalAmount.text = money(res.total_amount)
                         res.items?.let { items ->
-                            val convertedItems = items.map { 
-                                com.svd.svdagencies.data.model.admin.Bills.BillItemDetail(
-                                    item_id = it.itemId,
-                                    item_name = it.name,
-                                    quantity = it.quantity,
-                                    price_per_unit = it.pricePerUnit,
-                                    discount = it.discount,
-                                    total_discount = it.totalDiscount,
-                                    total_amount = it.totalAmount
-                                )
-                            }
-                            detailAdapter.submitList(convertedItems)
+                            detailAdapter.submitList(items)
                         } ?: run {
                             try {
                                 val itemResponse = ApiClient.billsDashboardApi.getBillItems(bill.realId)

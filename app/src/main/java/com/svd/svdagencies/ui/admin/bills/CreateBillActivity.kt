@@ -22,6 +22,7 @@ import com.svd.svdagencies.data.model.admin.Bills.CreateBillRequest
 import com.svd.svdagencies.data.model.admin.Bills.EditBillRequest
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
+import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -339,13 +340,13 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private fun saveBill() {
-        btnGenerateBill.isEnabled = false
+        btnGenerateBill.showLoading(true, "Generating Bill...")
         showScreenLoading()
         lifecycleScope.launch {
             try {
                 if (billId == null) createBill() else editBill(billId!!)
             } catch (e: Exception) {
-                btnGenerateBill.isEnabled = true
+                btnGenerateBill.showLoading(false)
                 hideScreenLoading()
                 Toast.makeText(
                     this@CreateBillActivity,
@@ -358,7 +359,7 @@ class CreateBillActivity : AdminBaseActivity() {
 
     private suspend fun createBill() {
         if (selectedCustomer == null) {
-            btnGenerateBill.isEnabled = true
+            btnGenerateBill.showLoading(false)
             hideScreenLoading()
             Toast.makeText(this, "Please select a customer", Toast.LENGTH_SHORT).show()
             return
@@ -367,13 +368,13 @@ class CreateBillActivity : AdminBaseActivity() {
 
         val billItems = itemAdapter.getItems().filter { it.itemId != 0 }
         if (billItems.isEmpty()) {
-            btnGenerateBill.isEnabled = true
+            btnGenerateBill.showLoading(false)
             hideScreenLoading()
             Toast.makeText(this, "Please add at least one item", Toast.LENGTH_SHORT).show()
             return
         }
         findOutOfStockLine(billItems)?.let { (item, _) ->
-            btnGenerateBill.isEnabled = true
+            btnGenerateBill.showLoading(false)
             hideScreenLoading()
             Toast.makeText(
                 this,
@@ -390,7 +391,7 @@ class CreateBillActivity : AdminBaseActivity() {
             billItems.map { it.discount }
         )
         ApiClient.billsDashboardApi.createBill(request)
-        btnGenerateBill.isEnabled = true
+        btnGenerateBill.showLoading(false)
         hideScreenLoading()
         Toast.makeText(this, "Bill created successfully!", Toast.LENGTH_SHORT).show()
         finish()
@@ -399,7 +400,7 @@ class CreateBillActivity : AdminBaseActivity() {
     private suspend fun editBill(id: Int) {
         val billItems = itemAdapter.getItems().filter { it.itemId != 0 }
         if (billItems.isEmpty()) {
-            btnGenerateBill.isEnabled = true
+            btnGenerateBill.showLoading(false)
             hideScreenLoading()
             Toast.makeText(this, "Please add at least one item", Toast.LENGTH_SHORT).show()
             return
@@ -413,7 +414,7 @@ class CreateBillActivity : AdminBaseActivity() {
             invoiceDate = tvBillDate.text.toString()
         )
         ApiClient.billsDashboardApi.editBill(id, request)
-        btnGenerateBill.isEnabled = true
+        btnGenerateBill.showLoading(false)
         hideScreenLoading()
         Toast.makeText(this, "Bill updated successfully!", Toast.LENGTH_SHORT).show()
         finish()

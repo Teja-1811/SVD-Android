@@ -30,7 +30,6 @@
         </activity>
 
         <activity android:name=".ui.auth.LoginActivity" />
-        <activity android:name=".ui.auth.RegisterActivity" />
 
         <!-- Admin -->
         <activity android:name=".ui.admin.AdminDashboardActivity"/>
@@ -57,9 +56,6 @@
         <activity android:name=".ui.admin.companies.AdminCompaniesActivity"/>
         <activity android:name=".ui.admin.companies.AddEditCompanyActivity"/>
         <activity android:name=".ui.admin.companies.CompanyCatalogActivity"/>
-        <activity android:name=".ui.admin.AdminSubscriptionsActivity"/>
-        <activity android:name=".ui.admin.AdminSubscriptionHistoryActivity"/>
-        <activity android:name=".ui.admin.AdminUserDeliveryActivity"/>
         <activity android:name=".ui.admin.AdminDeliveryAgentDuesActivity"/>
         <activity android:name=".ui.admin.AdminEnquiriesActivity"/>
 
@@ -69,17 +65,16 @@
         <activity android:name=".ui.customer.CustomerCompanyDetailsActivity"/>
         <activity android:name=".ui.customer.CustomerContactSupportActivity"/>
         <activity android:name=".ui.customer.CustomerRaisedQueriesActivity"/>
+        <activity android:name=".ui.customer.CustomerStatementActivity"/>
         <activity android:name=".ui.customer.PhonePeCheckoutActivity"/>
-        <activity android:name=".ui.user.UserMainActivity"/>
-        <activity android:name=".ui.user.TermsConditionsActivity"/>
-        <activity android:name=".ui.user.CompanyDetailsActivity"/>
-        <activity android:name=".ui.user.ContactSupportActivity"/>
-        <activity android:name=".ui.user.RaisedQueriesActivity"/>
-        <activity android:name=".ui.user.UserBillDetailActivity" />
+        <activity android:name=".ui.customer.TermsConditionsActivity"/>
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>
         <activity android:name=".ui.delivery.DeliveryPaymentsActivity"/>
+        <activity android:name=".ui.delivery.DeliveryStockEntryActivity"/>
+        <activity android:name=".ui.delivery.DeliveryStockPhaseEntryActivity"/>
+        <activity android:name=".ui.delivery.DeliveryStockHistoryActivity"/>
         <activity android:name=".ui.delivery.DeliveryOverallReportActivity"/>
         <activity
             android:name=".ui.delivery.DeliveryCreateBillActivity"

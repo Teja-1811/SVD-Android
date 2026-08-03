@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -27,7 +27,10 @@ class AdminPaymentsActivity : AdminBaseActivity() {
         setupAdminLayout("Customer Payments")
         setupRecyclerView()
         setupListeners()
-        
+    }
+
+    override fun onResume() {
+        super.onResume()
         fetchPayments()
     }
 
@@ -112,7 +115,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
 
     private fun showUpdateStatusDialog(payment: CustomerPaymentItem) {
         val statuses = arrayOf("PENDING", "SUCCESS", "FAILED")
-        val builder = AlertDialog.Builder(this)
+        val builder = MaterialAlertDialogBuilder(this)
         builder.setTitle("Update Status for ${payment.transaction_id}")
         
         builder.setItems(statuses) { dialog, which ->
@@ -124,7 +127,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
 
     private fun confirmStatusUpdate(payment: CustomerPaymentItem, status: String) {
         val label = if (status == "success") "Success" else "Failure"
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Mark payment as $label")
             .setMessage("Verify ${payment.customer_name ?: "customer"} payment of Rs.${payment.amount} before marking $label.")
             .setPositiveButton(label) { _, _ -> updateStatus(payment.id, status) }
@@ -158,7 +161,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
     }
 
     private fun showDeleteConfirmDialog(payment: CustomerPaymentItem) {
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Delete Payment")
             .setMessage("Are you sure you want to delete transaction ${payment.transaction_id}?")
             .setPositiveButton("Delete") { _, _ ->

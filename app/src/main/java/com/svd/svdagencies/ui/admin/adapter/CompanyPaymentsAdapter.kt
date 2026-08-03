@@ -10,6 +10,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.admin.AdminSummaryItem
 import com.svd.svdagencies.data.model.admin.CompanyPayment
 import com.svd.svdagencies.data.model.admin.PaymentData
+import java.util.Locale
 
 class CompanyPaymentsAdapter(
     private var companies: List<CompanyPayment>
@@ -80,31 +81,60 @@ class CompanyPaymentsAdapter(
 
     inner class CompanyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvCompanyName: TextView = itemView.findViewById(R.id.tvCompanyName)
-        private val tvCompanyTotals: TextView = itemView.findViewById(R.id.tvCompanyTotals)
+        private val tvHeaderInvoice: TextView = itemView.findViewById(R.id.tvHeaderInvoice)
+        private val tvHeaderPaid: TextView = itemView.findViewById(R.id.tvHeaderPaid)
+        private val tvHeaderDue: TextView = itemView.findViewById(R.id.tvHeaderDue)
+        private val tvHeaderAdvance: TextView = itemView.findViewById(R.id.tvHeaderAdvance)
         private val rvDailyRecords: RecyclerView = itemView.findViewById(R.id.rvDailyRecords)
 
         init {
             rvDailyRecords.layoutManager = LinearLayoutManager(itemView.context)
-            // Crucial: Optimization to prevent focus issues in nested RecyclerViews
             rvDailyRecords.setHasFixedSize(true)
             rvDailyRecords.isNestedScrollingEnabled = false
         }
 
         fun bind(company: CompanyPayment) {
             tvCompanyName.text = company.company_name
-            tvCompanyTotals.text = "Invoice: ₹${company.total_invoice} | Paid: ₹${company.total_paid} | Due: ₹${company.remaining_due}"
+            
+            updateCompanySummary(company)
 
             var adapter = recordsAdapters[company.company_id]
             if (adapter == null) {
                 val summaryItems = convertDailyRecords(company.records)
-                adapter = CompanyDuesDailyRecordsAdapter(summaryItems)
+                adapter = CompanyDuesDailyRecordsAdapter(summaryItems) {
+                    // Update totals when records change
+                    recalculateCompanyTotals(company, summaryItems)
+                }
                 recordsAdapters[company.company_id] = adapter
             }
             
-            // Re-assign the adapter only if it's different to avoid resetting scroll position/focus
             if (rvDailyRecords.adapter !== adapter) {
                 rvDailyRecords.adapter = adapter
             }
+        }
+
+        private fun recalculateCompanyTotals(company: CompanyPayment, items: List<AdminSummaryItem>) {
+            val totalInvoice = items.sumOf { it.invoice_amount }
+            val totalPaid = items.sumOf { it.paid_amount }
+            
+            // This is a bit tricky because CompanyPayment is usually immutable (val)
+            // But we can update the UI directly for real-time feedback
+            updateSummaryUI(totalInvoice, totalPaid)
+        }
+
+        private fun updateCompanySummary(company: CompanyPayment) {
+            updateSummaryUI(company.total_invoice, company.total_paid)
+        }
+
+        private fun updateSummaryUI(totalInvoice: Double, totalPaid: Double) {
+            val diff = totalInvoice - totalPaid
+            val due = if (diff > 0) diff else 0.0
+            val advance = if (diff < 0) -diff else 0.0
+
+            tvHeaderInvoice.text = String.format(Locale.US, "₹%.2f", totalInvoice)
+            tvHeaderPaid.text = String.format(Locale.US, "₹%.2f", totalPaid)
+            tvHeaderDue.text = String.format(Locale.US, "₹%.2f", due)
+            tvHeaderAdvance.text = String.format(Locale.US, "₹%.2f", advance)
         }
     }
 }

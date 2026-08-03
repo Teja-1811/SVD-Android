@@ -87,117 +87,166 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:alignmentMode="alignMargins"
-                            android:columnCount="3"
+                            android:columnCount="2"
                             android:columnOrderPreserved="false">
 
+                            <!-- INVOICE -->
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_columnWeight="1"
                                 android:layout_margin="4dp"
-                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardBackgroundColor="@color/payment_invoice_bg"
                                 app:cardCornerRadius="@dimen/card_corner_radius_small"
                                 app:cardElevation="0dp"
-                                app:strokeColor="?attr/colorOutlineVariant"
+                                app:strokeColor="@color/payment_invoice_text"
                                 app:strokeWidth="1dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center"
+                                    android:gravity="start"
                                     android:orientation="vertical"
                                     android:padding="12dp">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="INVOICE"
-                                        android:textColor="#C62828"
-                                        android:textSize="10sp" />
+                                        android:text="TOTAL INVOICE"
+                                        android:textColor="@color/payment_invoice_text"
+                                        android:textSize="9sp"
+                                        android:textStyle="bold" />
 
                                     <TextView
                                         android:id="@+id/tvTotalInvoice"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
                                         android:text="₹0.00"
-                                        android:textColor="#C62828"
-                                        android:textSize="12sp"
+                                        android:textColor="@color/payment_invoice_text"
+                                        android:textSize="14sp"
                                         android:textStyle="bold" />
                                 </LinearLayout>
                             </com.google.android.material.card.MaterialCardView>
 
+                            <!-- PAID -->
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_columnWeight="1"
                                 android:layout_margin="4dp"
-                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardBackgroundColor="@color/payment_paid_bg"
                                 app:cardCornerRadius="@dimen/card_corner_radius_small"
                                 app:cardElevation="0dp"
-                                app:strokeColor="?attr/colorOutlineVariant"
+                                app:strokeColor="@color/payment_paid_text"
                                 app:strokeWidth="1dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center"
+                                    android:gravity="start"
                                     android:orientation="vertical"
                                     android:padding="12dp">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="PAID"
-                                        android:textColor="#2E7D32"
-                                        android:textSize="10sp" />
+                                        android:text="TOTAL PAID"
+                                        android:textColor="@color/payment_paid_text"
+                                        android:textSize="9sp"
+                                        android:textStyle="bold" />
 
                                     <TextView
                                         android:id="@+id/tvTotalPaid"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
                                         android:text="₹0.00"
-                                        android:textColor="#2E7D32"
-                                        android:textSize="12sp"
+                                        android:textColor="@color/payment_paid_text"
+                                        android:textSize="14sp"
                                         android:textStyle="bold" />
                                 </LinearLayout>
                             </com.google.android.material.card.MaterialCardView>
 
+                            <!-- DUE -->
                             <com.google.android.material.card.MaterialCardView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_columnWeight="1"
                                 android:layout_margin="4dp"
-                                app:cardBackgroundColor="?attr/colorSurface"
+                                app:cardBackgroundColor="@color/payment_due_bg"
                                 app:cardCornerRadius="@dimen/card_corner_radius_small"
                                 app:cardElevation="0dp"
-                                app:strokeColor="?attr/colorOutlineVariant"
+                                app:strokeColor="@color/payment_due_text"
                                 app:strokeWidth="1dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center"
+                                    android:gravity="start"
                                     android:orientation="vertical"
                                     android:padding="12dp">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="DUE"
-                                        android:textColor="#F57F17"
-                                        android:textSize="10sp" />
+                                        android:text="TOTAL DUE"
+                                        android:textColor="@color/payment_due_text"
+                                        android:textSize="9sp"
+                                        android:textStyle="bold" />
 
                                     <TextView
                                         android:id="@+id/tvTotalDue"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
                                         android:text="₹0.00"
-                                        android:textColor="#F57F17"
-                                        android:textSize="12sp"
+                                        android:textColor="@color/payment_due_text"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <!-- ADVANCE -->
+                            <com.google.android.material.card.MaterialCardView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_columnWeight="1"
+                                android:layout_margin="4dp"
+                                app:cardBackgroundColor="@color/payment_advance_bg"
+                                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                                app:cardElevation="0dp"
+                                app:strokeColor="@color/payment_advance_text"
+                                app:strokeWidth="1dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="start"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="TOTAL ADVANCE"
+                                        android:textColor="@color/payment_advance_text"
+                                        android:textSize="9sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/tvTotalAdvance"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:text="₹0.00"
+                                        android:textColor="@color/payment_advance_text"
+                                        android:textSize="14sp"
                                         android:textStyle="bold" />
                                 </LinearLayout>
                             </com.google.android.material.card.MaterialCardView>
                         </GridLayout>
+
 
                         <LinearLayout
                             android:id="@+id/layoutIndicators"

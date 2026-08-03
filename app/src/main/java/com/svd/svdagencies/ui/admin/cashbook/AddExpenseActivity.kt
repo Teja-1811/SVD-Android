@@ -12,6 +12,7 @@ import com.svd.svdagencies.data.model.admin.Cashbook.ExpenseRequest
 import com.svd.svdagencies.databinding.AdminExpencesAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
+import com.svd.svdagencies.utils.showLoading
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -31,6 +32,12 @@ class AddExpenseActivity : AdminBaseActivity() {
         setContentView(binding.root)
 
         setupAdminLayout("Add Expense")
+
+        // Setup Done button in toolbar
+        findViewById<android.widget.ImageButton>(R.id.btnDone)?.apply {
+            visibility = android.view.View.VISIBLE
+            setOnClickListener { hideKeyboard() }
+        }
 
         // Check if editing
         expenseId = intent.getIntExtra("EXPENSE_ID", -1).takeIf { it != -1 }
@@ -58,6 +65,14 @@ class AddExpenseActivity : AdminBaseActivity() {
         }
         binding.etDate.setOnClickListener {
             showDatePicker()
+        }
+        binding.etAmount.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
+                hideKeyboard()
+                true
+            } else {
+                false
+            }
         }
     }
 
@@ -122,7 +137,7 @@ class AddExpenseActivity : AdminBaseActivity() {
         }
 
         val request = ExpenseRequest(amount, category, description, expenseDate)
-        binding.btnSaveExpense.isEnabled = false
+        binding.btnSaveExpense.showLoading(true, "Saving...")
         showScreenLoading()
 
         lifecycleScope.launch {
@@ -138,12 +153,12 @@ class AddExpenseActivity : AdminBaseActivity() {
                     Toast.makeText(this@AddExpenseActivity, "Expense saved successfully", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    binding.btnSaveExpense.isEnabled = true
+                    binding.btnSaveExpense.showLoading(false)
                     hideScreenLoading()
                     Toast.makeText(this@AddExpenseActivity, "Failed to save expense", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                binding.btnSaveExpense.isEnabled = true
+                binding.btnSaveExpense.showLoading(false)
                 hideScreenLoading()
                 Toast.makeText(
                     this@AddExpenseActivity,

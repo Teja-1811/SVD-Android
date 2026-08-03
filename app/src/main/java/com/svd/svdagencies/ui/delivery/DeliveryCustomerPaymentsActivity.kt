@@ -14,7 +14,7 @@ import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.delivery.DeliveryCustomerPaymentRecord
 import com.svd.svdagencies.databinding.DeliveryCustomerPaymentsBinding
-import com.svd.svdagencies.databinding.ItemCustomerPaymentRowBinding
+import com.svd.svdagencies.databinding.CustomerPaymentRowBinding
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
@@ -128,7 +128,11 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
                     adapter.submitList(payments)
                     binding.emptyState.visibility = if (payments.isEmpty()) View.VISIBLE else View.GONE
                 } else {
-                    Toast.makeText(this@DeliveryCustomerPaymentsActivity, "Failed to load payments", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@DeliveryCustomerPaymentsActivity,
+                        NetworkMessageUtils.parseError(response, "Failed to load payments"),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(
@@ -167,7 +171,7 @@ class DeliveryCustomerPaymentAdapter : RecyclerView.Adapter<DeliveryCustomerPaym
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemCustomerPaymentRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = CustomerPaymentRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -177,7 +181,7 @@ class DeliveryCustomerPaymentAdapter : RecyclerView.Adapter<DeliveryCustomerPaym
 
     override fun getItemCount(): Int = items.size
 
-    inner class ViewHolder(private val binding: ItemCustomerPaymentRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding: CustomerPaymentRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DeliveryCustomerPaymentRecord) {
             binding.tvAmount.text = "₹%.2f".format(item.amount)
             

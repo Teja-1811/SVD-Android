@@ -1,5 +1,7 @@
-- [ ] Update `AdminSummaryAdapter.kt` to fix `etInvoice` unresolved reference
-    - [ ] Change `etInvoice` (EditText) to `tvInvoice` (TextView)
-    - [ ] Update `findViewById` to use `R.id.tvInvoice`
-    - [ ] Remove `invoiceWatcher` and related logic
-- [ ] Verify build by running `:app:compileDebugKotlin`
+- [x] Refactor `AppSwipeRefreshLayout.kt`
+    - [x] Remove `LoadingOverlayManager` show/hide logic
+    - [x] Set color scheme to `@color/brand_red`
+    - [x] Set progress background to white
+- [x] Refactor `RefreshManager.kt`
+    - [x] Remove `LoadingOverlayManager` calls in `startRefresh` and `stopRefresh`
+- [x] Verify build with `:app:compileDebugKotlin`

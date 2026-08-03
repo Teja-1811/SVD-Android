@@ -19,22 +19,24 @@ class BillDetailItemAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.user_cart_summary_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.admin_bill_info_detail, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], position + 1)
     }
 
     override fun getItemCount() = items.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val tvIndex: TextView = view.findViewById(R.id.tvIndex)
         private val tvName: TextView = view.findViewById(R.id.tvItemName)
-        private val tvQty: TextView = view.findViewById(R.id.tvQty)
-        private val tvLineTotal: TextView = view.findViewById(R.id.tvLineTotal)
+        private val tvQty: TextView = view.findViewById(R.id.tvQuantity)
+        private val tvLineTotal: TextView = view.findViewById(R.id.tvTotal)
 
-        fun bind(item: BillItemDetail) {
+        fun bind(item: BillItemDetail, index: Int) {
+            tvIndex.text = index.toString()
             tvName.text = item.item_name
             tvQty.text = String.format(Locale.getDefault(), "%d", item.quantity)
             tvLineTotal.text = String.format(Locale.getDefault(), "₹ %.2f", item.total_amount)

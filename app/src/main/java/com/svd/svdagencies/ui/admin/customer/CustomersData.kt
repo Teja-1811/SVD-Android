@@ -28,6 +28,7 @@ import com.svd.svdagencies.data.model.admin.customerData.UpdateBalanceRequest
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.ui.admin.adapter.CustomerAdapter
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,6 +66,10 @@ class CustomersData : AdminBaseActivity() {
 
         initViews()
         setupListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadCustomers()
     }
 
@@ -181,10 +186,12 @@ class CustomersData : AdminBaseActivity() {
     }
 
     private fun toggleFreeze(id: Int) {
+        showScreenLoading()
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = api.toggleFreeze(id)
                 withContext(Dispatchers.Main) {
+                    hideScreenLoading()
                     if (!isDestroyed) {
                         if (response.success) {
                             Toast.makeText(this@CustomersData, "Status updated", Toast.LENGTH_SHORT).show()
@@ -196,6 +203,7 @@ class CustomersData : AdminBaseActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    hideScreenLoading()
                     if (!isDestroyed) {
                         Toast.makeText(this@CustomersData, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -258,11 +266,17 @@ class CustomersData : AdminBaseActivity() {
     }
 
     private fun updateBalance(id: Int, amount: String, dialog: Dialog) {
+        val btnUpdate = dialog.findViewById<MaterialButton>(R.id.btnUpdate)
+        btnUpdate?.showLoading(true, "Updating...")
+        showScreenLoading()
+        
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val request = UpdateBalanceRequest(amount = amount)
                 val response = api.updateBalance(id, request)
                 withContext(Dispatchers.Main) {
+                    btnUpdate?.showLoading(false)
+                    hideScreenLoading()
                     if (!isDestroyed) {
                         if (response.success) {
                             Toast.makeText(this@CustomersData, "Balance updated", Toast.LENGTH_SHORT).show()
@@ -275,6 +289,8 @@ class CustomersData : AdminBaseActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
+                    btnUpdate?.showLoading(false)
+                    hideScreenLoading()
                     if (!isDestroyed) {
                         Toast.makeText(this@CustomersData, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }

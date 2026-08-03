@@ -12,7 +12,7 @@ import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.card.MaterialCardView
@@ -110,7 +110,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
         yearPicker.maxValue = currentYear + 5
         yearPicker.value = calendar.get(Calendar.YEAR)
 
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Select Month and Year")
             .setView(dialogView)
             .setPositiveButton("OK") { _, _ ->

@@ -47,11 +47,26 @@
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/text_size_xlarge"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cardIcon"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvStatLabel"
-            app:layout_constraintVertical_bias="1" />
+            app:layout_constraintTop_toBottomOf="@id/tvStatLabel" />
+
+        <LinearLayout
+            android:id="@+id/layoutTrend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/bg_dashboard_chip"
+            android:backgroundTint="#104CAF50"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvStatValue"
+            app:layout_constraintVertical_bias="0">
+        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardIcon"

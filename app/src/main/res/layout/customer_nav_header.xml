@@ -6,12 +6,14 @@
     android:background="@drawable/bg_auth_hero"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="20dp">
+    android:padding="@dimen/grid_16">
 
     <ImageView
         android:id="@+id/imgLogo"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:background="@drawable/circular_white_background"
+        android:padding="1dp"
         android:contentDescription="logo"
         android:scaleType="centerInside"
         android:src="@drawable/logo" />

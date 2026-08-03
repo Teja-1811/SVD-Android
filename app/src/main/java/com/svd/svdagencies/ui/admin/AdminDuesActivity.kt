@@ -4,11 +4,9 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +19,7 @@ import com.svd.svdagencies.utils.AppSwipeRefreshLayout
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Locale
 
 class AdminDuesActivity : AdminBaseActivity() {
 
@@ -28,6 +27,7 @@ class AdminDuesActivity : AdminBaseActivity() {
     private lateinit var tvTotalInvoice: TextView
     private lateinit var tvTotalPaid: TextView
     private lateinit var tvTotalDue: TextView
+    private lateinit var tvTotalAdvance: TextView
     private lateinit var btnSaveAll: MaterialButton
     private lateinit var rvSummary: RecyclerView
     private lateinit var layoutIndicators: LinearLayout
@@ -53,6 +53,7 @@ class AdminDuesActivity : AdminBaseActivity() {
         tvTotalInvoice = findViewById(R.id.tvTotalInvoice)
         tvTotalPaid = findViewById(R.id.tvTotalPaid)
         tvTotalDue = findViewById(R.id.tvTotalDue)
+        tvTotalAdvance = findViewById(R.id.tvTotalAdvance)
         btnSaveAll = findViewById(R.id.btnSaveAll)
         rvSummary = findViewById(R.id.rvSummary)
         layoutIndicators = findViewById(R.id.layoutIndicators)
@@ -69,14 +70,9 @@ class AdminDuesActivity : AdminBaseActivity() {
 
     private fun setupRecycler() {
         adapter = CompanyPaymentsAdapter(emptyList())
-        // Change to Vertical Orientation
         rvSummary.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rvSummary.adapter = adapter
-        
-        // Prevent focus from jumping when items are recycled
         rvSummary.descendantFocusability = ViewGroup.FOCUS_BEFORE_DESCENDANTS
-        
-        // PagerSnapHelper removed as it's not needed for vertical list
     }
 
     private fun updateDateLabel() {
@@ -111,9 +107,18 @@ class AdminDuesActivity : AdminBaseActivity() {
             }
             try {
                 val response = ApiClient.adminPaymentsApi.getPaymentsDashboard(year, month)
-                tvTotalInvoice.text = "₹${response.grand_total_invoice}"
-                tvTotalPaid.text = "₹${response.grand_total_paid}"
-                tvTotalDue.text = "₹${response.grand_total_due}"
+                
+                // Update Grand Summary
+                val totalInvoice = response.grand_total_invoice
+                val totalPaid = response.grand_total_paid
+                val diff = totalInvoice - totalPaid
+                val due = if (diff > 0) diff else 0.0
+                val advance = if (diff < 0) -diff else 0.0
+
+                tvTotalInvoice.text = money(totalInvoice)
+                tvTotalPaid.text = money(totalPaid)
+                tvTotalDue.text = money(due)
+                tvTotalAdvance.text = money(advance)
                 
                 allCompanyPayments = response.payments
                 adapter.updateList(allCompanyPayments)
@@ -159,5 +164,5 @@ class AdminDuesActivity : AdminBaseActivity() {
         }
     }
 
-    private fun money(value: Double): String = "₹%.2f".format(value)
+    private fun money(value: Double): String = "₹%.2f".format(Locale.US, value)
 }

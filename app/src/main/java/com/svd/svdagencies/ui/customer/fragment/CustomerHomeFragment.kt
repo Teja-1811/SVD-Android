@@ -20,6 +20,11 @@ import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
 import com.svd.svdagencies.ui.customer.CustomerContactSupportActivity
 import com.svd.svdagencies.ui.customer.CustomerMainActivity
 import com.svd.svdagencies.ui.customer.CustomerRaisedQueriesActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.svd.svdagencies.ui.customer.adapter.CustomerOffer
+import com.svd.svdagencies.ui.customer.adapter.CustomerOfferAdapter
 import com.svd.svdagencies.utils.CustomerOrderWindow
 import com.svd.svdagencies.utils.LatestCustomerOrder
 import com.svd.svdagencies.utils.LatestCustomerOrderStore
@@ -40,17 +45,27 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
     private lateinit var tvBalance: TextView
     private lateinit var tvShop: TextView
     private lateinit var tvStatus: TextView
-    private lateinit var tvStatusPill: TextView
     private lateinit var tvStatusMessage: TextView
     private lateinit var tvOrderWindow: TextView
     private lateinit var tvLatestOrderTitle: TextView
     private lateinit var tvLatestOrderSubtitle: TextView
     private lateinit var tvLatestOrderItems: TextView
     private lateinit var btnLatestOrderAction: Button
-    private lateinit var actionPlaceOrder: LinearLayout
-    private lateinit var actionBills: LinearLayout
-    private lateinit var actionPayment: LinearLayout
-    private lateinit var actionSupport: LinearLayout
+    private lateinit var rvOffers: RecyclerView
+
+    private val slidingHandler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val slidingRunnable = object : Runnable {
+        override fun run() {
+            val count = rvOffers.adapter?.itemCount ?: 0
+            if (count > 0) {
+                val layoutManager = rvOffers.layoutManager as? LinearLayoutManager
+                val current = layoutManager?.findFirstVisibleItemPosition() ?: 0
+                val next = (current + 1) % count
+                rvOffers.smoothScrollToPosition(next)
+            }
+            slidingHandler.postDelayed(this, 4000) // Slide every 4 seconds
+        }
+    }
 
     private lateinit var api: CustomerApi
     private lateinit var session: SessionManager
@@ -65,17 +80,13 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         tvBalance = view.findViewById(R.id.tvBalance)
         tvShop = view.findViewById(R.id.tvShop)
         tvStatus = view.findViewById(R.id.tvStatus)
-        tvStatusPill = view.findViewById(R.id.tvStatusPill)
         tvStatusMessage = view.findViewById(R.id.tvStatusMessage)
         tvOrderWindow = view.findViewById(R.id.tvOrderWindow)
         tvLatestOrderTitle = view.findViewById(R.id.tvLatestOrderTitle)
         tvLatestOrderSubtitle = view.findViewById(R.id.tvLatestOrderSubtitle)
         tvLatestOrderItems = view.findViewById(R.id.tvLatestOrderItems)
         btnLatestOrderAction = view.findViewById(R.id.btnLatestOrderAction)
-        actionPlaceOrder = view.findViewById(R.id.actionPlaceOrder)
-        actionBills = view.findViewById(R.id.actionBills)
-        actionPayment = view.findViewById(R.id.actionPayment)
-        actionSupport = view.findViewById(R.id.actionSupport)
+        rvOffers = view.findViewById(R.id.rvOffers)
         swipeRefresh = view.findViewById(R.id.swipeRefresh)
 
         session = SessionManager(requireContext())
@@ -86,20 +97,35 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         }
 
         api = ApiClient.retrofit.create(CustomerApi::class.java)
-        setupQuickActions()
+        setupOffersCarousel()
 
         RefreshManager.setupRefresh(swipeRefresh) {
             loadDashboard()
         }
 
         renderLatestOrderCard()
-        RefreshManager.startRefresh(swipeRefresh)
-        loadDashboard()
     }
 
     override fun onResume() {
         super.onResume()
+        RefreshManager.startRefresh(swipeRefresh)
+        loadDashboard()
         renderLatestOrderCard()
+        startAutoSliding()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopAutoSliding()
+    }
+
+    private fun startAutoSliding() {
+        stopAutoSliding()
+        slidingHandler.postDelayed(slidingRunnable, 4000)
+    }
+
+    private fun stopAutoSliding() {
+        slidingHandler.removeCallbacks(slidingRunnable)
     }
 
     private fun loadDashboard() {
@@ -118,6 +144,8 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
                 }
 
                 Log.d("CustomerHomeFragment", "Response: ${response.body()}")
+
+                if (!isAdded || view == null) return
 
                 val dashboard = response.body() ?: return
                 val customer = dashboard.customer
@@ -144,18 +172,27 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
 
         if (isActive) {
             tvStatus.text = "Active"
-            tvStatusPill.text = "Synced"
-            tvStatusMessage.text = "Account is active and ready for delivery updates"
+            tvStatusMessage.text = "Your account is synced and ready."
             tvStatusMessage.setTextColor(ContextCompat.getColor(context, R.color.icon_green))
-            tvStatusPill.backgroundTintList = ContextCompat.getColorStateList(context, R.color.customer_positive_bg)
-            tvStatusPill.setTextColor(ContextCompat.getColor(context, R.color.icon_green))
         } else {
             tvStatus.text = "Attention Needed"
-            tvStatusPill.text = "Check Account"
             tvStatusMessage.text = "Account needs attention before the next delivery cycle"
-            tvStatusMessage.setTextColor(ContextCompat.getColor(context, R.color.customer_badge_text))
-            tvStatusPill.backgroundTintList = ContextCompat.getColorStateList(context, R.color.customer_warning_bg)
-            tvStatusPill.setTextColor(ContextCompat.getColor(context, R.color.customer_badge_text))
+            tvStatusMessage.setTextColor(ContextCompat.getColor(context, R.color.brand_red))
+        }
+    }
+
+    private fun setupOffersCarousel() {
+        val dummyOffers = listOf(
+            CustomerOffer("Mega Savings Sale", "Get flat ₹100 cashback on all cold curd buckets this week.", "Claim Now", "#0C4A6E"),
+            CustomerOffer("Bulk Order Bonus", "Orders above 100 liters get priority delivery and 5% discount.", "Book Now", "#D32F2F"),
+            CustomerOffer("Fresh Arrival Special", "Extra fresh stock arrivals every morning. Order now for early slot.", "View Catalog", "#35BFA0")
+        )
+        
+        rvOffers.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvOffers.adapter = CustomerOfferAdapter(dummyOffers)
+        
+        if (rvOffers.onFlingListener == null) {
+            PagerSnapHelper().attachToRecyclerView(rvOffers)
         }
     }
 
@@ -168,7 +205,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
 
         if (latestOrder == null) {
             tvLatestOrderTitle.text = "Ready for today's order?"
-            tvLatestOrderSubtitle.text = "Place a fresh order between 9:00 AM and 8:00 PM."
+            tvLatestOrderSubtitle.text = "Place a fresh order between 9:00 AM and 4:00 PM."
             tvLatestOrderItems.text = "Your latest order will appear here after checkout."
             btnLatestOrderAction.text = "Place Order"
             btnLatestOrderAction.isEnabled = isOrderingOpen
@@ -179,24 +216,6 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         }
 
         bindLatestOrder(latestOrder, isOrderingOpen)
-    }
-
-    private fun setupQuickActions() {
-        actionPlaceOrder.setOnClickListener {
-            (activity as? CustomerMainActivity)?.openOrdersScreen(editLatestOrder = false)
-        }
-        actionBills.setOnClickListener {
-            activity?.findViewById<BottomNavigationView>(R.id.customerBottomNav)?.selectedItemId = R.id.nav_bills
-        }
-        actionPayment.setOnClickListener {
-            activity?.findViewById<BottomNavigationView>(R.id.customerBottomNav)?.selectedItemId = R.id.nav_payment
-        }
-        actionSupport.setOnClickListener {
-            startActivity(Intent(requireContext(), CustomerContactSupportActivity::class.java))
-        }
-        tvStatusPill.setOnClickListener {
-            startActivity(Intent(requireContext(), CustomerRaisedQueriesActivity::class.java))
-        }
     }
 
     private fun bindLatestOrder(latestOrder: LatestCustomerOrder, isOrderingOpen: Boolean) {

@@ -10,5 +10,5 @@ data class BillDetailResponse(
     val last_paid: Double,
     val current_due: Double,
     val profit: Double,
-    val items: List<com.svd.svdagencies.data.model.user.UserBillItem>? = null
+    val items: List<BillItemDetail>? = null
 )

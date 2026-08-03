@@ -68,20 +68,6 @@
             app:backgroundTint="@color/brand_red"
             app:cornerRadius="@dimen/card_corner_radius_large" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRegister"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="16dp"
-            android:text="Create Account"
-            android:textAllCaps="false"
-            android:textColor="@color/brand_red"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:cornerRadius="@dimen/card_corner_radius_large"
-            app:strokeColor="@color/brand_red" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

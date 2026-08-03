@@ -40,7 +40,49 @@ interface DeliveryApi {
     fun getBillDetails(@retrofit2.http.Path("bill_id") billId: Int): Call<BillDetailResponse>
 
     @GET("api/bills/{bill_id}/items/")
-    fun getBillItemsDetail(@retrofit2.http.Path("bill_id") billId: Int): Call<List<com.svd.svdagencies.data.model.user.UserBillItem>>
+    fun getBillItemsDetail(@retrofit2.http.Path("bill_id") billId: Int): Call<List<com.svd.svdagencies.data.model.admin.Bills.BillItemDetail>>
+
+    @retrofit2.http.POST("api/delivery/morning-stock/")
+    fun submitMorningStock(@Body request: DeliveryStockEntryRequest): Call<com.svd.svdagencies.data.model.customer.GenericResponse>
+
+    @GET("api/delivery/morning-stock/")
+    fun getMorningStockItems(@retrofit2.http.Query("date") date: String): Call<DeliveryAllowedItemsResponse>
+
+    @retrofit2.http.POST("api/delivery/morning-return/")
+    fun submitMorningReturn(@Body request: DeliveryStockEntryRequest): Call<com.svd.svdagencies.data.model.customer.GenericResponse>
+
+    @GET("api/delivery/morning-return/")
+    fun getMorningReturnItems(@retrofit2.http.Query("date") date: String): Call<DeliveryAllowedItemsResponse>
+
+    @retrofit2.http.POST("api/delivery/evening-stock/")
+    fun submitEveningStock(@Body request: DeliveryStockEntryRequest): Call<com.svd.svdagencies.data.model.customer.GenericResponse>
+
+    @GET("api/delivery/evening-stock/")
+    fun getEveningStockItems(@retrofit2.http.Query("date") date: String): Call<DeliveryAllowedItemsResponse>
+
+    @retrofit2.http.POST("api/delivery/evening-return/")
+    fun submitEveningReturn(@Body request: DeliveryStockEntryRequest): Call<com.svd.svdagencies.data.model.customer.GenericResponse>
+
+    @GET("api/delivery/evening-return/")
+    fun getEveningReturnItems(@retrofit2.http.Query("date") date: String): Call<DeliveryAllowedItemsResponse>
+
+    @GET("api/delivery/stock-entry/")
+    fun getDeliveryDashboard(
+        @retrofit2.http.Query("delivery_agent") agentId: Int,
+        @retrofit2.http.Query("date") date: String
+    ): Call<DeliveryDashboardReportResponse>
+
+    @GET("api/delivery/history/")
+    fun getDeliveryHistory(
+        @retrofit2.http.Query("delivery_agent") agentId: Int
+    ): Call<DeliveryStockHistoryResponse>
+
+    @GET("api/delivery/month-summary/")
+    fun getDeliveryMonthlySummary(
+        @retrofit2.http.Query("delivery_agent") agentId: Int,
+        @retrofit2.http.Query("year") year: Int,
+        @retrofit2.http.Query("month") month: Int
+    ): Call<DeliveryMonthlySummaryResponse>
 
     @GET("api/delivery/customer-payments/{customer_id}/")
     fun getCustomerPaymentRecords(

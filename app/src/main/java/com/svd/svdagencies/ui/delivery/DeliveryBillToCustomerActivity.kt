@@ -387,7 +387,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     }
 
     private fun showConfirmationDialog(selectedItems: List<Pair<DeliveryBillItem, Int>>) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_bill_confirmation, null)
+        val dialogView = layoutInflater.inflate(R.layout.delivery_bill_confirmation, null)
         val rvConfirmItems = dialogView.findViewById<RecyclerView>(R.id.rvConfirmItems)
         val tvConfirmCustomer = dialogView.findViewById<TextView>(R.id.tvConfirmCustomer)
         val tvConfirmTotal = dialogView.findViewById<TextView>(R.id.tvConfirmTotal)
@@ -449,7 +449,11 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     catalogAdapter.applyStockDeductions(selectedItems)
                     resetLayout()
                 } else {
-                    Toast.makeText(this@DeliveryBillToCustomerActivity, response.body()?.message ?: "Failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@DeliveryBillToCustomerActivity,
+                        com.svd.svdagencies.utils.NetworkMessageUtils.parseError(response, response.body()?.message ?: "Failed"),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@DeliveryBillToCustomerActivity, "Error generating bill", Toast.LENGTH_SHORT).show()

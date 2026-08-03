@@ -20,6 +20,7 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.stock.AdminStockDashboardResponse
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
+import com.svd.svdagencies.utils.showLoading
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -187,7 +188,9 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
             return
         }
 
-        btnSubmitUpdate.isEnabled = false
+        btnSubmitUpdate.showLoading(true, "Submitting...")
+        showScreenLoading()
+        
         val body: Map<String, Any> = mapOf(
             "updates" to updates,
             "entry_date" to etEntryDate.text.toString()
@@ -195,7 +198,9 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
 
         ApiClient.adminStockApi.updateStock(body).enqueue(object : Callback<Map<String, Any>> {
             override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
-                btnSubmitUpdate.isEnabled = true
+                btnSubmitUpdate.showLoading(false)
+                hideScreenLoading()
+                
                 if (response.isSuccessful) {
                     Toast.makeText(this@AdminStockUpdateActivity, "Stock updated successfully", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this@AdminStockUpdateActivity, AdminStockActivity::class.java)
@@ -208,7 +213,9 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
             }
 
             override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
-                btnSubmitUpdate.isEnabled = true
+                btnSubmitUpdate.showLoading(false)
+                hideScreenLoading()
+                
                 Toast.makeText(
                     this@AdminStockUpdateActivity,
                     NetworkMessageUtils.friendlyMessage(t, "Failed to update stock"),

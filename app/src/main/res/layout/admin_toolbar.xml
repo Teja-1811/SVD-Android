@@ -21,13 +21,13 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_marginStart="@dimen/spacing_medium"
-            android:layout_marginTop="@dimen/spacing_small"
-            android:layout_marginEnd="@dimen/spacing_medium"
-            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginStart="@dimen/grid_12"
+            android:layout_marginTop="@dimen/grid_8"
+            android:layout_marginEnd="@dimen/grid_12"
+            android:layout_marginBottom="@dimen/grid_8"
             android:background="@drawable/bg_admin_toolbar"
-            android:paddingStart="@dimen/spacing_tiny"
-            android:paddingEnd="@dimen/spacing_tiny">
+            android:paddingStart="@dimen/grid_4"
+            android:paddingEnd="@dimen/grid_4">
 
             <ImageButton
                 android:id="@+id/btnMenu"
@@ -54,6 +54,20 @@
                 android:singleLine="true"
                 android:ellipsize="end"
                 app:layout_constraintStart_toEndOf="@id/btnMenu"
+                app:layout_constraintEnd_toStartOf="@id/btnLogout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageButton
+                android:id="@+id/btnDone"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="@dimen/spacing_tiny"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Done"
+                android:src="@drawable/ic_check"
+                android:visibility="gone"
+                app:tint="@color/icon_green"
                 app:layout_constraintEnd_toStartOf="@id/btnLogout"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>

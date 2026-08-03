@@ -151,18 +151,21 @@ class AdminItemsActivity : AdminBaseActivity() {
                             currentCategory = sortedCategories[milkIndex]
                             tvCategoryTitle.text = currentCategory
                         }
-                        loadItems(currentCategory)
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
                         showToast("Failed to load filters")
-                        loadItems(currentCategory)
                     }
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadItems(currentCategory)
     }
 
     private fun sortCategories(categories: List<String>): List<String> {

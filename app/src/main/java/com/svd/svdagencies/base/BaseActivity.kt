@@ -31,4 +31,13 @@ open class BaseActivity : AppCompatActivity() {
     protected fun hideScreenLoading() {
         LoadingOverlayManager.hide(this)
     }
+
+    fun hideKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+            view.clearFocus()
+        }
+    }
 }

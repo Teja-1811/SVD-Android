@@ -16,19 +16,33 @@
     <dimen name="text_size_body_medium">14sp</dimen>
     <dimen name="text_size_body_large">18sp</dimen>
 
-    <!-- Standardized Spacings -->
-    <dimen name="spacing_tiny">4dp</dimen>
+    <!-- Standardized Spacings (8dp Grid) -->
+    <dimen name="grid_4">4dp</dimen>
+    <dimen name="grid_8">8dp</dimen>
+    <dimen name="grid_12">12dp</dimen>
+    <dimen name="grid_16">16dp</dimen>
+    <dimen name="grid_24">24dp</dimen>
+    <dimen name="grid_32">32dp</dimen>
+
+    <!-- Legacy Spacings (Alias to Grid) -->
+    <dimen name="spacing_tiny">@dimen/grid_4</dimen>
     <dimen name="spacing_xsmall">6dp</dimen>
-    <dimen name="spacing_small">8dp</dimen>
-    <dimen name="spacing_medium">12dp</dimen>
-    <dimen name="spacing_large">16dp</dimen>
-    <dimen name="spacing_xlarge">24dp</dimen>
+    <dimen name="spacing_small">@dimen/grid_8</dimen>
+    <dimen name="spacing_medium">@dimen/grid_12</dimen>
+    <dimen name="spacing_large">@dimen/grid_16</dimen>
+    <dimen name="spacing_xlarge">@dimen/grid_24</dimen>
+    <dimen name="spacing_xxlarge">@dimen/grid_32</dimen>
 
     <!-- Card Elevations and Corners -->
     <dimen name="card_elevation_tiny">1dp</dimen>
     <dimen name="card_elevation_small">2dp</dimen>
     <dimen name="card_elevation_medium">4dp</dimen>
-    <dimen name="card_corner_radius_small">12dp</dimen>
+
+    <dimen name="card_corner_radius_small">8dp</dimen>
     <dimen name="card_corner_radius_medium">16dp</dimen>
-    <dimen name="card_corner_radius_large">24dp</dimen>
+    <dimen name="card_corner_radius_large">28dp</dimen>
+
+    <!-- Button & Input Treatment -->
+    <dimen name="button_corner_radius">12dp</dimen>
+    <dimen name="input_corner_radius">12dp</dimen>
 </resources>

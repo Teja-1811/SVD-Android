@@ -117,6 +117,10 @@ class AdminDashboardActivity : AdminBaseActivity() {
         }
 
         RefreshManager.startRefresh(swipeRefresh)
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadDashboard()
     }
 

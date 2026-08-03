@@ -206,8 +206,8 @@
                 android:layout_width="0dp"
                 android:layout_height="54dp"
                 android:layout_weight="1"
-                android:text="Update Balance"
-                app:backgroundTint="@color/brand_red"
+                android:text="Update"
+                app:backgroundTint="@color/green_status"
                 android:textAllCaps="false"
                 android:textSize="15sp"
                 android:textColor="@color/white"/>

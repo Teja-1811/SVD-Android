@@ -2,6 +2,7 @@ package com.svd.svdagencies.ui.delivery
 
 import com.svd.svdagencies.utils.PaymentConfig
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -21,7 +22,6 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesResponse
 import com.svd.svdagencies.data.model.delivery.DeliveryTodayBill
 import com.svd.svdagencies.databinding.DeliveryDashboardBinding
-import com.svd.svdagencies.ui.auth.LoginActivity
 import com.svd.svdagencies.utils.SessionManager
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -30,7 +30,6 @@ import retrofit2.Response
 import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 class DeliveryDashboardActivity : BaseActivity() {
@@ -56,7 +55,10 @@ class DeliveryDashboardActivity : BaseActivity() {
             selectedItemId = R.id.nav_delivery_today_report
         )
         setupRecyclerViews()
-        setupSwipeRefresh()
+        setupListeners()
+        binding.layoutEmpty.findViewById<com.airbnb.lottie.LottieAnimationView>(R.id.lottieEmpty)?.setFailureListener { e ->
+            android.util.Log.e("Lottie", "Failed to load empty state animation", e)
+        }
         setupDatePicker()
         refreshData()
     }
@@ -113,9 +115,12 @@ class DeliveryDashboardActivity : BaseActivity() {
         }
     }
 
-    private fun setupSwipeRefresh() {
+    private fun setupListeners() {
         binding.swipeRefresh.setOnRefreshListener {
             refreshData()
+        }
+        binding.btnViewOverallReport.setOnClickListener {
+            startActivity(Intent(this, DeliveryOverallReportActivity::class.java))
         }
     }
 
@@ -153,6 +158,12 @@ class DeliveryDashboardActivity : BaseActivity() {
                     
                     // Also update agent statistics for this specific date
                     body?.let { renderAgentSummary(it) }
+                } else {
+                    Toast.makeText(
+                        this@DeliveryDashboardActivity,
+                        com.svd.svdagencies.utils.NetworkMessageUtils.parseError(response, "Error loading report"),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
@@ -208,7 +219,7 @@ class DeliveryDashboardActivity : BaseActivity() {
     }
 
     private fun showBillDetails(bill: DeliveryTodayBill) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_bill_details, null)
+        val dialogView = layoutInflater.inflate(R.layout.delivery_bill_details, null)
         val tvBillNumber = dialogView.findViewById<TextView>(R.id.tvDialogBillNumber)
         val tvTotalAmount = dialogView.findViewById<TextView>(R.id.tvDialogTotalAmount)
         val rvItems = dialogView.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rvBillDetailItems)
@@ -244,18 +255,7 @@ class DeliveryDashboardActivity : BaseActivity() {
                 if (itemsResponse.isSuccessful) {
                     val items = itemsResponse.body()
                     items?.let { itemsList ->
-                        val convertedItems = itemsList.map { 
-                            com.svd.svdagencies.data.model.admin.Bills.BillItemDetail(
-                                item_id = it.itemId,
-                                item_name = it.name,
-                                quantity = it.quantity,
-                                price_per_unit = it.pricePerUnit,
-                                discount = it.discount,
-                                total_discount = it.totalDiscount,
-                                total_amount = it.totalAmount
-                            )
-                        }
-                        detailAdapter.submitList(convertedItems)
+                        detailAdapter.submitList(itemsList)
                     }
                 }
             } catch (e: Exception) {

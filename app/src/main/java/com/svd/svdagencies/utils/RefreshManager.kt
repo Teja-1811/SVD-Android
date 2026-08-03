@@ -23,12 +23,7 @@ object RefreshManager {
      * Helper to show the refreshing state (usually for initial load).
      */
     fun startRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
-        if (swipeRefreshLayout is AppSwipeRefreshLayout) {
-            swipeRefreshLayout.isRefreshing = true
-        } else {
-            LoadingOverlayManager.show(swipeRefreshLayout)
-            swipeRefreshLayout.isRefreshing = true
-        }
+        swipeRefreshLayout.isRefreshing = true
     }
 
     /**
@@ -36,8 +31,5 @@ object RefreshManager {
      */
     fun stopRefresh(swipeRefreshLayout: SwipeRefreshLayout) {
         swipeRefreshLayout.isRefreshing = false
-        if (swipeRefreshLayout !is AppSwipeRefreshLayout) {
-            LoadingOverlayManager.hide(swipeRefreshLayout)
-        }
     }
 }

@@ -28,11 +28,6 @@
         android:icon="@drawable/ic_orders"/>
 
     <item
-        android:id="@+id/nav_delivery_dashboard"
-        android:title="Delivery Dashboard"
-        android:icon="@drawable/ic_delivery_dashboard"/>
-
-    <item
         android:id="@+id/nav_agent_dues"
         android:title="Agent Dues"
         android:icon="@drawable/ic_money"/>
@@ -46,11 +41,6 @@
         android:id="@+id/nav_stock"
         android:title="Stock"
         android:icon="@drawable/ic_stock"/>
-
-    <item
-        android:id="@+id/nav_subscriptions"
-        android:title="Subscriptions"
-        android:icon="@drawable/ic_subscription"/>
 
     <item
         android:id="@+id/nav_dues"

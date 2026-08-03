@@ -14,6 +14,7 @@ import com.svd.svdagencies.data.model.delivery.DeliveryRoute
 import com.svd.svdagencies.databinding.AdminCustomerAddBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
+import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -149,13 +150,13 @@ class AddCustomerActivity : AdminBaseActivity() {
             route_id = selectedRouteId
         )
 
-        binding.btnAddCustomer.isEnabled = false
+        binding.btnAddCustomer.showLoading(true, "Saving...")
         showScreenLoading()
 
         lifecycleScope.launch {
             try {
                 val response = withContext(Dispatchers.IO) { api.addOrUpdateCustomer(request) }
-                binding.btnAddCustomer.isEnabled = true
+                binding.btnAddCustomer.showLoading(false)
                 hideScreenLoading()
                 if (response.success) {
                     Toast.makeText(this@AddCustomerActivity, response.message, Toast.LENGTH_SHORT).show()
@@ -165,7 +166,7 @@ class AddCustomerActivity : AdminBaseActivity() {
                     Toast.makeText(this@AddCustomerActivity, response.message, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                binding.btnAddCustomer.isEnabled = true
+                binding.btnAddCustomer.showLoading(false)
                 hideScreenLoading()
                 Toast.makeText(
                     this@AddCustomerActivity,

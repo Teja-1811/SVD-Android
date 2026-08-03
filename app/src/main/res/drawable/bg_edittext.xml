@@ -8,5 +8,5 @@
         android:width="1dp"
         android:color="@color/editTextStroke"/>
 
-    <corners android:radius="8dp"/>
+    <corners android:radius="@dimen/input_corner_radius"/>
 </shape>

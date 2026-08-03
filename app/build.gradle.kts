@@ -115,6 +115,7 @@ dependencies {
     implementation(libs.circleimageview)
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.gridlayout:gridlayout:1.1.0")
+    implementation("com.airbnb.android:lottie:6.4.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

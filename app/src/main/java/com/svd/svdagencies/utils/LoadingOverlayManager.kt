@@ -60,6 +60,7 @@ object LoadingOverlayManager {
             setBackgroundColor(ContextCompat.getColor(activity, R.color.loading_overlay_scrim))
             isClickable = true
             isFocusable = true
+            setOnClickListener { /* Consume clicks to prevent interaction with underlying UI */ }
             visibility = View.GONE
         }
 

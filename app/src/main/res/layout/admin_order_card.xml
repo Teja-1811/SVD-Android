@@ -4,9 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="0dp"
+    android:layout_marginBottom="@dimen/grid_16"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
+    app:cardElevation="1dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/card_stroke_color"
     app:cardBackgroundColor="@color/card_background">
@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="@dimen/grid_8">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnConfirm"
                 android:layout_width="0dp"
@@ -101,9 +101,12 @@
                 android:layout_weight="1"
                 android:text="Confirm"
                 app:backgroundTint="@color/icon_green"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="@dimen/grid_4"
                 app:icon="@drawable/ic_check"
                 android:textSize="12sp"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                app:cornerRadius="@dimen/button_corner_radius"
                 android:textColor="@color/white"
                 app:iconTint="@color/white"/>
             <com.google.android.material.button.MaterialButton
@@ -113,9 +116,12 @@
                 android:layout_weight="1"
                 android:text="Reject"
                 app:backgroundTint="@color/brand_red"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="@dimen/grid_4"
                 app:icon="@drawable/ic_close"
                 android:textSize="12sp"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                app:cornerRadius="@dimen/button_corner_radius"
                 android:textColor="@color/white"
                 app:iconTint="@color/white"/>
         </LinearLayout>

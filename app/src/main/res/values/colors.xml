@@ -63,6 +63,17 @@
     <color name="card_items">#FFFFFF</color>
     <color name="card_sales">#FFFFFF</color>
 
+    <!-- Payments Dashboard (Web Palette) -->
+    <color name="payment_invoice_bg">#FEF2F2</color>
+    <color name="payment_invoice_text">#991B1B</color>
+    <color name="payment_paid_bg">#F0FDF4</color>
+    <color name="payment_paid_text">#166534</color>
+    <color name="payment_due_bg">#FFFBEB</color>
+    <color name="payment_due_text">#92400E</color>
+    <color name="payment_advance_bg">#F5F3FF</color>
+    <color name="payment_advance_text">#5B21B6</color>
+    <color name="payment_dark_header">#2D3748</color>
+
     <!-- Chips -->
     <color name="chip_unselected_border">#D9E0E2</color>
 
@@ -100,4 +111,12 @@
 
     <!-- Bottom Nav -->
     <color name="bottom_nav_active_color">@color/brand_red</color>
+
+    <!-- Engagement Colors -->
+    <color name="reward_gold">#FFD700</color>
+    <color name="reward_gold_soft">#FFF9E6</color>
+    <color name="streak_flame">#FF5722</color>
+    <color name="chart_fill_blue">#4016B5C8</color>
+    <color name="trend_up">#4CAF50</color>
+    <color name="trend_down">#F44336</color>
 </resources>

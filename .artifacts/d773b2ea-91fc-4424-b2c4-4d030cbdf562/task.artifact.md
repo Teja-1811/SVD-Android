@@ -1,0 +1,3 @@
+- [x] Add `tvPhone` TextView to `customer_home.xml`
+- [x] Verify `CustomerHomeFragment.kt` initialization and usage
+- [x] (Optional) Add safety checks in `loadDashboard`

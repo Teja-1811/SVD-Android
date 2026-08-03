@@ -1,32 +1,37 @@
-# Implementation Plan - Fix Lottie Parsing Exception
+# Implementation Plan - Redesign Company Payments Dashboard
 
-The application is crashing with `java.lang.IllegalStateException: Unable to parse composition` because several Lottie animation resources in `app/src/main/res/raw` are empty or malformed (containing only `{}`).
+Completely overhaul the `AdminDuesActivity` (Company Payments) UI to match the modern, immersive "Material 3" aesthetic established in the Login and Welcome screens. This redesign focuses on improved readability, better focus management for data entry, and a more professional layout.
 
 ## Proposed Changes
 
-### Resources
+### 1. Immersive Dashboard Layout
+#### [MODIFY] [admin_companies_due.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/admin_companies_due.xml)
+- **Header**: Replace the top section with a high-impact red gradient header (using `@drawable/bg_login_gradient`).
+- **Billing Period**: Integrate the date picker into the immersive header.
+- **Grand Totals**: Use a single elevated "Summary Card" inside the header to show total Invoice, Paid, and Due amounts.
+- **Save Button**: Redesign the "Save Payments" button to be a prominent, elevated Material Button with an icon, similar to the "Get Started" button on the Welcome screen.
 
-#### [MODIFY] [login_security.json](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/raw/login_security.json)
-#### [MODIFY] [delivery_welcome.json](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/raw/delivery_welcome.json)
-#### [MODIFY] [empty_box.json](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/raw/empty_box.json)
+### 2. Refined Company Cards
+#### [MODIFY] [admin_companies_due_card.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/admin_companies_due_card.xml)
+- **Header**: Improve the company header with better typography and a more distinct separator.
+- **Totals**: Display company-specific totals in a cleaner, badge-like format.
+- **Expandable Behavior** (Optional but recommended): If the month is long, consider a better way to handle the nested list to avoid lag.
 
-Update these files with a valid, minimal Lottie JSON structure. This will prevent the `LottieAnimationView` from throwing an exception when attempting to parse them.
+### 3. Modern Daily Records
+#### [MODIFY] [admin_companies_due_daily_row.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/admin_companies_due_daily_row.xml)
+- **Input Styling**: Replace transparent `EditText`s with a subtle outlined style.
+- **Contrast**: Ensure colors for "Invoice" and "Paid" have high contrast and align with the app's semantic colors (e.g., dark red for invoice, dark green for paid).
+- **Date Display**: Style the "Day" indicator to be more prominent.
 
-### Source Code
-
-#### [MODIFY] [LoginActivity.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/auth/LoginActivity.kt)
-Add a `setFailureListener` to the `LottieAnimationView` to gracefully handle any parsing errors in the future, preventing fatal crashes.
-
-#### [MODIFY] [WelcomeActivity.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/auth/WelcomeActivity.kt) (If exists)
-Add a `setFailureListener` to the `LottieAnimationView`.
-
-#### [MODIFY] [DeliveryDashboardActivity.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/delivery/DeliveryDashboardActivity.kt) (If exists)
-Add a `setFailureListener` to the `LottieAnimationView`.
+### 4. Supporting Logic
+#### [MODIFY] [AdminDuesActivity.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/admin/AdminDuesActivity.kt)
+- Update the layout references and view bindings to match the new XML structure.
+- Add any necessary UI logic for the redesigned components (e.g., handling expansion if implemented).
 
 ## Verification Plan
 
 ### Manual Verification
-1.  Deploy the application.
-2.  Navigate to the Login screen.
-3.  Ensure the app no longer crashes on startup or when the Login screen is displayed.
-4.  Verify that other screens using Lottie (Welcome, Delivery Dashboard) also load without crashing.
+1. **Visual Consistency**: Verify that the Company Payments screen matches the aesthetic of the redesigned Login and Welcome screens.
+2. **Data Entry**: Ensure `EditText` focus moves correctly between Invoice and Paid fields and between different days.
+3. **Legibility**: Verify that grand totals and company-specific totals are easy to read.
+4. **Scrolling Performance**: Confirm that the list scrolls smoothly even with multiple companies.

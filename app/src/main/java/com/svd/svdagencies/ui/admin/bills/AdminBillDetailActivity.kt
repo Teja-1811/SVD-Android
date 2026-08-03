@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -102,7 +102,7 @@ class AdminBillDetailActivity : AdminBaseActivity() {
         }
 
         btnDelete.setOnClickListener { 
-            AlertDialog.Builder(this)
+            MaterialAlertDialogBuilder(this)
                 .setTitle("Delete Bill")
                 .setMessage("Are you sure you want to delete this bill? This action cannot be undone.")
                 .setPositiveButton("Delete") { _, _ -> deleteBill() }

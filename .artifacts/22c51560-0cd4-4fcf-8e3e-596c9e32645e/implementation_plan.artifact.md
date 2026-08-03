@@ -1,54 +1,34 @@
-# User Engagement Layout Overhaul Plan
+# Login Screen Redesign Plan
 
-This plan aims to update the app's layouts with modern design principles and interactive elements to increase user engagement and retention. We will focus on the three main roles: Admin, Customer (User), and Delivery Agent.
+The objective is to transform the "not good" login screen into a high-conversion, modern interface that feels immersive and interactive.
 
 ## User Review Required
 
-> [!IMPORTANT]
-> - **Lottie Dependency**: We will add `com.airbnb.android:lottie` to the project. This is a lightweight animation library.
-> - **Visual Style**: The plan moves towards a "Soft UI" / Material 3 style with larger corner radii and subtle gradients.
-> - **Gamification**: We are introducing conceptual "Points" and "Streaks" which may require backend support later, but will be implemented as UI placeholders for now.
+> [!TIP]
+> I will be introducing a **Lottie Animation** for a "Security/Lock" effect and moving to a **Glassmorphic** design for the login container.
 
 ## Proposed Changes
 
-### 1. Dependency & Core Setup
-- [MODIFY] [build.gradle.kts](file:///E:/AndroidProjects/SVD-Android/app/build.gradle.kts): Add Lottie dependency.
-- [MODIFY] [colors.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/values/colors.xml): Add engagement-focused colors (gradients, soft pastels for badges).
+### 1. Visual Refresh
+- [MODIFY] [activity_login.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/activity_login.xml):
+    - **Immersive Header**: Adjust the `loginHero` height and curve for a more dynamic look.
+    - **Lottie Security**: Add a Lottie animation (`secure_lock.json` placeholder) to visually communicate safety.
+    - **Typography**: Shift "Welcome Back" to a more prominent position with better spacing.
 
-### 2. Welcome & Auth Experience
-- [MODIFY] [activity_welcome.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/activity_welcome.xml):
-    - Replace static hero background with a more dynamic gradient.
-    - Add a Lottie animation (e.g., a delivery truck or a "welcome" animation) to make the first impression more engaging.
-    - Improve the "Key Features" card with better iconography.
+### 2. Interaction Improvements
+- [MODIFY] [activity_login.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/activity_login.xml):
+    - **Glassmorphic Card**: Use a subtle stroke and high corner radius for the input container.
+    - **Standardized Buttons**: Ensure the "Sign In" button uses the global `button_corner_radius`.
+    - **Social Hooks**: Add conceptual placeholders for "Sign in with Google" or "OTP Login" to make the app feel feature-rich.
 
-### 3. Customer (User) Engagement
-- [MODIFY] [user_home.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/user_home.xml):
-    - **NEW** "Loyalty Rewards" section: A horizontal card showing points and a "Redeem" button.
-    - **NEW** "Subscription Streak": A small visual indicator of how many consecutive days the user has had a delivery.
-    - **IMPROVE** "Special Offers": Use a ViewPager2 or a Snap-enabled RecyclerView for a smoother "Carousel" feel.
-
-### 4. Admin Dashboard (Insights & Management)
-- [MODIFY] [admin.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/admin.xml):
-    - **NEW** "Sales Trend" Chart: Integrate a small `LineChart` using the existing `MPAndroidChart` library.
-    - **IMPROVE** Stat Cards: Add color-coded indicators (e.g., green for up, red for down) to the statistics.
-
-### 5. Delivery Agent Experience
-- [MODIFY] [delivery_dashboard.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/delivery_dashboard.xml):
-    - **NEW** "Daily Progress": A ProgressBar showing "Bills Generated vs Target".
-    - **IMPROVE** Empty State: Replace "All clear" text with a friendly Lottie animation.
-
-### 6. Global UI Refinement
-- Update standard card styles to use `card_corner_radius_medium` (16dp) or `large` (24dp) for a friendlier look.
-- Add "Quick Action" Floating Action Buttons (FABs) where applicable.
+### 3. Polish
+- Ensure error states are clearly defined in the layout (even if hidden by default).
+- Improve the transition between Login and Register screens visually.
 
 ## Verification Plan
 
-### Automated Tests
-- Run `gradle build` to ensure no layout XML errors or dependency conflicts.
-- (Optional) Use `render_compose_preview` if any parts are moved to Compose, otherwise manual verification on device is key.
-
 ### Manual Verification
-- Deploy to an emulator/device.
-- Verify that the Welcome screen animations load correctly.
-- Check the new "Loyalty" and "Chart" sections for proper scaling on different screen sizes.
-- Verify that the Swipe-to-Refresh still works with the new layout structures.
+- Deploy to device.
+- Check ScrollView behavior when the keyboard is open (ensure inputs are visible).
+- Verify Lottie animation loop and scaling.
+- Check click targets for "Forgot Password" and "Create Account".

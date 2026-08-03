@@ -16,6 +16,7 @@ import com.svd.svdagencies.data.model.admin.Company
 import com.svd.svdagencies.databinding.AdminCompanyAddEditBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
+import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -105,7 +106,7 @@ class AddEditCompanyActivity : AdminBaseActivity() {
             return
         }
 
-        binding.btnSave.isEnabled = false
+        binding.btnSave.showLoading(true, "Saving...")
         showScreenLoading()
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -128,6 +129,7 @@ class AddEditCompanyActivity : AdminBaseActivity() {
                 }
 
                 withContext(Dispatchers.Main) {
+                    binding.btnSave.showLoading(false)
                     hideScreenLoading()
                     Toast.makeText(this@AddEditCompanyActivity, "Saved successfully", Toast.LENGTH_SHORT).show()
                     setResult(Activity.RESULT_OK)
@@ -135,7 +137,7 @@ class AddEditCompanyActivity : AdminBaseActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    binding.btnSave.isEnabled = true
+                    binding.btnSave.showLoading(false)
                     hideScreenLoading()
                     Toast.makeText(
                         this@AddEditCompanyActivity,

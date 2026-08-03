@@ -113,12 +113,6 @@ abstract class AdminBaseActivity : BaseActivity() {
                         }
                         true
                     }
-                    R.id.nav_delivery_dashboard -> {
-                        if (this !is AdminUserDeliveryActivity) {
-                            openAdminDestination(AdminUserDeliveryActivity::class.java)
-                        }
-                        true
-                    }
                     R.id.nav_agent_dues -> {
                         if (this !is AdminDeliveryAgentDuesActivity) {
                             openAdminDestination(AdminDeliveryAgentDuesActivity::class.java)
@@ -134,12 +128,6 @@ abstract class AdminBaseActivity : BaseActivity() {
                     R.id.nav_stock -> {
                         if (this !is AdminStockActivity) {
                             openAdminDestination(AdminStockActivity::class.java)
-                        }
-                        true
-                    }
-                    R.id.nav_subscriptions -> {
-                        if (this !is AdminSubscriptionsActivity) {
-                            openAdminDestination(AdminSubscriptionsActivity::class.java)
                         }
                         true
                     }

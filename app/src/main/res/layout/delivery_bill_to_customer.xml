@@ -159,7 +159,7 @@
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                         app:spanCount="2"
-                        tools:listitem="@layout/item_delivery_bill_select" />
+                        tools:listitem="@layout/delivery_bill_item_select" />
 
                     <View
                         android:layout_width="match_parent"

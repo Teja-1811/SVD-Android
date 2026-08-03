@@ -58,9 +58,21 @@
         <item name="android:background">?attr/colorSurface</item>
         <item name="backgroundTint">?attr/colorSurface</item>
         <item name="elevation">0dp</item>
-        <item name="itemTextColor">@color/bottom_nav_selector</item>
-        <item name="itemIconTint">@color/bottom_nav_selector</item>
+        <item name="itemTextColor">@color/bottom_nav_text_selector</item>
+        <item name="itemIconTint">@color/bottom_nav_icon_selector</item>
         <item name="itemRippleColor">@color/brand_red</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.App.BottomNav.Active</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.App.BottomNav.Inactive</item>
+    </style>
+
+    <style name="TextAppearance.App.BottomNav.Active" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextAppearance.App.BottomNav.Inactive" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">

@@ -27,13 +27,15 @@ data class StockSummary(
 data class StockItem(
     @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
-    @SerializedName("stock_quantity") val stockQuantity: Int,
+    @SerializedName("stock_quantity") val stockQuantity: Double,
     @SerializedName("selling_price") val sellingPrice: Double = 0.0,
     @SerializedName("buying_price") val buyingPrice: Double = 0.0,
     @SerializedName("company_name") val companyName: String? = "Unknown",
     @SerializedName("stock_value") val stockValue: Double? = null,
     @SerializedName("pcs_count") val pcsCount: Int? = 1,
-    @SerializedName("category_name") val categoryName: String? = null
+    @SerializedName("category_name") val categoryName: String? = null,
+    @SerializedName("item_code") val itemCode: String? = null,
+    @SerializedName("image") val image: String? = null
 )
 
 data class CompanyStockValue(

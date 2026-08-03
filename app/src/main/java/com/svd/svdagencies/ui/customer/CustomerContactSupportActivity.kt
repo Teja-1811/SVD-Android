@@ -19,8 +19,10 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.customer.CustomerContactResponse
 import com.svd.svdagencies.ui.auth.LoginActivity
-import com.svd.svdagencies.ui.user.TermsConditionsActivity
+import com.svd.svdagencies.ui.customer.CustomerStatementActivity
+import com.svd.svdagencies.ui.customer.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.showLoading
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,8 +43,15 @@ class CustomerContactSupportActivity : AppCompatActivity() {
         }
 
         navigationView.setCheckedItem(R.id.nav_support)
+        val session = SessionManager(this)
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.nav_home -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    startActivity(Intent(this, CustomerMainActivity::class.java))
+                    finish()
+                    true
+                }
                 R.id.nav_terms -> {
                     openDrawerDestination(drawerLayout, TermsConditionsActivity::class.java)
                     true
@@ -59,11 +68,22 @@ class CustomerContactSupportActivity : AppCompatActivity() {
                     openDrawerDestination(drawerLayout, CustomerRaisedQueriesActivity::class.java)
                     true
                 }
+                R.id.nav_statement -> {
+                    openDrawerDestination(drawerLayout, CustomerStatementActivity::class.java)
+                    true
+                }
+                R.id.nav_logout -> {
+                    session.logout()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                    true
+                }
                 else -> false
             }
         }
 
-        val session = SessionManager(this)
         findViewById<ImageButton>(R.id.btnCustomerLogout).setOnClickListener {
             session.logout()
             val intent = Intent(this, LoginActivity::class.java)
@@ -119,8 +139,7 @@ class CustomerContactSupportActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            btnSubmit.isEnabled = false
-            btnSubmit.text = "Submitting..."
+            btnSubmit.showLoading(true, "Submitting...")
 
             val body = mapOf(
                 "name" to "Customer_${session.getUserId()}",
@@ -135,8 +154,7 @@ class CustomerContactSupportActivity : AppCompatActivity() {
                     call: Call<CustomerContactResponse>,
                     response: Response<CustomerContactResponse>
                 ) {
-                    btnSubmit.isEnabled = true
-                    btnSubmit.text = "Submit Message"
+                    btnSubmit.showLoading(false)
 
                     val payload = response.body()
                     if (response.isSuccessful && payload?.success == true) {
@@ -160,8 +178,7 @@ class CustomerContactSupportActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<CustomerContactResponse>, t: Throwable) {
-                    btnSubmit.isEnabled = true
-                    btnSubmit.text = "Submit Message"
+                    btnSubmit.showLoading(false)
                     Toast.makeText(
                         this@CustomerContactSupportActivity,
                         "Network error: ${t.message}",

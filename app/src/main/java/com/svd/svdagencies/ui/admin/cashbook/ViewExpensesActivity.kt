@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -37,7 +37,10 @@ class ViewExpensesActivity : AdminBaseActivity() {
         setupAdminLayout("Expense History")
         initViews()
         setupFilters()
-        
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadExpenses()
     }
 
@@ -133,7 +136,7 @@ class ViewExpensesActivity : AdminBaseActivity() {
     }
 
     private fun confirmDelete(expense: Expense) {
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Delete Expense")
             .setMessage("Are you sure you want to delete this expense?")
             .setPositiveButton("Delete") { _, _ ->

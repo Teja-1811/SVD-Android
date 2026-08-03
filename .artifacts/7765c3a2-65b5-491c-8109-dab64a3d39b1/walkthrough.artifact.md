@@ -1,49 +1,17 @@
-# Walkthrough: Fixed Unresolved Reference 'etInvoice'
+# Walkthrough: Enhanced Payment Button Feedback
 
-I have fixed the build error `Unresolved reference 'etInvoice'` in `AdminSummaryAdapter.kt`.
+I have updated the "Pay with UPI" button to provide clear visual feedback during the transaction initiation process. The button now shows a loading spinner and is automatically disabled while the app fetches the payment details from the backend.
 
 ## Changes Made
 
-### [Admin UI]
+### 1. Button Loading State (`CustomerPaymentFragment.kt`)
+- **Visual Indicator**: Integrated the `showLoading` utility into the "Pay with UPI" action. When clicked, the button text changes to "Initiating..." and a circular progress spinner appears inside the button.
+- **Auto-Disable**: The button is automatically disabled as soon as it's clicked to prevent duplicate payment requests.
+- **Graceful Reset**: The button automatically reverts to its original "Pay with UPI" state whether the API call succeeds (before the dialog appears) or if a network error occurs.
 
-#### [AdminSummaryAdapter.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/admin/adapter/AdminSummaryAdapter.kt)
-
-- **UI Component Update**: Changed the reference of `etInvoice` (incorrectly typed as `EditText`) to `tvInvoice` (correctly typed as `TextView`) to match the layout file `admin_companies_due_daily_row.xml`.
-- **Logic Cleanup**:
-    - Removed the `TextWatcher` (`invoiceWatcher`) that was previously attached to the non-existent `etInvoice`.
-    - Removed `setOnFocusChangeListener(null)` for the invoice field as it is now a read-only `TextView`.
-    - Updated the `bind` method to correctly set the text on `tvInvoice` using formatted currency strings.
-
-```diff
--        private val etInvoice: EditText = itemView.findViewById(R.id.etInvoice)
-+        private val tvInvoice: TextView = itemView.findViewById(R.id.tvInvoice)
-...
--            etInvoice.setOnFocusChangeListener(null)
--            etPaid.setOnFocusChangeListener(null)
-+            etPaid.setOnFocusChangeListener(null)
--
--            if (item.invoice_amount != 0.0) {
--                 etInvoice.setText(String.format("%.2f", item.invoice_amount))
--            } else {
--                 etInvoice.setText("")
--            }
-+            if (item.invoice_amount != 0.0) {
-+                 tvInvoice.text = String.format("₹%.2f", item.invoice_amount)
-+            } else {
-+                 tvInvoice.text = "₹0.00"
-+            }
-...
--            // Re-adding Text Watchers to update model correctly
--            val invoiceWatcher = object : TextWatcher {
--                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
--                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
--                override fun afterTextChanged(s: Editable?) {
--                    val amount = s.toString().toDoubleOrNull() ?: 0.0
--                    item.invoice_amount = amount
--                }
--            }
--            etInvoice.addTextChangedListener(invoiceWatcher)
-```
+### 2. Implementation Cleanup
+- **Type Safety**: Updated the `btnUpi` property from a generic `Button` to a `MaterialButton` to support the advanced loading icon features.
+- **Utility Reuse**: Leveraged the existing `com.svd.svdagencies.utils.showLoading` extension to maintain UI consistency with other parts of the app, like Login and Support.
 
 ## Verification Results
 
@@ -51,5 +19,10 @@ I have fixed the build error `Unresolved reference 'etInvoice'` in `AdminSummary
 - Executed `./gradlew :app:compileDebugKotlin`
 - **Result**: `Build finished successfully.`
 
+### Manual Verification Path
+1.  **Initiate Payment**: Navigate to the Payment tab, enter an amount, and tap **Pay with UPI**.
+2.  **Observe Feedback**: Verify the button text changes and a spinner appears immediately.
+3.  **Completion**: Verify that the button resets and the payment confirmation dialog appears once the data is ready.
+
 > [!TIP]
-> This fix ensures that the adapter correctly reflects the UI design where the daily invoice amount is a read-only field, while the paid amount remains editable.
+> This small change provides much better feedback on slow networks, letting the shop owner know that their request is being processed without needing to blur the entire screen.

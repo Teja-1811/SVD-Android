@@ -21,6 +21,11 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.stock.AdminStockDashboardResponse
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
+import com.svd.svdagencies.data.model.admin.stock.StockDateEntry
+import com.svd.svdagencies.data.model.admin.stock.StockLeakageEntry
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import android.view.LayoutInflater
+import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -86,12 +91,19 @@ class AdminStockActivity : AdminBaseActivity() {
         rvStockOverview.adapter = adapter
         rvStockOverview.isNestedScrollingEnabled = false
 
-        dateEntryAdapter = StockDateEntryAdapter(emptyList())
+        dateEntryAdapter = StockDateEntryAdapter(
+            entries = emptyList(),
+            onEdit = { entry -> showEditEntryDialog(entry) },
+            onDelete = { entry -> showDeleteEntryConfirm(entry) }
+        )
         rvDateEntries.layoutManager = LinearLayoutManager(this)
         rvDateEntries.adapter = dateEntryAdapter
         rvDateEntries.isNestedScrollingEnabled = false
 
-        leakageAdapter = StockLeakageAdapter(emptyList())
+        leakageAdapter = StockLeakageAdapter(
+            entries = emptyList(),
+            onDelete = { entry -> showDeleteLeakageConfirm(entry) }
+        )
         rvLeakageEntries.layoutManager = LinearLayoutManager(this)
         rvLeakageEntries.adapter = leakageAdapter
         rvLeakageEntries.isNestedScrollingEnabled = false
@@ -109,7 +121,10 @@ class AdminStockActivity : AdminBaseActivity() {
         swipeRefresh.setOnRefreshListener {
             loadStockData()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         loadStockData()
     }
 
@@ -240,5 +255,103 @@ class AdminStockActivity : AdminBaseActivity() {
         pieChart.centerText = "Stock Value"
         pieChart.animateXY(1000, 1000)
         pieChart.invalidate()
+    }
+
+    private fun showEditEntryDialog(entry: StockDateEntry) {
+        val view = LayoutInflater.from(this).inflate(R.layout.delivery_edit_stock_entry, null)
+        val etCrates = view.findViewById<TextInputEditText>(R.id.etCrates)
+        val etDiscount = view.findViewById<TextInputEditText>(R.id.etDiscount)
+
+        etCrates.setText(entry.crates.toString())
+        etDiscount.setText("0") // Backend might not return previous discount, setting 0 as default
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Edit Stock Entry")
+            .setMessage("Updating ${entry.itemName} for ${entry.companyName}")
+            .setView(view)
+            .setPositiveButton("Update") { _, _ ->
+                val crates = etCrates.text.toString().toDoubleOrNull() ?: 0.0
+                val discount = etDiscount.text.toString().toDoubleOrNull() ?: 0.0
+                if (crates > 0) {
+                    updateStockEntry(entry.id, crates, discount)
+                } else {
+                    Toast.makeText(this, "Enter valid crates", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun updateStockEntry(id: Int, crates: Double, discount: Double) {
+        showScreenLoading()
+        val body = mapOf("crates" to crates, "discount" to discount)
+        ApiClient.adminStockApi.editStockEntry(id, body).enqueue(object : Callback<Map<String, Any>> {
+            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                hideScreenLoading()
+                if (response.isSuccessful) {
+                    Toast.makeText(this@AdminStockActivity, "Updated successfully", Toast.LENGTH_SHORT).show()
+                    loadStockData()
+                } else {
+                    Toast.makeText(this@AdminStockActivity, "Update failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                hideScreenLoading()
+                Toast.makeText(this@AdminStockActivity, "Network error", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun showDeleteEntryConfirm(entry: StockDateEntry) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete Stock Entry")
+            .setMessage("Are you sure you want to delete this entry for ${entry.itemName}? This will restore the stock levels.")
+            .setPositiveButton("Delete") { _, _ -> deleteStockEntry(entry.id) }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteStockEntry(id: Int) {
+        showScreenLoading()
+        ApiClient.adminStockApi.deleteStockEntry(id).enqueue(object : Callback<Map<String, Any>> {
+            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                hideScreenLoading()
+                if (response.isSuccessful) {
+                    Toast.makeText(this@AdminStockActivity, "Deleted successfully", Toast.LENGTH_SHORT).show()
+                    loadStockData()
+                } else {
+                    Toast.makeText(this@AdminStockActivity, "Delete failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                hideScreenLoading()
+                Toast.makeText(this@AdminStockActivity, "Network error", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun showDeleteLeakageConfirm(entry: StockLeakageEntry) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete Leakage Record")
+            .setMessage("Restore ${entry.quantity} units to ${entry.itemName} stock?")
+            .setPositiveButton("Delete") { _, _ -> deleteLeakage(entry.id) }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteLeakage(id: Int) {
+        showScreenLoading()
+        ApiClient.adminStockApi.deleteLeakage(id).enqueue(object : Callback<Map<String, Any>> {
+            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                hideScreenLoading()
+                if (response.isSuccessful) {
+                    Toast.makeText(this@AdminStockActivity, "Leakage deleted", Toast.LENGTH_SHORT).show()
+                    loadStockData()
+                }
+            }
+            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                hideScreenLoading()
+            }
+        })
     }
 }

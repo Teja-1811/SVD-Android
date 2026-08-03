@@ -108,11 +108,13 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
             loadBills()
         }
 
-        // ---------- INITIAL LOAD ----------
+        ContextCompat.registerReceiver(requireContext(), onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_NOT_EXPORTED)
+    }
+
+    override fun onResume() {
+        super.onResume()
         RefreshManager.startRefresh(swipeRefresh)
         loadBills()
-
-        ContextCompat.registerReceiver(requireContext(), onDownloadComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
     override fun onDestroy() {

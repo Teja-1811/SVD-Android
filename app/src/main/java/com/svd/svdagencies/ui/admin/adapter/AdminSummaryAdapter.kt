@@ -40,20 +40,19 @@ class AdminSummaryAdapter(
 
     inner class SummaryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvDay: TextView = itemView.findViewById(R.id.tvDay)
-        private val etInvoice: EditText = itemView.findViewById(R.id.etInvoice)
+        private val tvInvoice: TextView = itemView.findViewById(R.id.tvInvoice)
         private val etPaid: EditText = itemView.findViewById(R.id.etPaid)
 
         fun bind(item: AdminSummaryItem) {
             tvDay.text = item.date
             
             // Clear previous listeners to avoid feedback loops and unexpected behaviors during binding
-            etInvoice.setOnFocusChangeListener(null)
             etPaid.setOnFocusChangeListener(null)
 
             if (item.invoice_amount != 0.0) {
-                 etInvoice.setText(String.format("%.2f", item.invoice_amount))
+                 tvInvoice.text = String.format("₹%.2f", item.invoice_amount)
             } else {
-                 etInvoice.setText("")
+                 tvInvoice.text = "₹0.00"
             }
 
             if (item.paid_amount != 0.0) {
@@ -63,16 +62,6 @@ class AdminSummaryAdapter(
             }
             
             // Re-adding Text Watchers to update model correctly
-            val invoiceWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    val amount = s.toString().toDoubleOrNull() ?: 0.0
-                    item.invoice_amount = amount
-                }
-            }
-            etInvoice.addTextChangedListener(invoiceWatcher)
-
             val paidWatcher = object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}

@@ -1,9 +1,7 @@
 package com.svd.svdagencies.ui.auth
 
 import android.content.Intent
-import android.os.Handler
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -23,18 +21,15 @@ import com.svd.svdagencies.notifications.PushRegistrationManager
 import com.svd.svdagencies.ui.admin.AdminDashboardActivity
 import com.svd.svdagencies.ui.customer.CustomerMainActivity
 import com.svd.svdagencies.ui.delivery.DeliveryCreateBillActivity
-import com.svd.svdagencies.ui.user.UserMainActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.UserRole
+import com.svd.svdagencies.utils.showLoading
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
-
-    private val loginButtonHandler = Handler(Looper.getMainLooper())
-    private var loginDotsRunnable: Runnable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,22 +46,17 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val logo = findViewById<ImageView>(R.id.login_logo)
-        val userLabel = findViewById<TextView>(R.id.username_label)
         val userLayout = findViewById<TextInputLayout>(R.id.username_layout)
-        val passLabel = findViewById<TextView>(R.id.password_label)
         val passLayout = findViewById<TextInputLayout>(R.id.password_layout)
         val etUsername = findViewById<TextInputEditText>(R.id.etUsername)
         val etPassword = findViewById<TextInputEditText>(R.id.etPassword)
         val btnLogin = findViewById<MaterialButton>(R.id.btnLogin)
-        val tvRegister = findViewById<TextView>(R.id.tvRegister)
 
         val fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in)
         val slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up)
 
         logo.startAnimation(fadeIn)
-        userLabel.startAnimation(slideUp)
         userLayout.startAnimation(slideUp)
-        passLabel.startAnimation(slideUp)
         passLayout.startAnimation(slideUp)
         btnLogin.startAnimation(slideUp)
 
@@ -81,16 +71,14 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            btnLogin.isEnabled = false
-            startLoginLoadingAnimation(btnLogin)
+            btnLogin.showLoading(true, "Signing In...")
 
             val request = LoginRequest(phone = username, password = password)
             Log.d("Login", "Sending request: phone=$username")
 
             api.login(request).enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-                    btnLogin.isEnabled = true
-                    stopLoginLoadingAnimation(btnLogin)
+                    btnLogin.showLoading(false)
 
                     if (!response.isSuccessful) {
                         val errorBody = response.errorBody()?.string()
@@ -123,8 +111,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    btnLogin.isEnabled = true
-                    stopLoginLoadingAnimation(btnLogin)
+                    btnLogin.showLoading(false)
                     Log.e("Login", "Network error", t)
                     Toast.makeText(
                         this@LoginActivity,
@@ -134,36 +121,9 @@ class LoginActivity : AppCompatActivity() {
                 }
             })
         }
-
-        tvRegister.setOnClickListener {
-            startActivity(Intent(this, RegisterActivity::class.java))
-        }
-    }
-
-    private fun startLoginLoadingAnimation(button: MaterialButton) {
-        button.icon = null
-        loginDotsRunnable?.let { loginButtonHandler.removeCallbacks(it) }
-
-        var dotCount = 0
-        loginDotsRunnable = object : Runnable {
-            override fun run() {
-                dotCount = (dotCount % 3) + 1
-                button.text = "Signing In" + ".".repeat(dotCount)
-                loginButtonHandler.postDelayed(this, 350)
-            }
-        }.also { it.run() }
-    }
-
-    private fun stopLoginLoadingAnimation(button: MaterialButton) {
-        loginDotsRunnable?.let { loginButtonHandler.removeCallbacks(it) }
-        loginDotsRunnable = null
-        button.text = "Sign In"
-        button.setIconResource(R.drawable.ic_arrow_forward)
     }
 
     override fun onDestroy() {
-        loginDotsRunnable?.let { loginButtonHandler.removeCallbacks(it) }
-        loginDotsRunnable = null
         super.onDestroy()
     }
 
@@ -171,7 +131,6 @@ class LoginActivity : AppCompatActivity() {
         val intent = when (role) {
             UserRole.ADMIN -> Intent(this, AdminDashboardActivity::class.java)
             UserRole.CUSTOMER -> Intent(this, CustomerMainActivity::class.java)
-            UserRole.USER -> Intent(this, UserMainActivity::class.java)
             UserRole.DELIVERY -> Intent(this, DeliveryCreateBillActivity::class.java)
             else -> {
                 Toast.makeText(this, "Invalid role received", Toast.LENGTH_SHORT).show()

@@ -1,17 +1,11 @@
-- `[ ]` 1. Dependency & Core Setup
-    - `[ ]` Add Lottie dependency to `build.gradle.kts`
-    - `[ ]` Add new colors to `colors.xml`
-- `[ ]` 2. Welcome & Auth Experience Overhaul
-    - `[ ]` Update `activity_welcome.xml` with animations and modern layout
-- `[ ]` 3. Customer (User) Home Engagement
-    - `[ ]` Add Loyalty and Streak UI to `user_home.xml`
-    - `[ ]` Improve Special Offers carousel
-- `[ ]` 4. Admin Dashboard Enhancements
-    - `[ ]` Add mini-chart to `admin.xml`
-    - `[ ]` Update stat cards with trend indicators
-- `[ ]` 5. Delivery Agent Dashboard Updates
-    - `[ ]` Add daily progress bar to `delivery_dashboard.xml`
-    - `[ ]` Improve empty state layout
-- `[ ]` 6. Verification
-    - `[ ]` Build check
-    - `[ ]` Layout inspection
+- `[x]` Login Screen Redesign
+    - `[x]` Refine Hero header height and curvature
+    - `[x]` Integrate Lottie Security animation placeholder
+    - `[x]` Modernize Typography and Badge placement
+    - `[x]` Update Card container with stroke and soft shadows
+    - `[x]` Standardize interactive buttons and inputs
+- `[x]` Localization
+    - `[x]` Move login strings to `strings.xml`
+- `[x]` Final Verification
+    - `[x]` Gradle Sync
+    - `[x]` Check Layout XML validity

@@ -15,10 +15,7 @@
     <string name="sample_product">Product name</string>
     <string name="label_order_date">Placed on %1$s</string>
     <string name="format_currency">&#8377; %.2f</string>
-    <string name="title_subscriptions">Subscriptions</string>
     <string name="title_bills">Bills</string>
-    <string name="title_plans">Plans</string>
-    <string name="title_explore_plans">Explore Plans</string>
     <string name="query_contact_with_email">%1$s | %2$s</string>
     <string name="make_payment_title">Settle Your Due</string>
     <string name="make_payment_subtitle">Pay directly to the agency PhonePe UPI ID and wait for admin verification.</string>
@@ -46,4 +43,11 @@
     <string name="payment_update_failed">Payment update failed on server</string>
     <string name="failed_to_update_payment">Failed to update payment: %1$s</string>
     <string name="payment_upi_label">UPI ID: 9392890375@axl</string>
+
+    <!-- Redesign Strings -->
+    <string name="login_trusted_security">Trusted Security</string>
+    <string name="login_welcome_back">Welcome Back</string>
+    <string name="login_subtitle">Enter your credentials to continue</string>
+    <string name="login_forgot_password">Forgot Password?</string>
+    <string name="login_sign_in">Sign In</string>
 </resources>

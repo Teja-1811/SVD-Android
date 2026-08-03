@@ -101,7 +101,7 @@ class CustomerAdapter(
                 }
 
                 // Removed shop name from the message as requested
-                val message = "Hello ${c.name},\n$statusMessage\n\nVisit us: www.svdagencies.shop\nThank you for your business!"
+                val message = "Hello ${c.name},\n$statusMessage\n\nVisit us: https://svd-dqw3.onrender.com/\nThank you for your business!"
 
                 if (!phoneNumber.isNullOrEmpty()) {
                     try {

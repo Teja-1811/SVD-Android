@@ -22,7 +22,8 @@ import com.svd.svdagencies.ui.customer.fragment.CustomerPaymentFragment
 import com.svd.svdagencies.ui.customer.CustomerCompanyDetailsActivity
 import com.svd.svdagencies.ui.customer.CustomerContactSupportActivity
 import com.svd.svdagencies.ui.customer.CustomerRaisedQueriesActivity
-import com.svd.svdagencies.ui.user.TermsConditionsActivity
+import com.svd.svdagencies.ui.customer.CustomerStatementActivity
+import com.svd.svdagencies.ui.customer.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
 
 class CustomerMainActivity : AppCompatActivity() {
@@ -69,6 +70,11 @@ class CustomerMainActivity : AppCompatActivity() {
         // Navigation Drawer Actions
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.nav_home -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    bottomNav.selectedItemId = R.id.nav_home
+                    true
+                }
                 R.id.nav_terms -> {
                     openDrawerDestination(TermsConditionsActivity::class.java)
                     true
@@ -83,6 +89,14 @@ class CustomerMainActivity : AppCompatActivity() {
                 }
                 R.id.nav_queries -> {
                     openDrawerDestination(CustomerRaisedQueriesActivity::class.java)
+                    true
+                }
+                R.id.nav_statement -> {
+                    openDrawerDestination(CustomerStatementActivity::class.java)
+                    true
+                }
+                R.id.nav_logout -> {
+                    handleLogout()
                     true
                 }
                 else -> false

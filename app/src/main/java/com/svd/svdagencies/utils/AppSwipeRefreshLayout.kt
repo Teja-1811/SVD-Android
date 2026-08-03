@@ -12,24 +12,13 @@ class AppSwipeRefreshLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : SwipeRefreshLayout(context, attrs) {
 
-    private var overlayVisible = false
-
     init {
-        setColorSchemeResources(R.color.transparent)
-        setProgressBackgroundColorSchemeResource(android.R.color.transparent)
+        setColorSchemeResources(R.color.brand_red)
+        setProgressBackgroundColorSchemeResource(R.color.white)
     }
 
     override fun setRefreshing(refreshing: Boolean) {
         super.setRefreshing(refreshing)
-        if (refreshing) {
-            if (!overlayVisible) {
-                overlayVisible = true
-                LoadingOverlayManager.show(this)
-            }
-        } else if (overlayVisible) {
-            overlayVisible = false
-            LoadingOverlayManager.hide(this)
-        }
     }
 
     override fun canChildScrollUp(): Boolean {

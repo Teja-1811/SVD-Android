@@ -1,26 +1,34 @@
-# Walkthrough - Login Redesign & Stability Fix
+# Walkthrough - Company Payments Dashboard Redesign
 
-I have successfully redesigned the Login screen and resolved the fatal crash related to Lottie animations.
+I have successfully redesigned the **Company Payments** dashboard to match the new professional aesthetic of the web platform. This update improves data visibility and simplifies the management of invoices, payments, and advances.
 
 ## Changes Made
 
-### 1. Immersive Login UI
-- **Activity Layout**: [activity_login.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/activity_login.xml) now features a full-screen gradient background using `@drawable/bg_login_gradient`.
-- **Modern Card UI**: The login form is now contained within a centered `MaterialCardView` with rounded corners (24dp) and soft elevation.
-- **Improved Inputs**: Using Material 3 `TextInputLayout` with refined corner radii and icons for a more professional look.
-- **Enhanced Typography**: Welcome text and subtitles have been adjusted for better readability and impact.
+### 1. Immersive Summary Dashboard
+- **Layout**: [admin_companies_due.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/admin_companies_due.xml)
+- **Action**: Implemented a 2x2 color-coded grid for global metrics:
+    - **Total Invoice** (Red)
+    - **Total Paid** (Green)
+    - **Total Due** (Yellow)
+    - **Total Advance** (Purple) - *New Metric*
 
-### 2. Stability Fixes (Lottie Parsing)
-- **Resource Recovery**: Updated `login_security.json`, `delivery_welcome.json`, and `empty_box.json` in `res/raw` from empty placeholders to valid minimal Lottie structures. This prevents the `IllegalStateException` during parsing.
-- **Safety Listeners**: Added `setFailureListener` to all `LottieAnimationView` instances in:
-    - [LoginActivity.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/auth/LoginActivity.kt)
-    - [WelcomeActivity.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/auth/WelcomeActivity.kt)
-    - [DeliveryDashboardActivity.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/delivery/DeliveryDashboardActivity.kt)
+### 2. Professional Company Containers
+- **Layout**: [admin_companies_due_card.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/admin_companies_due_card.xml)
+- **Action**: Redesigned company cards with a **Dark Premium Header** (`#2D3748`) that houses real-time sub-summaries for each company, matching the web dashboard's "card-in-header" style.
 
-### 3. Dashboard Cleanup
-- **ID Assignment**: Assigned `android:id="@+id/lottieEmpty"` to the Lottie view in [delivery_dashboard.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/delivery_dashboard.xml) for proper programmatic access and error handling.
+### 3. Data-Dense Record Rows
+- **Layout**: [admin_companies_due_daily_row.xml](file:///E:/AndroidProjects/SVD-Android/app/src/main/res/layout/admin_companies_due_daily_row.xml)
+- **Action**: Overhauled the daily entries to a 4-column structure: **Date | Invoice | Paid | Due/Credit**.
+- **Real-time Logic**:
+    - **Calculations**: As you edit "Paid" amounts, the **Due/Credit** column updates instantly.
+    - **Status Indicators**: Settled rows (Zero due) now display a green check icon.
+    - **Advance Styling**: Negative due amounts (Advances) are automatically styled in **Purple** for easy identification.
+
+### 4. Backend Synchronization
+- **Logic**: Updated [CompanyDuesDailyRecordsAdapter.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/admin/adapter/CompanyDuesDailyRecordsAdapter.kt) and [CompanyPaymentsAdapter.kt](file:///E:/AndroidProjects/SVD-Android/app/src/main/java/com/svd/svdagencies/ui/admin/adapter/CompanyPaymentsAdapter.kt) to coordinate these real-time UI updates, ensuring the top summary cards and company headers stay in sync with your edits.
 
 ## Verification
-- [x] Application launches without crashing on the Login/Welcome screens.
-- [x] Lottie parser no longer throws `IllegalStateException`.
-- [x] Login UI appears centered and styled correctly with the new gradient background.
+- [x] Verified 4-column alignment in daily records.
+- [x] Confirmed that `Advance` calculations correctly reflect on the UI.
+- [x] Validated that the dark header contrast is optimal for readability.
+- [x] Ensured "Save Payments" button is prominently accessible.

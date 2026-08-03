@@ -18,7 +18,6 @@ data class DashboardSummary(
     val active_customers: Int? = 0,
     val frozen_customers: Int? = 0,
     val retailers: Int? = 0,
-    val users: Int? = 0,
     val delivery_users: Int? = 0,
     val items: Int? = 0,
     val active_items: Int? = 0,
@@ -35,16 +34,12 @@ data class DashboardSummary(
     val today_order_sales: Double? = 0.0,
     val active_enquiries: Int? = 0,
     val resolved_enquiries: Int? = 0,
-    val active_subscriptions: Int? = 0,
-    val expiring_subscriptions: Int? = 0,
     val active_offers: Int? = 0,
     val payments_today_total: Double? = 0.0,
     val payments_today_count: Int? = 0,
     val stock_in_today_value: Double? = 0.0,
     val stock_in_today_entries: Int? = 0,
     val leakage_month_loss: Double? = 0.0,
-    val today_subscription_orders: Int? = 0,
-    val today_subscription_delivered: Int? = 0,
     val customers_no_orders_today_count: Int? = 0
 )
 

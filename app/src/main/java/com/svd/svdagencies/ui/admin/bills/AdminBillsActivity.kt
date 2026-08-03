@@ -10,7 +10,6 @@ import android.os.Environment
 import android.view.View
 import android.util.Log
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,6 +63,10 @@ class AdminBillsActivity : AdminBaseActivity() {
         setupListeners()
 
         fetchCustomers()
+    }
+
+    override fun onResume() {
+        super.onResume()
         fetchBills()
     }
 
@@ -206,7 +209,7 @@ class AdminBillsActivity : AdminBaseActivity() {
             Name: ${bill.customer_name}
             $dueStatusMessage
             
-            Visit us: www.svdagencies.shop
+            Visit us: https://svd-dqw3.onrender.com/
             Thank you for your business!
         """.trimIndent()
 
@@ -223,7 +226,7 @@ class AdminBillsActivity : AdminBaseActivity() {
     private fun showDeleteConfirmation(billId: Int?, billNumber: String?) {
         if (billId == null) return
         
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle("Delete Bill")
             .setMessage("Are you sure you want to delete bill #$billNumber?")
             .setPositiveButton("Delete") { _, _ ->

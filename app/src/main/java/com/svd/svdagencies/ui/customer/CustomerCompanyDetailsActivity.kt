@@ -15,7 +15,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.auth.LoginActivity
-import com.svd.svdagencies.ui.user.TermsConditionsActivity
+import com.svd.svdagencies.ui.customer.CustomerStatementActivity
+import com.svd.svdagencies.ui.customer.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
 
 class CustomerCompanyDetailsActivity : AppCompatActivity() {
@@ -34,8 +35,15 @@ class CustomerCompanyDetailsActivity : AppCompatActivity() {
         }
 
         navigationView.setCheckedItem(R.id.nav_company)
+        val session = SessionManager(this)
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.nav_home -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    startActivity(Intent(this, CustomerMainActivity::class.java))
+                    finish()
+                    true
+                }
                 R.id.nav_terms -> {
                     openDrawerDestination(drawerLayout, TermsConditionsActivity::class.java)
                     true
@@ -52,11 +60,22 @@ class CustomerCompanyDetailsActivity : AppCompatActivity() {
                     openDrawerDestination(drawerLayout, CustomerRaisedQueriesActivity::class.java)
                     true
                 }
+                R.id.nav_statement -> {
+                    openDrawerDestination(drawerLayout, CustomerStatementActivity::class.java)
+                    true
+                }
+                R.id.nav_logout -> {
+                    session.logout()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                    true
+                }
                 else -> false
             }
         }
 
-        val session = SessionManager(this)
         findViewById<ImageButton>(R.id.btnCustomerLogout).setOnClickListener {
             session.logout()
             val intent = Intent(this, LoginActivity::class.java)

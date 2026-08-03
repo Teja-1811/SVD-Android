@@ -70,6 +70,10 @@ class AdminCashBookActivity : AdminBaseActivity() {
         initViews()
         setupFilters()
         setupCashInGrids()
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadDashboardData()
     }
 
