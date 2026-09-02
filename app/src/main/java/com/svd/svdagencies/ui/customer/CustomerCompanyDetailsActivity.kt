@@ -18,8 +18,9 @@ import com.svd.svdagencies.ui.auth.LoginActivity
 import com.svd.svdagencies.ui.customer.CustomerStatementActivity
 import com.svd.svdagencies.ui.customer.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.base.BaseActivity
 
-class CustomerCompanyDetailsActivity : AppCompatActivity() {
+class CustomerCompanyDetailsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,9 +90,10 @@ class CustomerCompanyDetailsActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.customerBottomNav).visibility = View.GONE
 
         val container = findViewById<FrameLayout>(R.id.customerFragmentContainer)
-        layoutInflater.inflate(R.layout.activity_company_details, container, true)
+        val inflatedView = layoutInflater.inflate(R.layout.activity_company_details, container, false)
+        container.addView(inflatedView)
 
-        findViewById<MaterialButton>(R.id.btnOpenMap).setOnClickListener {
+        inflatedView.findViewById<MaterialButton>(R.id.btnOpenMap).setOnClickListener {
             val gmmIntentUri = Uri.parse("geo:0,0?q=Sri+Vijaya+Durga+Milk+Agencies+Gundugolanu")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")

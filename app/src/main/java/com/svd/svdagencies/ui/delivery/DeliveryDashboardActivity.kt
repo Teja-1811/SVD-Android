@@ -63,6 +63,11 @@ class DeliveryDashboardActivity : BaseActivity() {
         refreshData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshData()
+    }
+
     private fun setupDatePicker() {
         updateDateDisplay()
         binding.layoutDatePicker.setOnClickListener {

@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
-import com.svd.svdagencies.databinding.ActivityDeliveryStockHistoryBinding
+import com.svd.svdagencies.databinding.DeliveryStockHistoryBinding
 import com.svd.svdagencies.ui.delivery.adapter.DeliveryStockHistoryAdapter
 import com.svd.svdagencies.utils.SessionManager
 import kotlinx.coroutines.launch
@@ -16,13 +16,13 @@ import retrofit2.awaitResponse
 
 class DeliveryStockHistoryActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityDeliveryStockHistoryBinding
+    private lateinit var binding: DeliveryStockHistoryBinding
     private lateinit var adapter: DeliveryStockHistoryAdapter
     private lateinit var session: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDeliveryStockHistoryBinding.inflate(layoutInflater)
+        binding = DeliveryStockHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         session = SessionManager(this)
 

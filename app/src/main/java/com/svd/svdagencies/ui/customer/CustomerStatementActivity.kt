@@ -21,6 +21,7 @@ import com.svd.svdagencies.ui.customer.adapter.StatementInvoiceAdapter
 import com.svd.svdagencies.ui.customer.adapter.StatementPaymentAdapter
 import com.svd.svdagencies.utils.RefreshManager
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.base.BaseActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,7 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class CustomerStatementActivity : AppCompatActivity() {
+class CustomerStatementActivity : BaseActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -48,7 +49,7 @@ class CustomerStatementActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_customer_statement)
+        setContentView(R.layout.customer_statement)
 
         initViews()
         setupDrawer()

@@ -8,17 +8,18 @@ import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.stock.StockItem
 import com.svd.svdagencies.data.model.delivery.*
-import com.svd.svdagencies.databinding.ActivityDeliveryStockPhaseEntryBinding
+import com.svd.svdagencies.databinding.DeliveryStockPhaseEntryBinding
 import com.svd.svdagencies.ui.delivery.adapter.DeliveryStockSingleInputAdapter
 import com.svd.svdagencies.utils.RefreshManager
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 import java.util.Locale
 
 class DeliveryStockPhaseEntryActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityDeliveryStockPhaseEntryBinding
+    private lateinit var binding: DeliveryStockPhaseEntryBinding
     private lateinit var inputAdapter: DeliveryStockSingleInputAdapter
     private lateinit var session: SessionManager
     
@@ -27,7 +28,7 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDeliveryStockPhaseEntryBinding.inflate(layoutInflater)
+        binding = DeliveryStockPhaseEntryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         session = SessionManager(this)
 
@@ -131,7 +132,7 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
             items = items
         )
 
-        showScreenLoading()
+        binding.btnSubmitPhase.showLoading(true, "Saving...")
 
         lifecycleScope.launch {
             try {
@@ -154,7 +155,7 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
             } catch (e: Exception) {
                 Toast.makeText(this@DeliveryStockPhaseEntryActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
-                hideScreenLoading()
+                binding.btnSubmitPhase.showLoading(false)
             }
         }
     }

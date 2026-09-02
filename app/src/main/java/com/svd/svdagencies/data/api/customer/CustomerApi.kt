@@ -3,6 +3,7 @@ package com.svd.svdagencies.data.api.customer
 import com.svd.svdagencies.data.model.admin.CompaniesListResponse
 import com.svd.svdagencies.data.model.customer.CustomerContactResponse
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
+import com.svd.svdagencies.data.model.customer.CustomerOfferResponse
 import com.svd.svdagencies.data.model.customer.CustomerStatementResponse
 import com.svd.svdagencies.data.model.customer.GenericResponse
 import com.svd.svdagencies.data.model.customer.PaymentGatewayInitResponse
@@ -53,4 +54,7 @@ interface CustomerApi {
 
     @GET("api/enquiries/my/")
     fun getRaisedQueries(): Call<RaisedQueriesResponse>
+
+    @GET("api/customer/offers/")
+    fun getOffers(): Call<CustomerOfferResponse>
 }

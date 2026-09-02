@@ -23,10 +23,10 @@ class CompanyDueAdapter(private var items: List<CompanyDue>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.binding.apply {
-            tvCompanyName.text = item.company_name
-            tvInvoice.text = "₹%.2f".format(item.total_invoice)
-            tvPaid.text = "₹%.2f".format(item.total_paid)
-            tvDue.text = "₹%.2f".format(item.total_due)
+            tvCompanyName.text = item.companyName
+            tvInvoice.text = "₹%.2f".format(item.invoice)
+            tvPaid.text = "₹%.2f".format(item.paid)
+            tvDue.text = "₹%.2f".format(item.due)
         }
     }
 

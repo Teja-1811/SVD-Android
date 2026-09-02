@@ -16,8 +16,10 @@ data class CustomerOffer(
     val colorHex: String? = null
 )
 
-class CustomerOfferAdapter(private val offers: List<CustomerOffer>) :
-    RecyclerView.Adapter<CustomerOfferAdapter.ViewHolder>() {
+class CustomerOfferAdapter(
+    private val offers: List<CustomerOffer>,
+    private val onActionClick: (CustomerOffer) -> Unit = {}
+) : RecyclerView.Adapter<CustomerOfferAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -30,6 +32,7 @@ class CustomerOfferAdapter(private val offers: List<CustomerOffer>) :
         holder.tvTitle.text = offer.title
         holder.tvSubtitle.text = offer.subtitle
         holder.btnAction.text = offer.actionText
+        holder.btnAction.setOnClickListener { onActionClick(offer) }
 
         offer.colorHex?.let { colorStr ->
             runCatching {

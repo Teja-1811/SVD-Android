@@ -19,24 +19,61 @@ class AdminBillAdapter(
     private val onDownloadClick: (AdminBill) -> Unit,
     private val onDeleteClick: (AdminBill) -> Unit,
     private val onQRClick: (AdminBill) -> Unit
-) : RecyclerView.Adapter<AdminBillAdapter.BillViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var isLoadingVisible = false
+
+    companion object {
+        private const val VIEW_TYPE_ITEM = 0
+        private const val VIEW_TYPE_LOADING = 1
+    }
 
     fun updateList(newBills: List<AdminBill>) {
         bills = newBills
+        isLoadingVisible = false
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BillViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.admin_bill_card, parent, false)
-        return BillViewHolder(view)
+    fun addItems(newBills: List<AdminBill>) {
+        val startPosition = bills.size
+        bills = bills + newBills
+        notifyItemRangeInserted(startPosition, newBills.size)
     }
 
-    override fun onBindViewHolder(holder: BillViewHolder, position: Int) {
-        holder.bind(bills[position])
+    fun setLoading(loading: Boolean) {
+        if (isLoadingVisible == loading) return
+        isLoadingVisible = loading
+        if (loading) {
+            notifyItemInserted(bills.size)
+        } else {
+            notifyItemRemoved(bills.size)
+        }
     }
 
-    override fun getItemCount(): Int = bills.size
+    override fun getItemViewType(position: Int): Int {
+        return if (position == bills.size) VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return if (viewType == VIEW_TYPE_LOADING) {
+            val view = inflater.inflate(R.layout.item_loading_footer, parent, false)
+            LoadingViewHolder(view)
+        } else {
+            val view = inflater.inflate(R.layout.admin_bill_card, parent, false)
+            BillViewHolder(view)
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is BillViewHolder) {
+            holder.bind(bills[position])
+        }
+    }
+
+    override fun getItemCount(): Int = bills.size + if (isLoadingVisible) 1 else 0
+
+    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     inner class BillViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvBillNumber: TextView = itemView.findViewById(R.id.tvBillNumber)

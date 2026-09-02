@@ -50,4 +50,86 @@
     <string name="login_subtitle">Enter your credentials to continue</string>
     <string name="login_forgot_password">Forgot Password?</string>
     <string name="login_sign_in">Sign In</string>
+
+    <!-- Admin Dashboard Strings -->
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_daily_operations">Daily Operations</string>
+    <string name="title_top_due_customers">Top Due Customers</string>
+    <string name="title_top_stock_items">Top Stock Items</string>
+    <string name="label_customers">Customers</string>
+    <string name="label_items">Items</string>
+    <string name="label_sales_today">Sales Today</string>
+    <string name="label_dues">Dues</string>
+    <string name="label_pending_orders">Pending Orders</string>
+    <string name="label_customer_enquiries">Customer Enquiries</string>
+    <string name="label_customers_not_ordered">Customers Not Ordered</string>
+    <string name="button_update_stock">Stock</string>
+    <string name="button_statement">Statement</string>
+    <string name="format_pcs">%1$d pcs</string>
+    <string name="format_currency_symbol">₹%1$.2f</string>
+
+    <!-- Admin Orders Strings -->
+    <string name="title_admin_orders">Admin Orders Dashboard</string>
+    <string name="label_no_pending_orders">No Pending Orders</string>
+    <string name="label_orders_processed">All orders have been processed.</string>
+    <string name="format_order_id">ORD-%1$d</string>
+    <string name="format_customer_name">Customer: %1$s</string>
+    <string name="format_order_date">Order Date: %1$s</string>
+    <string name="button_confirm">Confirm</string>
+    <string name="button_reject">Reject</string>
+
+    <!-- Customer Titles -->
+    <string name="title_home">Home</string>
+    <string name="title_companies">Companies</string>
+    <string name="title_orders">Orders</string>
+    <string name="title_payment">Payment</string>
+
+    <!-- Delivery Agent Dues Strings -->
+    <string name="label_delivery_agent">Delivery Agent</string>
+    <string name="button_clear">Clear</string>
+    <string name="button_apply_filter">Apply Filter</string>
+    <string name="button_record_submission">Record Submitted Amount</string>
+    <string name="label_items_delivered">Items Delivered</string>
+    <string name="label_bill_details">Bill Details</string>
+
+    <!-- Cashbook Strings -->
+    <string name="button_add_expense">Add Expense</string>
+    <string name="button_commission">Commission</string>
+    <string name="button_expenses">Expenses</string>
+    <string name="label_delivery_salary_due">Delivery salary due: ₹%1$.2f</string>
+    <string name="button_pay_salary">Pay Salary</string>
+    <string name="label_month">Month</string>
+    <string name="label_year">Year</string>
+    <string name="content_desc_reset">Reset Filters</string>
+    <string name="label_company_dues">Company Dues</string>
+    <string name="label_total_company_dues">Total Dues: ₹%1$.2f</string>
+    <string name="label_cash_in_counter">Cash In Counter</string>
+    <string name="label_notes">Notes</string>
+    <string name="button_save_cash_counts">Save Cash Counts</string>
+    <string name="label_company_commission_credits">Company Commission Credits</string>
+    <string name="label_no_commission_records">No commission records found.</string>
+
+    <!-- Bill Detail Layout -->
+    <string name="agency_name">SVD MILK AGENCY</string>
+    <string name="agency_subtitle">Sales &amp; Distribution</string>
+    <string name="label_invoice_no">Invoice No</string>
+    <string name="label_date">Date</string>
+    <string name="label_customer_details">Customer Details</string>
+    <string name="label_item_header">ITEM</string>
+    <string name="label_qty_header">QTY</string>
+    <string name="label_rate_header">RATE</string>
+    <string name="label_total_header">TOTAL</string>
+    <string name="label_bill_total">Bill Total:</string>
+    <string name="label_cash_collected">Cash Collected:</string>
+    <string name="label_remaining_due">Remaining Due:</string>
+    <string name="format_profit">Est. Profit: ₹%1$.2f</string>
+    <string name="title_product_catalog">Product Catalog</string>
+    <string name="no_products_found">No products found</string>
+    <string name="label_route">Route</string>
+    <string name="label_select_customer">Select Customer</string>
+    <string name="label_due">Due</string>
+    <string name="label_grand_total_compact">Total</string>
+    <string name="hint_collected">Collected</string>
+    <string name="btn_generate">Generate Bill</string>
+    <string name="btn_clear">Clear</string>
 </resources>

@@ -8,6 +8,7 @@ import com.svd.svdagencies.data.api.customer.ProductApi
 import com.svd.svdagencies.data.api.delivery.DeliveryApi
 import com.svd.svdagencies.utils.SessionManager
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,7 +19,11 @@ object ApiClient {
     const val BASE_URL = "https://svd-dqw3.onrender.com/"
 
     private val logging = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BODY
+        } else {
+            HttpLoggingInterceptor.Level.BASIC
+        }
     }
 
     private val cacheSize = (5 * 1024 * 1024).toLong() // 5 MB
@@ -31,16 +36,18 @@ object ApiClient {
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
+        .protocols(listOf(Protocol.HTTP_1_1)) // Force HTTP/1.1 to avoid HTTP/2 stream timeout issues on Render
         .addInterceptor(AuthInterceptor(SessionManager(App.context)))
         .addInterceptor(logging)
         .build()
 
     // Client specifically for Auth (NO AuthInterceptor to avoid interference)
     private val authClient = OkHttpClient.Builder()
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(120, TimeUnit.SECONDS)
+        .readTimeout(120, TimeUnit.SECONDS)
+        .writeTimeout(120, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
+        .protocols(listOf(Protocol.HTTP_1_1)) // Force HTTP/1.1
         .addInterceptor(logging)
         .build()
 

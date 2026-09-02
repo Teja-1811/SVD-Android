@@ -3,10 +3,15 @@ package com.svd.svdagencies.ui.admin.stock
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,9 +31,16 @@ import com.svd.svdagencies.data.model.admin.stock.StockLeakageEntry
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.view.LayoutInflater
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.svd.svdagencies.data.model.admin.stock.StockItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -57,6 +69,9 @@ class AdminStockActivity : AdminBaseActivity() {
     private lateinit var leakageAdapter: StockLeakageAdapter
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private var selectedDate = dateFormatter.format(Calendar.getInstance().time)
+    private var allStockItems: List<StockItem> = emptyList()
+    private lateinit var btnRecordLeakage: MaterialButton
+    private lateinit var btnLeakageReport: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +92,8 @@ class AdminStockActivity : AdminBaseActivity() {
         tvNoLeakage = findViewById(R.id.tvNoLeakage)
         etRecordDate = findViewById(R.id.etRecordDate)
         btnManageStock = findViewById(R.id.btnManageStock)
+        btnRecordLeakage = findViewById(R.id.btnRecordLeakage)
+        btnLeakageReport = findViewById(R.id.btnLeakageReport)
         
         barChart = findViewById(R.id.barChart)
         pieChart = findViewById(R.id.pieChart)
@@ -102,6 +119,7 @@ class AdminStockActivity : AdminBaseActivity() {
 
         leakageAdapter = StockLeakageAdapter(
             entries = emptyList(),
+            onEdit = { entry -> showEditLeakageDialog(entry) },
             onDelete = { entry -> showDeleteLeakageConfirm(entry) }
         )
         rvLeakageEntries.layoutManager = LinearLayoutManager(this)
@@ -116,6 +134,12 @@ class AdminStockActivity : AdminBaseActivity() {
                 Intent(this, AdminStockUpdateActivity::class.java)
                     .putExtra("ENTRY_DATE", selectedDate)
             )
+        }
+        btnRecordLeakage.setOnClickListener {
+            showAddLeakageDialog()
+        }
+        btnLeakageReport.setOnClickListener {
+            openLeakageReportPdf()
         }
 
         swipeRefresh.setOnRefreshListener {
@@ -210,7 +234,8 @@ class AdminStockActivity : AdminBaseActivity() {
         setupPieChart(data.companyData)
 
         // Update Table
-        adapter.updateList(data.allItems)
+        allStockItems = data.allItems
+        adapter.updateList(allStockItems)
     }
 
     private fun setupBarChart(topItems: List<com.svd.svdagencies.data.model.admin.stock.StockItem>) {
@@ -353,5 +378,175 @@ class AdminStockActivity : AdminBaseActivity() {
                 hideScreenLoading()
             }
         })
+    }
+
+    private fun showAddLeakageDialog() {
+        val view = LayoutInflater.from(this).inflate(R.layout.admin_dialog_leakage, null)
+        val actvItem = view.findViewById<AutoCompleteTextView>(R.id.actvItem)
+        val etQuantity = view.findViewById<TextInputEditText>(R.id.etQuantity)
+        val etDate = view.findViewById<TextInputEditText>(R.id.etDate)
+        val etNotes = view.findViewById<TextInputEditText>(R.id.etNotes)
+
+        etDate.setText(selectedDate)
+        etDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            DatePickerDialog(this, { _, y, m, d ->
+                calendar.set(y, m, d)
+                etDate.setText(dateFormatter.format(calendar.time))
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        val itemNames = allStockItems.map { "${it.name} (${it.companyName})" }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, itemNames)
+        actvItem.setAdapter(adapter)
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Record Leakage")
+            .setView(view)
+            .setPositiveButton("Save") { _, _ ->
+                val selectedName = actvItem.text.toString()
+                val itemIndex = itemNames.indexOf(selectedName)
+                if (itemIndex != -1) {
+                    val itemId = allStockItems[itemIndex].id
+                    val qty = etQuantity.text.toString().toIntOrNull() ?: 0
+                    if (qty > 0) {
+                        saveLeakage(itemId, qty, etDate.text.toString(), etNotes.text.toString())
+                    } else {
+                        Toast.makeText(this, "Enter valid quantity", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Select an item", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun saveLeakage(itemId: Int, quantity: Int, date: String, notes: String) {
+        showScreenLoading()
+        val body = mapOf(
+            "item" to itemId,
+            "quantity" to quantity,
+            "date" to date,
+            "notes" to notes
+        )
+        ApiClient.adminStockApi.saveLeakage(body).enqueue(object : Callback<Map<String, Any>> {
+            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                hideScreenLoading()
+                if (response.isSuccessful) {
+                    Toast.makeText(this@AdminStockActivity, "Leakage recorded", Toast.LENGTH_SHORT).show()
+                    loadStockData()
+                } else {
+                    Toast.makeText(this@AdminStockActivity, "Failed to save leakage", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                hideScreenLoading()
+            }
+        })
+    }
+
+    private fun showEditLeakageDialog(entry: StockLeakageEntry) {
+        val view = LayoutInflater.from(this).inflate(R.layout.admin_dialog_leakage, null)
+        val tilItem = view.findViewById<TextInputLayout>(R.id.tilItem)
+        val actvItem = view.findViewById<AutoCompleteTextView>(R.id.actvItem)
+        val etQuantity = view.findViewById<TextInputEditText>(R.id.etQuantity)
+        val etDate = view.findViewById<TextInputEditText>(R.id.etDate)
+        val etNotes = view.findViewById<TextInputEditText>(R.id.etNotes)
+
+        tilItem.isEnabled = false // Item cannot be changed during edit as per backend logic
+        actvItem.setText(entry.itemName)
+        etQuantity.setText(entry.quantity.toString())
+        etDate.setText(entry.date)
+        etNotes.setText(entry.notes)
+
+        etDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            runCatching { calendar.time = dateFormatter.parse(entry.date)!! }
+            DatePickerDialog(this, { _, y, m, d ->
+                calendar.set(y, m, d)
+                etDate.setText(dateFormatter.format(calendar.time))
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Edit Leakage Record")
+            .setView(view)
+            .setPositiveButton("Update") { _, _ ->
+                val qty = etQuantity.text.toString().toIntOrNull() ?: 0
+                if (qty > 0) {
+                    updateLeakage(entry.id, qty, etDate.text.toString(), etNotes.text.toString())
+                } else {
+                    Toast.makeText(this, "Enter valid quantity", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun updateLeakage(leakageId: Int, quantity: Int, date: String, notes: String) {
+        showScreenLoading()
+        val body = mapOf(
+            "quantity" to quantity,
+            "date" to date,
+            "notes" to notes
+        )
+        ApiClient.adminStockApi.editLeakage(leakageId, body).enqueue(object : Callback<Map<String, Any>> {
+            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                hideScreenLoading()
+                if (response.isSuccessful) {
+                    Toast.makeText(this@AdminStockActivity, "Leakage updated", Toast.LENGTH_SHORT).show()
+                    loadStockData()
+                } else {
+                    Toast.makeText(this@AdminStockActivity, "Failed to update leakage", Toast.LENGTH_SHORT).show()
+                }
+            }
+            override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                hideScreenLoading()
+            }
+        })
+    }
+
+    private fun openLeakageReportPdf() {
+        val calendar = Calendar.getInstance()
+        runCatching {
+            val parsed = dateFormatter.parse(selectedDate)
+            if (parsed != null) calendar.time = parsed
+        }
+        val month = calendar.get(Calendar.MONTH) + 1
+        val year = calendar.get(Calendar.YEAR)
+
+        lifecycleScope.launch {
+            try {
+                Toast.makeText(this@AdminStockActivity, "Generating leakage report...", Toast.LENGTH_SHORT).show()
+                val responseBody = ApiClient.adminStockApi.downloadLeakageReportPdf(month, year)
+                val fileName = "leakage_report_${year}_${month}.pdf"
+                val file = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
+
+                withContext(Dispatchers.IO) {
+                    responseBody.byteStream().use { input ->
+                        FileOutputStream(file).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+
+                val fileUri = FileProvider.getUriForFile(
+                    this@AdminStockActivity,
+                    "${applicationContext.packageName}.provider",
+                    file
+                )
+                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(fileUri, "application/pdf")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                })
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@AdminStockActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to generate leakage report"),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 }

@@ -52,6 +52,10 @@ class AdminBillsActivity : AdminBaseActivity() {
     private var startDate: Calendar = Calendar.getInstance()
     private var endDate: Calendar = Calendar.getInstance()
 
+    private var currentPage = 1
+    private var isLastPage = false
+    private var isLoading = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("AdminBillsActivity", "onCreate called")
@@ -81,7 +85,7 @@ class AdminBillsActivity : AdminBaseActivity() {
         
         // Use RefreshManager to setup swipe refresh
         RefreshManager.setupRefresh(swipeRefreshLayout) {
-            fetchBills()
+            fetchBills(isRefresh = true)
         }
     }
 
@@ -114,6 +118,24 @@ class AdminBillsActivity : AdminBaseActivity() {
         )
         rvBills.layoutManager = LinearLayoutManager(this)
         rvBills.adapter = billAdapter
+
+        rvBills.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val visibleItemCount = layoutManager.childCount
+                val totalItemCount = layoutManager.itemCount
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                if (!isLoading && !isLastPage) {
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                        && firstVisibleItemPosition >= 0
+                    ) {
+                        fetchBills(isRefresh = false)
+                    }
+                }
+            }
+        })
     }
 
     private fun shareBillOnWhatsappLikeWebsite(bill: AdminBill) {
@@ -282,7 +304,7 @@ class AdminBillsActivity : AdminBaseActivity() {
     private fun setupListeners() {
         tvStartDate.setOnClickListener { showDatePickerDialog(isStartDate = true) }
         tvEndDate.setOnClickListener { showDatePickerDialog(isStartDate = false) }
-        btnSearch.setOnClickListener { fetchBills() }
+        btnSearch.setOnClickListener { fetchBills(isRefresh = true) }
         fabCreateBill.setOnClickListener { 
             val intent = Intent(this, CreateBillActivity::class.java)
             startActivity(intent)
@@ -329,9 +351,20 @@ class AdminBillsActivity : AdminBaseActivity() {
         }
     }
 
-    private fun fetchBills() {
-        Log.d("AdminBillsActivity", "fetchBills called")
-        RefreshManager.startRefresh(swipeRefreshLayout)
+    private fun fetchBills(isRefresh: Boolean = true) {
+        if (isLoading) return
+        isLoading = true
+
+        if (isRefresh) {
+            currentPage = 1
+            isLastPage = false
+            RefreshManager.startRefresh(swipeRefreshLayout)
+        } else {
+            billAdapter.setLoading(true)
+        }
+
+        Log.d("AdminBillsActivity", "fetchBills called: page=$currentPage, isRefresh=$isRefresh")
+        
         val selectedText = autoCompleteCustomer.text.toString()
         val customerId = if (selectedText.isNotEmpty()) {
             customers.find { "${it.name} (${it.shop_name})" == selectedText }?.id
@@ -342,11 +375,23 @@ class AdminBillsActivity : AdminBaseActivity() {
 
         lifecycleScope.launch {
             try {
-                val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString)
-                billAdapter.updateList(response.results)
+                val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString, currentPage)
+                
+                if (isRefresh) {
+                    billAdapter.updateList(response.results)
+                } else {
+                    billAdapter.addItems(response.results)
+                }
+
+                isLastPage = currentPage >= response.total_pages
+                if (!isLastPage) {
+                    currentPage++
+                }
             } catch (e: Exception) {
                 Toast.makeText(this@AdminBillsActivity, "Error fetching bills: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
+                isLoading = false
+                billAdapter.setLoading(false)
                 RefreshManager.stopRefresh(swipeRefreshLayout)
             }
         }

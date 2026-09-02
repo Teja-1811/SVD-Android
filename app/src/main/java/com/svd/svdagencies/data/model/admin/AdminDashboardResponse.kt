@@ -9,7 +9,10 @@ data class AdminDashboardResponse(
     val customers_no_orders_today_list: List<NoOrderCustomer>? = emptyList(),
     val top_due_customers: List<TopDueCustomer>? = emptyList(),
     val top_stock_items: List<TopStockItem>? = emptyList(),
-    val top_selling_items_today: List<Any>? = emptyList()
+    val top_selling_items_today: List<TopSellingItem>? = emptyList(),
+    val pending_orders_preview: List<PendingOrderPreview>? = emptyList(),
+    val active_enquiries_preview: List<EnquiryPreview>? = emptyList(),
+    val active_offers_preview: List<OfferPreview>? = emptyList()
 )
 
 @Keep
@@ -68,4 +71,44 @@ data class TopStockItem(
     val category: String? = "",
     val company_name: String? = "",
     val stock_value: Double? = 0.0
+)
+
+@Keep
+data class TopSellingItem(
+    val item_id: Int? = 0,
+    val item_name: String? = "",
+    val quantity: Double? = 0.0,
+    val amount: Double? = 0.0
+)
+
+@Keep
+data class PendingOrderPreview(
+    val order_id: Int? = 0,
+    val order_number: String? = "",
+    val customer_name: String? = "",
+    val phone: String? = "",
+    val status: String? = "",
+    val delivery_date: String? = "",
+    val total_amount: Double? = 0.0,
+    val approved_total_amount: Double? = 0.0,
+    val payment_status: String? = ""
+)
+
+@Keep
+data class EnquiryPreview(
+    val id: Int? = 0,
+    val name: String? = "",
+    val phone: String? = "",
+    val subject: String? = "",
+    val created_at: String? = ""
+)
+
+@Keep
+data class OfferPreview(
+    val id: Int? = 0,
+    val name: String? = "",
+    val offer_for: String? = "",
+    val offer_type: String? = "",
+    val price: Double? = 0.0,
+    val end_date: String? = ""
 )

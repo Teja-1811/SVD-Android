@@ -3,7 +3,7 @@ package com.svd.svdagencies.utils
 import android.content.Context
 import android.util.Log
 
-class SessionManager(context: Context) {
+class SessionManager(private val context: Context) {
 
     private val prefs =
         context.getSharedPreferences("svd_session", Context.MODE_PRIVATE)
@@ -15,6 +15,10 @@ class SessionManager(context: Context) {
             .putString("role", role)
             .putInt("user_id", userId)
             .apply()
+            
+        if (role == UserRole.ADMIN) {
+            KeepAliveWorker.startNow(context)
+        }
     }
 
     fun getToken(): String? {
@@ -29,6 +33,7 @@ class SessionManager(context: Context) {
 
     fun logout() {
         Log.d("SessionManager", "Clearing session")
+        KeepAliveWorker.stop(context)
         prefs.edit().clear().apply()
     }
 

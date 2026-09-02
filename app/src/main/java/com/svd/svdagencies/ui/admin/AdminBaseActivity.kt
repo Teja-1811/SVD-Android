@@ -14,6 +14,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.admin.bills.AdminBillsActivity
 import com.svd.svdagencies.ui.admin.cashbook.AdminCashBookActivity
 import com.svd.svdagencies.ui.admin.cashbook.AdminStatementActivity
+import com.svd.svdagencies.ui.admin.cashbook.ViewExpensesActivity
 import com.svd.svdagencies.ui.admin.companies.AdminCompaniesActivity
 import com.svd.svdagencies.ui.admin.customer.CustomersData
 import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
@@ -37,12 +38,6 @@ abstract class AdminBaseActivity : BaseActivity() {
         if (toolbar != null) {
             setSupportActionBar(toolbar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
-
-            ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, insets ->
-                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-                view.updatePadding(top = statusBarInsets.top)
-                insets
-            }
 
             toolbar.findViewById<TextView>(R.id.tvToolbarTitle)?.text = title
 
@@ -71,12 +66,6 @@ abstract class AdminBaseActivity : BaseActivity() {
                 }
             }
             
-            ViewCompat.setOnApplyWindowInsetsListener(navView) { view, insets ->
-                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-                view.updatePadding(top = statusBarInsets.top)
-                insets
-            }
-
             navView.setNavigationItemSelectedListener { item ->
                 if (::drawerLayout.isInitialized) {
                     drawerLayout.closeDrawer(GravityCompat.START)
@@ -140,6 +129,12 @@ abstract class AdminBaseActivity : BaseActivity() {
                     R.id.nav_cashbook -> {
                         if (this !is AdminCashBookActivity) {
                              openAdminDestination(AdminCashBookActivity::class.java)
+                        }
+                        true
+                    }
+                    R.id.nav_expenses -> {
+                        if (this !is ViewExpensesActivity) {
+                            openAdminDestination(ViewExpensesActivity::class.java)
                         }
                         true
                     }

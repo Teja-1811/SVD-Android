@@ -94,6 +94,11 @@ class AdminMonthlySummary : AdminBaseActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        fetchSummary()
+    }
+
     private fun showMonthPicker() {
         val dialogView = layoutInflater.inflate(R.layout.admin_monthly_summary_year_picker, null)
         val monthPicker = dialogView.findViewById<NumberPicker>(R.id.monthPicker)

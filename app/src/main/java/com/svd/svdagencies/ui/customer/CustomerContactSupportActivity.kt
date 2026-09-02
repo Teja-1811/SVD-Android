@@ -23,11 +23,12 @@ import com.svd.svdagencies.ui.customer.CustomerStatementActivity
 import com.svd.svdagencies.ui.customer.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.showLoading
+import com.svd.svdagencies.base.BaseActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CustomerContactSupportActivity : AppCompatActivity() {
+class CustomerContactSupportActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,17 +98,18 @@ class CustomerContactSupportActivity : AppCompatActivity() {
         findViewById<BottomNavigationView>(R.id.customerBottomNav).visibility = View.GONE
 
         val container = findViewById<FrameLayout>(R.id.customerFragmentContainer)
-        layoutInflater.inflate(R.layout.activity_contact_support, container, true)
+        val inflatedView = layoutInflater.inflate(R.layout.activity_contact_support, container, false)
+        container.addView(inflatedView)
 
-        val btnCall = findViewById<View>(R.id.btnCall)
-        val btnWhatsapp = findViewById<View>(R.id.btnWhatsapp)
-        val btnEmail = findViewById<View>(R.id.btnEmail)
-        val btnSubmit = findViewById<MaterialButton>(R.id.btnSubmit)
+        val btnCall = inflatedView.findViewById<View>(R.id.btnCall)
+        val btnWhatsapp = inflatedView.findViewById<View>(R.id.btnWhatsapp)
+        val btnEmail = inflatedView.findViewById<View>(R.id.btnEmail)
+        val btnSubmit = inflatedView.findViewById<MaterialButton>(R.id.btnSubmit)
 
-        val inputSubject = findViewById<TextInputEditText>(R.id.inputSubject)
-        val inputMessage = findViewById<TextInputEditText>(R.id.inputMessage)
-        val inputPhone = findViewById<TextInputEditText>(R.id.inputPhone)
-        val inputEmail = findViewById<TextInputEditText>(R.id.inputEmail)
+        val inputSubject = inflatedView.findViewById<TextInputEditText>(R.id.inputSubject)
+        val inputMessage = inflatedView.findViewById<TextInputEditText>(R.id.inputMessage)
+        val inputPhone = inflatedView.findViewById<TextInputEditText>(R.id.inputPhone)
+        val inputEmail = inflatedView.findViewById<TextInputEditText>(R.id.inputEmail)
 
         btnCall.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)

@@ -17,6 +17,8 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.CustomerApi
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
+import com.svd.svdagencies.data.model.customer.CustomerOfferResponse
+import com.svd.svdagencies.data.model.customer.OfferItem
 import com.svd.svdagencies.ui.customer.CustomerContactSupportActivity
 import com.svd.svdagencies.ui.customer.CustomerMainActivity
 import com.svd.svdagencies.ui.customer.CustomerRaisedQueriesActivity
@@ -69,12 +71,14 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
 
     private lateinit var api: CustomerApi
     private lateinit var session: SessionManager
+    private val offersList = mutableListOf<CustomerOffer>()
 
     private val orderDateFormat = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        
+        swipeRefresh = view.findViewById(R.id.swipeRefresh)
         tvWelcome = view.findViewById(R.id.tvWelcome)
         tvPhone = view.findViewById(R.id.tvPhone)
         tvBalance = view.findViewById(R.id.tvBalance)
@@ -87,20 +91,15 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         tvLatestOrderItems = view.findViewById(R.id.tvLatestOrderItems)
         btnLatestOrderAction = view.findViewById(R.id.btnLatestOrderAction)
         rvOffers = view.findViewById(R.id.rvOffers)
-        swipeRefresh = view.findViewById(R.id.swipeRefresh)
 
         session = SessionManager(requireContext())
-
-        if (session.getUserId() == -1) {
-            Toast.makeText(requireContext(), "Session expired", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         api = ApiClient.retrofit.create(CustomerApi::class.java)
+        
         setupOffersCarousel()
 
         RefreshManager.setupRefresh(swipeRefresh) {
             loadDashboard()
+            loadOffers()
         }
 
         renderLatestOrderCard()
@@ -110,6 +109,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         super.onResume()
         RefreshManager.startRefresh(swipeRefresh)
         loadDashboard()
+        loadOffers()
         renderLatestOrderCard()
         startAutoSliding()
     }
@@ -182,18 +182,54 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
     }
 
     private fun setupOffersCarousel() {
-        val dummyOffers = listOf(
-            CustomerOffer("Mega Savings Sale", "Get flat ₹100 cashback on all cold curd buckets this week.", "Claim Now", "#0C4A6E"),
-            CustomerOffer("Bulk Order Bonus", "Orders above 100 liters get priority delivery and 5% discount.", "Book Now", "#D32F2F"),
-            CustomerOffer("Fresh Arrival Special", "Extra fresh stock arrivals every morning. Order now for early slot.", "View Catalog", "#35BFA0")
-        )
-        
         rvOffers.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvOffers.adapter = CustomerOfferAdapter(dummyOffers)
+        rvOffers.adapter = CustomerOfferAdapter(offersList) {
+            // Action for the offer - navigate to orders
+            (activity as? CustomerMainActivity)?.openOrdersScreen()
+        }
         
         if (rvOffers.onFlingListener == null) {
             PagerSnapHelper().attachToRecyclerView(rvOffers)
         }
+    }
+
+    private fun loadOffers() {
+        api.getOffers().enqueue(object : Callback<CustomerOfferResponse> {
+            override fun onResponse(call: Call<CustomerOfferResponse>, response: Response<CustomerOfferResponse>) {
+                if (!isAdded || view == null) return
+                
+                if (response.isSuccessful && response.body()?.status == true) {
+                    val remoteOffers = response.body()?.offers ?: emptyList()
+                    offersList.clear()
+                    
+                    val colors = listOf("#0C4A6E", "#D32F2F", "#35BFA0", "#7B1FA2", "#F57C00")
+                    
+                    remoteOffers.forEachIndexed { index, item ->
+                        var subtitle = item.description ?: ""
+                        if (subtitle.isBlank() && item.offerType == "buy_x_get_y" && item.items.isNotEmpty()) {
+                            val first = item.items[0]
+                            subtitle = "Buy ${first.buyQty} get ${first.offerQty} ${first.itemName} free!"
+                        }
+
+                        offersList.add(
+                            CustomerOffer(
+                                title = item.name,
+                                subtitle = subtitle.ifBlank { "Special discount available" },
+                                actionText = "Order Now",
+                                colorHex = colors[index % colors.size]
+                            )
+                        )
+                    }
+                    
+                    rvOffers.adapter?.notifyDataSetChanged()
+                    rvOffers.isVisible = offersList.isNotEmpty()
+                }
+            }
+
+            override fun onFailure(call: Call<CustomerOfferResponse>, t: Throwable) {
+                // Silently fail for offers as it's secondary to dashboard
+            }
+        })
     }
 
     private fun renderLatestOrderCard() {

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.data.model.delivery.DeliveryStockHistoryItem
-import com.svd.svdagencies.databinding.DeliveryStockHistoryBinding
+import com.svd.svdagencies.databinding.DeliveryStockHistoryCardBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -22,7 +22,7 @@ class DeliveryStockHistoryAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = DeliveryStockHistoryBinding.inflate(
+        val binding = DeliveryStockHistoryCardBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
         return ViewHolder(binding)
@@ -34,7 +34,7 @@ class DeliveryStockHistoryAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    inner class ViewHolder(private val binding: DeliveryStockHistoryBinding) :
+    inner class ViewHolder(private val binding: DeliveryStockHistoryCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: DeliveryStockHistoryItem) {

@@ -25,11 +25,12 @@ import com.svd.svdagencies.utils.NetworkMessageUtils
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.UserRole
 import com.svd.svdagencies.utils.showLoading
+import com.svd.svdagencies.base.BaseActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

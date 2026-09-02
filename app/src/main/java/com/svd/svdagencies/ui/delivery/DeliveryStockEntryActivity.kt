@@ -1,6 +1,7 @@
 package com.svd.svdagencies.ui.delivery
 
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -16,11 +17,12 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.delivery.*
-import com.svd.svdagencies.databinding.ActivityDeliveryStockEntryBinding
+import com.svd.svdagencies.databinding.DeliveryStockEntryBinding
 import com.svd.svdagencies.ui.delivery.adapter.DeliveryStockReportAdapter
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import com.svd.svdagencies.utils.RefreshManager
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
@@ -29,7 +31,7 @@ import java.util.Locale
 
 class DeliveryStockEntryActivity : BaseActivity() {
 
-    private lateinit var binding: ActivityDeliveryStockEntryBinding
+    private lateinit var binding: DeliveryStockEntryBinding
     private val reportAdapter = DeliveryStockReportAdapter()
     
     private var selectedDate = Calendar.getInstance()
@@ -59,7 +61,7 @@ class DeliveryStockEntryActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDeliveryStockEntryBinding.inflate(layoutInflater)
+        binding = DeliveryStockEntryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         session = SessionManager(this)
 
@@ -163,15 +165,14 @@ class DeliveryStockEntryActivity : BaseActivity() {
         tvConfirmTotal.text = "₹ %.2f".format(totalAmount)
 
         rvConfirmItems.layoutManager = LinearLayoutManager(this)
-        rvConfirmItems.adapter = DeliveryBillConfirmationAdapter(selectedItems)
+        rvConfirmItems.adapter = DeliveryBillConfirmationAdapter(selectedItems) { _, _ -> 0.0 }
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogView)
             .create()
 
         btnConfirm.setOnClickListener {
-            dialog.dismiss()
-            processBillGeneration(selectedItems, totalAmount)
+            processBillGeneration(selectedItems, totalAmount, btnConfirm, dialog)
         }
 
         btnUpi.visibility = View.GONE // Keep it simple for self-entry
@@ -179,8 +180,13 @@ class DeliveryStockEntryActivity : BaseActivity() {
         dialog.show()
     }
 
-    private fun processBillGeneration(selectedItems: List<Pair<DeliveryBillItem, Int>>, total: Double) {
-        showScreenLoading()
+    private fun processBillGeneration(
+        selectedItems: List<Pair<DeliveryBillItem, Int>>, 
+        total: Double,
+        btn: MaterialButton,
+        dialog: DialogInterface
+    ) {
+        btn.showLoading(true, "Generating...")
         lifecycleScope.launch {
             try {
                 val request = DeliveryGenerateBillRequest(
@@ -194,6 +200,7 @@ class DeliveryStockEntryActivity : BaseActivity() {
                 val response = ApiClient.deliveryApi.generateBill(request).awaitResponse()
                 if (response.isSuccessful && response.body()?.success == true) {
                     Toast.makeText(this@DeliveryStockEntryActivity, "Bill Generated Successfully", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
                     fetchReconciliationReport()
                 } else {
                     val msg = NetworkMessageUtils.parseError(response, response.body()?.message ?: "Failed")
@@ -202,7 +209,7 @@ class DeliveryStockEntryActivity : BaseActivity() {
             } catch (e: Exception) {
                 Toast.makeText(this@DeliveryStockEntryActivity, "Error generating bill", Toast.LENGTH_SHORT).show()
             } finally {
-                hideScreenLoading()
+                btn.showLoading(false)
             }
         }
     }

@@ -1,7 +1,0 @@
-- [x] Refactor `AppSwipeRefreshLayout.kt`
-    - [x] Remove `LoadingOverlayManager` show/hide logic
-    - [x] Set color scheme to `@color/brand_red`
-    - [x] Set progress background to white
-- [x] Refactor `RefreshManager.kt`
-    - [x] Remove `LoadingOverlayManager` calls in `startRefresh` and `stopRefresh`
-- [x] Verify build with `:app:compileDebugKotlin`

@@ -18,7 +18,7 @@ configure<ApplicationExtension> {
         minSdk = 24
         targetSdk = 35
         versionCode = 4
-        versionName = "1.0.4"
+        versionName = "1.0.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -99,6 +99,8 @@ dependencies {
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.work)
     implementation(libs.fragment.ktx)
 
     // Coroutines

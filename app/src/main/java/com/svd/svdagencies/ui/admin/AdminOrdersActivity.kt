@@ -5,19 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.AdminOrdersApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Orders.AdminOrder
 import com.svd.svdagencies.data.model.admin.Orders.ConfirmOrderItem
 import com.svd.svdagencies.data.model.admin.Orders.ConfirmOrderRequest
+import com.svd.svdagencies.databinding.AdminOrderCardBinding
+import com.svd.svdagencies.databinding.AdminOrderProductBinding
+import com.svd.svdagencies.databinding.AdminOrdersDashboardBinding
+import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,58 +26,56 @@ import org.json.JSONObject
 
 class AdminOrdersActivity : AdminBaseActivity() {
 
-    private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var rvOrders: RecyclerView
-    private lateinit var layoutNoOrders: LinearLayout
-    private lateinit var tvOrderCount: TextView
+    private lateinit var binding: AdminOrdersDashboardBinding
     private lateinit var api: AdminOrdersApi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.admin_orders_dashboard)
+        binding = AdminOrdersDashboardBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setupAdminLayout("Orders")
+        setupAdminLayout(getString(R.string.title_admin_orders))
         api = ApiClient.adminOrdersApi
 
-        swipeRefresh = findViewById(R.id.swipeRefresh)
-        rvOrders = findViewById(R.id.rvOrders)
-        layoutNoOrders = findViewById(R.id.layoutNoOrders)
-        tvOrderCount = findViewById(R.id.tvOrderCount)
+        binding.rvOrders.layoutManager = LinearLayoutManager(this)
 
-        rvOrders.layoutManager = LinearLayoutManager(this)
-
-        swipeRefresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             loadOrders()
         }
 
         loadOrders()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadOrders()
+    }
+
     private fun loadOrders() {
-        swipeRefresh.isRefreshing = true
+        binding.swipeRefresh.isRefreshing = true
         
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = api.getOrdersDashboard()
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        swipeRefresh.isRefreshing = false
-                        tvOrderCount.text = response.total_pending.toString()
+                        binding.swipeRefresh.isRefreshing = false
+                        binding.tvOrderCount.text = response.total_pending.toString()
                         
                         if (response.orders.isEmpty()) {
-                            layoutNoOrders.visibility = View.VISIBLE
-                            swipeRefresh.visibility = View.GONE
+                            binding.layoutNoOrders.visibility = View.VISIBLE
+                            binding.swipeRefresh.visibility = View.GONE
                         } else {
-                            layoutNoOrders.visibility = View.GONE
-                            swipeRefresh.visibility = View.VISIBLE
-                            rvOrders.adapter = AdminOrdersAdapter(response.orders)
+                            binding.layoutNoOrders.visibility = View.GONE
+                            binding.swipeRefresh.visibility = View.VISIBLE
+                            binding.rvOrders.adapter = AdminOrdersAdapter(response.orders)
                         }
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        swipeRefresh.isRefreshing = false
+                        binding.swipeRefresh.isRefreshing = false
                         Toast.makeText(this@AdminOrdersActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -88,52 +86,46 @@ class AdminOrdersActivity : AdminBaseActivity() {
     private inner class AdminOrdersAdapter(private val orders: List<AdminOrder>) :
         RecyclerView.Adapter<AdminOrdersAdapter.ViewHolder>() {
 
-        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val tvOrderId: TextView = view.findViewById(R.id.tvOrderId)
-            val tvCustomerName: TextView = view.findViewById(R.id.tvCustomerName)
-            val tvOrderDate: TextView = view.findViewById(R.id.tvOrderDate)
-            val layoutItems: LinearLayout = view.findViewById(R.id.layoutItems)
-            val btnConfirm: MaterialButton = view.findViewById(R.id.btnConfirm)
-            val btnReject: MaterialButton = view.findViewById(R.id.btnReject)
-        }
+        inner class ViewHolder(val cardBinding: AdminOrderCardBinding) : 
+            RecyclerView.ViewHolder(cardBinding.root)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.admin_order_card, parent, false)
-            return ViewHolder(view)
+            val cardBinding = AdminOrderCardBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+            return ViewHolder(cardBinding)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val order = orders[position]
-            holder.tvOrderId.text = "ORD-${order.order_id}"
-            holder.tvCustomerName.text = "Customer: ${order.customer_name}"
-            holder.tvOrderDate.text = "Order Date: ${order.order_date}"
-            holder.btnConfirm.isEnabled = true
-            holder.btnReject.isEnabled = true
+            val card = holder.cardBinding
+            
+            card.tvOrderId.text = getString(R.string.format_order_id, order.order_id)
+            card.tvCustomerName.text = getString(R.string.format_customer_name, order.customer_name)
+            card.tvOrderDate.text = getString(R.string.format_order_date, order.order_date)
+            card.btnConfirm.isEnabled = true
+            card.btnReject.isEnabled = true
 
             // Populate Items
-            holder.layoutItems.removeAllViews()
+            card.layoutItems.removeAllViews()
             order.items?.forEach { item ->
-                val row = LayoutInflater.from(holder.itemView.context)
-                    .inflate(R.layout.admin_order_product, holder.layoutItems, false)
+                val itemBinding = AdminOrderProductBinding.inflate(
+                    LayoutInflater.from(holder.itemView.context), card.layoutItems, false
+                )
                 
-                row.findViewById<TextView>(R.id.tvItemName).text = item.item_name
-                val etQty = row.findViewById<EditText>(R.id.etQty)
-                val etDisc = row.findViewById<EditText>(R.id.etDisc)
-                val tvAQ = row.findViewById<TextView>(R.id.tvAQ)
+                itemBinding.tvItemName.text = item.item_name
+                itemBinding.etQty.setText(item.requested_quantity.toString())
+                itemBinding.etDisc.setText(item.discount_per_qty.toString())
+                itemBinding.tvAQ.text = item.available_quantity.toString()
                 
-                etQty.setText(item.requested_quantity.toString())
-                etDisc.setText(item.discount_per_qty.toString())
-                tvAQ.text = item.available_quantity.toString()
-                
-                holder.layoutItems.addView(row)
+                card.layoutItems.addView(itemBinding.root)
             }
 
-            holder.btnConfirm.setOnClickListener {
+            card.btnConfirm.setOnClickListener {
                 confirmOrder(order, holder)
             }
 
-            holder.btnReject.setOnClickListener {
+            card.btnReject.setOnClickListener {
                 rejectOrder(order.order_id, holder)
             }
         }
@@ -141,14 +133,16 @@ class AdminOrdersActivity : AdminBaseActivity() {
         override fun getItemCount() = orders.size
 
         private fun confirmOrder(order: AdminOrder, holder: ViewHolder) {
-            if (!holder.btnConfirm.isEnabled) return
+            val card = holder.cardBinding
+            if (!card.btnConfirm.isEnabled) return
 
             val confirmItems = mutableListOf<ConfirmOrderItem>()
             
-            for (i in 0 until holder.layoutItems.childCount) {
-                val row = holder.layoutItems.getChildAt(i)
+            for (i in 0 until card.layoutItems.childCount) {
+                val row = card.layoutItems.getChildAt(i)
                 val item = order.items?.getOrNull(i) ?: continue
                 
+                // Since we use addView with itemBinding.root, we can find the views inside the row
                 val qty = row.findViewById<EditText>(R.id.etQty).text.toString().toIntOrNull() ?: 0
                 val disc = row.findViewById<EditText>(R.id.etDisc).text.toString().toDoubleOrNull() ?: 0.0
                 
@@ -156,12 +150,13 @@ class AdminOrdersActivity : AdminBaseActivity() {
             }
 
             val request = ConfirmOrderRequest(confirmItems)
-            holder.btnConfirm.isEnabled = false
+            card.btnConfirm.showLoading(true, "Confirming...")
             
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val response = api.confirmOrder(order.order_id, request)
                     withContext(Dispatchers.Main) {
+                        card.btnConfirm.showLoading(false)
                         val body = response.body()
                         val message = body?.message
                             ?: body?.error
@@ -171,13 +166,11 @@ class AdminOrdersActivity : AdminBaseActivity() {
                         Toast.makeText(this@AdminOrdersActivity, message, Toast.LENGTH_SHORT).show()
                         if (response.isSuccessful && body?.success == true) {
                             loadOrders()
-                        } else {
-                            holder.btnConfirm.isEnabled = true
                         }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        holder.btnConfirm.isEnabled = true
+                        card.btnConfirm.showLoading(false)
                         Toast.makeText(this@AdminOrdersActivity, "Confirm failed: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -194,13 +187,15 @@ class AdminOrdersActivity : AdminBaseActivity() {
         }
 
         private fun rejectOrder(orderId: Int, holder: ViewHolder) {
-            if (!holder.btnReject.isEnabled) return
-            holder.btnReject.isEnabled = false
+            val card = holder.cardBinding
+            if (!card.btnReject.isEnabled) return
+            card.btnReject.showLoading(true, "Rejecting...")
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val response = api.rejectOrder(orderId)
                     withContext(Dispatchers.Main) {
+                        card.btnReject.showLoading(false)
                         val message = response.body()?.get("message")?.toString()
                             ?: response.body()?.get("error")?.toString()
                             ?: response.errorBody()?.string()?.extractApiMessage()
@@ -210,13 +205,11 @@ class AdminOrdersActivity : AdminBaseActivity() {
                         val success = response.body()?.get("success") as? Boolean
                         if (response.isSuccessful && success != false) {
                             loadOrders()
-                        } else {
-                            holder.btnReject.isEnabled = true
                         }
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        holder.btnReject.isEnabled = true
+                        card.btnReject.showLoading(false)
                         Toast.makeText(this@AdminOrdersActivity, "Reject failed: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }

@@ -9,7 +9,9 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.delivery.DeliveryBillItem
 
 class DeliveryBillConfirmationAdapter(
-    private val items: List<Pair<DeliveryBillItem, Int>>
+    private val items: List<Pair<DeliveryBillItem, Int>>,
+    private val userType: String = "user",
+    private val discountForItem: (DeliveryBillItem, Int) -> Double
 ) : RecyclerView.Adapter<DeliveryBillConfirmationAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,9 +27,18 @@ class DeliveryBillConfirmationAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val (item, qty) = items[position]
-        holder.tvItemName.text = "${item.name} x $qty"
-        val total = item.price * qty
-        holder.tvItemTotal.text = "₹ %.2f".format(total)
+        val discount = discountForItem(item, qty)
+        val basePrice = if (userType == "user") item.mrp else item.sellingPrice
+        val finalPrice = (basePrice - discount).coerceAtLeast(0.0)
+        val total = finalPrice * qty
+
+        holder.tvItemName.text = if (discount > 0.0) {
+            "%s x %d\n\u20B9 %.2f/qty - \u20B9 %.2f discount = \u20B9 %.2f/qty"
+                .format(item.name, qty, basePrice, discount, finalPrice)
+        } else {
+            "%s x %d\n\u20B9 %.2f/qty".format(item.name, qty, basePrice)
+        }
+        holder.tvItemTotal.text = "\u20B9 %.2f".format(total)
     }
 
     override fun getItemCount() = items.size

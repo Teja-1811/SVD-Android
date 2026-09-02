@@ -42,7 +42,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Admin Orders Dashboard"
+                    android:text="@string/title_admin_orders"
                     android:textColor="@color/brand_blue"
                     android:textSize="14sp"
                     android:textStyle="bold"/>
@@ -78,7 +78,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No Pending Orders"
+                android:text="@string/label_no_pending_orders"
                 android:textColor="@color/textColorPrimary"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -87,7 +87,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="All orders have been processed."
+                android:text="@string/label_orders_processed"
                 android:textColor="@color/textColorSecondary"
                 android:textSize="12sp"/>
 

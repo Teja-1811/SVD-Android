@@ -89,7 +89,6 @@ class CompanyPaymentsAdapter(
 
         init {
             rvDailyRecords.layoutManager = LinearLayoutManager(itemView.context)
-            rvDailyRecords.setHasFixedSize(true)
             rvDailyRecords.isNestedScrollingEnabled = false
         }
 

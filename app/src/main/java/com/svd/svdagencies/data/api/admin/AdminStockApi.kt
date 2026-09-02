@@ -1,11 +1,13 @@
 package com.svd.svdagencies.data.api.admin
 
 import com.svd.svdagencies.data.model.admin.stock.AdminStockDashboardResponse
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface AdminStockApi {
 
+    @Headers("Cache-Control: no-cache")
     @GET("api/stock/dashboard/")
     fun getStockDashboard(
         @Query("date") date: String? = null,
@@ -29,6 +31,18 @@ interface AdminStockApi {
 
     @POST("api/stock/leakage/save/")
     fun saveLeakage(
+        @Body body: @JvmSuppressWildcards Map<String, Any>
+    ): Call<Map<String, Any>>
+
+    @GET("api/stock/leakage/report/pdf/")
+    suspend fun downloadLeakageReportPdf(
+        @Query("month") month: Int? = null,
+        @Query("year") year: Int? = null
+    ): ResponseBody
+
+    @PATCH("api/stock/leakage/{id}/edit/")
+    fun editLeakage(
+        @Path("id") id: Int,
         @Body body: @JvmSuppressWildcards Map<String, Any>
     ): Call<Map<String, Any>>
 

@@ -13,8 +13,9 @@ import com.svd.svdagencies.ui.customer.CustomerMainActivity
 import com.svd.svdagencies.ui.delivery.DeliveryCreateBillActivity
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.UserRole
+import com.svd.svdagencies.base.BaseActivity
 
-class WelcomeActivity : AppCompatActivity() {
+class WelcomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

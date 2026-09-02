@@ -8,9 +8,10 @@ import androidx.lifecycle.lifecycleScope
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.databinding.CustomerCompanyCatalogBinding
 import com.svd.svdagencies.ui.customer.adapter.CustomerCatalogAdapter
+import com.svd.svdagencies.base.BaseActivity
 import kotlinx.coroutines.launch
 
-class CustomerCompanyCatalogActivity : AppCompatActivity() {
+class CustomerCompanyCatalogActivity : BaseActivity() {
     private lateinit var binding: CustomerCompanyCatalogBinding
     private lateinit var adapter: CustomerCatalogAdapter
     private var companyId: Int = -1

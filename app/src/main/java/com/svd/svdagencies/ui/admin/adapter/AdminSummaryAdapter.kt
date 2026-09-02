@@ -98,16 +98,12 @@ class BillItemAdapter(private var items: List<BillItemDetail>) : RecyclerView.Ad
         private val tvIndex: TextView = itemView.findViewById(R.id.tvIndex)
         private val tvItemName: TextView = itemView.findViewById(R.id.tvItemName)
         private val tvQuantity: TextView = itemView.findViewById(R.id.tvQuantity)
-        private val tvPrice: TextView = itemView.findViewById(R.id.tvPrice)
-        private val tvDiscount: TextView = itemView.findViewById(R.id.tvDiscount)
         private val tvTotal: TextView = itemView.findViewById(R.id.tvTotal)
 
         fun bind(item: BillItemDetail, index: Int) {
             tvIndex.text = index.toString()
             tvItemName.text = item.item_name
             tvQuantity.text = item.quantity.toString()
-            tvPrice.text = "₹${item.price_per_unit}"
-            tvDiscount.text = if (item.discount > 0) "₹${item.discount}" else "-"
             tvTotal.text = "₹${item.total_amount}"
         }
     }

@@ -19,14 +19,10 @@ import com.svd.svdagencies.ui.customer.fragment.CustomerCompaniesFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerHomeFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerOrdersFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerPaymentFragment
-import com.svd.svdagencies.ui.customer.CustomerCompanyDetailsActivity
-import com.svd.svdagencies.ui.customer.CustomerContactSupportActivity
-import com.svd.svdagencies.ui.customer.CustomerRaisedQueriesActivity
-import com.svd.svdagencies.ui.customer.CustomerStatementActivity
-import com.svd.svdagencies.ui.customer.TermsConditionsActivity
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.base.BaseActivity
 
-class CustomerMainActivity : AppCompatActivity() {
+class CustomerMainActivity : BaseActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -104,16 +100,16 @@ class CustomerMainActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState == null) {
-            loadFragment(R.id.nav_home, "customer_home", "Home") { CustomerHomeFragment() }
+            loadFragment(R.id.nav_home, "customer_home", getString(R.string.title_home)) { CustomerHomeFragment() }
         }
 
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_home -> loadFragment(it.itemId, "customer_home", "Home") { CustomerHomeFragment() }
-                R.id.nav_companies -> loadFragment(it.itemId, "customer_companies", "Companies") { CustomerCompaniesFragment() }
-                R.id.nav_orders -> loadFragment(it.itemId, "customer_orders", "Orders") { CustomerOrdersFragment.newInstance() }
-                R.id.nav_bills -> loadFragment(it.itemId, "customer_bills", "Bills") { CustomerBillsFragment() }
-                R.id.nav_payment -> loadFragment(it.itemId, "customer_payment", "Payment") { CustomerPaymentFragment() }
+                R.id.nav_home -> loadFragment(it.itemId, "customer_home", getString(R.string.title_home)) { CustomerHomeFragment() }
+                R.id.nav_companies -> loadFragment(it.itemId, "customer_companies", getString(R.string.title_companies)) { CustomerCompaniesFragment() }
+                R.id.nav_orders -> loadFragment(it.itemId, "customer_orders", getString(R.string.title_orders)) { CustomerOrdersFragment.newInstance() }
+                R.id.nav_bills -> loadFragment(it.itemId, "customer_bills", getString(R.string.title_bills)) { CustomerBillsFragment() }
+                R.id.nav_payment -> loadFragment(it.itemId, "customer_payment", getString(R.string.title_payment)) { CustomerPaymentFragment() }
             }
             true
         }
@@ -130,13 +126,13 @@ class CustomerMainActivity : AppCompatActivity() {
     fun openOrdersScreen(editLatestOrder: Boolean = false) {
         bottomNav.menu.findItem(R.id.nav_orders).isChecked = true
         if (editLatestOrder) {
-            tvToolbarTitle.text = "Orders"
+            tvToolbarTitle.text = getString(R.string.title_orders)
             supportFragmentManager.beginTransaction()
-                .replace(R.id.customerFragmentContainer, CustomerOrdersFragment.newInstance(true), "customer_orders_edit")
+                .replace(R.id.customerFragmentContainer, CustomerOrdersFragment.newInstance(editLatestOrder = true), "customer_orders_edit")
                 .commit()
             activeTabId = R.id.nav_orders
         } else {
-            loadFragment(R.id.nav_orders, "customer_orders", "Orders") { CustomerOrdersFragment.newInstance() }
+            loadFragment(R.id.nav_orders, "customer_orders", getString(R.string.title_orders)) { CustomerOrdersFragment.newInstance() }
         }
     }
 

@@ -16,6 +16,7 @@ import retrofit2.Call
 interface CustomerDashboardApi {
 
     // Get all customers
+    @Headers("Cache-Control: no-cache")
     @GET("api/customer-list/")
     fun getCustomers(): Call<CustomerDashboardResponse>
 
@@ -47,6 +48,7 @@ interface CustomerDashboardApi {
         @Body request: AddCustomerRequest
     ): AddCustomerResponse
 
+    @Headers("Cache-Control: no-cache")
     @GET("api/sales/monthly-summary/")
     suspend fun getMonthlySalesSummary(
         @Query("date") date: String,

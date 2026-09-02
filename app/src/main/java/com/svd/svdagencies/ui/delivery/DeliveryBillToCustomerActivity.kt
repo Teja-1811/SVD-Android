@@ -1,10 +1,13 @@
 package com.svd.svdagencies.ui.delivery
 
+import android.content.DialogInterface
 import com.svd.svdagencies.utils.PaymentConfig
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -24,7 +27,12 @@ import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.delivery.*
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.showLoading
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -34,6 +42,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
 
     private var customerId: Int = 0
     private var customerName: String = ""
+    private var customerUserType: String = "user"
     private var openingDue: Double = 0.0
 
     private lateinit var rvItemCatalog: RecyclerView
@@ -45,7 +54,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private lateinit var tvItemsTotal: TextView
     private lateinit var tvOpeningDue: TextView
     private lateinit var tvGrandTotal: TextView
-    private lateinit var etCollectedAmount: TextInputEditText
+    private lateinit var etCollectedAmount: EditText
     
     private lateinit var btnViewHistory: ImageButton
     private lateinit var autoCustomer: android.widget.AutoCompleteTextView
@@ -57,6 +66,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
 
     private lateinit var catalogAdapter: DeliveryBillSelectAdapter
     private lateinit var sessionManager: SessionManager
+    private var fetchCustomersJob: Job? = null
     private var availableItems: List<DeliveryBillItem> = emptyList()
     private var customers: List<DeliveryBillCustomer> = emptyList()
     private var routes: List<DeliveryRoute> = emptyList()
@@ -64,6 +74,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private var currentItemsTotal: Double = 0.0
     private var currentGrandTotal: Double = 0.0
     private var billMode: String = BILL_MODE_REGULAR
+    private val selectedDiscountItemCodes = mutableSetOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,9 +134,24 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
 
     private fun setupListeners() {
         btnGenerateBill.setOnClickListener { generateBill() }
+        toggleBillMode.isSingleSelection = false
+        toggleBillMode.isSelectionRequired = false
         toggleBillMode.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (!isChecked) return@addOnButtonCheckedListener
-            billMode = if (checkedId == R.id.btnModeSpecial) BILL_MODE_SPECIAL else BILL_MODE_REGULAR
+            if (checkedId == R.id.btnModeSpecial) {
+                billMode = if (isChecked) "special" else "regular"
+            } else {
+                val itemCode = when (checkedId) {
+                    R.id.btnModeCurd120 -> ITEM_CODE_CURD120
+                    R.id.btnModeCurd450 -> ITEM_CODE_CURD450
+                    else -> ITEM_CODE_FCM500
+                }
+                if (isChecked) {
+                    selectedDiscountItemCodes.add(itemCode)
+                } else {
+                    selectedDiscountItemCodes.remove(itemCode)
+                }
+            }
+            catalogAdapter.submitListPreservingQuantities(availableItems)
             updateSummary()
         }
         btnClearSelection.setOnClickListener {
@@ -180,17 +206,6 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         ArrayAdapter(this@DeliveryBillToCustomerActivity, android.R.layout.simple_dropdown_item_1line, displayRoutes)
                     )
 
-                    val savedRouteId = sessionManager.getSelectedRouteId()
-                    val savedRouteName = sessionManager.getSelectedRouteName()
-
-                    if (savedRouteId != null && routes.any { it.id == savedRouteId }) {
-                        selectedRouteId = savedRouteId
-                        autoRoute.setText(savedRouteName, false)
-                    } else {
-                        selectedRouteId = null
-                        autoRoute.setText(savedRouteName ?: "All Routes", false)
-                    }
-
                     autoRoute.setOnItemClickListener { _, _, position, _ ->
                         val newRouteId = if (position == 0) null else routes.getOrNull(position - 1)?.id
                         val newRouteName = if (position == 0) "All Routes" else routes.getOrNull(position - 1)?.name
@@ -204,8 +219,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         }
                     }
                     
-                    // fetchCustomers() was here - removed to prevent automatic fetch
-                    hideScreenLoading()
+                    fetchCustomers()
                 } else {
                     swipeRefresh.isRefreshing = false
                     hideScreenLoading()
@@ -218,31 +232,53 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     }
 
     private fun fetchCustomers() {
-        lifecycleScope.launch {
-            if (!swipeRefresh.isRefreshing && customers.isEmpty()) showScreenLoading()
+        fetchCustomersJob?.cancel()
+        
+        // Clear previous data immediately to prevent wrong selection
+        customers = emptyList()
+        autoCustomer.setAdapter(null as ArrayAdapter<String>?)
+        
+        fetchCustomersJob = lifecycleScope.launch {
+            if (!swipeRefresh.isRefreshing) {
+                showScreenLoading()
+            }
+            
             try {
                 val response = ApiClient.deliveryApi.getBillCustomers(routeId = selectedRouteId).awaitResponse()
                 if (response.isSuccessful) {
                     customers = response.body()?.results ?: emptyList()
-                    val labels = customers.map { it.label }
+                    val labels = withContext(Dispatchers.Default) {
+                        customers.map { it.label }
+                    }
+                    
                     autoCustomer.setAdapter(
                         ArrayAdapter(this@DeliveryBillToCustomerActivity, android.R.layout.simple_dropdown_item_1line, labels)
                     )
+                    
                     autoCustomer.setOnItemClickListener { _, _, position, _ ->
                         customers.getOrNull(position)?.let { customer ->
                             customerId = customer.id
                             customerName = customer.name
+                            customerUserType = customer.userType ?: "user"
                             fetchOpeningBalance(customer.id)
                             
+                            catalogAdapter.setUserType(customerUserType)
                             catalogAdapter.submitList(emptyList())
                             fetchItems()
                         }
                     }
+                    
+                    // Automatically show dropdown if the user just selected a route
+                    if (customers.isNotEmpty() && !swipeRefresh.isRefreshing) {
+                        autoCustomer.showDropDown()
+                    }
                 } else {
                     Toast.makeText(this@DeliveryBillToCustomerActivity, "Failed to load customers", Toast.LENGTH_SHORT).show()
                 }
-            } catch (_: Exception) {
-                Toast.makeText(this@DeliveryBillToCustomerActivity, "Failed to load customers", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                if (e !is CancellationException) {
+                    Toast.makeText(this@DeliveryBillToCustomerActivity, "Failed to load customers", Toast.LENGTH_SHORT).show()
+                }
             } finally {
                 hideScreenLoading()
                 swipeRefresh.isRefreshing = false
@@ -280,7 +316,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                 val catalogResponse = ApiClient.deliveryApi.getBillItems(customerId).awaitResponse()
                 if (catalogResponse.isSuccessful) {
                     val responseBody = catalogResponse.body()
-                    val rawItems = responseBody?.items ?: emptyList()
+                    val rawItems = responseBody?.items?.filter { it.stockQuantity > 0 } ?: emptyList()
                     val orderMap = buildItemOrderMap(responseBody, rawItems)
                     availableItems = rawItems.sortedWith(compareBy<DeliveryBillItem> {
                         val cleanCode = it.code.trim().lowercase()
@@ -391,34 +427,56 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         val rvConfirmItems = dialogView.findViewById<RecyclerView>(R.id.rvConfirmItems)
         val tvConfirmCustomer = dialogView.findViewById<TextView>(R.id.tvConfirmCustomer)
         val tvConfirmTotal = dialogView.findViewById<TextView>(R.id.tvConfirmTotal)
+        val tvConfirmCollected = dialogView.findViewById<TextView>(R.id.tvConfirmCollected)
+        val tvConfirmRemainingDue = dialogView.findViewById<TextView>(R.id.tvConfirmRemainingDue)
+        val layoutCollected = dialogView.findViewById<View>(R.id.layoutCollectedAmount)
+        val layoutRemaining = dialogView.findViewById<View>(R.id.layoutRemainingDue)
+        
         val btnUpi = dialogView.findViewById<MaterialButton>(R.id.btnUpi)
         val btnConfirm = dialogView.findViewById<MaterialButton>(R.id.btnConfirm)
 
         tvConfirmCustomer.text = "Customer: $customerName"
         tvConfirmTotal.text = "₹ %.2f".format(currentGrandTotal)
 
-        rvConfirmItems.adapter = DeliveryBillConfirmationAdapter(selectedItems)
+        val collected = etCollectedAmount.text.toString().toDoubleOrNull() ?: 0.0
+        if (collected > 0) {
+            layoutCollected.visibility = View.VISIBLE
+            layoutRemaining.visibility = View.VISIBLE
+            tvConfirmCollected.text = "₹ %.2f".format(collected)
+            tvConfirmRemainingDue.text = "₹ %.2f".format(currentGrandTotal - collected)
+        } else {
+            layoutCollected.visibility = View.GONE
+            layoutRemaining.visibility = View.GONE
+        }
+
+        rvConfirmItems.adapter = DeliveryBillConfirmationAdapter(selectedItems, customerUserType, ::discountForItem)
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogView)
             .create()
 
         btnConfirm.setOnClickListener {
-            dialog.dismiss()
-            processBillGeneration(selectedItems, showQr = false)
+            processBillGeneration(selectedItems, showQr = false, btnConfirm, btnUpi, dialog)
         }
 
         btnUpi.setOnClickListener {
-            dialog.dismiss()
-            processBillGeneration(selectedItems, showQr = true)
+            processBillGeneration(selectedItems, showQr = true, btnUpi, btnConfirm, dialog)
         }
 
         dialog.show()
     }
 
-    private fun processBillGeneration(selectedItems: List<Pair<DeliveryBillItem, Int>>, showQr: Boolean) {
+    private fun processBillGeneration(
+        selectedItems: List<Pair<DeliveryBillItem, Int>>, 
+        showQr: Boolean,
+        btn: MaterialButton,
+        otherBtn: MaterialButton,
+        dialog: DialogInterface
+    ) {
+        btn.showLoading(true, "Generating...")
+        otherBtn.isEnabled = false
+        
         lifecycleScope.launch {
-            showScreenLoading()
             try {
                 val collectedAmountValue = etCollectedAmount.text.toString().toDoubleOrNull() ?: 0.0
                 
@@ -427,7 +485,8 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     billDate = getCurrentBillDate(),
                     items = selectedItems.map { BillLineItem(it.first.itemId, it.second, discountForItem(it.first, it.second)) },
                     paidAmount = collectedAmountValue,
-                    billMode = billMode
+                    billMode = billMode,
+                    discountItemCodes = selectedDiscountItemCodes.toList()
                 )
                 
                 val response = ApiClient.deliveryApi.generateBill(request).awaitResponse()
@@ -447,6 +506,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     }
                     
                     catalogAdapter.applyStockDeductions(selectedItems)
+                    dialog.dismiss()
                     resetLayout()
                 } else {
                     Toast.makeText(
@@ -458,7 +518,8 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             } catch (e: Exception) {
                 Toast.makeText(this@DeliveryBillToCustomerActivity, "Error generating bill", Toast.LENGTH_SHORT).show()
             } finally {
-                hideScreenLoading()
+                btn.showLoading(false)
+                otherBtn.isEnabled = true
             }
         }
     }
@@ -466,13 +527,16 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private fun resetLayout() {
         catalogAdapter.resetQuantities()
         etCollectedAmount.setText("")
-        autoCustomer.setText("")
-        customerId = 0
-        customerName = ""
-        openingDue = 0.0
-        tvOpeningDue.text = "₹ 0.00"
+        selectedDiscountItemCodes.clear()
+        toggleBillMode.clearChecked()
+        
+        // Refresh items and opening balance for the same customer
+        if (customerId > 0) {
+            fetchOpeningBalance(customerId)
+            fetchItems()
+        }
+        
         updateSummary()
-        fetchCustomers() // Refresh customer list for the same route
     }
 
     private fun getCurrentBillDate(): String {
@@ -482,17 +546,25 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
 
     private fun discountForItem(item: DeliveryBillItem, quantity: Int): Double {
         val code = item.code.trim().lowercase(Locale.ROOT)
-        return when {
-            billMode != BILL_MODE_SPECIAL -> 0.0
-            code == ITEM_CODE_FCM500 -> FCM500_SPECIAL_DISCOUNT
-            code == ITEM_CODE_CURD450 -> CURD450_SPECIAL_DISCOUNT
-            code == ITEM_CODE_CURD120 && quantity >= CURD120_SPECIAL_MIN_QTY -> CURD120_SPECIAL_DISCOUNT
-            else -> 0.0
+
+        // 1. Check for Special Mode discounts (matching DeliveryCreateBillActivity)
+        if (billMode == BILL_MODE_SPECIAL) {
+            val specialDiscount = when {
+                code == ITEM_CODE_FCM500 -> FCM500_SPECIAL_DISCOUNT
+                code == ITEM_CODE_CURD450 -> CURD450_SPECIAL_DISCOUNT
+                code == ITEM_CODE_CURD120 && quantity >= CURD120_SPECIAL_MIN_QTY -> CURD120_SPECIAL_DISCOUNT
+                else -> 0.0
+            }
+            if (specialDiscount > 0) return specialDiscount
         }
+
+        // 2. Fallback to manual item-code button toggles
+        return if (code in selectedDiscountItemCodes && quantity > 0) ITEM_CODE_BUTTON_DISCOUNT else 0.0
     }
 
     private fun discountedLineTotal(item: DeliveryBillItem, quantity: Int): Double {
-        val discountedPrice = (item.price - discountForItem(item, quantity)).coerceAtLeast(0.0)
+        val basePrice = if (customerUserType == "user") item.mrp else item.sellingPrice
+        val discountedPrice = (basePrice - discountForItem(item, quantity)).coerceAtLeast(0.0)
         return discountedPrice * quantity
     }
 
@@ -516,6 +588,8 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         private const val ITEM_CODE_FCM500 = "fcm500"
         private const val ITEM_CODE_CURD450 = "curd450"
         private const val ITEM_CODE_CURD120 = "curd120"
+        private const val ITEM_CODE_BUTTON_DISCOUNT = 0.5
+
         private const val FCM500_SPECIAL_DISCOUNT = 0.5
         private const val CURD450_SPECIAL_DISCOUNT = 0.3
         private const val CURD120_SPECIAL_DISCOUNT = 0.25

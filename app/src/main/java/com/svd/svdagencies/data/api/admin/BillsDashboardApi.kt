@@ -17,6 +17,7 @@ import retrofit2.http.*
 
 interface BillsDashboardApi {
 
+    @Headers("Cache-Control: no-cache")
     @GET("api/bills/list/")
     suspend fun getBills(
         @Query("customer") customerId: Int? = null,

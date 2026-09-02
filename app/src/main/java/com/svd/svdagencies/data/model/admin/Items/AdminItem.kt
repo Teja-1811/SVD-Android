@@ -16,6 +16,10 @@ data class AdminItem(
     val selling_price: String?,
     val buying_price: String?,
     val mrp: String?,
+    val base_price: String?,
+    val gst_percentage: String?,
+    val ltr: String?,
+    val description: String?,
     val stock_quantity: Int?,
     val pcs_count: Int?,
     val image: String?,
@@ -29,6 +33,15 @@ data class AdminItem(
 
     val mrpValue: Double
         get() = mrp?.toDoubleOrNull() ?: 0.0
+
+    val basePriceValue: Double
+        get() = base_price?.toDoubleOrNull() ?: 0.0
+
+    val gstPercentageValue: Double
+        get() = gst_percentage?.toDoubleOrNull() ?: 0.0
+
+    val ltrValue: Double
+        get() = ltr?.toDoubleOrNull() ?: 0.0
 
     val margin: Double
         get() = sellingPriceValue - buyingPriceValue

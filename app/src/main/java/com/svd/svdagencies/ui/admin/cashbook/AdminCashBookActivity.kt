@@ -4,9 +4,15 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,9 +24,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Cashbook.CashbookDashboardResponse
+import com.svd.svdagencies.data.model.admin.Cashbook.CommissionCredit
+import com.svd.svdagencies.data.model.admin.Cashbook.CompanyOption
 import com.svd.svdagencies.data.model.admin.Cashbook.DeliverySalaryAgent
 import com.svd.svdagencies.data.model.admin.Cashbook.DeliverySalaryPaymentRequest
 import com.svd.svdagencies.data.model.admin.Cashbook.SaveCashInRequest
@@ -31,16 +40,22 @@ import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class AdminCashBookActivity : AdminBaseActivity() {
 
     private lateinit var binding: AdminCashbookBinding
     private lateinit var companyDueAdapter: CompanyDueAdapter
+    private lateinit var commissionAdapter: CommissionCreditAdapter
 
     private val noteValues = listOf(500, 200, 100, 50, 20, 10)
-    private val noteEditTexts = mutableMapOf<Int, EditText>()
-    private val noteTotalViews = mutableMapOf<Int, TextView>()
+    private val coinValues = listOf(20, 10, 5, 2, 1)
+    
+    private val cashEditTexts = mutableMapOf<Int, EditText>()
+    private val cashTotalViews = mutableMapOf<Int, TextView>()
+    private val coinEditTexts = mutableMapOf<Int, EditText>()
+    private val coinTotalViews = mutableMapOf<Int, TextView>()
 
     private val months = listOf(
         "January", "February", "March", "April", "May", "June",
@@ -50,6 +65,8 @@ class AdminCashBookActivity : AdminBaseActivity() {
     private var selectedMonth: Int? = null
     private var selectedYear: Int? = null
     private var salaryAgents: List<DeliverySalaryAgent> = emptyList()
+    private var allCompanies: List<CompanyOption> = emptyList()
+    private var commissionCredits: List<CommissionCredit> = emptyList()
 
     private val expenseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -88,6 +105,9 @@ class AdminCashBookActivity : AdminBaseActivity() {
         setupStatCard(AdminStatCardBinding.bind(binding.statStockValue.root), "STOCK VALUE", R.drawable.ic_stock, "#EFEBE9", "#5D4037")
         setupStatCard(AdminStatCardBinding.bind(binding.statRAmount.root), "REMAINING AMOUNT", R.drawable.ic_rupee, "#F1F8E9", "#689F38")
         setupStatCard(AdminStatCardBinding.bind(binding.statNetProfit.root), "NET PROFIT", R.drawable.ic_cashbook, "#E0F7FA", "#0097A7")
+        setupStatCard(AdminStatCardBinding.bind(binding.statLoss.root), "LEAKAGE LOSS", R.drawable.ic_warning, "#FFEBEE", "#D32F2F")
+        setupStatCard(AdminStatCardBinding.bind(binding.statSalary.root), "SALARY PAID", R.drawable.ic_person, "#E8F5E9", "#2E7D32")
+        setupStatCard(AdminStatCardBinding.bind(binding.statCommission.root), "COMMISSION", R.drawable.ic_money, "#FFFDE7", "#FBC02D")
 
         companyDueAdapter = CompanyDueAdapter(emptyList())
         binding.rvCompanyDues.apply {
@@ -110,18 +130,28 @@ class AdminCashBookActivity : AdminBaseActivity() {
             })
         }
 
+        commissionAdapter = CommissionCreditAdapter(
+            emptyList(),
+            onEdit = { showAddCommissionDialog(it) },
+            onDelete = { showDeleteCommissionConfirm(it) }
+        )
+        binding.rvCommissionCredits.apply {
+            layoutManager = LinearLayoutManager(this@AdminCashBookActivity)
+            adapter = commissionAdapter
+        }
+
         binding.btnUpdateCashIn.setOnClickListener { updateCashIn() }
         
         binding.btnAddExpense.setOnClickListener {
             expenseLauncher.launch(Intent(this, AddExpenseActivity::class.java))
         }
-        
-        binding.btnViewExpenses.setOnClickListener {
-            expenseHistoryLauncher.launch(Intent(this, ViewExpensesActivity::class.java))
-        }
 
         binding.btnPayDeliverySalary.setOnClickListener {
             showDeliverySalaryDialog()
+        }
+
+        binding.btnCommission.setOnClickListener {
+            showAddCommissionDialog()
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -219,35 +249,53 @@ class AdminCashBookActivity : AdminBaseActivity() {
 
     private fun setupCashInGrids() {
         binding.gridNotes.removeAllViews()
-        noteEditTexts.clear()
-        noteTotalViews.clear()
+        cashEditTexts.clear()
+        cashTotalViews.clear()
+        coinEditTexts.clear()
+        coinTotalViews.clear()
 
         for (value in noteValues) {
-            val view = layoutInflater.inflate(R.layout.admin_cash_denomination, binding.gridNotes, false)
-            val etCount = view.findViewById<EditText>(R.id.etDenomCount)
-            val tvTotal = view.findViewById<TextView>(R.id.tvDenomTotal)
-            val tvLabel = view.findViewById<TextView>(R.id.tvDenomLabel)
-
-            tvLabel.text = "₹$value"
-            noteEditTexts[value] = etCount
-            noteTotalViews[value] = tvTotal
-
-            etCount.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    val countInt = s.toString().toIntOrNull() ?: 0
-                    tvTotal.text = "₹${countInt * value}"
-                    updateLiveCashTotal() 
-                }
-            })
-            binding.gridNotes.addView(view)
+            addCashItem(value, true)
         }
+        for (value in coinValues) {
+            addCashItem(value, false)
+        }
+    }
+
+    private fun addCashItem(value: Int, isNote: Boolean) {
+        val view = layoutInflater.inflate(R.layout.admin_cash_denomination, binding.gridNotes, false)
+        val etCount = view.findViewById<EditText>(R.id.etDenomCount)
+        val tvTotal = view.findViewById<TextView>(R.id.tvDenomTotal)
+        val tvLabel = view.findViewById<TextView>(R.id.tvDenomLabel)
+
+        tvLabel.text = if (isNote) "₹$value" else "₹$value C"
+        
+        if (isNote) {
+            cashEditTexts[value] = etCount
+            cashTotalViews[value] = tvTotal
+        } else {
+            coinEditTexts[value] = etCount
+            coinTotalViews[value] = tvTotal
+        }
+
+        etCount.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val countInt = s.toString().toIntOrNull() ?: 0
+                tvTotal.text = "₹${countInt * value}"
+                updateLiveCashTotal() 
+            }
+        })
+        binding.gridNotes.addView(view)
     }
 
     private fun updateLiveCashTotal() {
         var total = 0.0
-        noteEditTexts.forEach { (value, et) ->
+        cashEditTexts.forEach { (value, et) ->
+            total += (et.text.toString().toIntOrNull() ?: 0) * value
+        }
+        coinEditTexts.forEach { (value, et) ->
             total += (et.text.toString().toIntOrNull() ?: 0) * value
         }
         binding.statCash.tvStatValue.text = "₹%.2f".format(total)
@@ -276,59 +324,68 @@ class AdminCashBookActivity : AdminBaseActivity() {
 
     private fun populateUI(data: CashbookDashboardResponse) {
         // Stats
-        binding.statCash.tvStatValue.text = "₹%.2f".format(data.cash_in)
-        binding.statBank.tvStatValue.text = "₹%.2f".format(data.bank_balance)
-        binding.statDues.tvStatValue.text = "₹%.2f".format(data.total_customer_dues)
-        binding.statNetCash.tvStatValue.text = "₹%.2f".format(data.net_cash)
-        binding.statExpenses.tvStatValue.text = "₹%.2f".format(data.cash_out)
-        binding.statProfit.tvStatValue.text = "₹%.2f".format(data.monthly_profit)
-        binding.statStockValue.tvStatValue.text = "₹%.2f".format(data.stock_value)
-        binding.statRAmount.tvStatValue.text = "₹%.2f".format(data.remaining_amount)
-        binding.statNetProfit.tvStatValue.text = "₹%.2f".format(data.net_profit)
+        val s = data.summary
+        binding.statCash.tvStatValue.text = "₹%.2f".format(s.cash_in)
+        binding.statBank.tvStatValue.text = "₹%.2f".format(s.bank_balance)
+        binding.statDues.tvStatValue.text = "₹%.2f".format(s.customer_due)
+        binding.statNetCash.tvStatValue.text = "₹%.2f".format(s.net_cash)
+        binding.statExpenses.tvStatValue.text = "₹%.2f".format(s.cash_out)
+        binding.statProfit.tvStatValue.text = "₹%.2f".format(s.monthly_profit)
+        binding.statStockValue.tvStatValue.text = "₹%.2f".format(s.stock_value)
+        binding.statRAmount.tvStatValue.text = "₹%.2f".format(s.remaining_amount)
+        binding.statNetProfit.tvStatValue.text = "₹%.2f".format(s.net_profit)
+        binding.statLoss.tvStatValue.text = "₹%.2f".format(s.monthly_loss)
+        binding.statSalary.tvStatValue.text = "₹%.2f".format(s.salary_paid)
+        binding.statCommission.tvStatValue.text = "₹%.2f".format(s.commission_credit)
 
-        val salarySummary = data.delivery_salary
+        val salarySummary = data.deliverySalary
         salaryAgents = salarySummary?.agents.orEmpty()
-        binding.tvDeliverySalaryDue.text = "Delivery salary due: ₹%.2f".format(salarySummary?.remaining_salary ?: 0.0)
+        binding.tvDeliverySalaryDue.text = getString(R.string.label_delivery_salary_due, salarySummary?.remaining_salary ?: 0.0)
 
-        companyDueAdapter.update(data.company_dues)
-        setupIndicators(data.company_dues.size)
-        binding.tvTotalCompanyDues.text = "Total Company Dues: ₹%.2f".format(data.total_company_dues)
+        companyDueAdapter.update(data.companyDues)
+        setupIndicators(data.companyDues.size)
+        binding.tvTotalCompanyDues.text = getString(R.string.label_total_company_dues, s.company_due)
+
+        allCompanies = data.filters.companies
+        commissionCredits = data.commissionCredits
+        
+        commissionAdapter.update(commissionCredits)
+        binding.tvNoCommission.visibility = if (commissionCredits.isEmpty()) View.VISIBLE else View.GONE
 
         // Denomination Loading
-        data.denominations.let { d ->
-            setDenominationValue(500, d.c500)
-            setDenominationValue(200, d.c200)
-            setDenominationValue(100, d.c100)
-            setDenominationValue(50, d.c50)
-            setDenominationValue(20, d.c20)
-            setDenominationValue(10, d.c10)
+        data.cashEntry.denominations.forEach { item ->
+            val value = item.name.replace("₹", "").replace(" Coin", "").trim().toIntOrNull() ?: 0
+            val isNote = !item.name.contains("Coin")
+            setDenominationValue(value, item.count, isNote)
         }
     }
 
-    private fun setDenominationValue(note: Int, count: Int) {
-        val et = noteEditTexts[note] ?: return
-        val tv = noteTotalViews[note] ?: return
+    private fun setDenominationValue(value: Int, count: Int, isNote: Boolean) {
+        val et = if (isNote) cashEditTexts[value] else coinEditTexts[value]
+        val tv = if (isNote) cashTotalViews[value] else coinTotalViews[value]
+        
+        if (et == null || tv == null) return
         
         val newText = if (count == 0) "" else count.toString()
         if (et.text.toString() != newText) {
             et.setText(newText)
         }
-        tv.text = "₹${count * note}"
+        tv.text = "₹${count * value}"
     }
 
     private fun updateCashIn() {
         val request = SaveCashInRequest(
-            c500 = noteEditTexts[500]?.text.toString().toIntOrNull() ?: 0,
-            c200 = noteEditTexts[200]?.text.toString().toIntOrNull() ?: 0,
-            c100 = noteEditTexts[100]?.text.toString().toIntOrNull() ?: 0,
-            c50 = noteEditTexts[50]?.text.toString().toIntOrNull() ?: 0,
-            c20 = noteEditTexts[20]?.text.toString().toIntOrNull() ?: 0,
-            c10 = noteEditTexts[10]?.text.toString().toIntOrNull() ?: 0,
-            coin20 = 0,
-            coin10 = 0,
-            coin5 = 0,
-            coin2 = 0,
-            coin1 = 0
+            c500 = cashEditTexts[500]?.text.toString().toIntOrNull() ?: 0,
+            c200 = cashEditTexts[200]?.text.toString().toIntOrNull() ?: 0,
+            c100 = cashEditTexts[100]?.text.toString().toIntOrNull() ?: 0,
+            c50 = cashEditTexts[50]?.text.toString().toIntOrNull() ?: 0,
+            c20 = cashEditTexts[20]?.text.toString().toIntOrNull() ?: 0,
+            c10 = cashEditTexts[10]?.text.toString().toIntOrNull() ?: 0,
+            coin20 = coinEditTexts[20]?.text.toString().toIntOrNull() ?: 0,
+            coin10 = coinEditTexts[10]?.text.toString().toIntOrNull() ?: 0,
+            coin5 = coinEditTexts[5]?.text.toString().toIntOrNull() ?: 0,
+            coin2 = coinEditTexts[2]?.text.toString().toIntOrNull() ?: 0,
+            coin1 = coinEditTexts[1]?.text.toString().toIntOrNull() ?: 0
         )
 
         showScreenLoading()
@@ -358,7 +415,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
             orientation = LinearLayout.VERTICAL
             setPadding(32, 12, 32, 0)
         }
-        val agentInput = android.widget.AutoCompleteTextView(this).apply {
+        val agentInput = AutoCompleteTextView(this).apply {
             hint = "Select delivery customer / agent"
             setAdapter(
                 ArrayAdapter(
@@ -368,13 +425,13 @@ class AdminCashBookActivity : AdminBaseActivity() {
                 )
             )
             setThreshold(0)
-            inputType = android.text.InputType.TYPE_NULL
+            inputType = InputType.TYPE_NULL
             setOnClickListener { showDropDown() }
             setOnFocusChangeListener { _, hasFocus -> if (hasFocus) showDropDown() }
         }
         val amountInput = EditText(this).apply {
             hint = "Amount paid"
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+            inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
         }
         val notesInput = EditText(this).apply { hint = "Notes" }
 
@@ -411,7 +468,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
                     DeliverySalaryPaymentRequest(
                         delivery_agent_id = agentId,
                         amount = amount,
-                        payment_date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(java.util.Date()),
+                        payment_date = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()),
                         notes = notes
                     )
                 )
@@ -427,4 +484,143 @@ class AdminCashBookActivity : AdminBaseActivity() {
             }
         }
     }
+
+    private fun showAddCommissionDialog(existing: CommissionCredit? = null) {
+        val view = layoutInflater.inflate(R.layout.admin_dialog_commission, null)
+        val actvCompany = view.findViewById<AutoCompleteTextView>(R.id.actvCompany)
+        val etAmount = view.findViewById<TextInputEditText>(R.id.etAmount)
+        val etDescription = view.findViewById<TextInputEditText>(R.id.etDescription)
+
+        val companyNames = allCompanies.map { it.name }
+        val companyAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, companyNames)
+        actvCompany.setAdapter(companyAdapter)
+
+        existing?.let {
+            actvCompany.setText(it.company, false)
+            etAmount.setText(it.amount.toString())
+            etDescription.setText(it.description)
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(if (existing == null) "Add Commission Credit" else "Edit Commission Credit")
+            .setView(view)
+            .setPositiveButton(if (existing == null) "Save" else "Update") { _, _ ->
+                val selectedName = actvCompany.text.toString()
+                val companyId = allCompanies.find { it.name == selectedName }?.id
+                val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+                val desc = etDescription.text.toString()
+
+                if (companyId != null && amount > 0) {
+                    if (existing == null) {
+                        saveCommissionCredit(companyId, amount, desc)
+                    } else {
+                        updateCommissionCredit(existing.id, companyId, amount, desc)
+                    }
+                } else {
+                    Toast.makeText(this, "Valid Company and Amount required", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun saveCommissionCredit(companyId: Int, amount: Double, description: String) {
+        showScreenLoading()
+        lifecycleScope.launch {
+            try {
+                val request = mapOf(
+                    "company" to companyId,
+                    "amount" to amount,
+                    "description" to description
+                )
+                ApiClient.cashbookApi.addCommissionCredit(request)
+                Toast.makeText(this@AdminCashBookActivity, "Commission added", Toast.LENGTH_SHORT).show()
+                loadDashboardData()
+            } catch (e: Exception) {
+                hideScreenLoading()
+                Toast.makeText(this@AdminCashBookActivity, "Failed to save: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun updateCommissionCredit(id: Int, companyId: Int, amount: Double, description: String) {
+        showScreenLoading()
+        lifecycleScope.launch {
+            try {
+                val request = mapOf(
+                    "company" to companyId,
+                    "amount" to amount,
+                    "description" to description
+                )
+                ApiClient.cashbookApi.editCommissionCredit(id, request)
+                Toast.makeText(this@AdminCashBookActivity, "Commission updated", Toast.LENGTH_SHORT).show()
+                loadDashboardData()
+            } catch (e: Exception) {
+                hideScreenLoading()
+                Toast.makeText(this@AdminCashBookActivity, "Failed to update: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun showDeleteCommissionConfirm(credit: CommissionCredit) {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete Commission")
+            .setMessage("Are you sure you want to delete this commission credit of ₹${credit.amount} from ${credit.company}?")
+            .setPositiveButton("Delete") { _, _ -> deleteCommissionCredit(credit.id) }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteCommissionCredit(id: Int) {
+        showScreenLoading()
+        lifecycleScope.launch {
+            try {
+                ApiClient.cashbookApi.deleteCommissionCredit(id)
+                Toast.makeText(this@AdminCashBookActivity, "Commission deleted", Toast.LENGTH_SHORT).show()
+                loadDashboardData()
+            } catch (e: Exception) {
+                hideScreenLoading()
+                Toast.makeText(this@AdminCashBookActivity, "Failed to delete: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}
+
+class CommissionCreditAdapter(
+    private var credits: List<CommissionCredit>,
+    private val onEdit: (CommissionCredit) -> Unit,
+    private val onDelete: (CommissionCredit) -> Unit
+) : RecyclerView.Adapter<CommissionCreditAdapter.ViewHolder>() {
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvCompany: TextView = view.findViewById(R.id.tvCompanyName)
+        val tvDesc: TextView = view.findViewById(R.id.tvDescription)
+        val tvAmount: TextView = view.findViewById(R.id.tvAmount)
+        val tvDate: TextView = view.findViewById(R.id.tvDate)
+        val btnEdit: ImageButton = view.findViewById(R.id.btnEdit)
+        val btnDelete: ImageButton = view.findViewById(R.id.btnDelete)
+    }
+
+    fun update(newCredits: List<CommissionCredit>) {
+        credits = newCredits
+        notifyDataSetChanged()
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.admin_commission_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val credit = credits[position]
+        holder.tvCompany.text = credit.company
+        holder.tvDesc.text = credit.description
+        holder.tvAmount.text = "₹%.2f".format(credit.amount)
+        holder.tvDate.text = "Added: ${credit.createdAt.take(16).replace("T", " ")}"
+        
+        holder.btnEdit.setOnClickListener { onEdit(credit) }
+        holder.btnDelete.setOnClickListener { onDelete(credit) }
+    }
+
+    override fun getItemCount() = credits.size
 }

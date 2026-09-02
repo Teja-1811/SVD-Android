@@ -13,6 +13,7 @@ import retrofit2.http.*
 
 interface CashbookApi {
 
+    @Headers("Cache-Control: no-cache")
     @GET("api/cashbook/entries/")
     suspend fun getDashboardData(
         @Query("month") month: Int? = null,
@@ -25,6 +26,7 @@ interface CashbookApi {
     @POST("api/cashbook/save-bank/")
     suspend fun saveBankBalance(@Body request: SaveBankBalanceRequest): Map<String, Any>
 
+    @Headers("Cache-Control: no-cache")
     @GET("api/cashbook/statement/")
     suspend fun getStatement(
         @Query("month") month: Int? = null,
@@ -57,4 +59,16 @@ interface CashbookApi {
 
     @DELETE("api/cashbook/delete-expense/{id}/")
     suspend fun deleteExpense(@Path("id") id: Int): Map<String, Any>
+
+    @POST("api/cashbook/commission-credits/add/")
+    suspend fun addCommissionCredit(@Body request: Map<String, Any>): Map<String, Any>
+
+    @POST("api/cashbook/commission-credits/{id}/edit/")
+    suspend fun editCommissionCredit(
+        @Path("id") id: Int,
+        @Body request: Map<String, Any>
+    ): Map<String, Any>
+
+    @DELETE("api/cashbook/commission-credits/{id}/delete/")
+    suspend fun deleteCommissionCredit(@Path("id") id: Int): Map<String, Any>
 }

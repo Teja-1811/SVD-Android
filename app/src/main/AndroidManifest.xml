@@ -18,7 +18,12 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        android:windowSoftInputMode="adjustResize">
+
+        <property
+            android:name="android.app.PROPERTY_ALLOW_APP_CLONING"
+            android:value="true" />
 
         <activity
             android:name=".ui.auth.WelcomeActivity"
@@ -71,6 +76,7 @@
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>
+        <activity android:name=".ui.delivery.DeliveryCatalogActivity"/>
         <activity android:name=".ui.delivery.DeliveryPaymentsActivity"/>
         <activity android:name=".ui.delivery.DeliveryStockEntryActivity"/>
         <activity android:name=".ui.delivery.DeliveryStockPhaseEntryActivity"/>

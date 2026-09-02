@@ -31,6 +31,10 @@ interface AdminItemsApi {
         @Part("selling_price") sellingPrice: RequestBody?,
         @Part("buying_price") buyingPrice: RequestBody?,
         @Part("mrp") mrp: RequestBody?,
+        @Part("base_price") basePrice: RequestBody?,
+        @Part("gst_percentage") gstPercentage: RequestBody?,
+        @Part("ltr") ltr: RequestBody?,
+        @Part("description") description: RequestBody?,
         @Part("stock_quantity") stockQuantity: RequestBody?,
         @Part("pcs_count") pcsCount: RequestBody?,
         @Part image: MultipartBody.Part?
@@ -47,6 +51,10 @@ interface AdminItemsApi {
         @Part("selling_price") sellingPrice: RequestBody?,
         @Part("buying_price") buyingPrice: RequestBody?,
         @Part("mrp") mrp: RequestBody?,
+        @Part("base_price") basePrice: RequestBody?,
+        @Part("gst_percentage") gstPercentage: RequestBody?,
+        @Part("ltr") ltr: RequestBody?,
+        @Part("description") description: RequestBody?,
         @Part("stock_quantity") stockQuantity: RequestBody?,
         @Part("pcs_count") pcsCount: RequestBody?,
         @Part image: MultipartBody.Part?

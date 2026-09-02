@@ -15,8 +15,9 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.auth.LoginActivity
 import com.svd.svdagencies.ui.customer.CustomerStatementActivity
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.base.BaseActivity
 
-class TermsConditionsActivity : AppCompatActivity() {
+class TermsConditionsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

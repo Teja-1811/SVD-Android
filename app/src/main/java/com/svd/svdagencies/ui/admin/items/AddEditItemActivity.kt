@@ -131,6 +131,10 @@ class AddEditItemActivity : AdminBaseActivity() {
         binding.etBuyingPrice.setText(item.buying_price)
         binding.etSellingPrice.setText(item.selling_price)
         binding.etMrp.setText(item.mrp)
+        binding.etBasePrice.setText(item.base_price)
+        binding.etGst.setText(item.gst_percentage)
+        binding.etLtr.setText(item.ltr)
+        binding.etDescription.setText(item.description)
         binding.etStock.setText(item.stock_quantity?.toString())
         binding.etPcs.setText(item.pcs_count?.toString())
 
@@ -177,6 +181,10 @@ class AddEditItemActivity : AdminBaseActivity() {
         val buyingPrice = binding.etBuyingPrice.text.toString().trim()
         val sellingPrice = binding.etSellingPrice.text.toString().trim()
         val mrp = binding.etMrp.text.toString().trim()
+        val basePrice = binding.etBasePrice.text.toString().trim()
+        val gst = binding.etGst.text.toString().trim()
+        val ltr = binding.etLtr.text.toString().trim()
+        val description = binding.etDescription.text.toString().trim()
         val stock = binding.etStock.text.toString().trim()
         val pcs = binding.etPcs.text.toString().trim()
 
@@ -200,6 +208,10 @@ class AddEditItemActivity : AdminBaseActivity() {
                 val buyingPart = buyingPrice.toRequestBody("text/plain".toMediaTypeOrNull())
                 val sellingPart = sellingPrice.toRequestBody("text/plain".toMediaTypeOrNull())
                 val mrpPart = mrp.toRequestBody("text/plain".toMediaTypeOrNull())
+                val basePart = basePrice.toRequestBody("text/plain".toMediaTypeOrNull())
+                val gstPart = gst.toRequestBody("text/plain".toMediaTypeOrNull())
+                val ltrPart = ltr.toRequestBody("text/plain".toMediaTypeOrNull())
+                val descriptionPart = description.toRequestBody("text/plain".toMediaTypeOrNull())
                 val stockPart = stock.toRequestBody("text/plain".toMediaTypeOrNull())
                 val pcsPart = pcs.toRequestBody("text/plain".toMediaTypeOrNull())
                 val companyPart = companyId.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -213,9 +225,9 @@ class AddEditItemActivity : AdminBaseActivity() {
                 }
 
                 if (itemToUpdate == null) {
-                    ApiClient.adminItemsApi.addItem(codePart, namePart, companyPart, categoryPart, sellingPart, buyingPart, mrpPart, stockPart, pcsPart, imagePart)
+                    ApiClient.adminItemsApi.addItem(codePart, namePart, companyPart, categoryPart, sellingPart, buyingPart, mrpPart, basePart, gstPart, ltrPart, descriptionPart, stockPart, pcsPart, imagePart)
                 } else {
-                    ApiClient.adminItemsApi.editItem(itemToUpdate!!.id, codePart, namePart, companyPart, categoryPart, sellingPart, buyingPart, mrpPart, stockPart, pcsPart, imagePart)
+                    ApiClient.adminItemsApi.editItem(itemToUpdate!!.id, codePart, namePart, companyPart, categoryPart, sellingPart, buyingPart, mrpPart, basePart, gstPart, ltrPart, descriptionPart, stockPart, pcsPart, imagePart)
                 }
 
                 withContext(Dispatchers.Main) {
