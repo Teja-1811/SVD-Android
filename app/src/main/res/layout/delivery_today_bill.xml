@@ -4,55 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="4dp"
-    app:cardBackgroundColor="?attr/colorSurface"
-    app:cardCornerRadius="@dimen/card_corner_radius_small"
-    app:cardElevation="0dp"
+    android:layout_marginHorizontal="@dimen/spacing_medium"
+    android:layout_marginVertical="@dimen/spacing_tiny"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
+    app:cardElevation="1dp"
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="@dimen/spacing_medium">
 
+        <!-- HEADER: Bill # and Date Badge -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvBillNumber"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:textColor="@color/textColorPrimary"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                tools:text="#INV-2023-001" />
 
-                <TextView
-                    android:id="@+id/tvBillNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/textColorPrimary"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:text="#INV-2023-001" />
+            <TextView
+                android:id="@+id/tvBillDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_qty_outline"
+                android:backgroundTint="@color/editTextBackground"
+                android:paddingStart="@dimen/spacing_small"
+                android:paddingTop="3dp"
+                android:paddingEnd="@dimen/spacing_small"
+                android:paddingBottom="3dp"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="@dimen/text_size_small"
+                android:textStyle="bold"
+                tools:text="2023-10-27" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvBillDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/textColorSecondary"
-                    android:textSize="12sp"
-                    tools:text="2023-10-27" />
-            </LinearLayout>
+        <!-- AMOUNT ROW -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Amount: "
+                android:textColor="@color/textColorSecondary"
+                android:textSize="@dimen/text_size_small" />
 
             <TextView
                 android:id="@+id/tvBillAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/brand_red"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_xlarge"
                 android:textStyle="bold"
                 tools:text="₹ 450.00" />
         </LinearLayout>
@@ -60,46 +82,81 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="4dp"
-            android:background="@color/card_stroke_color" />
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:background="@color/divider_line" />
 
+        <!-- ACTION BUTTONS BAR -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:gravity="end"
             android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
+            <!-- QR Button -->
+            <ImageButton
                 android:id="@+id/btnQR"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="QR"
-                android:textColor="@color/brand_red"
-                app:icon="@drawable/ic_qr_code"
-                app:iconTint="@color/brand_red" />
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_outline_blue"
+                android:contentDescription="QR Code"
+                android:padding="@dimen/spacing_small"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_qr_code"
+                app:tint="@color/brand_blue" />
 
-            <com.google.android.material.button.MaterialButton
+            <Space
+                android:layout_width="@dimen/spacing_small"
+                android:layout_height="wrap_content" />
+
+            <!-- View Button -->
+            <ImageButton
                 android:id="@+id/btnViewBill"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="View"
-                android:textColor="@color/brand_red"
-                app:icon="@drawable/ic_eye"
-                app:iconTint="@color/brand_red" />
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_outline_blue"
+                android:contentDescription="View Bill"
+                android:padding="@dimen/spacing_small"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_eye"
+                app:tint="@color/brand_blue" />
 
-            <com.google.android.material.button.MaterialButton
+            <Space
+                android:layout_width="@dimen/spacing_small"
+                android:layout_height="wrap_content" />
+
+            <!-- WhatsApp Share Button -->
+            <ImageButton
+                android:id="@+id/btnWhatsapp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_outline_green"
+                android:clickable="true"
+                android:contentDescription="Share on WhatsApp"
+                android:focusable="true"
+                android:padding="@dimen/spacing_small"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_whatsapp"
+                app:tint="@color/icon_green" />
+
+            <Space
+                android:layout_width="@dimen/spacing_small"
+                android:layout_height="wrap_content" />
+
+            <!-- Delete Button -->
+            <ImageButton
                 android:id="@+id/btnDeleteBill"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Delete"
-                android:textColor="@color/brand_red"
-                app:icon="@drawable/ic_trash"
-                app:iconTint="@color/brand_red" />
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/bg_outline_red"
+                android:contentDescription="Delete Bill"
+                android:padding="@dimen/spacing_small"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_trash"
+                app:tint="@color/brand_red" />
+
         </LinearLayout>
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -92,4 +92,10 @@ interface DeliveryApi {
         @retrofit2.http.Query("month") month: Int? = null,
         @retrofit2.http.Query("year") year: Int? = null
     ): Call<CustomerPaymentHistoryResponse>
+
+    @retrofit2.http.POST("api/delivery/save-agent-collection/")
+    suspend fun saveAgentCollection(
+        @retrofit2.http.Query("customer_id") customerId: Int,
+        @retrofit2.http.Query("collected_amount") amount: String
+    ): SaveAgentCollectionResponse
 }

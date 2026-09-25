@@ -2,6 +2,7 @@ package com.svd.svdagencies.ui.delivery
 
 import com.svd.svdagencies.utils.PaymentConfig
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -24,11 +25,14 @@ import com.svd.svdagencies.data.model.delivery.DeliveryTodayBill
 import com.svd.svdagencies.utils.SessionManager
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
+import java.net.URLEncoder
 import java.util.Locale
 
 class DeliveryBillHistoryActivity : BaseActivity() {
 
     private var customerId: Int = 0
+    private var historyCustomerName: String = ""
+    private var historyCustomerPhone: String = ""
     private lateinit var rvTodayBills: RecyclerView
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var layoutEmpty: View
@@ -44,6 +48,8 @@ class DeliveryBillHistoryActivity : BaseActivity() {
 
         sessionManager = SessionManager(this)
         customerId = intent.getIntExtra("customer_id", 0)
+        historyCustomerName = intent.getStringExtra("customer_name").orEmpty()
+        historyCustomerPhone = intent.getStringExtra("customer_phone").orEmpty()
 
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         toolbar.title = "Today's Bills"
@@ -65,7 +71,8 @@ class DeliveryBillHistoryActivity : BaseActivity() {
         todayBillAdapter = DeliveryTodayBillAdapter(
             onViewBill = { bill -> showBillDetails(bill) },
             onDeleteBill = { bill -> confirmDeleteBill(bill) },
-            onShowQR = { bill -> showQRDialog(bill) }
+            onShowQR = { bill -> showQRDialog(bill) },
+            onShareWhatsapp = { bill -> shareBillOnWhatsapp(bill) }
         )
         rvTodayBills.layoutManager = LinearLayoutManager(this)
         rvTodayBills.adapter = todayBillAdapter
@@ -85,7 +92,12 @@ class DeliveryBillHistoryActivity : BaseActivity() {
                 val response = ApiClient.deliveryApi.getTodayBills(targetId).awaitResponse()
                 if (response.isSuccessful) {
                     val body = response.body()
-                    val bills = body?.bills ?: emptyList()
+                    val bills = (body?.bills ?: emptyList()).map { bill ->
+                        bill.copy(
+                            customerName = bill.customerName?.takeIf { it.isNotBlank() } ?: bill.customer?.takeIf { it.isNotBlank() } ?: historyCustomerName,
+                            customerPhone = bill.customerPhone?.takeIf { it.isNotBlank() } ?: historyCustomerPhone
+                        )
+                    }
                     val totalAmount = body?.totalInvoiceAmount ?: 0.0
 
                     todayBillAdapter.submitList(bills)
@@ -215,6 +227,107 @@ class DeliveryBillHistoryActivity : BaseActivity() {
 
         btnCloseQr.setOnClickListener { dialog.dismiss() }
         dialog.show()
+    }
+
+    private fun shareBillOnWhatsapp(bill: DeliveryTodayBill) {
+        var phoneNumber = (bill.customerPhone?.takeIf { it.isNotBlank() } ?: historyCustomerPhone).filter { it.isDigit() }
+        if (phoneNumber.isEmpty()) {
+            fetchCustomerPhoneThenShare(bill)
+            return
+        }
+
+        if (phoneNumber.length == 10) {
+            phoneNumber = "91$phoneNumber"
+        }
+        if (phoneNumber.length > 10 && !phoneNumber.startsWith("91")) {
+            phoneNumber = "91${phoneNumber.takeLast(10)}"
+        }
+
+        val customerName = bill.customerName?.takeIf { it.isNotBlank() } ?: bill.customer?.takeIf { it.isNotBlank() } ?: historyCustomerName
+        val agencyName = bill.customerShopName.orEmpty()
+        val billNo = bill.billNumber ?: "#${bill.realId}"
+        val dateStr = formatShareDate(bill.date)
+        val baseUrl = ApiClient.BASE_URL.removeSuffix("/")
+        val invoiceLink = if (!bill.publicInvoiceUrl.isNullOrBlank()) {
+            if (bill.publicInvoiceUrl.startsWith("http")) {
+                bill.publicInvoiceUrl
+            } else {
+                "$baseUrl${if (bill.publicInvoiceUrl.startsWith("/")) "" else "/"}${bill.publicInvoiceUrl}"
+            }
+        } else {
+            "$baseUrl/api/bills/${bill.realId}/download/"
+        }
+
+        val due = if (bill.currentDue != 0.0) bill.currentDue else bill.dueAmount
+        val balanceLine = if (due < 0) {
+            "Wallet Balance: ₹${kotlin.math.abs(Math.round(due))}"
+        } else {
+            "Current Due: ₹%.2f".format(Locale.US, due)
+        }
+
+        val message = """
+            Dear $customerName${if (agencyName.isNotBlank()) " ($agencyName)" else ""},
+
+            Please find your invoice details below:
+
+            Invoice No: $billNo
+            Invoice Date: $dateStr
+            Invoice Link: $invoiceLink
+
+            $balanceLine
+
+            Thank you for your continued business with
+            Sri Vijaya Durga Milk Agencies.
+        """.trimIndent()
+
+        try {
+            val url = "https://api.whatsapp.com/send/?phone=$phoneNumber&text=" +
+                URLEncoder.encode(message, "UTF-8") +
+                "&type=phone_number&app_absent=0"
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp not installed or error occurred", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun fetchCustomerPhoneThenShare(bill: DeliveryTodayBill) {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.deliveryApi.getBillCustomers().awaitResponse()
+                val customer = response.body()?.results?.firstOrNull { it.id == customerId }
+                val phone = customer?.phone.orEmpty()
+                if (phone.isBlank()) {
+                    Toast.makeText(this@DeliveryBillHistoryActivity, "Customer phone number not available", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                historyCustomerPhone = phone
+                if (historyCustomerName.isBlank()) {
+                    historyCustomerName = customer?.name.orEmpty()
+                }
+                shareBillOnWhatsapp(
+                    bill.copy(
+                        customerName = bill.customerName?.takeIf { it.isNotBlank() } ?: historyCustomerName,
+                        customerPhone = phone,
+                        customerShopName = bill.customerShopName?.takeIf { it.isNotBlank() } ?: customer?.shopName.orEmpty()
+                    )
+                )
+            } catch (e: Exception) {
+                Toast.makeText(this@DeliveryBillHistoryActivity, "Customer phone number not available", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun formatShareDate(dateString: String?): String {
+        if (dateString.isNullOrBlank()) return ""
+        return try {
+            val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val outputFormat = java.text.SimpleDateFormat("dd-MMM-yyyy", Locale.US)
+            val date = inputFormat.parse(dateString)
+            if (date != null) outputFormat.format(date) else dateString
+        } catch (e: Exception) {
+            dateString
+        }
     }
 
     private fun money(value: Double): String = "₹ %.2f".format(Locale.US, value)

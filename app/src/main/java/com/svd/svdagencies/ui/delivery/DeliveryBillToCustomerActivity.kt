@@ -1,6 +1,9 @@
 package com.svd.svdagencies.ui.delivery
 
 import android.content.DialogInterface
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import com.svd.svdagencies.utils.PaymentConfig
 
 import android.net.Uri
@@ -11,6 +14,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,7 +29,9 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.svd.svdagencies.R
 import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.model.admin.customerData.UpdateBalanceRequest
 import com.svd.svdagencies.data.model.delivery.*
+import com.svd.svdagencies.utils.NetworkMessageUtils
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.CancellationException
@@ -42,6 +48,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
 
     private var customerId: Int = 0
     private var customerName: String = ""
+    private var customerPhone: String = ""
     private var customerUserType: String = "user"
     private var openingDue: Double = 0.0
 
@@ -75,11 +82,20 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private var currentGrandTotal: Double = 0.0
     private var billMode: String = BILL_MODE_REGULAR
     private val selectedDiscountItemCodes = mutableSetOf<String>()
+    private var prefillMap: Map<Int, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.delivery_bill_to_customer)
         sessionManager = SessionManager(this)
+
+        if (savedInstanceState != null) {
+            val ids = savedInstanceState.getIntArray("saved_prefill_ids")
+            val qtys = savedInstanceState.getIntArray("saved_prefill_qtys")
+            if (ids != null && qtys != null && ids.size == qtys.size) {
+                prefillMap = ids.zip(qtys).toMap()
+            }
+        }
 
         initViews()
         setSupportActionBar(toolbar)
@@ -133,7 +149,14 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     }
 
     private fun setupListeners() {
-        btnGenerateBill.setOnClickListener { generateBill() }
+        btnGenerateBill.setOnClickListener {
+            val selectedItems = catalogAdapter.getSelectedItemsWithQty()
+            if (selectedItems.isNotEmpty()) {
+                generateBill()
+            } else {
+                showUpdateBalanceDialog()
+            }
+        }
         toggleBillMode.isSingleSelection = false
         toggleBillMode.isSelectionRequired = false
         toggleBillMode.addOnButtonCheckedListener { _, checkedId, isChecked ->
@@ -165,6 +188,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                 val intent = android.content.Intent(this, DeliveryBillHistoryActivity::class.java).apply {
                     putExtra("customer_id", customerId)
                     putExtra("customer_name", customerName)
+                    putExtra("customer_phone", customerPhone)
                 }
                 startActivity(intent)
             } else {
@@ -259,6 +283,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         customers.getOrNull(position)?.let { customer ->
                             customerId = customer.id
                             customerName = customer.name
+                            customerPhone = customer.phone.orEmpty()
                             customerUserType = customer.userType ?: "user"
                             fetchOpeningBalance(customer.id)
                             
@@ -304,6 +329,19 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (::catalogAdapter.isInitialized) {
+            val selected = catalogAdapter.getSelectedItemsWithQty()
+            if (selected.isNotEmpty()) {
+                val ids = selected.map { it.first.itemId }.toIntArray()
+                val qtys = selected.map { it.second }.toIntArray()
+                outState.putIntArray("saved_prefill_ids", ids)
+                outState.putIntArray("saved_prefill_qtys", qtys)
+            }
+        }
+    }
+
     private fun fetchItems() {
         if (customerId <= 0) {
             swipeRefresh.isRefreshing = false
@@ -322,7 +360,13 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         val cleanCode = it.code.trim().lowercase()
                         orderMap[cleanCode] ?: Int.MAX_VALUE
                     }.thenBy { it.name.lowercase(Locale.ROOT) })
-                    catalogAdapter.submitList(availableItems)
+                    
+                    catalogAdapter.submitListPreservingQuantities(availableItems)
+                    
+                    prefillMap?.let {
+                        catalogAdapter.setInitialQuantities(it)
+                        prefillMap = null
+                    }
                     updateSummary()
                 }
             } catch (e: Exception) {
@@ -344,15 +388,115 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         }
         
         tvItemsTotal.text = "₹ %.2f".format(currentItemsTotal)
+        tvOpeningDue.text = "₹ %.2f".format(openingDue)
         
         currentGrandTotal = currentItemsTotal + openingDue
         val roundedGrandTotal = kotlin.math.ceil(currentGrandTotal)
         tvGrandTotal.text = "₹ %.0f".format(roundedGrandTotal)
         currentGrandTotal = roundedGrandTotal
         
-        val canGenerate = selectedItems.isNotEmpty() && customerId > 0
-        btnGenerateBill.isEnabled = canGenerate
-        btnGenerateBill.alpha = if (canGenerate) 1.0f else 0.5f
+        if (selectedItems.isNotEmpty()) {
+            btnGenerateBill.text = "Generate"
+            btnGenerateBill.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.green_status)
+            )
+            val canGenerate = customerId > 0
+            btnGenerateBill.isEnabled = canGenerate
+            btnGenerateBill.alpha = if (canGenerate) 1.0f else 0.5f
+        } else {
+            btnGenerateBill.text = "Update Due"
+            btnGenerateBill.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.brand_blue)
+            )
+            val canUpdate = customerId > 0
+            btnGenerateBill.isEnabled = canUpdate
+            btnGenerateBill.alpha = if (canUpdate) 1.0f else 0.5f
+        }
+    }
+
+    private fun showUpdateBalanceDialog() {
+        if (customerId <= 0) {
+            Toast.makeText(this, "Please select a customer first", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.admin_customer_balance_update, null)
+        val txtCustomerName = dialogView.findViewById<TextView>(R.id.txtCustomerName)
+        val txtCurrentBalance = dialogView.findViewById<TextView>(R.id.txtCurrentBalance)
+        val etAmount = dialogView.findViewById<TextInputEditText>(R.id.etAmount)
+        val btnClose = dialogView.findViewById<View>(R.id.btnClose)
+        val btnCancel = dialogView.findViewById<MaterialButton>(R.id.btnCancel)
+        val btnUpdate = dialogView.findViewById<MaterialButton>(R.id.btnUpdate)
+        val chip500 = dialogView.findViewById<View>(R.id.chipAdd500)
+        val chip1000 = dialogView.findViewById<View>(R.id.chipAdd1000)
+        val chipClear = dialogView.findViewById<View>(R.id.chipClear)
+
+        txtCustomerName?.text = customerName
+        txtCurrentBalance?.text = "₹ %.2f".format(openingDue)
+
+        val collectedVal = etCollectedAmount.text.toString().trim()
+        if (collectedVal.isNotEmpty()) {
+            etAmount?.setText(collectedVal)
+        }
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setView(dialogView)
+            .create()
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        btnClose?.setOnClickListener { dialog.dismiss() }
+        btnCancel?.setOnClickListener { dialog.dismiss() }
+
+        chip500?.setOnClickListener {
+            val current = etAmount?.text?.toString()?.toDoubleOrNull() ?: 0.0
+            etAmount?.setText("%.2f".format(current + 500.0))
+        }
+
+        chip1000?.setOnClickListener {
+            val current = etAmount?.text?.toString()?.toDoubleOrNull() ?: 0.0
+            etAmount?.setText("%.2f".format(current + 1000.0))
+        }
+
+        chipClear?.setOnClickListener {
+            etAmount?.setText("")
+        }
+
+        btnUpdate?.setOnClickListener {
+            val amountStr = etAmount?.text?.toString()?.trim().orEmpty()
+            if (amountStr.isEmpty()) {
+                etAmount?.error = "Please enter amount"
+                return@setOnClickListener
+            }
+
+            btnUpdate.showLoading(true, "Updating...")
+            btnCancel?.isEnabled = false
+
+            lifecycleScope.launch {
+                try {
+                    val response = withContext(Dispatchers.IO) {
+                        ApiClient.deliveryApi.saveAgentCollection(customerId, amountStr)
+                    }
+                    dialog.dismiss()
+                    if (response.success) {
+                        Toast.makeText(this@DeliveryBillToCustomerActivity, response.message ?: "Balance updated", Toast.LENGTH_SHORT).show()
+                        etCollectedAmount.setText("")
+                        fetchOpeningBalance(customerId)
+                    } else {
+                        Toast.makeText(this@DeliveryBillToCustomerActivity, response.message ?: "Failed to update balance", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    dialog.dismiss()
+                    Toast.makeText(
+                        this@DeliveryBillToCustomerActivity,
+                        NetworkMessageUtils.friendlyMessage(e, "Failed to update balance"),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+        dialog.show()
     }
 
     private fun showPaymentQr(

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.google.android.material.button.MaterialButton
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.delivery.DeliveryTodayBill
@@ -13,7 +12,8 @@ import java.util.Locale
 class DeliveryTodayBillAdapter(
     private val onViewBill: (DeliveryTodayBill) -> Unit,
     private val onDeleteBill: (DeliveryTodayBill) -> Unit,
-    private val onShowQR: (DeliveryTodayBill) -> Unit
+    private val onShowQR: (DeliveryTodayBill) -> Unit,
+    private val onShareWhatsapp: ((DeliveryTodayBill) -> Unit)? = null
 ) : RecyclerView.Adapter<DeliveryTodayBillAdapter.ViewHolder>() {
 
     private var items = listOf<DeliveryTodayBill>()
@@ -38,9 +38,10 @@ class DeliveryTodayBillAdapter(
         private val tvBillNumber: TextView = view.findViewById(R.id.tvBillNumber)
         private val tvBillDate: TextView = view.findViewById(R.id.tvBillDate)
         private val tvBillAmount: TextView = view.findViewById(R.id.tvBillAmount)
-        private val btnViewBill: MaterialButton = view.findViewById(R.id.btnViewBill)
-        private val btnDeleteBill: MaterialButton = view.findViewById(R.id.btnDeleteBill)
-        private val btnQR: MaterialButton = view.findViewById(R.id.btnQR)
+        private val btnViewBill: View = view.findViewById(R.id.btnViewBill)
+        private val btnDeleteBill: View = view.findViewById(R.id.btnDeleteBill)
+        private val btnQR: View = view.findViewById(R.id.btnQR)
+        private val btnWhatsapp: View? = view.findViewById(R.id.btnWhatsapp)
 
         fun bind(item: DeliveryTodayBill) {
             tvBillNumber.text = item.billNumber ?: "#${item.realId}"
@@ -49,6 +50,7 @@ class DeliveryTodayBillAdapter(
             btnViewBill.setOnClickListener { onViewBill(item) }
             btnDeleteBill.setOnClickListener { onDeleteBill(item) }
             btnQR.setOnClickListener { onShowQR(item) }
+            btnWhatsapp?.setOnClickListener { onShareWhatsapp?.invoke(item) }
         }
     }
 }

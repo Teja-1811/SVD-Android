@@ -20,6 +20,7 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesResponse
+import com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary
 import com.svd.svdagencies.data.model.delivery.DeliveryTodayBill
 import com.svd.svdagencies.databinding.DeliveryDashboardBinding
 import com.svd.svdagencies.utils.SessionManager
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URLEncoder
 import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -103,7 +105,8 @@ class DeliveryDashboardActivity : BaseActivity() {
         todayBillAdapter = DeliveryTodayBillAdapter(
             onViewBill = { bill -> showBillDetails(bill) },
             onDeleteBill = { bill -> confirmDeleteBill(bill) },
-            onShowQR = { bill -> showQRDialog(bill) }
+            onShowQR = { bill -> showQRDialog(bill) },
+            onShareWhatsapp = { bill -> shareBillOnWhatsapp(bill) }
         )
         binding.rvTodayBills.apply {
             layoutManager = LinearLayoutManager(this@DeliveryDashboardActivity)
@@ -142,7 +145,11 @@ class DeliveryDashboardActivity : BaseActivity() {
                 binding.swipeRefresh.isRefreshing = false
                 if (response.isSuccessful) {
                     val body = response.body()
-                    val bills = body?.results?.firstOrNull()?.bills ?: emptyList()
+                    val bills = when {
+                        body?.billRows?.isNotEmpty() == true -> body.billRows
+                        body?.results?.isNotEmpty() == true -> body.results.flatMap { it.bills }
+                        else -> emptyList()
+                    }
 
                     // Convert to DeliveryTodayBill for the adapter
                     val todayBills = bills.map { 
@@ -152,7 +159,11 @@ class DeliveryDashboardActivity : BaseActivity() {
                             billNumber = it.invoiceNumber,
                             totalAmount = it.totalAmount,
                             date = it.invoiceDate,
-                            fileUrl = null
+                            publicInvoiceUrl = it.publicInvoiceUrl ?: it.fileUrl,
+                            customerName = it.customer,
+                            customerPhone = it.customerPhone,
+                            customerShopName = it.customerShopName,
+                            dueAmount = it.dueAmount
                         )
                     }
 
@@ -190,37 +201,44 @@ class DeliveryDashboardActivity : BaseActivity() {
             "${response.agent?.name ?: "Your"} Dues for $dateStr"
         }
 
+        val counterDueVal = counterDue(summary)
+        val profitVal = summary.totalProfit
+        val salaryEarnedVal = salaryEarned(summary)
+        val salaryPaidVal = summary.salaryPaid
+        val pendingSalaryVal = pendingSalary(summary)
+        val collectedVal = if (summary.collectedAmount > 0.0) summary.collectedAmount else summary.amountToSubmit
+
         binding.tvAgentBillCount.text = "Generated Bills\n${summary.billCount}"
-        binding.tvAgentCounterDue.text = "Invoice Amount\n${money(summary.totalAmount)}"
-        binding.tvAgentDeliveredAmount.text = "Paid Amount\n${money(summary.totalPaid)}"
-        binding.tvAgentProfit.text = "Current Due\n${money(currentAgentDue(summary))}"
-        binding.tvAgentCollectedAmount.text = "Salary Earned\n${money(salaryEarned(summary))}"
-        binding.tvAgentRemainingAmount.text = "Salary Paid\n${money(summary.salaryPaid)}"
-        binding.tvAgentSelfBillAmount.text = "Pending Salary\n${money(pendingSalary(summary))}"
+        binding.tvAgentCounterDue.text = "Bill Amount\n${money(summary.totalAmount)}"
+        binding.tvAgentDeliveredAmount.text = "Paid\n${money(summary.totalPaid)}"
+        binding.tvAgentProfit.text = "Need To Submit\n${money(counterDueVal)}"
+        binding.tvAgentCollectedAmount.text = "Total Profit\n${money(profitVal)}"
+        binding.tvAgentHoldingAmount.text = "Collected\n${money(collectedVal)}"
+        binding.tvAgentSalaryEarned.text = "Salary Earned\n${money(salaryEarnedVal)}"
+        binding.tvAgentRemainingAmount.text = "Salary Paid\n${money(salaryPaidVal)}"
+        binding.tvAgentSelfBillAmount.text = "Pending Salary\n${money(pendingSalaryVal)}"
         binding.tvAgentSubmittedAmount.text = "Customer Bills\n${summary.customerBillCount}"
         binding.tvAgentDueAmount.text = "Self Bills\n${summary.selfBillCount}"
         binding.tvAgentProfitAmount.text = "Items Sale\n${money(summary.relatedInvoiceAmount)}"
         agentItemAdapter.submitList(response.items)
     }
 
-    private fun currentAgentDue(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
-        return if (summary.agentCurrentDue != 0.0) summary.agentCurrentDue else summary.totalDue
+    private fun counterDue(summary: DeliveryAgentDuesSummary): Double {
+        return when {
+            summary.counterDue > 0.0 -> summary.counterDue
+            summary.totalCounterDue > 0.0 -> summary.totalCounterDue
+            summary.totalDueAmount > 0.0 -> summary.totalDueAmount
+            summary.totalDue > 0.0 -> summary.totalDue
+            else -> (summary.totalAmount - summary.totalPaid).coerceAtLeast(0.0)
+        }
     }
 
-    private fun salaryEarned(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
+    private fun salaryEarned(summary: DeliveryAgentDuesSummary): Double {
         return if (summary.salaryEarned != 0.0) summary.salaryEarned else summary.totalProfit
     }
 
-    private fun pendingSalary(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
+    private fun pendingSalary(summary: DeliveryAgentDuesSummary): Double {
         return (salaryEarned(summary) - summary.salaryPaid).coerceAtLeast(0.0)
-    }
-
-    private fun submittedAmount(summary: com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary): Double {
-        return when {
-            summary.submittedAmount > 0.0 -> summary.submittedAmount
-            summary.counterSubmitAmount > 0.0 -> summary.counterSubmitAmount
-            else -> 0.0
-        }
     }
 
     private fun showBillDetails(bill: DeliveryTodayBill) {
@@ -315,6 +333,64 @@ class DeliveryDashboardActivity : BaseActivity() {
             .show()
     }
 
+    private fun shareBillOnWhatsapp(bill: DeliveryTodayBill) {
+        var phoneNumber = bill.customerPhone.orEmpty().filter { it.isDigit() }
+        if (phoneNumber.isEmpty()) {
+            Toast.makeText(this, "Customer phone number not available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (phoneNumber.length == 10) {
+            phoneNumber = "91$phoneNumber"
+        }
+        if (phoneNumber.length > 10 && !phoneNumber.startsWith("91")) {
+            phoneNumber = "91${phoneNumber.takeLast(10)}"
+        }
+
+        val customerName = bill.customerName?.takeIf { it.isNotBlank() } ?: bill.customer.orEmpty()
+        val agencyName = bill.customerShopName.orEmpty()
+        val billNo = bill.billNumber ?: "#${bill.realId}"
+        val dateStr = formatShareDate(bill.date)
+        val baseUrl = ApiClient.BASE_URL.removeSuffix("/")
+        val invoiceLink = if (!bill.publicInvoiceUrl.isNullOrBlank()) {
+            if (bill.publicInvoiceUrl.startsWith("http")) bill.publicInvoiceUrl else "$baseUrl${if (bill.publicInvoiceUrl.startsWith("/")) "" else "/"}${bill.publicInvoiceUrl}"
+        } else {
+            "$baseUrl/api/bills/${bill.realId}/download/"
+        }
+
+        val due = if (bill.currentDue != 0.0) bill.currentDue else bill.dueAmount
+        val balanceLine = if (due < 0) {
+            "Wallet Balance: ₹${kotlin.math.abs(Math.round(due))}"
+        } else {
+            "Current Due: ₹%.2f".format(Locale.US, due)
+        }
+
+        val message = """
+            Dear $customerName${if (agencyName.isNotBlank()) " ($agencyName)" else ""},
+
+            Please find your invoice details below:
+
+            Invoice No: $billNo
+            Invoice Date: $dateStr
+            Invoice Link: $invoiceLink
+
+            $balanceLine
+
+            Thank you for your continued business with
+            Sri Vijaya Durga Milk Agencies.
+        """.trimIndent()
+
+        try {
+            val url = "https://api.whatsapp.com/send/?phone=$phoneNumber&text=" +
+                URLEncoder.encode(message, "UTF-8") +
+                "&type=phone_number&app_absent=0"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(this, "WhatsApp not installed or error occurred", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun deleteBill(bill: DeliveryTodayBill) {
         lifecycleScope.launch {
             try {
@@ -329,6 +405,18 @@ class DeliveryDashboardActivity : BaseActivity() {
 
     private fun apiDate(calendar: Calendar): String {
         return SimpleDateFormat("yyyy-MM-dd", Locale.US).format(calendar.time)
+    }
+
+    private fun formatShareDate(dateString: String?): String {
+        if (dateString.isNullOrBlank()) return ""
+        return try {
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+            val outputFormat = SimpleDateFormat("dd-MMM-yyyy", Locale.US)
+            val date = inputFormat.parse(dateString)
+            if (date != null) outputFormat.format(date) else dateString
+        } catch (e: Exception) {
+            dateString
+        }
     }
 
     private fun money(value: Double): String = "Rs. %.2f".format(Locale.US, value)

@@ -155,7 +155,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
                     binding.layoutEnquiriesList.visibility = View.VISIBLE
                     enquiries.forEach { enquiry ->
                         val row = AdminEnquiryPreviewItemBinding.inflate(layoutInflater, binding.layoutEnquiriesList, false)
-                        row.txtSubject.text = enquiry.subject
+
                         row.txtName.text = enquiry.name
                         binding.layoutEnquiriesList.addView(row.root)
                     }
