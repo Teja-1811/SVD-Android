@@ -7,7 +7,6 @@ import com.svd.svdagencies.data.model.customer.CustomerOfferResponse
 import com.svd.svdagencies.data.model.customer.CustomerStatementResponse
 import com.svd.svdagencies.data.model.customer.GenericResponse
 import com.svd.svdagencies.data.model.customer.PaymentGatewayInitResponse
-import com.svd.svdagencies.data.model.customer.PaymentGatewayResultResponse
 import com.svd.svdagencies.data.model.customer.RaisedQueriesResponse
 import com.svd.svdagencies.data.model.customer.SupportTicketSummaryResponse
 import retrofit2.Call
@@ -35,11 +34,6 @@ interface CustomerApi {
     fun initiateGatewayPayment(
         @Body body: Map<String, String>
     ): Call<PaymentGatewayInitResponse>
-
-    @POST("api/customer/payment/phonepe/result/")
-    fun confirmGatewayPayment(
-        @Body body: Map<String, String>
-    ): Call<PaymentGatewayResultResponse>
 
     @GET("api/companies/")
     suspend fun getCompanies(): CompaniesListResponse

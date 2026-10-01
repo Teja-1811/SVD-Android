@@ -28,16 +28,18 @@ import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.UUID
 
 class DeliveryStockEntryActivity : BaseActivity() {
 
     private lateinit var binding: DeliveryStockEntryBinding
     private val reportAdapter = DeliveryStockReportAdapter()
     
-    private var selectedDate = Calendar.getInstance()
+    private var selectedDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     private val displayDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.US)
     private lateinit var session: SessionManager
+    private var pendingSelfBillTransactionId: String? = null
 
     private val phaseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -165,7 +167,10 @@ class DeliveryStockEntryActivity : BaseActivity() {
         tvConfirmTotal.text = "₹ %.2f".format(totalAmount)
 
         rvConfirmItems.layoutManager = LinearLayoutManager(this)
-        rvConfirmItems.adapter = DeliveryBillConfirmationAdapter(selectedItems) { _, _ -> 0.0 }
+        rvConfirmItems.adapter = DeliveryBillConfirmationAdapter(
+            selectedItems,
+            { item -> item.price },
+        ) { _, _ -> 0.0 }
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogView)
@@ -187,18 +192,24 @@ class DeliveryStockEntryActivity : BaseActivity() {
         dialog: DialogInterface
     ) {
         btn.showLoading(true, "Generating...")
+        val transactionId = pendingSelfBillTransactionId ?: UUID.randomUUID().toString().also {
+            pendingSelfBillTransactionId = it
+        }
         lifecycleScope.launch {
             try {
                 val request = DeliveryGenerateBillRequest(
                     customerId = session.getUserId(),
-                    billDate = apiDateFormat.format(Calendar.getInstance().time),
+                    billDate = apiDateFormat.format(selectedDate.time),
                     items = selectedItems.map { BillLineItem(it.first.itemId, it.second, 0.0) },
                     paidAmount = 0.0,
+                    paymentMethod = "CASH",
+                    transactionId = transactionId,
                     billMode = "regular"
                 )
 
                 val response = ApiClient.deliveryApi.generateBill(request).awaitResponse()
                 if (response.isSuccessful && response.body()?.success == true) {
+                    pendingSelfBillTransactionId = null
                     Toast.makeText(this@DeliveryStockEntryActivity, "Bill Generated Successfully", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                     fetchReconciliationReport()

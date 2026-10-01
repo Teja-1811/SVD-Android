@@ -60,15 +60,15 @@ interface CashbookApi {
     @DELETE("api/cashbook/delete-expense/{id}/")
     suspend fun deleteExpense(@Path("id") id: Int): Map<String, Any>
 
-    @POST("api/cashbook/commission-credits/add/")
+    @POST("api/commission-credits/add/")
     suspend fun addCommissionCredit(@Body request: Map<String, Any>): Map<String, Any>
 
-    @POST("api/cashbook/commission-credits/{id}/edit/")
+    @POST("api/commission-credits/{id}/edit/")
     suspend fun editCommissionCredit(
         @Path("id") id: Int,
         @Body request: Map<String, Any>
     ): Map<String, Any>
 
-    @DELETE("api/cashbook/commission-credits/{id}/delete/")
+    @DELETE("api/commission-credits/{id}/delete/")
     suspend fun deleteCommissionCredit(@Path("id") id: Int): Map<String, Any>
 }

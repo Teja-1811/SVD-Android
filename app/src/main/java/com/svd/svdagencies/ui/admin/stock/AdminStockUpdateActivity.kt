@@ -67,7 +67,8 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
         tvNoUpdateSavedEntries = findViewById(R.id.tvNoUpdateSavedEntries)
         rvUpdateCompanyTotals = findViewById(R.id.rvUpdateCompanyTotals)
         rvUpdateSavedEntries = findViewById(R.id.rvUpdateSavedEntries)
-        etEntryDate.setText(intent.getStringExtra("ENTRY_DATE") ?: dateFormatter.format(Calendar.getInstance().time))
+        val defaultEntryDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }
+        etEntryDate.setText(intent.getStringExtra("ENTRY_DATE") ?: dateFormatter.format(defaultEntryDate.time))
 
         adapter = StockUpdateAdapter(emptyList())
         rvUpdateStock.layoutManager = LinearLayoutManager(this)

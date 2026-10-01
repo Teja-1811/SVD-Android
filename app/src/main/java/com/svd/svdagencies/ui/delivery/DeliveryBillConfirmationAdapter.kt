@@ -10,7 +10,7 @@ import com.svd.svdagencies.data.model.delivery.DeliveryBillItem
 
 class DeliveryBillConfirmationAdapter(
     private val items: List<Pair<DeliveryBillItem, Int>>,
-    private val userType: String = "user",
+    private val priceForItem: (DeliveryBillItem) -> Double,
     private val discountForItem: (DeliveryBillItem, Int) -> Double
 ) : RecyclerView.Adapter<DeliveryBillConfirmationAdapter.ViewHolder>() {
 
@@ -28,7 +28,7 @@ class DeliveryBillConfirmationAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val (item, qty) = items[position]
         val discount = discountForItem(item, qty)
-        val basePrice = if (userType == "user") item.mrp else item.sellingPrice
+        val basePrice = priceForItem(item)
         val finalPrice = (basePrice - discount).coerceAtLeast(0.0)
         val total = finalPrice * qty
 

@@ -4,5 +4,6 @@ data class CreateBillRequest(
     val customer: Int,
     val items: List<Int>,
     val quantities: List<Int>,
-    val discounts: List<Double>
+    val discounts: List<Double>,
+    val collected_amount: Double = 0.0
 )

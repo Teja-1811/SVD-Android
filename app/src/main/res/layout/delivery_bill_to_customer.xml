@@ -342,10 +342,12 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/deliveryNavigationView"
+        style="@style/Widget.App.NavigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/card_background"
+        android:background="@color/white"
+        app:backgroundTint="@color/white"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"
         app:itemTextColor="@color/drawer_nav_item_colors"

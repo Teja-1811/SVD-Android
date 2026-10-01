@@ -79,13 +79,6 @@ interface DeliveryApi {
         @retrofit2.http.Query("delivery_agent") agentId: Int
     ): Call<DeliveryStockHistoryResponse>
 
-    @GET("api/delivery/month-summary/")
-    fun getDeliveryMonthlySummary(
-        @retrofit2.http.Query("delivery_agent") agentId: Int,
-        @retrofit2.http.Query("year") year: Int,
-        @retrofit2.http.Query("month") month: Int
-    ): Call<DeliveryMonthlySummaryResponse>
-
     @GET("api/delivery/customer-payments/{customer_id}/")
     fun getCustomerPaymentRecords(
         @retrofit2.http.Path("customer_id") customerId: Int,

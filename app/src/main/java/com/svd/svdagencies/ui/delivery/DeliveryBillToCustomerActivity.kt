@@ -43,6 +43,7 @@ import retrofit2.awaitResponse
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.UUID
 
 class DeliveryBillToCustomerActivity : BaseActivity() {
 
@@ -80,6 +81,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private var selectedRouteId: Int? = null
     private var currentItemsTotal: Double = 0.0
     private var currentGrandTotal: Double = 0.0
+    private var pendingTransactionId: String? = null
     private var billMode: String = BILL_MODE_REGULAR
     private val selectedDiscountItemCodes = mutableSetOf<String>()
     private var prefillMap: Map<Int, Int>? = null
@@ -566,6 +568,20 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         showConfirmationDialog(selectedItems)
     }
 
+    /** Previous due is displayed separately; overpayments remain customer credit. */
+    private fun validateCollectedAmount(requirePayment: Boolean): Double? {
+        val collected = etCollectedAmount.text.toString().toDoubleOrNull() ?: 0.0
+        if (collected < 0.0) {
+            etCollectedAmount.error = "Collected amount cannot be negative"
+            return null
+        }
+        if (requirePayment && collected <= 0.0) {
+            etCollectedAmount.error = "Enter the amount collected before showing the UPI QR"
+            return null
+        }
+        return collected
+    }
+
     private fun showConfirmationDialog(selectedItems: List<Pair<DeliveryBillItem, Int>>) {
         val dialogView = layoutInflater.inflate(R.layout.delivery_bill_confirmation, null)
         val rvConfirmItems = dialogView.findViewById<RecyclerView>(R.id.rvConfirmItems)
@@ -593,7 +609,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             layoutRemaining.visibility = View.GONE
         }
 
-        rvConfirmItems.adapter = DeliveryBillConfirmationAdapter(selectedItems, customerUserType, ::discountForItem)
+        rvConfirmItems.adapter = DeliveryBillConfirmationAdapter(selectedItems, ::customerUnitPrice, ::discountForItem)
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogView)
@@ -617,18 +633,25 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         otherBtn: MaterialButton,
         dialog: DialogInterface
     ) {
+        val collectedAmountValue = validateCollectedAmount(showQr) ?: run {
+            otherBtn.isEnabled = true
+            return
+        }
         btn.showLoading(true, "Generating...")
         otherBtn.isEnabled = false
         
         lifecycleScope.launch {
             try {
-                val collectedAmountValue = etCollectedAmount.text.toString().toDoubleOrNull() ?: 0.0
-                
+                val transactionId = pendingTransactionId ?: UUID.randomUUID().toString().also {
+                    pendingTransactionId = it
+                }
                 val request = DeliveryGenerateBillRequest(
                     customerId = customerId,
                     billDate = getCurrentBillDate(),
                     items = selectedItems.map { BillLineItem(it.first.itemId, it.second, discountForItem(it.first, it.second)) },
                     paidAmount = collectedAmountValue,
+                    paymentMethod = if (showQr) "UPI" else if (collectedAmountValue > 0) "CASH" else null,
+                    transactionId = transactionId,
                     billMode = billMode,
                     discountItemCodes = selectedDiscountItemCodes.toList()
                 )
@@ -650,6 +673,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     }
                     
                     catalogAdapter.applyStockDeductions(selectedItems)
+                    pendingTransactionId = null
                     dialog.dismiss()
                     resetLayout()
                 } else {
@@ -707,10 +731,12 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     }
 
     private fun discountedLineTotal(item: DeliveryBillItem, quantity: Int): Double {
-        val basePrice = if (customerUserType == "user") item.mrp else item.sellingPrice
+        val basePrice = customerUnitPrice(item)
         val discountedPrice = (basePrice - discountForItem(item, quantity)).coerceAtLeast(0.0)
         return discountedPrice * quantity
     }
+
+    private fun customerUnitPrice(item: DeliveryBillItem): Double = item.price
 
     private fun buildItemOrderMap(
         responseBody: DeliveryBillItemsResponse?,

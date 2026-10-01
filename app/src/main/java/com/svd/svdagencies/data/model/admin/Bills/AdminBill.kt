@@ -10,8 +10,10 @@ data class AdminBill(
     val customer_name: String?,
     @SerializedName("invoice_date")
     val date: String?,
-    @SerializedName("total_amount")
-    val total_amount: Double = 0.0,
+    @SerializedName(value = "invoice_amount", alternate = ["total_amount"])
+    val invoiceAmount: Double = 0.0,
+    @SerializedName("remaining_due")
+    val remainingDue: Double = 0.0,
     @SerializedName("current_due")
     val currentDue: Double = 0.0,
     @SerializedName("customer_phone")
@@ -26,7 +28,10 @@ data class AdminBill(
     val generatedBy: BillGenerator? = null,
     @SerializedName("file_url")
     val file_url: String? = null
-)
+) {
+    /** Retained for existing list and adapter code during the API transition. */
+    val total_amount: Double get() = invoiceAmount
+}
 
 data class BillGenerator(
     val id: Int? = null,

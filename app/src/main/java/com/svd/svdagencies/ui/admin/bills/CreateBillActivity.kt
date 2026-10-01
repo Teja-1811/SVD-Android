@@ -35,7 +35,7 @@ class CreateBillActivity : AdminBaseActivity() {
 
     private var billId: Int? = null
 
-    private lateinit var spinnerArea: AutoCompleteTextView
+    private lateinit var spinnerRoute: AutoCompleteTextView
     private lateinit var spinnerCustomer: AutoCompleteTextView
     private lateinit var tvBillDate: TextInputEditText
     private lateinit var etSearchItems: TextInputEditText
@@ -43,6 +43,7 @@ class CreateBillActivity : AdminBaseActivity() {
     private lateinit var etAvailableQty: TextInputEditText
     private lateinit var etQty: TextInputEditText
     private lateinit var etDiscount: TextInputEditText
+    private lateinit var etCollectedAmount: TextInputEditText
     private lateinit var btnAddItem: MaterialButton
     private lateinit var rvBillItems: RecyclerView
     private lateinit var btnGenerateBill: MaterialButton
@@ -79,7 +80,7 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private fun initViews() {
-        spinnerArea = findViewById(R.id.spinnerArea)
+        spinnerRoute = findViewById(R.id.spinnerRoute)
         spinnerCustomer = findViewById(R.id.spinnerCustomer)
         tvBillDate = findViewById(R.id.tvBillDate)
         etSearchItems = findViewById(R.id.etSearchItems)
@@ -87,6 +88,7 @@ class CreateBillActivity : AdminBaseActivity() {
         etAvailableQty = findViewById(R.id.etAvailableQty)
         etQty = findViewById(R.id.etQty)
         etDiscount = findViewById(R.id.etDiscount)
+        etCollectedAmount = findViewById(R.id.etCollectedAmount)
         btnAddItem = findViewById(R.id.btnAddItem)
         rvBillItems = findViewById(R.id.rvBillItems)
         btnGenerateBill = findViewById(R.id.btnGenerateBill)
@@ -108,12 +110,13 @@ class CreateBillActivity : AdminBaseActivity() {
     private fun setupListeners() {
         tvBillDate.setOnClickListener { showDatePicker() }
 
-        spinnerArea.setOnItemClickListener { _, _, _, _ ->
+        spinnerRoute.setOnItemClickListener { _, _, _, _ ->
             filterCustomers()
         }
 
         spinnerCustomer.setOnItemClickListener { _, _, position, _ ->
             selectedCustomer = filteredCustomers[position]
+            repriceBillItemsForSelectedCustomer()
         }
 
         etSearchItems.addTextChangedListener(object : TextWatcher {
@@ -168,7 +171,7 @@ class CreateBillActivity : AdminBaseActivity() {
                     discount = disc,
                     totalDiscount = totalDisc,
                     itemName = selectedItem!!.name,
-                    price = selectedItem!!.selling_price?.replace("₹", "")?.replace(",", "")?.toDoubleOrNull()
+                    price = priceForSelectedCustomer(selectedItem!!)
                 ))
                 updateSummary()
                 
@@ -219,11 +222,11 @@ class CreateBillActivity : AdminBaseActivity() {
                 allCustomers = customersDeferred.await().customers ?: emptyList()
                 allAvailableItems = itemsDeferred.await()
 
-                val areas = (listOf("All Areas") + allCustomers.mapNotNull { it.area }.distinct().filter { it.isNotEmpty() }).sorted()
-                val areaAdapter = ArrayAdapter(this@CreateBillActivity, android.R.layout.simple_dropdown_item_1line, areas)
-                spinnerArea.setAdapter(areaAdapter)
+                val routes = (listOf("All Routes") + allCustomers.mapNotNull { it.route_name }.distinct().filter { it.isNotEmpty() }).sorted()
+                val routeAdapter = ArrayAdapter(this@CreateBillActivity, android.R.layout.simple_dropdown_item_1line, routes)
+                spinnerRoute.setAdapter(routeAdapter)
                 
-                spinnerArea.setText("All Areas", false)
+                spinnerRoute.setText("All Routes", false)
                 filterCustomers()
                 filterItems("")
                 itemAdapter.updateAvailableItems(allAvailableItems)
@@ -235,7 +238,7 @@ class CreateBillActivity : AdminBaseActivity() {
                     val customer = allCustomers.find { it.name == billDetail.customer }
                     customer?.let {
                         selectedCustomer = it
-                        spinnerArea.setText(it.area ?: "All Areas", false)
+                        spinnerRoute.setText(it.route_name ?: "All Routes", false)
                         filterCustomers()
                         spinnerCustomer.setText(it.name ?: "", false)
                         selectedCustomer = it
@@ -267,6 +270,7 @@ class CreateBillActivity : AdminBaseActivity() {
                     }
                     
                     itemAdapter.updateItems(itemsForCreation)
+                    repriceBillItemsForSelectedCustomer()
                     updateSummary()
                 }
 
@@ -283,11 +287,11 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private fun filterCustomers() {
-        val selectedArea = spinnerArea.text.toString()
-        filteredCustomers = if (selectedArea == "All Areas" || selectedArea.isEmpty()) {
+        val selectedRoute = spinnerRoute.text.toString()
+        filteredCustomers = if (selectedRoute == "All Routes" || selectedRoute.isEmpty()) {
             allCustomers
         } else {
-            allCustomers.filter { it.area == selectedArea }
+            allCustomers.filter { it.route_name == selectedRoute }
         }
 
         val names = filteredCustomers.map { it.name ?: "" }
@@ -317,9 +321,13 @@ class CreateBillActivity : AdminBaseActivity() {
         var grandTotal = 0.0
 
         for (billItem in items) {
-            val item = allAvailableItems.find { it.id == billItem.itemId }
-            val priceStr = item?.selling_price?.replace("₹", "")?.replace(",", "")
-            val price = priceStr?.toDoubleOrNull() ?: billItem.price ?: 0.0
+            val price = billItem.price ?: allAvailableItems
+                .find { it.id == billItem.itemId }
+                ?.selling_price
+                ?.replace("₹", "")
+                ?.replace(",", "")
+                ?.toDoubleOrNull()
+                ?: 0.0
             
             totalQty += billItem.quantity
             totalDiscount += billItem.totalDiscount
@@ -330,6 +338,26 @@ class CreateBillActivity : AdminBaseActivity() {
         tvTotalDiscAmount.text = "₹%.2f".format(totalDiscount)
         val roundedGrandTotal = ceil(grandTotal)
         tvGrandTotal.text = "₹%.0f".format(roundedGrandTotal)
+    }
+
+    private fun priceForSelectedCustomer(item: AdminItem): Double {
+        if (selectedCustomer?.id == SPECIAL_CUSTOMER_ID && item.code.equals(CURD450_CODE, ignoreCase = true)) {
+            return CURD450_CUSTOMER_PRICE
+        }
+        return item.selling_price
+            ?.replace("₹", "")
+            ?.replace(",", "")
+            ?.toDoubleOrNull()
+            ?: 0.0
+    }
+
+    private fun repriceBillItemsForSelectedCustomer() {
+        val repricedItems = itemAdapter.getItems().map { billItem ->
+            val item = allAvailableItems.find { it.id == billItem.itemId }
+            if (item != null) billItem.copy(price = priceForSelectedCustomer(item)) else billItem
+        }
+        itemAdapter.updateItems(repricedItems)
+        updateSummary()
     }
 
     private suspend fun fetchAllAvailableItems(): List<AdminItem> {
@@ -373,6 +401,14 @@ class CreateBillActivity : AdminBaseActivity() {
             Toast.makeText(this, "Please add at least one item", Toast.LENGTH_SHORT).show()
             return
         }
+
+        val collectedAmount = etCollectedAmount.text.toString().trim().toDoubleOrNull()
+        if (collectedAmount == null || collectedAmount < 0) {
+            btnGenerateBill.showLoading(false)
+            hideScreenLoading()
+            Toast.makeText(this, "Enter a valid collection amount", Toast.LENGTH_SHORT).show()
+            return
+        }
         findOutOfStockLine(billItems)?.let { (item, _) ->
             btnGenerateBill.showLoading(false)
             hideScreenLoading()
@@ -388,7 +424,8 @@ class CreateBillActivity : AdminBaseActivity() {
             customerId,
             billItems.map { it.itemId },
             billItems.map { it.quantity },
-            billItems.map { it.discount }
+            billItems.map { it.discount },
+            collectedAmount
         )
         ApiClient.billsDashboardApi.createBill(request)
         btnGenerateBill.showLoading(false)
@@ -429,5 +466,11 @@ class CreateBillActivity : AdminBaseActivity() {
             }
         }
         return null
+    }
+
+    private companion object {
+        const val SPECIAL_CUSTOMER_ID = 25
+        const val CURD450_CODE = "CURD450"
+        const val CURD450_CUSTOMER_PRICE = 29.0
     }
 }

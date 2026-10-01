@@ -157,7 +157,7 @@ class DeliveryDashboardActivity : BaseActivity() {
                             id = it.id,
                             billId = it.id,
                             billNumber = it.invoiceNumber,
-                            totalAmount = it.totalAmount,
+                            invoiceAmount = it.totalAmount,
                             date = it.invoiceDate,
                             publicInvoiceUrl = it.publicInvoiceUrl ?: it.fileUrl,
                             customerName = it.customer,
@@ -211,15 +211,15 @@ class DeliveryDashboardActivity : BaseActivity() {
         binding.tvAgentBillCount.text = "Generated Bills\n${summary.billCount}"
         binding.tvAgentCounterDue.text = "Bill Amount\n${money(summary.totalAmount)}"
         binding.tvAgentDeliveredAmount.text = "Paid\n${money(summary.totalPaid)}"
-        binding.tvAgentProfit.text = "Need To Submit\n${money(counterDueVal)}"
+        binding.tvAgentProfit.text = "Bill Due\n${money(counterDueVal)}"
         binding.tvAgentCollectedAmount.text = "Total Profit\n${money(profitVal)}"
         binding.tvAgentHoldingAmount.text = "Collected\n${money(collectedVal)}"
         binding.tvAgentSalaryEarned.text = "Salary Earned\n${money(salaryEarnedVal)}"
         binding.tvAgentRemainingAmount.text = "Salary Paid\n${money(salaryPaidVal)}"
         binding.tvAgentSelfBillAmount.text = "Pending Salary\n${money(pendingSalaryVal)}"
-        binding.tvAgentSubmittedAmount.text = "Customer Bills\n${summary.customerBillCount}"
-        binding.tvAgentDueAmount.text = "Self Bills\n${summary.selfBillCount}"
-        binding.tvAgentProfitAmount.text = "Items Sale\n${money(summary.relatedInvoiceAmount)}"
+        binding.tvAgentSubmittedAmount.text = "Submitted\n${money(summary.submittedAmount)}"
+        binding.tvAgentDueAmount.text = "Remaining to Submit\n${money(summary.remainingGeneratedAmount)}"
+        binding.tvAgentProfitAmount.text = "Customer / Self Sales\n${money(summary.customerBillAmount)} / ${money(summary.selfBillAmount)}"
         agentItemAdapter.submitList(response.items)
     }
 

@@ -68,7 +68,9 @@ class AdminStockActivity : AdminBaseActivity() {
     private lateinit var dateEntryAdapter: StockDateEntryAdapter
     private lateinit var leakageAdapter: StockLeakageAdapter
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    private var selectedDate = dateFormatter.format(Calendar.getInstance().time)
+    private var selectedDate = dateFormatter.format(
+        Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }.time
+    )
     private var allStockItems: List<StockItem> = emptyList()
     private lateinit var btnRecordLeakage: MaterialButton
     private lateinit var btnLeakageReport: MaterialButton

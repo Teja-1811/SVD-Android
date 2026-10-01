@@ -10,8 +10,6 @@ import com.svd.svdagencies.data.model.admin.Bills.EditBillRequest
 import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.admin.customerData.GenericSuccessResponse
 import com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesResponse
-import com.svd.svdagencies.data.model.delivery.DeliveryAgentSubmissionRequest
-import com.svd.svdagencies.data.model.delivery.DeliveryAgentSubmissionResponse
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
@@ -57,8 +55,4 @@ interface BillsDashboardApi {
         @Query("end_date") endDate: String? = null
     ): DeliveryAgentDuesResponse
 
-    @POST("api/bills/delivery-boys/submissions/")
-    suspend fun saveDeliveryAgentSubmission(
-        @Body request: DeliveryAgentSubmissionRequest
-    ): DeliveryAgentSubmissionResponse
 }

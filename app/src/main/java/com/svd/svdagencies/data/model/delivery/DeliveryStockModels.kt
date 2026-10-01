@@ -75,36 +75,6 @@ data class DeliveryStockHistoryItem(
     @SerializedName("evening_return") val eveningReturn: Double
 )
 
-data class DeliveryMonthlySummaryResponse(
-    val success: Boolean,
-    @SerializedName("delivery_agent") val deliveryAgent: Int,
-    val year: Int,
-    val month: Int,
-    @SerializedName("grand_total") val grandTotal: DeliveryMonthlyGrandTotal,
-    val days: List<DeliveryMonthlyDayEntry>
-)
-
-data class DeliveryMonthlyGrandTotal(
-    @SerializedName("morning_stock") val morningStock: Double,
-    @SerializedName("morning_return") val morningReturn: Double,
-    @SerializedName("evening_stock") val eveningStock: Double,
-    @SerializedName("evening_return") val eveningReturn: Double,
-    @SerializedName("total_stock") val totalStock: Double,
-    @SerializedName("total_return") val totalReturn: Double,
-    @SerializedName("net_stock") val netStock: Double
-)
-
-data class DeliveryMonthlyDayEntry(
-    val date: String,
-    @SerializedName("morning_stock") val morningStock: Double,
-    @SerializedName("morning_return") val morningReturn: Double,
-    @SerializedName("evening_stock") val eveningStock: Double,
-    @SerializedName("evening_return") val eveningReturn: Double,
-    @SerializedName("total_stock") val totalStock: Double,
-    @SerializedName("total_return") val totalReturn: Double,
-    @SerializedName("net_stock") val netStock: Double
-)
-
 /**
  * Allowed items for entry
  */

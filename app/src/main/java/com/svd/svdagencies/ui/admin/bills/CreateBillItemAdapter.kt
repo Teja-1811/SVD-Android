@@ -75,8 +75,8 @@ class CreateBillItemAdapter(
             val productName = item?.name ?: billItem.itemName ?: "Unknown Item"
             tvProductName.text = productName
             
-            val sellingPriceStr = item?.selling_price?.replace("₹", "")?.replace(",", "") 
-                ?: billItem.price?.toString() 
+            val sellingPriceStr = billItem.price?.toString()
+                ?: item?.selling_price?.replace("₹", "")?.replace(",", "")
                 ?: "0.00"
             
             tvPrice.text = "₹$sellingPriceStr"
