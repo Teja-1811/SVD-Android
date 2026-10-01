@@ -156,6 +156,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
                     enquiries.forEach { enquiry ->
                         val row = AdminEnquiryPreviewItemBinding.inflate(layoutInflater, binding.layoutEnquiriesList, false)
 
+                        row.txtSubject.text = enquiry.subject.orEmpty()
                         row.txtName.text = enquiry.name
                         binding.layoutEnquiriesList.addView(row.root)
                     }
@@ -172,7 +173,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
 
                 val customers = data.customers_no_orders_today_list ?: emptyList()
 
-                for (customer in customers.take(20)) { // Limit to top 20 for safety
+                for (customer in customers) {
 
                     val rowBinding = AdminNoOrderCustomerBinding.inflate(
                         LayoutInflater.from(this@AdminDashboardActivity),
