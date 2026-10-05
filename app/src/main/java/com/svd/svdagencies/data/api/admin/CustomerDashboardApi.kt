@@ -18,7 +18,7 @@ interface CustomerDashboardApi {
     // Get all customers
     @Headers("Cache-Control: no-cache")
     @GET("api/customer-list/")
-    fun getCustomers(): Call<CustomerDashboardResponse>
+    fun getCustomers(@Query("type") type: String = "retailer"): Call<CustomerDashboardResponse>
 
 
     // Get single customer details

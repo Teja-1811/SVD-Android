@@ -10,8 +10,9 @@ data class AddCustomerRequest(
     @SerializedName("city") val city: String? = null,
     @SerializedName("state") val state: String? = null,
     @SerializedName("area") val area: String? = null,
-    @SerializedName("pincode") val pincode: String? = null,
-    @SerializedName("address") val address: String? = null,
+    @SerializedName("pin_code") val pinCode: String? = null,
+    @SerializedName("flat_number") val flatNumber: String? = null,
     @SerializedName("retailer_id") val retailer_id: String? = null,
-    @SerializedName("route_id") val route_id: Int? = null
+    @SerializedName("route_id") val route_id: Int? = null,
+    @SerializedName("user_type") val userType: String = "retailer"
 )

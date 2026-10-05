@@ -68,6 +68,16 @@
                 android:ellipsize="end"
                 android:maxLines="1"/>
 
+            <TextView
+                android:id="@+id/txtRoute"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Route: -"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="@dimen/text_size_caption"
+                android:ellipsize="end"
+                android:maxLines="1"/>
+
             <!-- Divider -->
             <View
                 android:layout_width="match_parent"
@@ -112,6 +122,30 @@
                             android:text="₹ 8.00"
                             android:textColor="@color/brand_red"
                             android:textSize="@dimen/text_size_body_small"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_tiny">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Status: "
+                            android:textColor="@color/textColorPrimary"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/text_size_caption"/>
+
+                        <TextView
+                            android:id="@+id/txtStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Active"
+                            android:textColor="@color/icon_green"
+                            android:textSize="@dimen/text_size_caption"
                             android:textStyle="bold"/>
                     </LinearLayout>
 

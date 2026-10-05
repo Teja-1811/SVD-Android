@@ -17,6 +17,7 @@ import com.svd.svdagencies.ui.admin.cashbook.AdminStatementActivity
 import com.svd.svdagencies.ui.admin.cashbook.ViewExpensesActivity
 import com.svd.svdagencies.ui.admin.companies.AdminCompaniesActivity
 import com.svd.svdagencies.ui.admin.customer.CustomersData
+import com.svd.svdagencies.ui.admin.customer.CustomerItemDiscountActivity
 import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
 import com.svd.svdagencies.ui.admin.stock.AdminStockActivity
 import com.svd.svdagencies.ui.auth.LoginActivity
@@ -87,6 +88,12 @@ abstract class AdminBaseActivity : BaseActivity() {
                     R.id.nav_customers -> {
                         if (this !is CustomersData) {
                             openAdminDestination(CustomersData::class.java)
+                        }
+                        true
+                    }
+                    R.id.nav_customer_item_discounts -> {
+                        if (this !is CustomerItemDiscountActivity) {
+                            openAdminDestination(CustomerItemDiscountActivity::class.java)
                         }
                         true
                     }

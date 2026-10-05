@@ -1,218 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/card_background"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="@dimen/card_corner_radius_small"
     app:cardElevation="0dp"
-    app:cardUseCompatPadding="false"
-    app:cardBackgroundColor="?attr/colorSurface"
-    app:strokeWidth="1dp"
     app:strokeColor="?attr/colorOutlineVariant"
-    app:cardForegroundColor="@android:color/transparent">
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/card_background"
-        android:padding="22dp">
-
-        <!-- Header -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Update Balance"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface"/>
-
-            <ImageView
-                android:id="@+id/btnClose"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_add"
-                android:rotation="45"
-                app:tint="?attr/colorOnSurfaceVariant"
-                android:layout_alignParentEnd="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"/>
-        </RelativeLayout>
+        android:padding="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Apply a credit, collect a payment, or adjust dues."
-            android:textSize="13sp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginBottom="16dp"/>
+            android:text="Record Payment"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <!-- Customer -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Customer"
-            android:textSize="11sp"
-            android:textAllCaps="true"
-            android:letterSpacing="0.08"
-            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:text="Customer name"
             android:textColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginBottom="6dp"/>
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/txtCustomerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Customer Name"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Current balance pill -->
-        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="18dp"
-            app:cardCornerRadius="@dimen/card_corner_radius_small"
-            app:cardBackgroundColor="?attr/colorSurfaceVariant"
-            app:strokeColor="?attr/colorOutlineVariant"
-            app:strokeWidth="1dp"
-            app:cardElevation="0dp">
+            android:layout_marginTop="4dp"
+            android:text="Customer Name"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
+                android:layout_weight="1"
+                android:text="Current due"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="15sp" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Current Balance"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnSurface"/>
+            <TextView
+                android:id="@+id/txtCurrentBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₹ 0.00"
+                android:textColor="@color/brand_red"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtCurrentBalance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="₹ 0.00"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/brand_red"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Amount input -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter amount"
+            android:layout_marginTop="20dp"
+            android:hint="Amount paying"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/brand_red"
-            app:boxStrokeWidth="1dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:prefixText="₹"
-            app:helperText="Use negative value to record payout"
-            app:helperTextTextColor="?attr/colorOnSurfaceVariant"
-            android:layout_marginBottom="18dp">
+            app:prefixText="₹">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal|numberSigned"
-                android:textSize="15sp"
+                android:inputType="numberDecimal"
                 android:textColor="?attr/colorOnSurface"
-                android:textColorHint="?attr/colorOnSurfaceVariant"/>
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Quick actions -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp"
-            android:gravity="start">
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
 
-            <com.google.android.material.chip.Chip
-                style="@style/Widget.Material3.Chip.Assist"
-                android:id="@+id/chipAdd500"
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Remaining due"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtRemainingDue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+500"
-                app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                app:chipStrokeColor="?attr/colorOutlineVariant"
-                app:chipStrokeWidth="1dp"/>
-
-            <com.google.android.material.chip.Chip
-                style="@style/Widget.Material3.Chip.Assist"
-                android:id="@+id/chipAdd1000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="+1000"
-                app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                app:chipStrokeColor="?attr/colorOutlineVariant"
-                app:chipStrokeWidth="1dp"/>
-
-            <com.google.android.material.chip.Chip
-                style="@style/Widget.Material3.Chip.Assist"
-                android:id="@+id/chipClear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Clear"
-                app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                app:chipStrokeColor="?attr/colorOutlineVariant"
-                app:chipStrokeWidth="1dp"/>
+                android:text="₹ 0.00"
+                android:textColor="@color/green_status"
+                android:textSize="16sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:gravity="end">
+            android:layout_marginTop="28dp"
+            android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancel"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="54dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="12dp"
                 android:layout_weight="1"
                 android:text="Cancel"
-                android:textAllCaps="false"
-                android:textSize="15sp"
-                android:layout_marginEnd="12dp"
-                app:strokeColor="@color/brand_red"
-                android:textColor="@color/brand_red"/>
+                android:textAllCaps="false" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdate"
                 android:layout_width="0dp"
-                android:layout_height="54dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="Update"
-                app:backgroundTint="@color/green_status"
+                android:text="Submit Payment"
                 android:textAllCaps="false"
-                android:textSize="15sp"
-                android:textColor="@color/white"/>
-
+                android:textColor="@color/white"
+                app:backgroundTint="@color/green_status" />
         </LinearLayout>
 
+        <!-- Retained for dialogs that share this layout; not part of this UI. -->
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAdd500"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAdd1000"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipClear"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

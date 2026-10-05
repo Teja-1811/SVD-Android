@@ -25,7 +25,9 @@ interface BillsDashboardApi {
     ): BillListResponse
 
     @GET("api/customer-list/")
-    suspend fun getCustomersForBill(): CustomerDashboardResponse
+    suspend fun getCustomersForBill(
+        @Query("type") customerType: String
+    ): CustomerDashboardResponse
 
     @GET("api/bills/{bill_id}/")
     suspend fun getBillDetail(@Path("bill_id") billId: Int): BillDetailResponse

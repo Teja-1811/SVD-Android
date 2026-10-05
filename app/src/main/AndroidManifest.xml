@@ -39,6 +39,7 @@
         <!-- Admin -->
         <activity android:name=".ui.admin.AdminDashboardActivity"/>
         <activity android:name=".ui.admin.customer.CustomersData"/>
+        <activity android:name=".ui.admin.customer.CustomerItemDiscountActivity"/>
         <activity android:name=".ui.admin.customer.CustomerProfileActivity"/>
         <activity android:name=".ui.admin.customer.AddCustomerActivity"/>
         <activity android:name=".ui.admin.bills.AdminBillsActivity"/>

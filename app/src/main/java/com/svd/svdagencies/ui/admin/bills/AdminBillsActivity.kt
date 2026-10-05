@@ -340,8 +340,13 @@ class AdminBillsActivity : AdminBaseActivity() {
     private fun fetchCustomers() {
         lifecycleScope.launch {
             try {
-                val response = ApiClient.billsDashboardApi.getCustomersForBill()
-                customers = response.customers ?: emptyList()
+                customers = (
+                    ApiClient.billsDashboardApi.getCustomersForBill("retailer").customers.orEmpty()
+                        + ApiClient.billsDashboardApi.getCustomersForBill("user").customers.orEmpty()
+                    )
+                    .filter { it.frozen != true }
+                    .distinctBy { it.id }
+                    .sortedBy { it.name?.lowercase(Locale.ROOT) }
                 val customerNames = customers.map { "${it.name} (${it.shop_name})" }
                 val adapter = ArrayAdapter(this@AdminBillsActivity, android.R.layout.simple_dropdown_item_1line, customerNames)
                 autoCompleteCustomer.setAdapter(adapter)

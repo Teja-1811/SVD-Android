@@ -33,7 +33,10 @@ interface DeliveryApi {
     ): Call<DeliveryAgentDuesResponse>
 
     @GET("api/delivery/today-bills/{customer_id}/")
-    fun getTodayBills(@retrofit2.http.Path("customer_id") customerId: Int): Call<DeliveryTodayBillsResponse>
+    fun getTodayBills(
+        @retrofit2.http.Path("customer_id") customerId: Int,
+        @retrofit2.http.Query("date") date: String? = null
+    ): Call<DeliveryTodayBillsResponse>
 
     @GET("api/delivery/customer-op/{customer_id}/")
     fun getCustomerOpeningBalance(@retrofit2.http.Path("customer_id") customerId: Int): Call<CustomerOpeningBalanceResponse>

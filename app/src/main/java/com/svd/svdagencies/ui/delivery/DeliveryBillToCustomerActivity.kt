@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.zxing.BarcodeFormat
@@ -56,7 +55,6 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private lateinit var rvItemCatalog: RecyclerView
     private lateinit var btnGenerateBill: MaterialButton
     private lateinit var btnClearSelection: MaterialButton
-    private lateinit var toggleBillMode: MaterialButtonToggleGroup
     private lateinit var btnShowQr: ImageButton
     
     private lateinit var tvItemsTotal: TextView
@@ -82,8 +80,11 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private var currentItemsTotal: Double = 0.0
     private var currentGrandTotal: Double = 0.0
     private var pendingTransactionId: String? = null
-    private var billMode: String = BILL_MODE_REGULAR
-    private val selectedDiscountItemCodes = mutableSetOf<String>()
+    private var billingTarget: String = BILLING_TARGET_CUSTOMER_LIST
+    private val isSelfBilling: Boolean
+        get() = billingTarget == BILLING_TARGET_SELF
+    private val usesMrpPricing: Boolean
+        get() = billingTarget == BILLING_TARGET_CUSTOMER
     private var prefillMap: Map<Int, Int>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -106,18 +107,18 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             drawerLayout,
             navigationView,
             toolbar = toolbar,
-            selectedItemId = R.id.nav_delivery_bill_customer
+            selectedItemId = R.id.nav_delivery_home
         )
 
         setupRecyclerViews()
         setupListeners()
-        fetchRoutes()
+        initializeCustomerBilling()
         updateSummary()
 
         if (intent.getBooleanExtra("open_customer_picker", false)) {
-            autoCustomer.post {
+            autoRoute.post {
                 if (!isFinishing) {
-                    autoCustomer.showDropDown()
+                    autoRoute.showDropDown()
                 }
             }
         }
@@ -127,7 +128,6 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         rvItemCatalog = findViewById(R.id.rvItemCatalog)
         btnGenerateBill = findViewById(R.id.btnGenerateBill)
         btnClearSelection = findViewById(R.id.btnClearSelection)
-        toggleBillMode = findViewById(R.id.toggleBillMode)
         tvItemsTotal = findViewById(R.id.tvItemsTotal)
         tvOpeningDue = findViewById(R.id.tvOpeningDue)
         tvGrandTotal = findViewById(R.id.tvGrandTotal)
@@ -158,26 +158,6 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             } else {
                 showUpdateBalanceDialog()
             }
-        }
-        toggleBillMode.isSingleSelection = false
-        toggleBillMode.isSelectionRequired = false
-        toggleBillMode.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (checkedId == R.id.btnModeSpecial) {
-                billMode = if (isChecked) "special" else "regular"
-            } else {
-                val itemCode = when (checkedId) {
-                    R.id.btnModeCurd120 -> ITEM_CODE_CURD120
-                    R.id.btnModeCurd450 -> ITEM_CODE_CURD450
-                    else -> ITEM_CODE_FCM500
-                }
-                if (isChecked) {
-                    selectedDiscountItemCodes.add(itemCode)
-                } else {
-                    selectedDiscountItemCodes.remove(itemCode)
-                }
-            }
-            catalogAdapter.submitListPreservingQuantities(availableItems)
-            updateSummary()
         }
         btnClearSelection.setOnClickListener {
             catalogAdapter.resetQuantities()
@@ -210,12 +190,74 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             }
         }
         swipeRefresh.setOnRefreshListener { 
-            if (customerId > 0) {
-                fetchItems()
-            } else {
+            if (customerId <= 0) {
                 fetchRoutes()
+            } else if (customerId > 0) {
+                fetchOpeningBalance(customerId)
+                fetchItems()
             }
         }
+    }
+
+    /** Prepares the delivery home to bill a route customer. */
+    private fun initializeCustomerBilling() {
+        pendingTransactionId = null
+        openingDue = 0.0
+        catalogAdapter.resetQuantities()
+        availableItems = emptyList()
+        etCollectedAmount.setText("")
+
+        customerId = 0
+        customerName = ""
+        customerPhone = ""
+        customerUserType = "user"
+        autoRoute.setText("")
+        autoCustomer.setText("")
+        selectedRouteId = null
+        catalogAdapter.setUserType(customerUserType)
+        catalogAdapter.submitList(emptyList())
+        fetchRoutes()
+        updateSummary()
+    }
+
+    /** Selects Self, walk-in Customer (MRP), or a named Customer List account. */
+    private fun selectBillingTarget(target: String) {
+        if (billingTarget == target &&
+            ((target == BILLING_TARGET_SELF && customerId == sessionManager.getUserId()) ||
+                (target == BILLING_TARGET_CUSTOMER && customerId == sessionManager.getUserId()) ||
+                (target == BILLING_TARGET_CUSTOMER_LIST && customerId == 0))
+        ) return
+
+        billingTarget = target
+        pendingTransactionId = null
+        openingDue = 0.0
+        catalogAdapter.resetQuantities()
+        availableItems = emptyList()
+        etCollectedAmount.setText("")
+
+        if (target == BILLING_TARGET_SELF || target == BILLING_TARGET_CUSTOMER) {
+            customerId = sessionManager.getUserId()
+            customerName = if (target == BILLING_TARGET_SELF) "Self" else "Customer"
+            customerPhone = ""
+            customerUserType = "delivery"
+            autoCustomer.setText(customerName, false)
+            catalogAdapter.setUserType(customerUserType)
+            catalogAdapter.submitList(emptyList())
+            if (customerId > 0) {
+                fetchOpeningBalance(customerId)
+                fetchItems()
+            }
+        } else {
+            customerId = 0
+            customerName = ""
+            customerPhone = ""
+            customerUserType = "user"
+            autoCustomer.setText("")
+            catalogAdapter.setUserType(customerUserType)
+            catalogAdapter.submitList(emptyList())
+            fetchCustomers()
+        }
+        updateSummary()
     }
 
     private fun fetchRoutes() {
@@ -237,6 +279,9 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         val newRouteName = if (position == 0) "All Routes" else routes.getOrNull(position - 1)?.name
                         
                         if (selectedRouteId != newRouteId) {
+                            if (billingTarget != BILLING_TARGET_CUSTOMER_LIST) {
+                                selectBillingTarget(BILLING_TARGET_CUSTOMER_LIST)
+                            }
                             selectedRouteId = newRouteId
                             sessionManager.saveSelectedRoute(selectedRouteId, newRouteName)
                             autoCustomer.setText("")
@@ -274,7 +319,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                 if (response.isSuccessful) {
                     customers = response.body()?.results ?: emptyList()
                     val labels = withContext(Dispatchers.Default) {
-                        customers.map { it.label }
+                        listOf("Self", "Customer") + customers.map { it.label }
                     }
                     
                     autoCustomer.setAdapter(
@@ -282,16 +327,24 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     )
                     
                     autoCustomer.setOnItemClickListener { _, _, position, _ ->
-                        customers.getOrNull(position)?.let { customer ->
-                            customerId = customer.id
-                            customerName = customer.name
-                            customerPhone = customer.phone.orEmpty()
-                            customerUserType = customer.userType ?: "user"
-                            fetchOpeningBalance(customer.id)
-                            
-                            catalogAdapter.setUserType(customerUserType)
-                            catalogAdapter.submitList(emptyList())
-                            fetchItems()
+                        when (position) {
+                            0 -> selectBillingTarget(BILLING_TARGET_SELF)
+                            1 -> selectBillingTarget(BILLING_TARGET_CUSTOMER)
+                            else -> customers.getOrNull(position - 2)?.let { customer ->
+                                if (billingTarget != BILLING_TARGET_CUSTOMER_LIST) {
+                                    selectBillingTarget(BILLING_TARGET_CUSTOMER_LIST)
+                                }
+                                customerId = customer.id
+                                customerName = customer.name
+                                customerPhone = customer.phone.orEmpty()
+                                customerUserType = customer.userType ?: "user"
+                                fetchOpeningBalance(customer.id)
+
+                                // The server returns this customer's saved final item prices.
+                                catalogAdapter.setUserType("user")
+                                catalogAdapter.submitList(emptyList())
+                                fetchItems()
+                            }
                         }
                     }
                     
@@ -358,7 +411,12 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     val responseBody = catalogResponse.body()
                     val rawItems = responseBody?.items?.filter { it.stockQuantity > 0 } ?: emptyList()
                     val orderMap = buildItemOrderMap(responseBody, rawItems)
-                    availableItems = rawItems.sortedWith(compareBy<DeliveryBillItem> {
+                    val pricedItems = if (usesMrpPricing) {
+                        rawItems.map { item -> item.copy(price = item.mrp) }
+                    } else {
+                        rawItems
+                    }
+                    availableItems = pricedItems.sortedWith(compareBy<DeliveryBillItem> {
                         val cleanCode = it.code.trim().lowercase()
                         orderMap[cleanCode] ?: Int.MAX_VALUE
                     }.thenBy { it.name.lowercase(Locale.ROOT) })
@@ -568,7 +626,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         showConfirmationDialog(selectedItems)
     }
 
-    /** Previous due is displayed separately; overpayments remain customer credit. */
+    /** Previous due is displayed separately; excess payment becomes customer credit. */
     private fun validateCollectedAmount(requirePayment: Boolean): Double? {
         val collected = etCollectedAmount.text.toString().toDoubleOrNull() ?: 0.0
         if (collected < 0.0) {
@@ -652,8 +710,8 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     paidAmount = collectedAmountValue,
                     paymentMethod = if (showQr) "UPI" else if (collectedAmountValue > 0) "CASH" else null,
                     transactionId = transactionId,
-                    billMode = billMode,
-                    discountItemCodes = selectedDiscountItemCodes.toList()
+                    billingTarget = billingTarget,
+                    pricingMode = if (usesMrpPricing) PRICING_MODE_MRP else PRICING_MODE_CUSTOMER_DISCOUNT
                 )
                 
                 val response = ApiClient.deliveryApi.generateBill(request).awaitResponse()
@@ -661,7 +719,10 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     Toast.makeText(this@DeliveryBillToCustomerActivity, "Bill Generated", Toast.LENGTH_SHORT).show()
                     
                     val responseBody = response.body()
-                    val amountToPay = currentGrandTotal
+                    // The QR must use the same amount sent to the server.
+                    // Keep the QR request aligned with the paid_amount sent to
+                    // the server instead of falling back to the displayed total.
+                    val amountToPay = collectedAmountValue
                     
                     if (showQr) {
                         showPaymentQr(
@@ -695,8 +756,6 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private fun resetLayout() {
         catalogAdapter.resetQuantities()
         etCollectedAmount.setText("")
-        selectedDiscountItemCodes.clear()
-        toggleBillMode.clearChecked()
         
         // Refresh items and opening balance for the same customer
         if (customerId > 0) {
@@ -713,21 +772,8 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     }
 
     private fun discountForItem(item: DeliveryBillItem, quantity: Int): Double {
-        val code = item.code.trim().lowercase(Locale.ROOT)
-
-        // 1. Check for Special Mode discounts (matching DeliveryCreateBillActivity)
-        if (billMode == BILL_MODE_SPECIAL) {
-            val specialDiscount = when {
-                code == ITEM_CODE_FCM500 -> FCM500_SPECIAL_DISCOUNT
-                code == ITEM_CODE_CURD450 -> CURD450_SPECIAL_DISCOUNT
-                code == ITEM_CODE_CURD120 && quantity >= CURD120_SPECIAL_MIN_QTY -> CURD120_SPECIAL_DISCOUNT
-                else -> 0.0
-            }
-            if (specialDiscount > 0) return specialDiscount
-        }
-
-        // 2. Fallback to manual item-code button toggles
-        return if (code in selectedDiscountItemCodes && quantity > 0) ITEM_CODE_BUTTON_DISCOUNT else 0.0
+        // The API price already includes the saved database rule.
+        return 0.0
     }
 
     private fun discountedLineTotal(item: DeliveryBillItem, quantity: Int): Double {
@@ -753,16 +799,10 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     }
 
     companion object {
-        private const val BILL_MODE_REGULAR = "regular"
-        private const val BILL_MODE_SPECIAL = "special"
-        private const val ITEM_CODE_FCM500 = "fcm500"
-        private const val ITEM_CODE_CURD450 = "curd450"
-        private const val ITEM_CODE_CURD120 = "curd120"
-        private const val ITEM_CODE_BUTTON_DISCOUNT = 0.5
-
-        private const val FCM500_SPECIAL_DISCOUNT = 0.5
-        private const val CURD450_SPECIAL_DISCOUNT = 0.3
-        private const val CURD120_SPECIAL_DISCOUNT = 0.25
-        private const val CURD120_SPECIAL_MIN_QTY = 96
+        private const val BILLING_TARGET_SELF = "self"
+        private const val BILLING_TARGET_CUSTOMER = "customer"
+        private const val BILLING_TARGET_CUSTOMER_LIST = "customer_list"
+        private const val PRICING_MODE_MRP = "mrp"
+        private const val PRICING_MODE_CUSTOMER_DISCOUNT = "customer_discount"
     }
 }

@@ -1,5 +1,7 @@
 package com.svd.svdagencies.data.model.admin.customerData
 
+import com.google.gson.annotations.SerializedName
+
 data class ToggleFreezeResponse(
     val success: Boolean,
     val frozen: Boolean
@@ -16,8 +18,9 @@ data class CustomerDetail(
     val area: String?,
     val route_id: Int? = null,
     val route_name: String? = null,
-    val pincode: String?,
-    val address: String?,
+    @SerializedName("pin_code") val pincode: String?,
+    @SerializedName("flat_number") val address: String?,
     val frozen: Boolean,
-    val retailer_id: String?
+    val retailer_id: String?,
+    val user_type: String? = "retailer"
 )

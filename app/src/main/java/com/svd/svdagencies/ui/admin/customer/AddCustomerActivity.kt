@@ -27,6 +27,8 @@ class AddCustomerActivity : AdminBaseActivity() {
     private lateinit var api: CustomerDashboardApi
     private var routes: List<DeliveryRoute> = emptyList()
     private var selectedRouteId: Int? = null
+    private val customerTypes = listOf("retailer", "user", "delivery")
+    private var selectedType = "retailer"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +36,7 @@ class AddCustomerActivity : AdminBaseActivity() {
         setContentView(binding.root)
 
         api = ApiClient.adminCustomerDashboard
+        binding.spinnerEntryType.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, customerTypes.map { it.replaceFirstChar(Char::titlecase) })
 
         // Check if we are in Update mode
         customerToUpdate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -42,6 +45,9 @@ class AddCustomerActivity : AdminBaseActivity() {
             @Suppress("DEPRECATION")
             intent.getParcelableExtra("CUSTOMER_TO_UPDATE")
         }
+        selectedType = intent.getStringExtra("DEFAULT_CUSTOMER_TYPE")
+            ?.takeIf { it in customerTypes }
+            ?: selectedType
 
         if (customerToUpdate != null) {
             setupAdminLayout("Update Customer")
@@ -50,13 +56,20 @@ class AddCustomerActivity : AdminBaseActivity() {
         } else {
             setupAdminLayout("Add Customer")
             binding.btnAddCustomer.text = "Add Customer"
+            binding.etPinCode.setText("534427")
+            binding.etCity.setText("GGL")
+            binding.etState.setText("AP")
+            binding.spinnerEntryType.setSelection(customerTypes.indexOf(selectedType))
         }
 
         loadRoutes()
         setupListeners()
+        updateTypeLabels()
     }
 
     private fun populateFields(customer: CustomerItem) {
+        selectedType = customer.user_type?.takeIf { it in customerTypes } ?: "retailer"
+        binding.spinnerEntryType.setSelection(customerTypes.indexOf(selectedType))
         binding.etCustomerName.setText(customer.name)
         binding.etShopName.setText(customer.shop_name)
         binding.etPhone.setText(customer.phone)
@@ -80,6 +93,9 @@ class AddCustomerActivity : AdminBaseActivity() {
                 binding.actRoute.setText(detail.route_name.orEmpty(), false)
                 binding.etPinCode.setText(detail.pincode)
                 binding.etAddressLine1.setText(detail.address)
+                selectedType = detail.user_type?.takeIf { it in customerTypes } ?: selectedType
+                binding.spinnerEntryType.setSelection(customerTypes.indexOf(selectedType))
+                updateTypeLabels()
             } catch (e: Exception) {
                 // Ignore failure
             }
@@ -87,6 +103,13 @@ class AddCustomerActivity : AdminBaseActivity() {
     }
 
     private fun setupListeners() {
+        binding.spinnerEntryType.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                selectedType = customerTypes[position]
+                updateTypeLabels()
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) = Unit
+        }
         binding.btnAddCustomer.setOnClickListener {
             saveCustomer()
         }
@@ -94,6 +117,14 @@ class AddCustomerActivity : AdminBaseActivity() {
         binding.btnCancel.setOnClickListener {
             finish()
         }
+    }
+
+    private fun updateTypeLabels() {
+        val label = selectedType.replaceFirstChar(Char::titlecase)
+        binding.tvFormSubtitle.text = "Fill the form to save ${selectedType} details"
+        binding.tvCustomerNameLabel.text = "$label Name *"
+        binding.tvShopNameLabel.text = if (selectedType == "user") "Reference / Shop Name" else "Shop Name"
+        binding.tvRetailerIdLabel.text = "$label ID"
     }
 
     private fun loadRoutes() {
@@ -104,6 +135,9 @@ class AddCustomerActivity : AdminBaseActivity() {
                 val routeNames = listOf("No Route") + routes.map { it.name }
                 val adapter = ArrayAdapter(this@AddCustomerActivity, android.R.layout.simple_dropdown_item_1line, routeNames)
                 binding.actRoute.setAdapter(adapter)
+                binding.actRoute.setOnClickListener {
+                    binding.actRoute.showDropDown()
+                }
                 binding.actRoute.setOnItemClickListener { _, _, position, _ ->
                     selectedRouteId = if (position == 0) null else routes.getOrNull(position - 1)?.id
                 }
@@ -128,8 +162,8 @@ class AddCustomerActivity : AdminBaseActivity() {
         val city = binding.etCity.text.toString().trim()
         val state = binding.etState.text.toString().trim()
         val area = binding.etArea.text.toString().trim()
-        val pincode = binding.etPinCode.text.toString().trim()
-        val address = binding.etAddressLine1.text.toString().trim()
+        val pinCode = binding.etPinCode.text.toString().trim()
+        val flatNumber = binding.etAddressLine1.text.toString().trim()
         
         if (name.isEmpty()) {
             Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show()
@@ -144,10 +178,11 @@ class AddCustomerActivity : AdminBaseActivity() {
             city = city,
             state = state,
             area = area,
-            pincode = pincode,
-            address = address,
+            pinCode = pinCode,
+            flatNumber = flatNumber,
             retailer_id = retailerId,
-            route_id = selectedRouteId
+            route_id = selectedRouteId,
+            userType = selectedType
         )
 
         binding.btnAddCustomer.showLoading(true, "Saving...")

@@ -21,13 +21,63 @@
 
         <!-- ================= SEARCH & ADD ================= -->
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/spacing_medium"
             android:gravity="center_vertical"
             android:background="@color/card_background"
             android:elevation="@dimen/card_elevation_small">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupCustomerType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipDelivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Delivery"
+                    android:checked="true"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipRetailer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Retailers"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="Users"/>
+            </com.google.android.material.chip.ChipGroup>
+
+            <AutoCompleteTextView
+                android:id="@+id/actRouteFilter"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_edittext"
+                android:completionThreshold="0"
+                android:hint="All Routes"
+                android:inputType="none"
+                android:padding="12dp"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="@color/gray500"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
             <!-- Search Bar -->
             <FrameLayout
@@ -64,6 +114,8 @@
                 app:tint="@color/white"
                 app:srcCompat="@drawable/ic_add"
                 app:fabSize="mini"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

@@ -50,6 +50,7 @@ class CreateBillActivity : AdminBaseActivity() {
     
     private lateinit var tvTotalQty: TextView
     private lateinit var tvTotalDiscAmount: TextView
+    private lateinit var tvOpeningDue: TextView
     private lateinit var tvGrandTotal: TextView
 
     private lateinit var itemAdapter: CreateBillItemAdapter
@@ -60,6 +61,7 @@ class CreateBillActivity : AdminBaseActivity() {
     
     private var selectedCustomer: CustomerItem? = null
     private var selectedItem: AdminItem? = null
+    private var openingDue: Double = 0.0
 
     private val calendar = Calendar.getInstance()
 
@@ -95,6 +97,7 @@ class CreateBillActivity : AdminBaseActivity() {
         
         tvTotalQty = findViewById(R.id.tvTotalQty)
         tvTotalDiscAmount = findViewById(R.id.tvTotalDiscAmount)
+        tvOpeningDue = findViewById(R.id.tvOpeningDue)
         tvGrandTotal = findViewById(R.id.tvGrandTotal)
     }
 
@@ -116,6 +119,7 @@ class CreateBillActivity : AdminBaseActivity() {
 
         spinnerCustomer.setOnItemClickListener { _, _, position, _ ->
             selectedCustomer = filteredCustomers[position]
+            openingDue = selectedCustomer?.due ?: 0.0
             repriceBillItemsForSelectedCustomer()
         }
 
@@ -216,10 +220,21 @@ class CreateBillActivity : AdminBaseActivity() {
         lifecycleScope.launch {
             showScreenLoading()
             try {
-                val customersDeferred = async { ApiClient.billsDashboardApi.getCustomersForBill() }
+                val retailerCustomersDeferred = async {
+                    ApiClient.billsDashboardApi.getCustomersForBill(CUSTOMER_TYPE_RETAILER)
+                }
+                val userCustomersDeferred = async {
+                    ApiClient.billsDashboardApi.getCustomersForBill(CUSTOMER_TYPE_USER)
+                }
                 val itemsDeferred = async { fetchAllAvailableItems() }
                 
-                allCustomers = customersDeferred.await().customers ?: emptyList()
+                allCustomers = (
+                    retailerCustomersDeferred.await().customers.orEmpty()
+                        + userCustomersDeferred.await().customers.orEmpty()
+                    )
+                    .filter { it.frozen != true }
+                    .distinctBy { it.id }
+                    .sortedBy { it.name?.lowercase(Locale.ROOT) }
                 allAvailableItems = itemsDeferred.await()
 
                 val routes = (listOf("All Routes") + allCustomers.mapNotNull { it.route_name }.distinct().filter { it.isNotEmpty() }).sorted()
@@ -270,6 +285,9 @@ class CreateBillActivity : AdminBaseActivity() {
                     }
                     
                     itemAdapter.updateItems(itemsForCreation)
+                    // Editing must retain the amount that was due when this
+                    // invoice was originally created, not today's customer due.
+                    openingDue = billDetail.openingDue
                     repriceBillItemsForSelectedCustomer()
                     updateSummary()
                 }
@@ -300,6 +318,8 @@ class CreateBillActivity : AdminBaseActivity() {
         
         spinnerCustomer.setText("", false)
         selectedCustomer = null
+        openingDue = 0.0
+        updateSummary()
     }
 
     private fun filterItems(query: String) {
@@ -336,14 +356,12 @@ class CreateBillActivity : AdminBaseActivity() {
 
         tvTotalQty.text = totalQty.toString()
         tvTotalDiscAmount.text = "₹%.2f".format(totalDiscount)
+        tvOpeningDue.text = "₹%.2f".format(openingDue)
         val roundedGrandTotal = ceil(grandTotal)
         tvGrandTotal.text = "₹%.0f".format(roundedGrandTotal)
     }
 
     private fun priceForSelectedCustomer(item: AdminItem): Double {
-        if (selectedCustomer?.id == SPECIAL_CUSTOMER_ID && item.code.equals(CURD450_CODE, ignoreCase = true)) {
-            return CURD450_CUSTOMER_PRICE
-        }
         return item.selling_price
             ?.replace("₹", "")
             ?.replace(",", "")
@@ -469,8 +487,7 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private companion object {
-        const val SPECIAL_CUSTOMER_ID = 25
-        const val CURD450_CODE = "CURD450"
-        const val CURD450_CUSTOMER_PRICE = 29.0
+        const val CUSTOMER_TYPE_RETAILER = "retailer"
+        const val CUSTOMER_TYPE_USER = "user"
     }
 }

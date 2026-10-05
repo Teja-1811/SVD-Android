@@ -15,5 +15,6 @@ data class CustomerItem(
     val retailer_id: String? = null,
     val area: String? = "",
     val route_id: Int? = null,
-    val route_name: String? = null
+    val route_name: String? = null,
+    val user_type: String? = "retailer"
 ) : Parcelable

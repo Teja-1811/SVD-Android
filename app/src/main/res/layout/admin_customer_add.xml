@@ -34,6 +34,7 @@
                 android:padding="16dp">
 
                 <TextView
+                    android:id="@+id/tvFormSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Fill the form to save customer details"
@@ -90,8 +91,33 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Entry Type *"
+                                android:textSize="12sp"
+                                android:textColor="@color/textColorSecondary"
+                                android:layout_marginBottom="4dp"/>
+
+                            <Spinner
+                                android:id="@+id/spinnerEntryType"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_edittext"
+                                android:padding="8dp"
+                                android:layout_marginBottom="4dp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Changing the type moves this record to the selected list."
+                                android:textColor="@color/gray500"
+                                android:textSize="11sp"
+                                android:layout_marginBottom="16dp"/>
+
                             <!-- Name -->
                             <TextView
+                                android:id="@+id/tvCustomerNameLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Customer Name *"
@@ -114,6 +140,7 @@
 
                             <!-- Shop Name -->
                             <TextView
+                                android:id="@+id/tvShopNameLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Shop Name"
@@ -144,6 +171,7 @@
 
                             <!-- Retailer ID -->
                             <TextView
+                                android:id="@+id/tvRetailerIdLabel"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Retailer ID"
@@ -162,6 +190,8 @@
                                 android:textColor="@color/textColorPrimary"
                                 android:textColorHint="@color/gray500"
                                 android:inputType="text"
+                                android:focusable="false"
+                                android:clickable="false"
                                 android:layout_marginBottom="16dp"/>
 
                             <!-- Phone -->
@@ -290,6 +320,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_edittext"
+                              android:completionThreshold="0"
                             android:hint="Select Route"
                             android:inputType="none"
                             android:padding="12dp"

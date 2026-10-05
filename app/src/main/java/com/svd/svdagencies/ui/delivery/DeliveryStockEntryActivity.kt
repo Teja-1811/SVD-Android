@@ -203,8 +203,7 @@ class DeliveryStockEntryActivity : BaseActivity() {
                     items = selectedItems.map { BillLineItem(it.first.itemId, it.second, 0.0) },
                     paidAmount = 0.0,
                     paymentMethod = "CASH",
-                    transactionId = transactionId,
-                    billMode = "regular"
+                      transactionId = transactionId
                 )
 
                 val response = ApiClient.deliveryApi.generateBill(request).awaitResponse()

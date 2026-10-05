@@ -22,6 +22,7 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesResponse
 import com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesSummary
 import com.svd.svdagencies.data.model.delivery.DeliveryTodayBill
+import com.svd.svdagencies.data.model.delivery.DeliveryTodayBillItem
 import com.svd.svdagencies.databinding.DeliveryDashboardBinding
 import com.svd.svdagencies.utils.SessionManager
 import kotlinx.coroutines.launch
@@ -163,7 +164,19 @@ class DeliveryDashboardActivity : BaseActivity() {
                             customerName = it.customer,
                             customerPhone = it.customerPhone,
                             customerShopName = it.customerShopName,
-                            dueAmount = it.dueAmount
+                            openingDue = it.openingDue,
+                            paid = it.paidAmount,
+                            remainingDue = it.remainingDue,
+                            dueAmount = it.dueAmount,
+                            items = it.items.map { line ->
+                                DeliveryTodayBillItem(
+                                    name = line.itemName,
+                                    quantity = line.quantity,
+                                    pricePerUnit = line.pricePerUnit,
+                                    discount = line.totalDiscount,
+                                    totalAmount = line.amount
+                                )
+                            }
                         )
                     }
 

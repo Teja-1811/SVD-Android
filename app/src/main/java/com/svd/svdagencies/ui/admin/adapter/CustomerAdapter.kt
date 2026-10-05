@@ -41,6 +41,7 @@ class CustomerAdapter(
         holder.binding.apply {
             txtCustomerName.text = "${c.serial_no}. ${c.name}"
             txtShopName.text = c.shop_name
+            txtRoute.text = "Route: ${c.route_name?.takeIf { it.isNotBlank() } ?: "-"}"
             txtPhone.text = c.phone
             txtBalance.text = "₹ %.2f".format(c.due)
 
@@ -54,6 +55,8 @@ class CustomerAdapter(
 
             // Freeze button visual state
             if (c.frozen == true) {
+                txtStatus.text = "Frozen"
+                txtStatus.setTextColor(ContextCompat.getColor(root.context, R.color.icon_red))
                 // Frozen State: Unfreeze (Green)
                 btnPassword.setImageResource(R.drawable.ic_unlock)
                 btnPassword.setBackgroundResource(R.drawable.bg_icon_btn_green)
@@ -61,6 +64,8 @@ class CustomerAdapter(
                     ContextCompat.getColor(root.context, R.color.icon_green)
                 )
             } else {
+                txtStatus.text = "Active"
+                txtStatus.setTextColor(ContextCompat.getColor(root.context, R.color.icon_green))
                 // Active State: Freeze (Red/Gray)
                 btnPassword.setImageResource(R.drawable.ic_lock)
                 btnPassword.setBackgroundResource(R.drawable.bg_icon_btn_red)

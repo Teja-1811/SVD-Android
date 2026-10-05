@@ -5,6 +5,7 @@ import com.svd.svdagencies.utils.PaymentConfig
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -26,6 +27,8 @@ import com.svd.svdagencies.utils.SessionManager
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class DeliveryBillHistoryActivity : BaseActivity() {
@@ -41,6 +44,8 @@ class DeliveryBillHistoryActivity : BaseActivity() {
     private lateinit var tvTotalInvoiceAmount: TextView
     private lateinit var todayBillAdapter: DeliveryTodayBillAdapter
     private lateinit var sessionManager: SessionManager
+    private lateinit var toolbar: MaterialToolbar
+    private val selectedDate = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +56,21 @@ class DeliveryBillHistoryActivity : BaseActivity() {
         historyCustomerName = intent.getStringExtra("customer_name").orEmpty()
         historyCustomerPhone = intent.getStringExtra("customer_phone").orEmpty()
 
-        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
-        toolbar.title = "Today's Bills"
+        toolbar = findViewById(R.id.toolbar)
+        toolbar.title = "Bills"
         toolbar.setNavigationOnClickListener { finish() }
+        toolbar.menu.add(0, DATE_FILTER_MENU_ID, 0, "Today").apply {
+            setIcon(R.drawable.ic_calendar)
+            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == DATE_FILTER_MENU_ID) {
+                showDatePicker()
+                true
+            } else {
+                false
+            }
+        }
 
         rvTodayBills = findViewById(R.id.rvTodayBills)
         swipeRefresh = findViewById(R.id.swipeRefresh)
@@ -82,6 +99,28 @@ class DeliveryBillHistoryActivity : BaseActivity() {
         swipeRefresh.setOnRefreshListener { fetchBills() }
     }
 
+    private fun showDatePicker() {
+        android.app.DatePickerDialog(
+            this,
+            { _, year, month, dayOfMonth ->
+                selectedDate.set(year, month, dayOfMonth)
+                updateDateFilterLabel()
+                fetchBills()
+            },
+            selectedDate.get(Calendar.YEAR),
+            selectedDate.get(Calendar.MONTH),
+            selectedDate.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    private fun updateDateFilterLabel() {
+        val label = SimpleDateFormat("dd MMM", Locale.getDefault()).format(selectedDate.time)
+        toolbar.menu.findItem(DATE_FILTER_MENU_ID)?.title = label
+    }
+
+    private fun selectedDateApiValue(): String =
+        SimpleDateFormat("yyyy-MM-dd", Locale.US).format(selectedDate.time)
+
     private fun fetchBills() {
         val targetId = if (customerId > 0) customerId else sessionManager.getUserId()
         if (targetId <= 0) return
@@ -89,7 +128,9 @@ class DeliveryBillHistoryActivity : BaseActivity() {
         lifecycleScope.launch {
             swipeRefresh.isRefreshing = true
             try {
-                val response = ApiClient.deliveryApi.getTodayBills(targetId).awaitResponse()
+                val response = ApiClient.deliveryApi
+                    .getTodayBills(targetId, selectedDateApiValue())
+                    .awaitResponse()
                 if (response.isSuccessful) {
                     val body = response.body()
                     val bills = (body?.bills ?: emptyList()).map { bill ->
@@ -105,7 +146,7 @@ class DeliveryBillHistoryActivity : BaseActivity() {
                     
                     if (bills.isNotEmpty()) {
                         cardSummary.visibility = View.VISIBLE
-                        tvTotalBillsCount.text = "${bills.size} Bills"
+                        tvTotalBillsCount.text = "${bills.size} Bills · ${toolbar.menu.findItem(DATE_FILTER_MENU_ID)?.title}"
                         tvTotalInvoiceAmount.text = money(totalAmount)
                     } else {
                         cardSummary.visibility = View.GONE
@@ -123,6 +164,10 @@ class DeliveryBillHistoryActivity : BaseActivity() {
                 swipeRefresh.isRefreshing = false
             }
         }
+    }
+
+    companion object {
+        private const val DATE_FILTER_MENU_ID = 1001
     }
 
     private fun showBillDetails(bill: DeliveryTodayBill) {
