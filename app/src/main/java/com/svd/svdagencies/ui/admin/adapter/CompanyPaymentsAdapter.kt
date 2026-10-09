@@ -94,18 +94,20 @@ class CompanyPaymentsAdapter(
 
         fun bind(company: CompanyPayment) {
             tvCompanyName.text = company.company_name
-            
-            updateCompanySummary(company)
 
-            var adapter = recordsAdapters[company.company_id]
-            if (adapter == null) {
-                val summaryItems = convertDailyRecords(company.records)
-                adapter = CompanyDuesDailyRecordsAdapter(summaryItems) {
-                    // Update totals when records change
-                    recalculateCompanyTotals(company, summaryItems)
+            val adapter = recordsAdapters[company.company_id]
+                ?: run {
+                    val summaryItems = convertDailyRecords(company.records)
+                    CompanyDuesDailyRecordsAdapter(summaryItems) {
+                        // Update totals when records change
+                        recalculateCompanyTotals(company, summaryItems)
+                    }.also { recordsAdapters[company.company_id] = it }
                 }
-                recordsAdapters[company.company_id] = adapter
-            }
+
+            // The card must use the same rows the user sees and edits. This
+            // prevents a saved/stale advance total from appearing beside a
+            // current overall due (or the reverse).
+            updateCompanySummary(adapter.getRecords())
             
             if (rvDailyRecords.adapter !== adapter) {
                 rvDailyRecords.adapter = adapter
@@ -121,8 +123,11 @@ class CompanyPaymentsAdapter(
             updateSummaryUI(totalInvoice, totalPaid)
         }
 
-        private fun updateCompanySummary(company: CompanyPayment) {
-            updateSummaryUI(company.total_invoice, company.total_paid)
+        private fun updateCompanySummary(items: List<AdminSummaryItem>) {
+            updateSummaryUI(
+                items.sumOf { it.invoice_amount },
+                items.sumOf { it.paid_amount }
+            )
         }
 
         private fun updateSummaryUI(totalInvoice: Double, totalPaid: Double) {
