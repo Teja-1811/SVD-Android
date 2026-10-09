@@ -31,6 +31,17 @@
                 app:titleTextColor="@color/white">
 
                 <ImageButton
+                    android:id="@+id/btnCallCustomer"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Call selected customer"
+                    android:src="@drawable/ic_phone"
+                    android:visibility="gone"
+                    app:tint="@color/white" />
+
+                <ImageButton
                     android:id="@+id/btnShowQr"
                     android:layout_width="48dp"
                     android:layout_height="48dp"

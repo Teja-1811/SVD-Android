@@ -37,6 +37,12 @@ interface AdminPaymentsApi {
         @Body body: Map<String, String>
     ): Map<String, Any>
 
+    @POST("api/customer-payments/edit/{payment_id}/")
+    suspend fun editCustomerPayment(
+        @Path("payment_id") paymentId: Int,
+        @Body body: Map<String, @JvmSuppressWildcards Any>
+    ): Map<String, Any>
+
     @DELETE("api/customer-payments/delete/{payment_id}/")
     suspend fun deletePayment(
         @Path("payment_id") paymentId: Int

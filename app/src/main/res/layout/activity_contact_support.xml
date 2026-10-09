@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clipToPadding="false"
+    android:padding="@dimen/spacing_large">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Support Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_xlarge"
+            style="@style/Widget.App.CardView"
+            app:cardBackgroundColor="@color/card_background"
+            app:cardCornerRadius="@dimen/card_corner_radius_small"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/card_stroke_color">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_xlarge">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/logo"
+                    android:layout_marginBottom="@dimen/spacing_large"
+                    android:contentDescription="SVD Logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Contact Support"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_huge"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_tiny"
+                    android:text="We're here to help you 6 AM - 10 PM"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xlarge"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <LinearLayout
+                        android:id="@+id/btnCall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_icon_btn"
+                            android:padding="@dimen/spacing_medium"
+                            android:src="@drawable/ic_phone"
+                            app:tint="@color/brand_red"
+                            android:contentDescription="Call Support" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:text="Call"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_body_small" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btnWhatsapp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_icon_btn_green"
+                            android:padding="@dimen/spacing_medium"
+                            android:src="@drawable/ic_whatsapp"
+                            app:tint="@color/green_status"
+                            android:contentDescription="WhatsApp Support" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:text="WhatsApp"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_body_small" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btnEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/bg_icon_btn_gray"
+                            android:padding="@dimen/spacing_medium"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/text_secondary"
+                            android:contentDescription="Email Support" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_small"
+                            android:text="Email"
+                            android:textColor="@color/text_primary"
+                            android:textSize="@dimen/text_size_body_small" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Message Form -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send a Message"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/spacing_tiny"
+            android:layout_marginBottom="@dimen/spacing_medium"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:hint="Subject"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_medium"
+            app:boxStrokeColor="@color/brand_red"
+            app:hintTextColor="@color/brand_red">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputSubject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:hint="Description"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_medium"
+            app:boxStrokeColor="@color/brand_red"
+            app:hintTextColor="@color/brand_red">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:inputType="textMultiLine|textCapSentences"
+                android:minLines="4"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:hint="Phone Number"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_medium"
+            app:boxStrokeColor="@color/brand_red"
+            app:hintTextColor="@color/brand_red">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_xlarge"
+            android:hint="Email Address (Optional)"
+            app:boxCornerRadiusBottomEnd="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusBottomStart="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusTopEnd="@dimen/card_corner_radius_medium"
+            app:boxCornerRadiusTopStart="@dimen/card_corner_radius_medium"
+            app:boxStrokeColor="@color/brand_red"
+            app:hintTextColor="@color/brand_red">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Submit Message"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/card_corner_radius_medium" />
+
+    </LinearLayout>
+</ScrollView>

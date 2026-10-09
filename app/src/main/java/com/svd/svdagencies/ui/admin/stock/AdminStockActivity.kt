@@ -29,6 +29,7 @@ import com.svd.svdagencies.utils.NetworkMessageUtils
 import com.svd.svdagencies.data.model.admin.stock.StockDateEntry
 import com.svd.svdagencies.data.model.admin.stock.StockLeakageEntry
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.showDestructiveDialog
 import android.view.LayoutInflater
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -335,7 +336,7 @@ class AdminStockActivity : AdminBaseActivity() {
             .setMessage("Are you sure you want to delete this entry for ${entry.itemName}? This will restore the stock levels.")
             .setPositiveButton("Delete") { _, _ -> deleteStockEntry(entry.id) }
             .setNegativeButton("Cancel", null)
-            .show()
+            .showDestructiveDialog()
     }
 
     private fun deleteStockEntry(id: Int) {
@@ -363,7 +364,7 @@ class AdminStockActivity : AdminBaseActivity() {
             .setMessage("Restore ${entry.quantity} units to ${entry.itemName} stock?")
             .setPositiveButton("Delete") { _, _ -> deleteLeakage(entry.id) }
             .setNegativeButton("Cancel", null)
-            .show()
+            .showDestructiveDialog()
     }
 
     private fun deleteLeakage(id: Int) {

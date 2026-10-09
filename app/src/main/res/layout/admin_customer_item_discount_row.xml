@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/card_stroke_color"
+    app:strokeWidth="1dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp">
+        <TextView android:id="@+id/tvItemName" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/textColorPrimary" android:textSize="15sp" android:textStyle="bold" />
+        <TextView android:id="@+id/tvPrice" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:textColor="@color/textColorSecondary" android:textSize="13sp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center_vertical" android:orientation="horizontal">
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="Discount / unit" app:prefixText="₹">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/etDiscount" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal|numberSigned" android:textSize="14sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView android:id="@+id/tvFinalPrice" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:textColor="@color/icon_green" android:textSize="14sp" android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

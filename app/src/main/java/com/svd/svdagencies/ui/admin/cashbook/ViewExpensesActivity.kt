@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.showDestructiveDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -143,7 +144,7 @@ class ViewExpensesActivity : AdminBaseActivity() {
                 deleteExpense(expense.id)
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .showDestructiveDialog()
     }
 
     private fun deleteExpense(id: Int) {

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_delivery_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home" />
+    <item
+        android:id="@+id/nav_delivery_stock_entry"
+        android:icon="@drawable/ic_stock"
+        android:title="Daily Stock Entry" />
+    <item
+        android:id="@+id/nav_delivery_catalog"
+        android:icon="@drawable/ic_items"
+        android:title="Cataloge" />
+    <item
+        android:id="@+id/nav_delivery_today_report"
+        android:icon="@drawable/ic_calendar"
+        android:title="Today Report" />
+    <item
+        android:id="@+id/nav_delivery_payments"
+        android:icon="@drawable/ic_payments"
+        android:title="Payments" />
+    <item
+        android:id="@+id/nav_delivery_bill_history"
+        android:icon="@drawable/ic_orders"
+        android:title="Bill History" />
+    <item
+        android:id="@+id/nav_delivery_stock_history"
+        android:icon="@drawable/ic_stock"
+        android:title="Stock History" />
+    <item
+        android:id="@+id/nav_delivery_overall_report"
+        android:icon="@drawable/ic_graph"
+        android:title="Overall Report" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_logout"
+        android:title="Logout" />
+</menu>

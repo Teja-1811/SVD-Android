@@ -8,6 +8,7 @@ import com.svd.svdagencies.data.model.admin.CustomerPaymentItem
 import com.svd.svdagencies.databinding.AdminCustomerPaymentRowBinding
 
 class CustomerPaymentAdapter(
+    private val onEditPayment: (CustomerPaymentItem) -> Unit,
     private val onUpdateStatus: (CustomerPaymentItem) -> Unit,
     private val onMarkSuccess: (CustomerPaymentItem) -> Unit,
     private val onMarkFailure: (CustomerPaymentItem) -> Unit,
@@ -75,9 +76,9 @@ class CustomerPaymentAdapter(
             binding.spaceSuccessFailure.visibility = if (isPending) View.VISIBLE else View.GONE
             binding.btnMarkFailure.visibility = if (isPending) View.VISIBLE else View.GONE
             binding.spaceFailureEdit.visibility = if (isPending) View.GONE else View.GONE
-            binding.btnEditStatus.visibility = if (isPending) View.GONE else View.VISIBLE
+            binding.btnEditStatus.visibility = View.VISIBLE
 
-            binding.btnEditStatus.setOnClickListener { onUpdateStatus(item) }
+            binding.btnEditStatus.setOnClickListener { onEditPayment(item) }
             binding.btnMarkSuccess.setOnClickListener { onMarkSuccess(item) }
             binding.btnMarkFailure.setOnClickListener { onMarkFailure(item) }
             binding.btnDelete.setOnClickListener { onDelete(item) }

@@ -5,7 +5,6 @@ import com.svd.svdagencies.utils.PaymentConfig
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.showDestructiveDialog
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.svd.svdagencies.R
@@ -45,6 +45,7 @@ class DeliveryBillHistoryActivity : BaseActivity() {
     private lateinit var todayBillAdapter: DeliveryTodayBillAdapter
     private lateinit var sessionManager: SessionManager
     private lateinit var toolbar: MaterialToolbar
+    private lateinit var tvDateFilter: TextView
     private val selectedDate = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,18 +60,9 @@ class DeliveryBillHistoryActivity : BaseActivity() {
         toolbar = findViewById(R.id.toolbar)
         toolbar.title = "Bills"
         toolbar.setNavigationOnClickListener { finish() }
-        toolbar.menu.add(0, DATE_FILTER_MENU_ID, 0, "Today").apply {
-            setIcon(R.drawable.ic_calendar)
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-        }
-        toolbar.setOnMenuItemClickListener { menuItem ->
-            if (menuItem.itemId == DATE_FILTER_MENU_ID) {
-                showDatePicker()
-                true
-            } else {
-                false
-            }
-        }
+        tvDateFilter = findViewById(R.id.tvDateFilter)
+        findViewById<View>(R.id.layoutDateFilter).setOnClickListener { showDatePicker() }
+        updateDateFilterLabel()
 
         rvTodayBills = findViewById(R.id.rvTodayBills)
         swipeRefresh = findViewById(R.id.swipeRefresh)
@@ -114,8 +106,8 @@ class DeliveryBillHistoryActivity : BaseActivity() {
     }
 
     private fun updateDateFilterLabel() {
-        val label = SimpleDateFormat("dd MMM", Locale.getDefault()).format(selectedDate.time)
-        toolbar.menu.findItem(DATE_FILTER_MENU_ID)?.title = label
+        tvDateFilter.text = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+            .format(selectedDate.time)
     }
 
     private fun selectedDateApiValue(): String =
@@ -146,7 +138,7 @@ class DeliveryBillHistoryActivity : BaseActivity() {
                     
                     if (bills.isNotEmpty()) {
                         cardSummary.visibility = View.VISIBLE
-                        tvTotalBillsCount.text = "${bills.size} Bills · ${toolbar.menu.findItem(DATE_FILTER_MENU_ID)?.title}"
+                        tvTotalBillsCount.text = "${bills.size} Bills · ${tvDateFilter.text}"
                         tvTotalInvoiceAmount.text = money(totalAmount)
                     } else {
                         cardSummary.visibility = View.GONE
@@ -164,10 +156,6 @@ class DeliveryBillHistoryActivity : BaseActivity() {
                 swipeRefresh.isRefreshing = false
             }
         }
-    }
-
-    companion object {
-        private const val DATE_FILTER_MENU_ID = 1001
     }
 
     private fun showBillDetails(bill: DeliveryTodayBill) {
@@ -224,7 +212,7 @@ class DeliveryBillHistoryActivity : BaseActivity() {
             .setPositiveButton("Delete") { _, _ ->
                 deleteBill(bill)
             }
-            .show()
+            .showDestructiveDialog()
     }
 
     private fun deleteBill(bill: DeliveryTodayBill) {

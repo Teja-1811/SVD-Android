@@ -6,10 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.model.admin.stock.StockItem
+import com.svd.svdagencies.data.model.admin.stock.StockCompany
 
 class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -19,12 +23,17 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
     
     private var displayItems = mutableListOf<Any>()
     private val updates = mutableMapOf<Int, StockDraft>()
+    private var companies: List<StockCompany> = emptyList()
     private var searchTerm: String = ""
     private var companyFilter: String = "All companies"
 
     fun updateList(newItems: List<StockItem>) {
         rawItems = newItems
         rebuildDisplayItems()
+    }
+
+    fun updateCompanies(newCompanies: List<StockCompany>) {
+        companies = newCompanies
     }
 
     fun filter(search: String, company: String) {
@@ -55,11 +64,21 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
     }
 
     data class CategoryHeader(val name: String, val count: Int)
-    data class StockDraft(val crates: Double, val discount: Double)
+    data class StockDraft(
+        val crates: Double,
+        val discount: Double,
+        val companyId: Int,
+        val companyName: String,
+    )
 
     fun getUpdates(): List<Map<String, Any>> {
         return updates.map { (id, draft) ->
-            mapOf("id" to id, "crates" to draft.crates, "discount" to draft.discount)
+            mapOf(
+                "id" to id,
+                "company_id" to draft.companyId,
+                "crates" to draft.crates,
+                "discount" to draft.discount,
+            )
         }
     }
 
@@ -101,7 +120,7 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
 
     inner class UpdateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvItemName: TextView = itemView.findViewById(R.id.tvItemName)
-        private val tvCompanyName: TextView = itemView.findViewById(R.id.tvCompanyName)
+        private val spinnerCompany: Spinner = itemView.findViewById(R.id.spinnerCompany)
         private val tvCurrentStock: TextView = itemView.findViewById(R.id.tvCurrentStock)
         private val tvPcsCount: TextView = itemView.findViewById(R.id.tvPcsCount)
         private val tvBuyingPrice: TextView = itemView.findViewById(R.id.tvBuyingPrice)
@@ -111,6 +130,7 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
         private val etDiscount: EditText = itemView.findViewById(R.id.etDiscount)
 
         private var currentItem: StockItem? = null
+        private var isBinding = false
 
         init {
             etCrates.addTextChangedListener(object : TextWatcher {
@@ -131,12 +151,21 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
                     }
                 }
             })
+            spinnerCompany.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    if (!isBinding) {
+                        currentItem?.let(::updateDraft)
+                    }
+                }
+            }
         }
 
         fun bind(item: StockItem) {
+            isBinding = true
             currentItem = item
             tvItemName.text = item.name
-            tvCompanyName.text = item.companyName ?: "No company"
             tvCurrentStock.text = item.stockQuantity.toString()
             tvPcsCount.text = "Pcs / crate: ${item.pcsCount ?: 1}"
             tvBuyingPrice.text = "Buying: %.3f".format(item.buyingPrice)
@@ -144,14 +173,28 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
             val draft = updates[item.id]
             etCrates.setText(draft?.crates?.toCleanString() ?: "0")
             etDiscount.setText(draft?.discount?.toCleanString() ?: "0")
+            val supplierAdapter = ArrayAdapter(itemView.context, android.R.layout.simple_spinner_dropdown_item, companies.map { it.name })
+            spinnerCompany.adapter = supplierAdapter
+            val selectedCompanyId = draft?.companyId ?: item.companyId
+            val selectedIndex = companies.indexOfFirst { it.id == selectedCompanyId }.let { index ->
+                if (index >= 0) index else 0
+            }
+            if (companies.isNotEmpty()) spinnerCompany.setSelection(selectedIndex)
+            isBinding = false
             refreshPreview(item)
         }
 
         private fun updateDraft(item: StockItem) {
             val crates = etCrates.text.toString().toDoubleOrNull() ?: 0.0
             val discount = etDiscount.text.toString().toDoubleOrNull() ?: 0.0
-            if (crates > 0) {
-                updates[item.id] = StockDraft(crates, discount.coerceAtLeast(0.0))
+            val company = companies.getOrNull(spinnerCompany.selectedItemPosition)
+            if (crates > 0 && company != null) {
+                updates[item.id] = StockDraft(
+                    crates,
+                    discount.coerceAtLeast(0.0),
+                    company.id,
+                    company.name,
+                )
             } else {
                 updates.remove(item.id)
             }
@@ -162,7 +205,15 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
             val crates = etCrates.text.toString().toDoubleOrNull() ?: 0.0
             val discount = etDiscount.text.toString().toDoubleOrNull() ?: 0.0
             val quantity = crates * (item.pcsCount ?: 1)
-            val value = ((quantity * item.buyingPrice) - discount).coerceAtLeast(0.0)
+            val supplier = companies.getOrNull(spinnerCompany.selectedItemPosition)
+            val isDodla = (supplier?.name ?: "").equals("Dodla", ignoreCase = true)
+            val value = if (isDodla) {
+                val invoiceQuantity = crates * item.litresPerCrate
+                val taxableValue = (invoiceQuantity * item.basePrice) * (1 - (discount / 100.0))
+                taxableValue + (taxableValue * item.gstPercentage / 100.0)
+            } else {
+                (quantity * item.buyingPrice) - discount
+            }.coerceAtLeast(0.0)
             tvQuantityPreview.text = "Quantity: %.3f".format(quantity)
             tvValuePreview.text = "Value: %.3f".format(value)
         }

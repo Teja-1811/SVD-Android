@@ -192,7 +192,7 @@
 
             <Space android:layout_width="@dimen/spacing_small" android:layout_height="wrap_content"/>
 
-            <!-- Edit Status (for non-pending) -->
+            <!-- Edit amount and status -->
             <ImageButton
                 android:id="@+id/btnEditStatus"
                 android:layout_width="32dp"
@@ -200,6 +200,7 @@
                 android:src="@drawable/ic_edit"
                 app:tint="@color/brand_blue"
                 android:background="@drawable/bg_outline_blue"
+                android:contentDescription="Edit payment"
                 android:padding="@dimen/spacing_small"
                 android:scaleType="fitCenter"
                 android:visibility="gone"/>

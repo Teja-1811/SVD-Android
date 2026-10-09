@@ -5,6 +5,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.svd.svdagencies.utils.showDestructiveDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -36,6 +39,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
 
     private fun setupRecyclerView() {
         adapter = CustomerPaymentAdapter(
+            onEditPayment = { payment -> showEditPaymentDialog(payment) },
             onUpdateStatus = { payment -> showUpdateStatusDialog(payment) },
             onMarkSuccess = { payment -> confirmStatusUpdate(payment, "success") },
             onMarkFailure = { payment -> confirmStatusUpdate(payment, "failed") },
@@ -125,6 +129,69 @@ class AdminPaymentsActivity : AdminBaseActivity() {
         builder.show()
     }
 
+    private fun showEditPaymentDialog(payment: CustomerPaymentItem) {
+        val padding = (20 * resources.displayMetrics.density).toInt()
+        val content = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(padding, 0, padding, 0)
+        }
+
+        val amountLayout = TextInputLayout(this).apply {
+            hint = "Payment amount"
+        }
+        val amountInput = TextInputEditText(this).apply {
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or
+                android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+            setText(payment.amount.toString())
+            selectAll()
+        }
+        amountLayout.addView(amountInput)
+
+        val statusLayout = TextInputLayout(this).apply {
+            hint = "Payment status"
+        }
+        val statusInput = android.widget.AutoCompleteTextView(this).apply {
+            inputType = android.text.InputType.TYPE_NULL
+            setText(payment.status.orEmpty().uppercase(), false)
+            setAdapter(
+                android.widget.ArrayAdapter(
+                    this@AdminPaymentsActivity,
+                    android.R.layout.simple_dropdown_item_1line,
+                    arrayOf("PENDING", "SUCCESS", "FAILED")
+                )
+            )
+        }
+        statusLayout.addView(statusInput)
+        content.addView(amountLayout)
+        content.addView(statusLayout)
+
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle("Edit Customer Payment")
+            .setMessage(payment.customer_name ?: "Customer payment")
+            .setView(content)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Save", null)
+            .create()
+
+        dialog.setOnShowListener {
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val amount = amountInput.text?.toString()?.trim()?.toDoubleOrNull()
+                val status = statusInput.text?.toString()?.trim()?.lowercase().orEmpty()
+                if (amount == null || amount <= 0) {
+                    amountLayout.error = "Enter an amount greater than zero"
+                    return@setOnClickListener
+                }
+                if (status !in setOf("pending", "success", "failed")) {
+                    statusLayout.error = "Select a valid status"
+                    return@setOnClickListener
+                }
+
+                updatePayment(payment.id, amount, status) { dialog.dismiss() }
+            }
+        }
+        dialog.show()
+    }
+
     private fun confirmStatusUpdate(payment: CustomerPaymentItem, status: String) {
         val label = if (status == "success") "Success" else "Failure"
         MaterialAlertDialogBuilder(this)
@@ -160,6 +227,39 @@ class AdminPaymentsActivity : AdminBaseActivity() {
         }
     }
 
+    private fun updatePayment(
+        paymentId: Int,
+        amount: Double,
+        status: String,
+        onSaved: () -> Unit
+    ) {
+        showScreenLoading()
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.adminPaymentsApi.editCustomerPayment(
+                    paymentId,
+                    mapOf<String, Any>("amount" to amount, "status" to status)
+                )
+                if (response["status"] == "success") {
+                    hideScreenLoading()
+                    onSaved()
+                    Toast.makeText(this@AdminPaymentsActivity, "Payment updated", Toast.LENGTH_SHORT).show()
+                    fetchPayments()
+                } else {
+                    hideScreenLoading()
+                    Toast.makeText(this@AdminPaymentsActivity, "Failed to update: ${response["message"]}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                hideScreenLoading()
+                Toast.makeText(
+                    this@AdminPaymentsActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Failed to update payment"),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
     private fun showDeleteConfirmDialog(payment: CustomerPaymentItem) {
         MaterialAlertDialogBuilder(this)
             .setTitle("Delete Payment")
@@ -168,7 +268,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
                 deletePayment(payment.id)
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .showDestructiveDialog()
     }
 
     private fun deletePayment(paymentId: Int) {

@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.showDestructiveDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -568,7 +569,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
             .setMessage("Are you sure you want to delete this commission credit of ₹${credit.amount} from ${credit.company}?")
             .setPositiveButton("Delete") { _, _ -> deleteCommissionCredit(credit.id) }
             .setNegativeButton("Cancel", null)
-            .show()
+            .showDestructiveDialog()
     }
 
     private fun deleteCommissionCredit(id: Int) {

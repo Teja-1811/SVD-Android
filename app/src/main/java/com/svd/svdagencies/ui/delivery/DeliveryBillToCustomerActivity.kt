@@ -4,6 +4,8 @@ import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.Editable
+import android.text.TextWatcher
 import com.svd.svdagencies.utils.PaymentConfig
 
 import android.net.Uri
@@ -56,6 +58,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private lateinit var btnGenerateBill: MaterialButton
     private lateinit var btnClearSelection: MaterialButton
     private lateinit var btnShowQr: ImageButton
+    private lateinit var btnCallCustomer: ImageButton
     
     private lateinit var tvItemsTotal: TextView
     private lateinit var tvOpeningDue: TextView
@@ -134,6 +137,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         etCollectedAmount = findViewById(R.id.etCollectedAmount)
         btnViewHistory = findViewById(R.id.btnViewHistory)
         btnShowQr = findViewById(R.id.btnShowQr)
+        btnCallCustomer = findViewById(R.id.btnCallCustomer)
         autoCustomer = findViewById(R.id.autoCustomer)
         autoRoute = findViewById(R.id.autoRoute)
         drawerLayout = findViewById(R.id.deliveryDrawerLayout)
@@ -165,6 +169,16 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             updateSummary()
         }
         btnShowQr.setOnClickListener { showPaymentQr() }
+        btnCallCustomer.setOnClickListener {
+            if (customerPhone.isBlank()) return@setOnClickListener
+
+            startActivity(
+                android.content.Intent(
+                    android.content.Intent.ACTION_DIAL,
+                    Uri.parse("tel:${Uri.encode(customerPhone)}")
+                )
+            )
+        }
         btnViewHistory.setOnClickListener { 
             if (customerId > 0) {
                 val intent = android.content.Intent(this, DeliveryBillHistoryActivity::class.java).apply {
@@ -216,6 +230,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         selectedRouteId = null
         catalogAdapter.setUserType(customerUserType)
         catalogAdapter.submitList(emptyList())
+        updateCustomerCallAction()
         fetchRoutes()
         updateSummary()
     }
@@ -257,6 +272,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             catalogAdapter.submitList(emptyList())
             fetchCustomers()
         }
+        updateCustomerCallAction()
         updateSummary()
     }
 
@@ -286,6 +302,9 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                             sessionManager.saveSelectedRoute(selectedRouteId, newRouteName)
                             autoCustomer.setText("")
                             customerId = 0
+                            customerName = ""
+                            customerPhone = ""
+                            updateCustomerCallAction()
                             fetchCustomers()
                         }
                     }
@@ -338,6 +357,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                                 customerName = customer.name
                                 customerPhone = customer.phone.orEmpty()
                                 customerUserType = customer.userType ?: "user"
+                                updateCustomerCallAction()
                                 fetchOpeningBalance(customer.id)
 
                                 // The server returns this customer's saved final item prices.
@@ -363,6 +383,14 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                 hideScreenLoading()
                 swipeRefresh.isRefreshing = false
             }
+        }
+    }
+
+    private fun updateCustomerCallAction() {
+        btnCallCustomer.visibility = if (customerId > 0 && customerPhone.isNotBlank()) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 
@@ -483,6 +511,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         val dialogView = layoutInflater.inflate(R.layout.admin_customer_balance_update, null)
         val txtCustomerName = dialogView.findViewById<TextView>(R.id.txtCustomerName)
         val txtCurrentBalance = dialogView.findViewById<TextView>(R.id.txtCurrentBalance)
+        val txtRemainingDue = dialogView.findViewById<TextView>(R.id.txtRemainingDue)
         val etAmount = dialogView.findViewById<TextInputEditText>(R.id.etAmount)
         val btnClose = dialogView.findViewById<View>(R.id.btnClose)
         val btnCancel = dialogView.findViewById<MaterialButton>(R.id.btnCancel)
@@ -494,10 +523,28 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         txtCustomerName?.text = customerName
         txtCurrentBalance?.text = "₹ %.2f".format(openingDue)
 
+        fun refreshRemainingDue() {
+            val payingAmount = etAmount?.text?.toString()?.toDoubleOrNull() ?: 0.0
+            val remainingDue = openingDue - payingAmount
+            txtRemainingDue?.text = "₹ %.2f".format(remainingDue)
+            txtRemainingDue?.setTextColor(
+                ContextCompat.getColor(
+                    this,
+                    if (remainingDue > 0) R.color.brand_red else R.color.green_status,
+                )
+            )
+        }
+
         val collectedVal = etCollectedAmount.text.toString().trim()
         if (collectedVal.isNotEmpty()) {
             etAmount?.setText(collectedVal)
         }
+        refreshRemainingDue()
+        etAmount?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(s: Editable?) = refreshRemainingDue()
+        })
 
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogView)

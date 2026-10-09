@@ -62,7 +62,7 @@
                 android:layout_height="36dp"
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/bg_dashboard_chip"
-                android:backgroundTint="#33FFFFFF"
+                android:backgroundTint="@color/white"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp"
@@ -74,7 +74,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_calendar"
-                    app:tint="@color/white" />
+                    app:tint="@color/brand_red" />
 
                 <TextView
                     android:id="@+id/tvSelectedDate"
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:text="2024-01-01"
-                    android:textColor="@color/white"
+                    android:textColor="@color/brand_red"
                     android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>

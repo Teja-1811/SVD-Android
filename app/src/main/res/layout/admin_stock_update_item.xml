@@ -38,13 +38,10 @@
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvCompanyName"
+                <Spinner
+                    android:id="@+id/spinnerCompany"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dodla Dairy"
-                    android:textColor="@color/textColorSecondary"
-                    android:textSize="12sp"
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
@@ -92,34 +89,64 @@
             android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/etCrates"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_qty_outline"
-                android:gravity="center"
-                android:hint="Crates"
-                android:inputType="numberDecimal"
-                android:selectAllOnFocus="true"
-                android:text="0"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="14sp" />
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/etDiscount"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="Crates received"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etCrates"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_qty_outline"
+                    android:gravity="center"
+                    android:hint="0"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true"
+                    android:text="0"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_qty_outline"
-                android:gravity="center"
-                android:hint="Discount"
-                android:inputType="numberDecimal"
-                android:selectAllOnFocus="true"
-                android:text="0"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="14sp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="Discount (% Dodla / ₹ others)"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_qty_outline"
+                    android:gravity="center"
+                    android:hint="0"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true"
+                    android:text="0"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="14sp" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

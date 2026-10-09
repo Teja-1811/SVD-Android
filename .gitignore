@@ -1,7 +1,11 @@
 *.iml
 .gradle
 .gradle-cache/
+.codex-gradle-cache/
+.kotlin/
+/gradle/wrapper/dists/
 /local.properties
+Bhanu
 google-services.json
 /.idea/caches
 /.idea/libraries

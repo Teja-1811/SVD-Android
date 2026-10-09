@@ -7,6 +7,7 @@ data class AdminStockDashboardResponse(
     @SerializedName("selected_date") val selectedDate: String? = null,
     @SerializedName("date_entries") val dateEntries: List<StockDateEntry> = emptyList(),
     @SerializedName("company_totals") val companyTotals: List<StockCompanyTotal> = emptyList(),
+    @SerializedName("companies") val companies: List<StockCompany> = emptyList(),
     @SerializedName("leakage_entries") val leakageEntries: List<StockLeakageEntry> = emptyList(),
     @SerializedName("all_items") val allItems: List<StockItem>,
     @SerializedName("top_items") val topItems: List<StockItem>,
@@ -30,12 +31,21 @@ data class StockItem(
     @SerializedName("stock_quantity") val stockQuantity: Double,
     @SerializedName("selling_price") val sellingPrice: Double = 0.0,
     @SerializedName("buying_price") val buyingPrice: Double = 0.0,
+    @SerializedName("base_price") val basePrice: Double = 0.0,
+    @SerializedName("gst_percentage") val gstPercentage: Double = 0.0,
+    @SerializedName("ltr") val litresPerCrate: Double = 1.0,
+    @SerializedName("company_id") val companyId: Int? = null,
     @SerializedName("company_name") val companyName: String? = "Unknown",
     @SerializedName("stock_value") val stockValue: Double? = null,
     @SerializedName("pcs_count") val pcsCount: Int? = 1,
     @SerializedName("category_name") val categoryName: String? = null,
     @SerializedName("item_code") val itemCode: String? = null,
     @SerializedName("image") val image: String? = null
+)
+
+data class StockCompany(
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") val name: String
 )
 
 data class CompanyStockValue(

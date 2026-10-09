@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.showDestructiveDialog
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.svd.svdagencies.R
@@ -92,7 +93,8 @@ class DeliveryDashboardActivity : BaseActivity() {
     }
 
     private fun updateDateDisplay() {
-        binding.tvSelectedDate.text = apiDate(selectedDate)
+        binding.tvSelectedDate.text = SimpleDateFormat("dd MMM yyyy", Locale.US)
+            .format(selectedDate.time)
     }
 
     private fun setupToolbar(toolbar: Toolbar, title: String) {
@@ -343,7 +345,7 @@ class DeliveryDashboardActivity : BaseActivity() {
             .setPositiveButton("Delete") { _, _ ->
                 deleteBill(bill)
             }
-            .show()
+            .showDestructiveDialog()
     }
 
     private fun shareBillOnWhatsapp(bill: DeliveryTodayBill) {

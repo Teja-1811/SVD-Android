@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="?attr/colorSurface"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/card_corner_radius_small"
     app:cardElevation="0dp"
     app:strokeColor="?attr/colorOutlineVariant"
@@ -12,6 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
         android:padding="20dp">
 
@@ -120,17 +121,29 @@
                 android:layout_height="50dp"
                 android:layout_marginEnd="12dp"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:minWidth="0dp"
+                android:paddingHorizontal="8dp"
                 android:text="Cancel"
-                android:textAllCaps="false" />
+                android:textAllCaps="false"
+                android:textSize="14sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdate"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:minWidth="0dp"
+                android:paddingHorizontal="8dp"
                 android:text="Submit Payment"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
+                android:textSize="14sp"
                 app:backgroundTint="@color/green_status" />
         </LinearLayout>
 

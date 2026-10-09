@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.App.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="@dimen/card_corner_radius_small"
+            app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/card_stroke_color">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Terms &amp; Conditions"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="6dp"
+                    android:text="Please read our operating policies regarding payments, orders, and service usage."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.App.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="@dimen/card_corner_radius_small"
+            app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/card_stroke_color">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/sectionOperator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_expand"
+                    android:drawablePadding="8dp"
+                    android:text="1. Services &amp; Responsibilities"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/operatorContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="8dp"
+                        android:text="&#8226; Usage: Using this app implies acceptance of all terms.\n&#8226; Scope: We provide milk subscriptions and product supply.\n&#8226; Security: You are responsible for account confidentiality.\n&#8226; Contact: Reach us via the Support section for any issues."
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Widget.App.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardCornerRadius="@dimen/card_corner_radius_small"
+            app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/card_stroke_color">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/sectionOrders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_expand"
+                    android:drawablePadding="8dp"
+                    android:text="2. Payments, Orders &amp; Refunds"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/ordersContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:letterSpacing="0.1"
+                        android:text="PAYMENTS"
+                        android:textColor="@color/brand_red"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:lineSpacingExtra="8dp"
+                        android:text="&#8226; Methods: UPI, debit or credit cards, and net banking.\n&#8226; Fee: Credit cards may incur a 1.5-2% + GST fee.\n&#8226; Timing: Bank updates may take 1-3 business days.\n&#8226; Activation: Services start after payment confirmation."
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:letterSpacing="0.1"
+                        android:text="REFUNDS &amp; CANCELLATIONS"
+                        android:textColor="@color/brand_red"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="8dp"
+                        android:text="&#8226; Eligibility: Only for failed payments or service errors.\n&#8226; Processing: Valid refunds take 5-10 business days.\n&#8226; Orders: No modifications once system-confirmed.\n&#8226; Disputes: Report payment issues within 7 days."
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

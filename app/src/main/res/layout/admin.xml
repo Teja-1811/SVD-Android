@@ -180,6 +180,11 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:background="@color/card_background"
                             android:gravity="center_vertical"
                             android:minHeight="76dp"
@@ -239,6 +244,7 @@
                             android:paddingBottom="@dimen/spacing_large"
                             android:visibility="gone"
                             tools:visibility="visible" />
+                        </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -250,6 +256,11 @@
                         app:cardElevation="1dp"
                         app:strokeColor="@color/card_stroke_color"
                         app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -312,6 +323,7 @@
                             android:paddingBottom="@dimen/spacing_large"
                             android:visibility="gone"
                             tools:visibility="visible" />
+                        </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView

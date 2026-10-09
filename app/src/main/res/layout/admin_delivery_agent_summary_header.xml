@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/label_delivery_agent">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteAgent"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="@string/label_delivery_agent"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvStartDate"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_qty_outline"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
+            android:textColor="@color/textColorPrimary" />
+
+        <TextView
+            android:id="@+id/tvEndDate"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_qty_outline"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
+            android:textColor="@color/textColorPrimary" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClear"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="1"
+            android:text="@string/button_clear"
+            android:textAllCaps="false"
+            android:textColor="@color/brand_red"
+            app:strokeColor="@color/brand_red" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApply"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:text="@string/button_apply_filter"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:backgroundTint="@color/brand_red" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvBillCount"
+            style="@style/TextAppearance.MaterialComponents.Body2"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/textColorPrimary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTotalAmount"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/brand_blue"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvCounterDue"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/icon_orange"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvProfit"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/icon_green"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvCustomerBillCount"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/textColorPrimary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSelfBillCount"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/textColorPrimary"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvCustomerInvoiceAmount"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/brand_blue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSelfInvoiceAmount"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/brand_blue"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvSubmittedAmount"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/icon_green"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvRemainingDue"
+            android:layout_width="0dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_dashboard_chip"
+            android:gravity="center"
+            android:textColor="@color/icon_orange"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRecordSubmission"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/button_record_submission"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        app:backgroundTint="@color/icon_green" />
+
+</LinearLayout>

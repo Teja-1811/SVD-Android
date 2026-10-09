@@ -155,6 +155,7 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
                     rvUpdateCompanyTotals.visibility = if (data.companyTotals.isEmpty()) View.GONE else View.VISIBLE
                     tvNoUpdateSavedEntries.visibility = if (data.dateEntries.isEmpty()) View.VISIBLE else View.GONE
                     rvUpdateSavedEntries.visibility = if (data.dateEntries.isEmpty()) View.GONE else View.VISIBLE
+                    adapter.updateCompanies(data.companies)
                     adapter.updateList(items)
                     updateCompanyFilter(items.mapNotNull { it.companyName }.distinct().sorted())
                 } else {

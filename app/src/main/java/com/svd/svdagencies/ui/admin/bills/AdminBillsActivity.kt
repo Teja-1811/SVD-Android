@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.showDestructiveDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
@@ -255,7 +256,7 @@ class AdminBillsActivity : AdminBaseActivity() {
                 deleteBill(billId)
             }
             .setNegativeButton("Cancel", null)
-            .show()
+            .showDestructiveDialog()
     }
 
     private fun deleteBill(billId: Int) {

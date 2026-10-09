@@ -12,19 +12,13 @@
         android:background="@color/divider_line" />
 
     <TextView
-        android:id="@+id/txtSubject"
-        android:layout_width="wrap_content"
+        android:id="@+id/txtName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enquiry Subject"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Customer name"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/text_size_medium"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txtName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="@dimen/text_size_small" />
 </LinearLayout>

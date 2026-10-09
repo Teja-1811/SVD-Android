@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.svd.svdagencies.R
+import com.svd.svdagencies.data.api.admin.CustomerItemDiscountApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.Items.AdminItem
 import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
@@ -62,6 +63,11 @@ class CreateBillActivity : AdminBaseActivity() {
     private var selectedCustomer: CustomerItem? = null
     private var selectedItem: AdminItem? = null
     private var openingDue: Double = 0.0
+    private var customerDefaultDiscounts: Map<Int, Double> = emptyMap()
+    private var discountsLoadedForCustomerId: Int? = null
+    private val customerItemDiscountApi by lazy {
+        ApiClient.retrofit.create(CustomerItemDiscountApi::class.java)
+    }
 
     private val calendar = Calendar.getInstance()
 
@@ -120,7 +126,7 @@ class CreateBillActivity : AdminBaseActivity() {
         spinnerCustomer.setOnItemClickListener { _, _, position, _ ->
             selectedCustomer = filteredCustomers[position]
             openingDue = selectedCustomer?.due ?: 0.0
-            repriceBillItemsForSelectedCustomer()
+            selectedCustomer?.id?.let(::loadCustomerDefaultDiscounts)
         }
 
         etSearchItems.addTextChangedListener(object : TextWatcher {
@@ -143,7 +149,7 @@ class CreateBillActivity : AdminBaseActivity() {
                 btnAddItem.text = "Update Item"
             } else {
                 etQty.setText("1")
-                etDiscount.setText("0")
+                etDiscount.setText(formatDiscount(defaultDiscountFor(selectedItem!!)))
                 btnAddItem.text = "Add Item to Bill"
             }
         }
@@ -257,6 +263,7 @@ class CreateBillActivity : AdminBaseActivity() {
                         filterCustomers()
                         spinnerCustomer.setText(it.name ?: "", false)
                         selectedCustomer = it
+                        it.id?.let(::loadCustomerDefaultDiscounts)
                     }
 
                     // Date parsing
@@ -319,6 +326,8 @@ class CreateBillActivity : AdminBaseActivity() {
         spinnerCustomer.setText("", false)
         selectedCustomer = null
         openingDue = 0.0
+        customerDefaultDiscounts = emptyMap()
+        discountsLoadedForCustomerId = null
         updateSummary()
     }
 
@@ -362,7 +371,11 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private fun priceForSelectedCustomer(item: AdminItem): Double {
-        return item.selling_price
+        val usesMrp = selectedCustomer?.user_type
+            ?.trim()
+            ?.equals(CUSTOMER_TYPE_USER, ignoreCase = true) == true
+        val rawPrice = if (usesMrp) item.mrp else item.selling_price
+        return rawPrice
             ?.replace("₹", "")
             ?.replace(",", "")
             ?.toDoubleOrNull()
@@ -372,11 +385,55 @@ class CreateBillActivity : AdminBaseActivity() {
     private fun repriceBillItemsForSelectedCustomer() {
         val repricedItems = itemAdapter.getItems().map { billItem ->
             val item = allAvailableItems.find { it.id == billItem.itemId }
-            if (item != null) billItem.copy(price = priceForSelectedCustomer(item)) else billItem
+            if (item != null) {
+                val defaultDiscount = defaultDiscountFor(item)
+                if (discountsLoadedForCustomerId == selectedCustomer?.id) {
+                    billItem.copy(
+                        price = priceForSelectedCustomer(item),
+                        discount = defaultDiscount,
+                        totalDiscount = defaultDiscount * billItem.quantity
+                    )
+                } else {
+                    billItem.copy(price = priceForSelectedCustomer(item))
+                }
+            } else billItem
         }
         itemAdapter.updateItems(repricedItems)
         updateSummary()
     }
+
+    private fun loadCustomerDefaultDiscounts(customerId: Int) {
+        customerDefaultDiscounts = emptyMap()
+        discountsLoadedForCustomerId = null
+
+        lifecycleScope.launch {
+            try {
+                val response = customerItemDiscountApi.getDashboard(customerId)
+                if (selectedCustomer?.id != customerId) return@launch
+
+                customerDefaultDiscounts = response.items.associate { item ->
+                    item.id to item.discount_per_unit
+                }
+                discountsLoadedForCustomerId = customerId
+                repriceBillItemsForSelectedCustomer()
+
+                selectedItem?.let { item ->
+                    if (itemAdapter.getItems().none { it.itemId == item.id }) {
+                        etDiscount.setText(formatDiscount(defaultDiscountFor(item)))
+                    }
+                }
+            } catch (_: Exception) {
+                // A bill can still be created safely: the server applies the
+                // configured customer discount as the final fallback.
+            }
+        }
+    }
+
+    private fun defaultDiscountFor(item: AdminItem): Double =
+        customerDefaultDiscounts[item.id] ?: 0.0
+
+    private fun formatDiscount(discount: Double): String =
+        if (discount == 0.0) "0" else "%.2f".format(Locale.getDefault(), discount)
 
     private suspend fun fetchAllAvailableItems(): List<AdminItem> {
         val response = ApiClient.adminItemsApi.getCategories()

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/card_stroke_color"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:padding="16dp">
+
+        <!-- BILL INFO -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:alignmentMode="alignMargins">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_invoice_no"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/tvBillNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="#INV-0000"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="end"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_date"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/tvBillDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="2024-01-01"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </GridLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_customer_details"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="11sp" />
+            <TextView
+                android:id="@+id/tvCustomerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Customer Name"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/divider_line"
+            android:alpha="0.5"/>
+
+        <!-- ITEMS TABLE HEADER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:paddingBottom="4dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="65"
+                android:text="@string/label_item_header"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="15"
+                android:text="@string/label_qty_header"
+                android:gravity="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="20"
+                android:text="@string/label_total_header"
+                android:gravity="end"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- ITEMS RECYCLERVIEW -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            tools:listitem="@layout/admin_bill_info_detail"
+            tools:itemCount="2"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/divider_line" />
+
+        <!-- SUMMARY CALCULATION -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_bill_total"
+                    android:textColor="@color/textColorSecondary"
+                    android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/tvBillAmount"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    tools:text="₹0.00"
+                    android:gravity="end"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

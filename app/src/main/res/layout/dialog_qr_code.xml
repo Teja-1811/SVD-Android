@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
+    app:cardElevation="0dp">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorSurface"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_large">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="32dp"
+                android:src="@drawable/logo"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Sri Vijay Durga Milk Agency"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="@dimen/text_size_xlarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:gravity="center"
+                android:text="+91 93928 90375"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="@dimen/text_size_small" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center"
+                android:text="Scan &amp; pay"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/ivQrCode"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:scaleType="fitCenter"
+                tools:src="@drawable/ic_qr_code" />
+
+            <TextView
+                android:id="@+id/tvQrAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center"
+                android:text="Amount: ₹0.00"
+                android:textColor="@color/brand_red"
+                android:textSize="@dimen/text_size_xlarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvBillInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:gravity="center"
+                android:text="Bill # / Customer ID"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="@dimen/text_size_small"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_tiny"
+                android:gravity="center"
+                android:text="@string/payment_upi_label"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="@dimen/text_size_small" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCloseQr"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="@dimen/spacing_medium"
+                android:text="Close"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
+                app:backgroundTint="@color/brand_red"
+                app:cornerRadius="@dimen/button_corner_radius" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</com.google.android.material.card.MaterialCardView>
