@@ -18,6 +18,10 @@ import com.svd.svdagencies.ui.admin.cashbook.ViewExpensesActivity
 import com.svd.svdagencies.ui.admin.companies.AdminCompaniesActivity
 import com.svd.svdagencies.ui.admin.customer.CustomersData
 import com.svd.svdagencies.ui.admin.customer.CustomerItemDiscountActivity
+import com.svd.svdagencies.ui.admin.routes.AdminRoutesActivity
+import com.svd.svdagencies.ui.admin.users.AdminUsersActivity
+import com.svd.svdagencies.ui.admin.offers.AdminOffersActivity
+import com.svd.svdagencies.ui.admin.sales.CategorySalesActivity
 import com.svd.svdagencies.ui.admin.items.AdminItemsActivity
 import com.svd.svdagencies.ui.admin.stock.AdminStockActivity
 import com.svd.svdagencies.ui.auth.LoginActivity
@@ -94,6 +98,30 @@ abstract class AdminBaseActivity : BaseActivity() {
                     R.id.nav_customer_item_discounts -> {
                         if (this !is CustomerItemDiscountActivity) {
                             openAdminDestination(CustomerItemDiscountActivity::class.java)
+                        }
+                        true
+                    }
+                    R.id.nav_routes -> {
+                        if (this !is AdminRoutesActivity) {
+                            openAdminDestination(AdminRoutesActivity::class.java)
+                        }
+                        true
+                    }
+                    R.id.nav_users -> {
+                        if (this !is AdminUsersActivity) {
+                            openAdminDestination(AdminUsersActivity::class.java)
+                        }
+                        true
+                    }
+                    R.id.nav_offers -> {
+                        if (this !is AdminOffersActivity) {
+                            openAdminDestination(AdminOffersActivity::class.java)
+                        }
+                        true
+                    }
+                    R.id.nav_category_sales -> {
+                        if (this !is CategorySalesActivity) {
+                            openAdminDestination(CategorySalesActivity::class.java)
                         }
                         true
                     }

@@ -79,6 +79,10 @@ class CustomerMainActivity : BaseActivity() {
                     openDrawerDestination(CustomerCompanyDetailsActivity::class.java)
                     true
                 }
+                R.id.nav_profile -> {
+                    openDrawerDestination(CustomerProfileActivity::class.java)
+                    true
+                }
                 R.id.nav_support -> {
                     openDrawerDestination(CustomerContactSupportActivity::class.java)
                     true
@@ -89,6 +93,10 @@ class CustomerMainActivity : BaseActivity() {
                 }
                 R.id.nav_statement -> {
                     openDrawerDestination(CustomerStatementActivity::class.java)
+                    true
+                }
+                R.id.nav_history_reports -> {
+                    openDrawerDestination(CustomerHistoryActivity::class.java)
                     true
                 }
                 R.id.nav_logout -> {

@@ -42,6 +42,10 @@
         <activity android:name=".ui.admin.customer.CustomerItemDiscountActivity"/>
         <activity android:name=".ui.admin.customer.CustomerProfileActivity"/>
         <activity android:name=".ui.admin.customer.AddCustomerActivity"/>
+        <activity android:name=".ui.admin.routes.AdminRoutesActivity"/>
+        <activity android:name=".ui.admin.users.AdminUsersActivity"/>
+        <activity android:name=".ui.admin.offers.AdminOffersActivity"/>
+        <activity android:name=".ui.admin.sales.CategorySalesActivity"/>
         <activity android:name=".ui.admin.bills.AdminBillsActivity"/>
         <activity
             android:name=".ui.admin.bills.CreateBillActivity"
@@ -68,9 +72,11 @@
         <!-- Customer / User -->
         <activity android:name=".ui.customer.CustomerMainActivity"/>
         <activity android:name=".ui.customer.CustomerCompanyDetailsActivity"/>
+        <activity android:name=".ui.customer.CustomerProfileActivity"/>
         <activity android:name=".ui.customer.CustomerContactSupportActivity"/>
         <activity android:name=".ui.customer.CustomerRaisedQueriesActivity"/>
         <activity android:name=".ui.customer.CustomerStatementActivity"/>
+        <activity android:name=".ui.customer.CustomerHistoryActivity"/>
         <activity android:name=".ui.customer.PhonePeCheckoutActivity"/>
         <activity android:name=".ui.customer.TermsConditionsActivity"/>
 

@@ -16,6 +16,12 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface CustomerApi {
+    @GET("api/customer/profile/")
+    fun getProfile(): Call<Map<String, Any>>
+
+    @POST("api/customer/profile/")
+    fun updateProfile(@Body body: Map<String, String>): Call<Map<String, Any>>
+
     @GET("api/customer-dashboard/")
     fun getDashboard(): Call<CustomerDashboardResponse>
 

@@ -23,6 +23,26 @@
         android:icon="@drawable/ic_rupee"/>
 
     <item
+        android:id="@+id/nav_routes"
+        android:title="Routes"
+        android:icon="@drawable/ic_orders"/>
+
+    <item
+        android:id="@+id/nav_users"
+        android:title="Users"
+        android:icon="@drawable/ic_users"/>
+
+    <item
+        android:id="@+id/nav_offers"
+        android:title="Offers"
+        android:icon="@drawable/ic_orders"/>
+
+    <item
+        android:id="@+id/nav_category_sales"
+        android:title="Category Sales"
+        android:icon="@drawable/ic_items"/>
+
+    <item
         android:id="@+id/nav_bills"
         android:title="Bills"
         android:icon="@drawable/ic_bill"/>

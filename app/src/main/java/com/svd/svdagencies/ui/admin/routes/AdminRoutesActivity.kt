@@ -1,0 +1,95 @@
+package com.svd.svdagencies.ui.admin.routes
+
+import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.svd.svdagencies.data.api.admin.AdminRoute
+import com.svd.svdagencies.data.api.admin.AdminRoutesResponse
+import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.ui.admin.AdminBaseActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+class AdminRoutesActivity : AdminBaseActivity() {
+    private lateinit var routesList: LinearLayout
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val root = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(32, 32, 32, 32)
+        }
+        root.addView(Button(this).apply {
+            text = "Add route"
+            setOnClickListener { showRouteDialog() }
+        })
+        routesList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        root.addView(ScrollView(this).apply { addView(routesList) }, LinearLayout.LayoutParams(-1, 0, 1f))
+        setContentView(root)
+        loadRoutes()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadRoutes()
+    }
+
+    private fun loadRoutes() {
+        ApiClient.adminRoutesApi.listRoutes().enqueue(object : Callback<AdminRoutesResponse> {
+            override fun onResponse(call: Call<AdminRoutesResponse>, response: Response<AdminRoutesResponse>) {
+                if (!response.isSuccessful) return showMessage("Unable to load routes")
+                routesList.removeAllViews()
+                response.body()?.routes.orEmpty().forEach(::addRouteRow)
+            }
+            override fun onFailure(call: Call<AdminRoutesResponse>, error: Throwable) = showMessage("Unable to load routes")
+        })
+    }
+
+    private fun addRouteRow(route: AdminRoute) {
+        val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(0, 18, 0, 18) }
+        row.addView(TextView(this).apply { text = "${route.name} (${route.customer_count} customers)" }, LinearLayout.LayoutParams(0, -2, 1f))
+        row.addView(Button(this).apply { text = "Edit"; setOnClickListener { showRouteDialog(route) } })
+        row.addView(Button(this).apply { text = "Delete"; setOnClickListener { deleteRoute(route) } })
+        routesList.addView(row, ViewGroup.LayoutParams(-1, -2))
+    }
+
+    private fun showRouteDialog(existing: AdminRoute? = null) {
+        val input = EditText(this).apply { hint = "Route name"; setText(existing?.name.orEmpty()) }
+        AlertDialog.Builder(this)
+            .setTitle(if (existing == null) "Add route" else "Edit route")
+            .setView(input)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Save") { _, _ -> saveRoute(existing, input.text.toString()) }
+            .show()
+    }
+
+    private fun saveRoute(existing: AdminRoute?, name: String) {
+        val body = mapOf("name" to name)
+        val request = if (existing == null) ApiClient.adminRoutesApi.addRoute(body) else ApiClient.adminRoutesApi.updateRoute(existing.id, body)
+        request.enqueue(object : Callback<Map<String, Any>> {
+            override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                if (response.isSuccessful) loadRoutes() else showMessage("Unable to save route")
+            }
+            override fun onFailure(call: Call<Map<String, Any>>, error: Throwable) = showMessage("Unable to save route")
+        })
+    }
+
+    private fun deleteRoute(route: AdminRoute) {
+        AlertDialog.Builder(this).setMessage("Delete ${route.name}?").setNegativeButton("Cancel", null)
+            .setPositiveButton("Delete") { _, _ ->
+                ApiClient.adminRoutesApi.deleteRoute(route.id).enqueue(object : Callback<Map<String, Any>> {
+                    override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) { if (response.isSuccessful) loadRoutes() else showMessage("Unable to delete route") }
+                    override fun onFailure(call: Call<Map<String, Any>>, error: Throwable) = showMessage("Unable to delete route")
+                })
+            }.show()
+    }
+
+    private fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
