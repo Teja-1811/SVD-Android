@@ -9,6 +9,9 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.button.MaterialButton
+import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.AdminRoute
 import com.svd.svdagencies.data.api.admin.AdminRoutesResponse
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -19,20 +22,26 @@ import retrofit2.Response
 
 class AdminRoutesActivity : AdminBaseActivity() {
     private lateinit var routesList: LinearLayout
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val root = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(32, 32, 32, 32)
-        }
-        root.addView(Button(this).apply {
-            text = "Add route"
+        setContentView(R.layout.admin_simple_dashboard)
+        setupAdminLayout("Routes")
+        val root = findViewById<LinearLayout>(R.id.contentContainer)
+        swipeRefresh = findViewById(R.id.swipeRefresh)
+        root.addView(TextView(this).apply {
+            text = "Delivery Routes\nCreate and maintain customer delivery routes."
+            textSize = 18f
+            setPadding(8, 8, 8, 24)
+        })
+        root.addView(MaterialButton(this).apply {
+            text = "Add Route"
             setOnClickListener { showRouteDialog() }
         })
         routesList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        root.addView(ScrollView(this).apply { addView(routesList) }, LinearLayout.LayoutParams(-1, 0, 1f))
-        setContentView(root)
+        root.addView(routesList)
+        swipeRefresh.setOnRefreshListener { loadRoutes() }
         loadRoutes()
     }
 
@@ -44,11 +53,12 @@ class AdminRoutesActivity : AdminBaseActivity() {
     private fun loadRoutes() {
         ApiClient.adminRoutesApi.listRoutes().enqueue(object : Callback<AdminRoutesResponse> {
             override fun onResponse(call: Call<AdminRoutesResponse>, response: Response<AdminRoutesResponse>) {
+                swipeRefresh.isRefreshing = false
                 if (!response.isSuccessful) return showMessage("Unable to load routes")
                 routesList.removeAllViews()
                 response.body()?.routes.orEmpty().forEach(::addRouteRow)
             }
-            override fun onFailure(call: Call<AdminRoutesResponse>, error: Throwable) = showMessage("Unable to load routes")
+            override fun onFailure(call: Call<AdminRoutesResponse>, error: Throwable) { swipeRefresh.isRefreshing = false; showMessage("Unable to load routes") }
         })
     }
 

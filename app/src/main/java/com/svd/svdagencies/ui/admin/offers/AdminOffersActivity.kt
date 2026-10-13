@@ -9,6 +9,9 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.button.MaterialButton
+import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.admin.AdminOffer
 import com.svd.svdagencies.data.api.admin.AdminOffersResponse
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -20,24 +23,35 @@ import java.time.LocalDate
 
 class AdminOffersActivity : AdminBaseActivity() {
     private lateinit var offersList: LinearLayout
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(32, 32, 32, 32) }
-        root.addView(Button(this).apply { text = "Create offer"; setOnClickListener { showOfferDialog() } })
+        setContentView(R.layout.admin_simple_dashboard)
+        setupAdminLayout("Offers")
+        val root = findViewById<LinearLayout>(R.id.contentContainer)
+        swipeRefresh = findViewById(R.id.swipeRefresh)
+        root.addView(TextView(this).apply {
+            text = "Promotions & Offers\nCreate, manage, and activate customer offers."
+            textSize = 18f
+            setPadding(8, 8, 8, 24)
+        })
+        root.addView(MaterialButton(this).apply { text = "Create Offer"; setOnClickListener { showOfferDialog() } })
         offersList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        root.addView(ScrollView(this).apply { addView(offersList) }, LinearLayout.LayoutParams(-1, 0, 1f))
-        setContentView(root); loadOffers()
+        root.addView(offersList)
+        swipeRefresh.setOnRefreshListener { loadOffers() }
+        loadOffers()
     }
 
     override fun onResume() { super.onResume(); loadOffers() }
 
     private fun loadOffers() = ApiClient.adminOffersApi.listOffers().enqueue(object : Callback<AdminOffersResponse> {
         override fun onResponse(call: Call<AdminOffersResponse>, response: Response<AdminOffersResponse>) {
+            swipeRefresh.isRefreshing = false
             if (!response.isSuccessful) return message("Unable to load offers")
             offersList.removeAllViews(); response.body()?.offers.orEmpty().forEach(::addOfferRow)
         }
-        override fun onFailure(call: Call<AdminOffersResponse>, error: Throwable) = message("Unable to load offers")
+        override fun onFailure(call: Call<AdminOffersResponse>, error: Throwable) { swipeRefresh.isRefreshing = false; message("Unable to load offers") }
     })
 
     private fun addOfferRow(offer: AdminOffer) {

@@ -43,7 +43,6 @@
         <activity android:name=".ui.admin.customer.CustomerProfileActivity"/>
         <activity android:name=".ui.admin.customer.AddCustomerActivity"/>
         <activity android:name=".ui.admin.routes.AdminRoutesActivity"/>
-        <activity android:name=".ui.admin.users.AdminUsersActivity"/>
         <activity android:name=".ui.admin.offers.AdminOffersActivity"/>
         <activity android:name=".ui.admin.sales.CategorySalesActivity"/>
         <activity android:name=".ui.admin.bills.AdminBillsActivity"/>
