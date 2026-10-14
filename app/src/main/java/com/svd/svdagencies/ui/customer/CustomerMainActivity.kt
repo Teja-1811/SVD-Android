@@ -20,9 +20,10 @@ import com.svd.svdagencies.ui.customer.fragment.CustomerHomeFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerOrdersFragment
 import com.svd.svdagencies.ui.customer.fragment.CustomerPaymentFragment
 import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.UserRole
 import com.svd.svdagencies.base.BaseActivity
 
-class CustomerMainActivity : BaseActivity() {
+open class CustomerMainActivity : BaseActivity() {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
@@ -32,6 +33,7 @@ class CustomerMainActivity : BaseActivity() {
     private lateinit var btnLogout: ImageButton
     private lateinit var bottomNav: BottomNavigationView
     private var activeTabId: Int? = null
+    private var homeTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +47,9 @@ class CustomerMainActivity : BaseActivity() {
         btnMenu = findViewById(R.id.btnCustomerMenu)
         btnLogout = findViewById(R.id.btnCustomerLogout)
         bottomNav = findViewById(R.id.customerBottomNav)
+
+        homeTitle = if (SessionManager(this).getRole() == UserRole.USER) "User Portal" else getString(R.string.title_home)
+        tvToolbarTitle.text = homeTitle
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -99,6 +104,10 @@ class CustomerMainActivity : BaseActivity() {
                     openDrawerDestination(CustomerHistoryActivity::class.java)
                     true
                 }
+                R.id.nav_subscriptions -> {
+                    openDrawerDestination(CustomerSubscriptionsActivity::class.java)
+                    true
+                }
                 R.id.nav_logout -> {
                     handleLogout()
                     true
@@ -108,12 +117,12 @@ class CustomerMainActivity : BaseActivity() {
         }
 
         if (savedInstanceState == null) {
-            loadFragment(R.id.nav_home, "customer_home", getString(R.string.title_home)) { CustomerHomeFragment() }
+            loadFragment(R.id.nav_home, "customer_home", homeTitle) { CustomerHomeFragment() }
         }
 
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_home -> loadFragment(it.itemId, "customer_home", getString(R.string.title_home)) { CustomerHomeFragment() }
+                R.id.nav_home -> loadFragment(it.itemId, "customer_home", homeTitle) { CustomerHomeFragment() }
                 R.id.nav_companies -> loadFragment(it.itemId, "customer_companies", getString(R.string.title_companies)) { CustomerCompaniesFragment() }
                 R.id.nav_orders -> loadFragment(it.itemId, "customer_orders", getString(R.string.title_orders)) { CustomerOrdersFragment.newInstance() }
                 R.id.nav_bills -> loadFragment(it.itemId, "customer_bills", getString(R.string.title_bills)) { CustomerBillsFragment() }

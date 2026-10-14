@@ -87,7 +87,6 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
             onApply = { btn -> loadReport(btn as? MaterialButton) },
             onPickStartDate = { pickDate(startDate) },
             onPickEndDate = { pickDate(endDate) },
-            onRecordSubmission = { showSubmissionDialog() },
             onAgentSelected = { loadReport() }
         ).apply {
             startDateStr = apiDate(startDate)

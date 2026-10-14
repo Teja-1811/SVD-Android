@@ -2,6 +2,7 @@ package com.svd.svdagencies.ui.admin.items
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Environment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,11 +14,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -28,6 +31,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileOutputStream
 
 class AdminItemsActivity : AdminBaseActivity() {
 
@@ -38,6 +43,7 @@ class AdminItemsActivity : AdminBaseActivity() {
     private lateinit var etSearchItems: EditText
     private lateinit var btnAddItem: FloatingActionButton
     private lateinit var btnResetFilter: MaterialCardView
+    private lateinit var btnDownloadBrochure: MaterialButton
     private lateinit var tvCategoryTitle: TextView
     private lateinit var itemAdapter: AdminItemAdapter
     private lateinit var companyAdapter: CompanyFilterAdapter
@@ -68,6 +74,7 @@ class AdminItemsActivity : AdminBaseActivity() {
         etSearchItems = findViewById(R.id.etSearchItems)
         btnAddItem = findViewById(R.id.btnAddItem)
         btnResetFilter = findViewById(R.id.btnResetFilter)
+        btnDownloadBrochure = findViewById(R.id.btnDownloadBrochure)
         tvCategoryTitle = findViewById(R.id.tvCategoryTitle)
 
         setupRecyclers()
@@ -115,6 +122,8 @@ class AdminItemsActivity : AdminBaseActivity() {
             etSearchItems.text.clear()
             applyFilters()
         }
+
+        btnDownloadBrochure.setOnClickListener { downloadProductBrochure() }
 
         swipeRefresh.setOnRefreshListener {
             loadItems(currentCategory)
@@ -213,6 +222,42 @@ class AdminItemsActivity : AdminBaseActivity() {
                     if (!isDestroyed) {
                         showToast("Error updating status: ${e.message}")
                     }
+                }
+            }
+        }
+    }
+
+    private fun downloadProductBrochure() {
+        btnDownloadBrochure.isEnabled = false
+        showToast("Downloading product brochure...")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val brochure = ApiClient.adminItemsApi.downloadProductBrochure()
+                val downloadDirectory = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                    ?: throw IllegalStateException("Storage is unavailable")
+                val file = File(downloadDirectory, "product_brochure.pdf")
+
+                brochure.byteStream().use { input ->
+                    FileOutputStream(file).use { output -> input.copyTo(output) }
+                }
+
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) {
+                        val uri = FileProvider.getUriForFile(this@AdminItemsActivity, "$packageName.provider", file)
+                        startActivity(Intent(Intent.ACTION_VIEW).apply {
+                            setDataAndType(uri, "application/pdf")
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        })
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) showToast("Unable to download product brochure")
+                }
+            } finally {
+                withContext(Dispatchers.Main) {
+                    if (!isDestroyed) btnDownloadBrochure.isEnabled = true
                 }
             }
         }

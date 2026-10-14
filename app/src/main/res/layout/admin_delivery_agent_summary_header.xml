@@ -230,14 +230,4 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRecordSubmission"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="12dp"
-        android:text="@string/button_record_submission"
-        android:textAllCaps="false"
-        android:textStyle="bold"
-        app:backgroundTint="@color/icon_green" />
-
 </LinearLayout>

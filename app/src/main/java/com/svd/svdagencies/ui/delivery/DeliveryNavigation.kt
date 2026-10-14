@@ -45,6 +45,7 @@ object DeliveryNavigation {
                 R.id.nav_delivery_stock_entry -> DeliveryStockEntryActivity::class.java
                 R.id.nav_delivery_catalog -> DeliveryCatalogActivity::class.java
                 R.id.nav_delivery_today_report -> DeliveryDashboardActivity::class.java
+                R.id.nav_delivery_subscriptions -> DeliverySubscriptionDeliveriesActivity::class.java
                 R.id.nav_delivery_payments -> DeliveryCustomerPaymentsActivity::class.java
                 R.id.nav_delivery_bill_history -> DeliveryBillHistoryActivity::class.java
                 R.id.nav_delivery_stock_history -> DeliveryStockHistoryActivity::class.java

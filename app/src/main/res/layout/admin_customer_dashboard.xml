@@ -43,6 +43,10 @@
                     android:layout_height="wrap_content"
                     android:checkable="true"
                     android:text="Delivery"
+                    android:textColor="@color/customer_type_chip_text"
+                    app:chipBackgroundColor="@color/customer_type_chip_background"
+                    app:chipStrokeColor="@color/customer_type_chip_stroke"
+                    app:chipStrokeWidth="1dp"
                     android:checked="true"/>
 
                 <com.google.android.material.chip.Chip
@@ -50,14 +54,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:text="Retailers"/>
+                    android:text="Retailers"
+                    android:textColor="@color/customer_type_chip_text"
+                    app:chipBackgroundColor="@color/customer_type_chip_background"
+                    app:chipStrokeColor="@color/customer_type_chip_stroke"
+                    app:chipStrokeWidth="1dp" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    android:text="Users"/>
+                    android:text="Users"
+                    android:textColor="@color/customer_type_chip_text"
+                    app:chipBackgroundColor="@color/customer_type_chip_background"
+                    app:chipStrokeColor="@color/customer_type_chip_stroke"
+                    app:chipStrokeWidth="1dp" />
             </com.google.android.material.chip.ChipGroup>
 
             <AutoCompleteTextView

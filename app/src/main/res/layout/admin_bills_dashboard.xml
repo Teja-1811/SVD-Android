@@ -99,14 +99,31 @@
 
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/btnSearch"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Search"
                         android:layout_marginTop="@dimen/spacing_small"
-                        android:textAllCaps="true"
-                        android:backgroundTint="@color/brand_red" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnSearch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Search"
+                            android:textAllCaps="true"
+                            android:backgroundTint="@color/brand_red" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnClearBillFilters"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_small"
+                            android:text="Clear"
+                            android:textAllCaps="false" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -122,6 +139,41 @@
                         android:layout_height="match_parent"
                         tools:listitem="@layout/admin_bill_card" />
                 </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutBillPagination"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_small"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnPreviousBillsPage"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Previous"
+                        android:textAllCaps="false" />
+
+                    <TextView
+                        android:id="@+id/tvBillsPageIndicator"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Page 1 of 1"
+                        android:textColor="@color/textColorSecondary"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnNextBillsPage"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Next"
+                        android:textAllCaps="false" />
+                </LinearLayout>
 
             </LinearLayout>
 

@@ -17,6 +17,10 @@
         android:icon="@drawable/ic_calendar"
         android:title="Today Report" />
     <item
+        android:id="@+id/nav_delivery_subscriptions"
+        android:icon="@drawable/ic_orders"
+        android:title="Subscription Deliveries" />
+    <item
         android:id="@+id/nav_delivery_payments"
         android:icon="@drawable/ic_payments"
         android:title="Payments" />

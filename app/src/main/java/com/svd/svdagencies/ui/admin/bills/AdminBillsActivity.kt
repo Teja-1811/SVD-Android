@@ -43,9 +43,13 @@ class AdminBillsActivity : AdminBaseActivity() {
     private lateinit var tvStartDate: TextView
     private lateinit var tvEndDate: TextView
     private lateinit var btnSearch: Button
+    private lateinit var btnClearFilters: MaterialButton
     private lateinit var rvBills: RecyclerView
     private lateinit var fabCreateBill: FloatingActionButton
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var btnPreviousPage: MaterialButton
+    private lateinit var btnNextPage: MaterialButton
+    private lateinit var tvPageIndicator: TextView
 
     private lateinit var billAdapter: AdminBillAdapter
     private var customers: List<CustomerItem> = emptyList()
@@ -54,7 +58,6 @@ class AdminBillsActivity : AdminBaseActivity() {
     private var endDate: Calendar = Calendar.getInstance()
 
     private var currentPage = 1
-    private var isLastPage = false
     private var isLoading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,9 +83,13 @@ class AdminBillsActivity : AdminBaseActivity() {
         tvStartDate = findViewById(R.id.tvStartDate)
         tvEndDate = findViewById(R.id.tvEndDate)
         btnSearch = findViewById(R.id.btnSearch)
+        btnClearFilters = findViewById(R.id.btnClearBillFilters)
         rvBills = findViewById(R.id.rvBills)
         fabCreateBill = findViewById(R.id.fabCreateBill)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
+        btnPreviousPage = findViewById(R.id.btnPreviousBillsPage)
+        btnNextPage = findViewById(R.id.btnNextBillsPage)
+        tvPageIndicator = findViewById(R.id.tvBillsPageIndicator)
         
         // Use RefreshManager to setup swipe refresh
         RefreshManager.setupRefresh(swipeRefreshLayout) {
@@ -119,24 +126,6 @@ class AdminBillsActivity : AdminBaseActivity() {
         )
         rvBills.layoutManager = LinearLayoutManager(this)
         rvBills.adapter = billAdapter
-
-        rvBills.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val visibleItemCount = layoutManager.childCount
-                val totalItemCount = layoutManager.itemCount
-                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
-
-                if (!isLoading && !isLastPage) {
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                        && firstVisibleItemPosition >= 0
-                    ) {
-                        fetchBills(isRefresh = false)
-                    }
-                }
-            }
-        })
     }
 
     private fun shareBillOnWhatsappLikeWebsite(bill: AdminBill) {
@@ -306,6 +295,9 @@ class AdminBillsActivity : AdminBaseActivity() {
         tvStartDate.setOnClickListener { showDatePickerDialog(isStartDate = true) }
         tvEndDate.setOnClickListener { showDatePickerDialog(isStartDate = false) }
         btnSearch.setOnClickListener { fetchBills(isRefresh = true) }
+        btnClearFilters.setOnClickListener { clearFilters() }
+        btnPreviousPage.setOnClickListener { if (currentPage > 1) fetchBills(currentPage - 1) }
+        btnNextPage.setOnClickListener { fetchBills(currentPage + 1) }
         fabCreateBill.setOnClickListener { 
             val intent = Intent(this, CreateBillActivity::class.java)
             startActivity(intent)
@@ -338,6 +330,15 @@ class AdminBillsActivity : AdminBaseActivity() {
         }
     }
 
+    private fun clearFilters() {
+        autoCompleteCustomer.setText("", false)
+        tvStartDate.text = ""
+        tvEndDate.text = ""
+        startDate = Calendar.getInstance()
+        endDate = Calendar.getInstance()
+        fetchBills(isRefresh = true)
+    }
+
     private fun fetchCustomers() {
         lifecycleScope.launch {
             try {
@@ -358,18 +359,21 @@ class AdminBillsActivity : AdminBaseActivity() {
     }
 
     private fun fetchBills(isRefresh: Boolean = true) {
+        fetchBills(page = 1, isRefresh = isRefresh)
+    }
+
+    private fun fetchBills(page: Int, isRefresh: Boolean = false) {
         if (isLoading) return
         isLoading = true
 
         if (isRefresh) {
-            currentPage = 1
-            isLastPage = false
             RefreshManager.startRefresh(swipeRefreshLayout)
         } else {
-            billAdapter.setLoading(true)
+            btnPreviousPage.isEnabled = false
+            btnNextPage.isEnabled = false
         }
 
-        Log.d("AdminBillsActivity", "fetchBills called: page=$currentPage, isRefresh=$isRefresh")
+        Log.d("AdminBillsActivity", "fetchBills called: page=$page, isRefresh=$isRefresh")
         
         val selectedText = autoCompleteCustomer.text.toString()
         val customerId = if (selectedText.isNotEmpty()) {
@@ -381,26 +385,25 @@ class AdminBillsActivity : AdminBaseActivity() {
 
         lifecycleScope.launch {
             try {
-                val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString, currentPage)
+                val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString, page)
                 
-                if (isRefresh) {
-                    billAdapter.updateList(response.results)
-                } else {
-                    billAdapter.addItems(response.results)
-                }
-
-                isLastPage = currentPage >= response.total_pages
-                if (!isLastPage) {
-                    currentPage++
-                }
+                currentPage = response.current_page
+                billAdapter.updateList(response.results)
+                updatePagination(response.current_page, response.total_pages)
+                rvBills.scrollToPosition(0)
             } catch (e: Exception) {
                 Toast.makeText(this@AdminBillsActivity, "Error fetching bills: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 isLoading = false
-                billAdapter.setLoading(false)
                 RefreshManager.stopRefresh(swipeRefreshLayout)
             }
         }
+    }
+
+    private fun updatePagination(page: Int, totalPages: Int) {
+        tvPageIndicator.text = "Page $page of $totalPages"
+        btnPreviousPage.isEnabled = page > 1
+        btnNextPage.isEnabled = page < totalPages
     }
 
     private fun showQRDialog(bill: AdminBill) {

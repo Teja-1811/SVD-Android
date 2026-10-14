@@ -1,7 +1,6 @@
 package com.svd.svdagencies.ui.admin
 
 import android.content.Intent
-import androidx.core.net.toUri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.AdminDashboardResponse
 import com.svd.svdagencies.databinding.AdminBinding
 import com.svd.svdagencies.databinding.AdminEnquiryPreviewItemBinding
-import com.svd.svdagencies.databinding.AdminNoOrderCustomerBinding
 import com.svd.svdagencies.databinding.AdminOfferPreviewItemBinding
 import com.svd.svdagencies.databinding.AdminPendingOrderPreviewItemBinding
 import com.svd.svdagencies.databinding.AdminTopDueCustomerItemBinding
@@ -161,34 +159,6 @@ class AdminDashboardActivity : AdminBaseActivity() {
                     }
                 } else {
                     binding.layoutEnquiriesList.visibility = View.GONE
-                }
-
-                // ========= UPDATE NOT ORDERED COUNT =========
-                binding.tvNotOrdered.text =
-                    (summary?.customers_no_orders_today_count ?: 0).toString()
-
-                // ========= POPULATE LIST =========
-                binding.layoutNoOrdersList.removeAllViews()
-
-                val customers = data.customers_no_orders_today_list ?: emptyList()
-
-                for (customer in customers) {
-
-                    val rowBinding = AdminNoOrderCustomerBinding.inflate(
-                        LayoutInflater.from(this@AdminDashboardActivity),
-                        binding.layoutNoOrdersList,
-                        false
-                    )
-
-                    rowBinding.txtCustomerName.text = customer.name
-
-                    rowBinding.btnCall.setOnClickListener {
-                        val intent = Intent(Intent.ACTION_DIAL)
-                        intent.data = "tel:${customer.phone}".toUri()
-                        startActivity(intent)
-                    }
-
-                    binding.layoutNoOrdersList.addView(rowBinding.root)
                 }
 
                 // ========= TOP SELLING ITEMS =========

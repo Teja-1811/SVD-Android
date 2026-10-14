@@ -20,6 +20,7 @@ import com.svd.svdagencies.data.api.auth.LoginResponse
 import com.svd.svdagencies.notifications.PushRegistrationManager
 import com.svd.svdagencies.ui.admin.AdminDashboardActivity
 import com.svd.svdagencies.ui.customer.CustomerMainActivity
+import com.svd.svdagencies.ui.customer.UserPortalActivity
 import com.svd.svdagencies.ui.delivery.DeliveryBillToCustomerActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import com.svd.svdagencies.utils.SessionManager
@@ -132,6 +133,7 @@ class LoginActivity : BaseActivity() {
         val intent = when (role) {
             UserRole.ADMIN -> Intent(this, AdminDashboardActivity::class.java)
             UserRole.CUSTOMER -> Intent(this, CustomerMainActivity::class.java)
+            UserRole.USER -> Intent(this, UserPortalActivity::class.java)
             UserRole.DELIVERY -> Intent(this, DeliveryBillToCustomerActivity::class.java)
             else -> {
                 Toast.makeText(this, "Invalid role received", Toast.LENGTH_SHORT).show()

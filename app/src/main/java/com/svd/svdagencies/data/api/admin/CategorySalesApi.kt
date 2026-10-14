@@ -14,5 +14,9 @@ data class CategorySalesResponse(
 
 interface CategorySalesApi {
     @GET("api/sales/category-summary/")
-    fun getSummary(@Query("period") period: String = "overall"): Call<CategorySalesResponse>
+    fun getSummary(
+        @Query("period") period: String = "overall",
+        @Query("start_date") startDate: String? = null,
+        @Query("end_date") endDate: String? = null,
+    ): Call<CategorySalesResponse>
 }

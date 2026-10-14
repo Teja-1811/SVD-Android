@@ -6,8 +6,26 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import com.google.gson.JsonObject
 
 interface DeliveryApi {
+
+    @GET("api/delivery/subscription-deliveries/")
+    fun getSubscriptionDeliveries(
+        @retrofit2.http.Query("date") date: String
+    ): Call<JsonObject>
+
+    @retrofit2.http.POST("api/delivery/subscription-deliveries/{delivery_id}/complete/")
+    fun completeSubscriptionDelivery(
+        @retrofit2.http.Path("delivery_id") deliveryId: Int,
+        @Body request: JsonObject = JsonObject()
+    ): Call<JsonObject>
+
+    @retrofit2.http.POST("api/delivery/subscription-deliveries/{delivery_id}/skip/")
+    fun skipSubscriptionDelivery(
+        @retrofit2.http.Path("delivery_id") deliveryId: Int,
+        @Body request: JsonObject = JsonObject()
+    ): Call<JsonObject>
 
     @GET("api/delivery/routes/")
     fun getRoutes(): Call<List<DeliveryRoute>>

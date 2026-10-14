@@ -44,6 +44,7 @@
         <activity android:name=".ui.admin.customer.AddCustomerActivity"/>
         <activity android:name=".ui.admin.routes.AdminRoutesActivity"/>
         <activity android:name=".ui.admin.offers.AdminOffersActivity"/>
+        <activity android:name=".ui.admin.offers.AdminSubscriptionOffersActivity"/>
         <activity android:name=".ui.admin.sales.CategorySalesActivity"/>
         <activity android:name=".ui.admin.bills.AdminBillsActivity"/>
         <activity
@@ -70,6 +71,8 @@
 
         <!-- Customer / User -->
         <activity android:name=".ui.customer.CustomerMainActivity"/>
+        <activity android:name=".ui.customer.UserPortalActivity"/>
+        <activity android:name=".ui.customer.CustomerSubscriptionsActivity"/>
         <activity android:name=".ui.customer.CustomerCompanyDetailsActivity"/>
         <activity android:name=".ui.customer.CustomerProfileActivity"/>
         <activity android:name=".ui.customer.CustomerContactSupportActivity"/>
@@ -81,6 +84,7 @@
 
         <!-- Deliver -->
         <activity android:name=".ui.delivery.DeliveryDashboardActivity"/>
+        <activity android:name=".ui.delivery.DeliverySubscriptionDeliveriesActivity"/>
         <activity android:name=".ui.delivery.DeliveryCatalogActivity"/>
         <activity android:name=".ui.delivery.DeliveryPaymentsActivity"/>
         <activity android:name=".ui.delivery.DeliveryStockEntryActivity"/>

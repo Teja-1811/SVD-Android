@@ -26,21 +26,11 @@ class AdminRoutesActivity : AdminBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.admin_simple_dashboard)
+        setContentView(R.layout.admin_routes_dashboard)
         setupAdminLayout("Routes")
-        val root = findViewById<LinearLayout>(R.id.contentContainer)
         swipeRefresh = findViewById(R.id.swipeRefresh)
-        root.addView(TextView(this).apply {
-            text = "Delivery Routes\nCreate and maintain customer delivery routes."
-            textSize = 18f
-            setPadding(8, 8, 8, 24)
-        })
-        root.addView(MaterialButton(this).apply {
-            text = "Add Route"
-            setOnClickListener { showRouteDialog() }
-        })
-        routesList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        root.addView(routesList)
+        routesList = findViewById(R.id.routesList)
+        findViewById<MaterialButton>(R.id.btnAddRoute).setOnClickListener { showRouteDialog() }
         swipeRefresh.setOnRefreshListener { loadRoutes() }
         loadRoutes()
     }
@@ -71,10 +61,13 @@ class AdminRoutesActivity : AdminBaseActivity() {
     }
 
     private fun showRouteDialog(existing: AdminRoute? = null) {
-        val input = EditText(this).apply { hint = "Route name"; setText(existing?.name.orEmpty()) }
+        val form = layoutInflater.inflate(R.layout.admin_dialog_route_form, null)
+        val input = form.findViewById<EditText>(R.id.etRouteName).apply {
+            setText(existing?.name.orEmpty())
+        }
         AlertDialog.Builder(this)
             .setTitle(if (existing == null) "Add route" else "Edit route")
-            .setView(input)
+            .setView(form)
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Save") { _, _ -> saveRoute(existing, input.text.toString()) }
             .show()

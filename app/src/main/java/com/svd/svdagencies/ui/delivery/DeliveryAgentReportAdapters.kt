@@ -20,7 +20,6 @@ class DeliveryAgentSummaryHeaderAdapter(
     private val onApply: (View) -> Unit,
     private val onPickStartDate: () -> Unit,
     private val onPickEndDate: () -> Unit,
-    private val onRecordSubmission: () -> Unit,
     private val onAgentSelected: () -> Unit
 ) : RecyclerView.Adapter<DeliveryAgentSummaryHeaderAdapter.ViewHolder>() {
 
@@ -56,14 +55,12 @@ class DeliveryAgentSummaryHeaderAdapter(
         val tvRemainingDue: TextView = itemView.findViewById(R.id.tvRemainingDue)
         val btnClear: View = itemView.findViewById(R.id.btnClear)
         val btnApply: View = itemView.findViewById(R.id.btnApply)
-        val btnRecordSubmission: View = itemView.findViewById(R.id.btnRecordSubmission)
 
         init {
             btnClear.setOnClickListener { onClear() }
             btnApply.setOnClickListener { onApply(it) }
             tvStartDate.setOnClickListener { onPickStartDate() }
             tvEndDate.setOnClickListener { onPickEndDate() }
-            btnRecordSubmission.setOnClickListener { onRecordSubmission() }
             autoCompleteAgent.setOnItemClickListener { _, _, _, _ ->
                 selectedAgentName = autoCompleteAgent.text.toString()
                 onAgentSelected()

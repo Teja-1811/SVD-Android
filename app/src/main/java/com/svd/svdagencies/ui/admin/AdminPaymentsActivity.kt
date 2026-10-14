@@ -8,6 +8,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.svd.svdagencies.utils.showDestructiveDialog
+import com.svd.svdagencies.utils.applyWhiteDialogSurface
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.data.api.auth.ApiClient
@@ -174,6 +175,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
             .create()
 
         dialog.setOnShowListener {
+            dialog.applyWhiteDialogSurface()
             dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 val amount = amountInput.text?.toString()?.trim()?.toDoubleOrNull()
                 val status = statusInput.text?.toString()?.trim()?.lowercase().orEmpty()

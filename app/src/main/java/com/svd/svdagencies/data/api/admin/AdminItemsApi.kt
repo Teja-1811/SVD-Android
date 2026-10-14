@@ -4,6 +4,7 @@ import com.svd.svdagencies.data.model.admin.Items.AdminCategoriesResponse
 import com.svd.svdagencies.data.model.admin.Items.AdminItemsByCategoryResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -60,4 +61,8 @@ interface AdminItemsApi {
     suspend fun toggleFreezeItem(
         @Path("id") id: Int
     ): Map<String, Any>
+
+    @Streaming
+    @GET("api/customer/brochure/")
+    suspend fun downloadProductBrochure(): ResponseBody
 }
