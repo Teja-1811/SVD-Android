@@ -223,7 +223,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
 
     private fun showProductPicker(products: List<JsonObject>) {
         if (products.isEmpty()) return showMessage("No products are available for subscriptions right now.")
-        val selected = BooleanArray(products.size())
+        val selected = BooleanArray(products.size)
         AlertDialog.Builder(this)
             .setTitle("Choose products")
             .setMultiChoiceItems(products.map { "${it.string("name")}  ·  ₹${it.string("selling_price")}" }.toTypedArray(), selected) { _, which, checked -> selected[which] = checked }

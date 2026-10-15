@@ -25,6 +25,13 @@ import com.svd.svdagencies.base.BaseActivity
 
 open class CustomerMainActivity : BaseActivity() {
 
+    protected open val portalLayoutRes: Int = R.layout.customer
+    protected open val portalBottomMenuRes: Int = R.menu.menu_customer_bottom
+    protected open val portalDrawerMenuRes: Int = R.menu.menu_customer_drawer
+    protected open val portalHomeTitle: String? = null
+    protected open val portalDrawerTitle: String = "Customer Access"
+    protected open val portalDrawerSubtitle: String = "Orders, support and invoices"
+
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
     private lateinit var toolbar: MaterialToolbar
@@ -37,7 +44,7 @@ open class CustomerMainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.customer)
+        setContentView(portalLayoutRes)
 
         // UI Binding
         drawerLayout = findViewById(R.id.customerDrawerLayout)
@@ -48,7 +55,16 @@ open class CustomerMainActivity : BaseActivity() {
         btnLogout = findViewById(R.id.btnCustomerLogout)
         bottomNav = findViewById(R.id.customerBottomNav)
 
-        homeTitle = if (SessionManager(this).getRole() == UserRole.USER) "User Portal" else getString(R.string.title_home)
+        if (portalBottomMenuRes != R.menu.menu_customer_bottom) {
+            bottomNav.menu.clear()
+            bottomNav.inflateMenu(portalBottomMenuRes)
+        }
+        if (portalDrawerMenuRes != R.menu.menu_customer_drawer) {
+            navigationView.menu.clear()
+            navigationView.inflateMenu(portalDrawerMenuRes)
+        }
+
+        homeTitle = portalHomeTitle ?: if (SessionManager(this).getRole() == UserRole.USER) "User Portal" else getString(R.string.title_home)
         tvToolbarTitle.text = homeTitle
 
         setSupportActionBar(toolbar)
@@ -60,6 +76,8 @@ open class CustomerMainActivity : BaseActivity() {
         }
 
         val headerView = navigationView.getHeaderView(0)
+        headerView.findViewById<TextView>(R.id.tvCustomerName).text = portalDrawerTitle
+        headerView.findViewById<TextView>(R.id.tvCustomerDetail).text = portalDrawerSubtitle
         headerView.findViewById<View>(R.id.btnCloseDrawer).setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
         }

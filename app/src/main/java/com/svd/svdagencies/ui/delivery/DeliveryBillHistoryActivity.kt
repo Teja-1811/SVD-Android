@@ -13,9 +13,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import com.svd.svdagencies.utils.showDestructiveDialog
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
@@ -59,7 +61,13 @@ class DeliveryBillHistoryActivity : BaseActivity() {
 
         toolbar = findViewById(R.id.toolbar)
         toolbar.title = "Bills"
-        toolbar.setNavigationOnClickListener { finish() }
+        DeliveryNavigation.setup(
+            this,
+            findViewById<DrawerLayout>(R.id.deliveryDrawerLayout),
+            findViewById<NavigationView>(R.id.deliveryNavigationView),
+            toolbar = toolbar,
+            selectedItemId = R.id.nav_delivery_bill_history,
+        )
         tvDateFilter = findViewById(R.id.tvDateFilter)
         findViewById<View>(R.id.layoutDateFilter).setOnClickListener { showDatePicker() }
         updateDateFilterLabel()

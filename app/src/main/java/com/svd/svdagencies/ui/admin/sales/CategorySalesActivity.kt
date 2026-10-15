@@ -51,7 +51,7 @@ class CategorySalesActivity : AdminBaseActivity() {
                     load()
                 }
             }
-        })
+        }
         dateButton.setOnClickListener { showDatePicker() }
         swipeRefresh.setOnRefreshListener { load() }
     }

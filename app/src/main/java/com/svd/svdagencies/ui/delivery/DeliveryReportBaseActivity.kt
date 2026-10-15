@@ -28,7 +28,7 @@ abstract class DeliveryReportBaseActivity : BaseActivity() {
     protected abstract val sectionTitle: String
 
     private lateinit var swipeRefresh: AppSwipeRefreshLayout
-    private lateinit var listContainer: LinearLayout
+    protected lateinit var listContainer: LinearLayout
     private lateinit var selectedMonthLabel: TextView
     private val selectedMonth: Calendar = Calendar.getInstance().apply { set(Calendar.DAY_OF_MONTH, 1) }
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)

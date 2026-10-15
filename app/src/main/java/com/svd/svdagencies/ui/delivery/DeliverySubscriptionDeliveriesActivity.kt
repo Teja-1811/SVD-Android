@@ -10,9 +10,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.navigation.NavigationView
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.svd.svdagencies.R
@@ -28,7 +30,7 @@ import java.util.Locale
 class DeliverySubscriptionDeliveriesActivity : BaseActivity() {
     private val selectedDate = Calendar.getInstance()
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    private val displayDateFormat = SimpleDateFormat("dd MMM", Locale.US)
+    private val displayDateFormat = SimpleDateFormat("dd MMM yyyy", Locale.US)
     private lateinit var dateButton: MaterialButton
     private lateinit var loading: ProgressBar
     private lateinit var empty: TextView
@@ -37,7 +39,14 @@ class DeliverySubscriptionDeliveriesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.delivery_subscription_deliveries)
-        findViewById<MaterialToolbar>(R.id.subscriptionDeliveryToolbar).setNavigationOnClickListener { finish() }
+        val toolbar = findViewById<MaterialToolbar>(R.id.subscriptionDeliveryToolbar)
+        DeliveryNavigation.setup(
+            this,
+            findViewById<DrawerLayout>(R.id.deliveryDrawerLayout),
+            findViewById<NavigationView>(R.id.deliveryNavigationView),
+            toolbar = toolbar,
+            selectedItemId = R.id.nav_delivery_subscriptions,
+        )
         dateButton = findViewById(R.id.btnSubscriptionDeliveryDate)
         loading = findViewById(R.id.subscriptionDeliveryLoading)
         empty = findViewById(R.id.tvSubscriptionDeliveriesEmpty)

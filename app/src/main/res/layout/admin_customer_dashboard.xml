@@ -29,13 +29,20 @@
             android:background="@color/card_background"
             android:elevation="@dimen/card_elevation_small">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupCustomerType"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                app:singleSelection="true"
-                app:selectionRequired="true">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupCustomerType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipDelivery"
@@ -70,20 +77,18 @@
                     app:chipBackgroundColor="@color/customer_type_chip_background"
                     app:chipStrokeColor="@color/customer_type_chip_stroke"
                     app:chipStrokeWidth="1dp" />
-            </com.google.android.material.chip.ChipGroup>
+                </com.google.android.material.chip.ChipGroup>
 
-            <AutoCompleteTextView
-                android:id="@+id/actRouteFilter"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_edittext"
-                android:completionThreshold="0"
-                android:hint="All Routes"
-                android:inputType="none"
-                android:padding="12dp"
-                android:textColor="@color/textColorPrimary"
-                android:textColorHint="@color/gray500"/>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabAddCustomer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:backgroundTint="@color/icon_blue"
+                    app:fabSize="mini"
+                    app:srcCompat="@drawable/ic_add"
+                    app:tint="@color/white" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -115,17 +120,6 @@
                     android:drawablePadding="@dimen/spacing_small"
                     app:drawableTint="@color/gray500"/>
             </FrameLayout>
-
-            <!-- Add Button -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabAddCustomer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_medium"
-                app:backgroundTint="@color/icon_blue"
-                app:tint="@color/white"
-                app:srcCompat="@drawable/ic_add"
-                app:fabSize="mini"/>
 
             </LinearLayout>
 

@@ -9,6 +9,8 @@ data class LoginResponse(
     val message: String? = null,
     val token: String? = null,
     val role: String? = null,
+    @SerializedName("account_type")
+    val accountType: String? = null,
     @SerializedName("user_id")
     val userId: Int? = null,
     val phone: String? = null,

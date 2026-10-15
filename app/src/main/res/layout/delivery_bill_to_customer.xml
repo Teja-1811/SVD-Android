@@ -26,7 +26,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIcon="@drawable/ic_menu"
                 app:navigationIconTint="@color/white"
-                app:title="Bill to Customer"
+                app:title="Bill"
                 app:titleCentered="true"
                 app:titleTextColor="@color/white">
 
@@ -102,13 +102,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginEnd="4dp"
-                            android:hint="@string/label_route">
+                            android:hint="@string/label_route"
+                            app:boxBackgroundColor="@color/white"
+                            app:boxStrokeColor="@color/black">
 
                             <AutoCompleteTextView
                                 android:id="@+id/autoRoute"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
+                                android:dropDownBackground="@drawable/bg_delivery_dropdown"
                                 android:paddingTop="10dp"
                                 android:paddingBottom="10dp"
                                 android:textSize="13sp" />
@@ -120,13 +123,16 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1.8"
                             android:layout_marginStart="4dp"
-                            android:hint="@string/label_select_customer">
+                            android:hint="@string/label_select_customer"
+                            app:boxBackgroundColor="@color/white"
+                            app:boxStrokeColor="@color/black">
 
                             <AutoCompleteTextView
                                 android:id="@+id/autoCustomer"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
+                                android:dropDownBackground="@drawable/bg_delivery_dropdown"
                                 android:paddingTop="10dp"
                                 android:paddingBottom="10dp"
                                 android:textSize="13sp" />

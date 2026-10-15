@@ -17,7 +17,7 @@ class AuthInterceptor(
 
         val builder = originalRequest.newBuilder()
 
-        if (path.contains("/api/auth/login")) {
+        if (path.contains("/api/auth/login") || path.contains("/api/auth/register")) {
             // Force Content-Type to application/json WITHOUT charset
             // Some Django parsers are strict about this.
             builder.header("Content-Type", "application/json")

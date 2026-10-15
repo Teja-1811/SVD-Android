@@ -19,9 +19,7 @@ data class DeliveryBillCustomer(
     val due: String? = null
 ) {
     val label: String
-        get() = listOf(name, phone)
-            .filter { !it.isNullOrBlank() }
-            .joinToString(" - ")
+        get() = name
 }
 
 data class DeliveryBillCustomersResponse(

@@ -12,8 +12,6 @@ import android.view.Window
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -24,7 +22,6 @@ import com.svd.svdagencies.data.api.admin.CustomerDashboardApi
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
-import com.svd.svdagencies.data.model.delivery.DeliveryRoute
 import com.svd.svdagencies.data.model.admin.customerData.UpdateBalanceRequest
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.ui.admin.adapter.CustomerAdapter
@@ -49,10 +46,7 @@ class CustomersData : AdminBaseActivity() {
     private lateinit var etSearch: EditText
     private lateinit var fabAddCustomer: FloatingActionButton
     private lateinit var tvEmptyState: TextView
-    private lateinit var actRouteFilter: AutoCompleteTextView
     private var selectedType = "delivery"
-    private var selectedRouteId: Int? = null
-    private var routes: List<DeliveryRoute> = emptyList()
 
     private var allCustomers: List<CustomerItem> = emptyList()
     private val addCustomerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
@@ -85,7 +79,6 @@ class CustomersData : AdminBaseActivity() {
         etSearch = findViewById(R.id.etSearch)
         fabAddCustomer = findViewById(R.id.fabAddCustomer)
         tvEmptyState = findViewById(R.id.tvEmptyState) // Add this in XML
-        actRouteFilter = findViewById(R.id.actRouteFilter)
 
         rvCustomers.layoutManager = LinearLayoutManager(this)
         
@@ -99,7 +92,6 @@ class CustomersData : AdminBaseActivity() {
             }
         )
         rvCustomers.adapter = adapter
-        loadRoutes()
     }
 
     private fun setupListeners() {
@@ -130,19 +122,8 @@ class CustomersData : AdminBaseActivity() {
                     R.id.chipUser -> "user"
                     else -> "delivery"
                 }
-                selectedRouteId = null
-                actRouteFilter.setText("All Routes", false)
                 loadCustomers()
             }
-
-        actRouteFilter.setOnItemClickListener { _, _, position, _ ->
-            selectedRouteId = if (position == 0) null else routes.getOrNull(position - 1)?.id
-            filterCustomers(etSearch.text.toString())
-        }
-
-        actRouteFilter.setOnClickListener {
-            actRouteFilter.showDropDown()
-        }
     }
 
     private fun loadCustomers() {
@@ -194,9 +175,8 @@ class CustomersData : AdminBaseActivity() {
 
         val q = query.trim()
 
-        val typeAndRouteFiltered = allCustomers.filter { selectedRouteId == null || it.route_id == selectedRouteId }
-        val filtered = if (q.isEmpty()) typeAndRouteFiltered else
-            typeAndRouteFiltered.filter { item ->
+        val filtered = if (q.isEmpty()) allCustomers else
+            allCustomers.filter { item ->
                 listOfNotNull(item.name, item.shop_name, item.phone)
                     .any { it.contains(q, ignoreCase = true) }
             }
@@ -204,21 +184,6 @@ class CustomersData : AdminBaseActivity() {
         adapter.update(filtered)
 
         showEmptyState(filtered.isEmpty())
-    }
-
-    private fun loadRoutes() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                routes = ApiClient.deliveryApi.getRoutes().execute().body().orEmpty()
-                withContext(Dispatchers.Main) {
-                    val names = listOf("All Routes") + routes.map { it.name }
-                    actRouteFilter.setAdapter(ArrayAdapter(this@CustomersData, android.R.layout.simple_dropdown_item_1line, names))
-                    actRouteFilter.setText("All Routes", false)
-                }
-            } catch (_: Exception) {
-                // The dashboard remains usable when routes cannot be loaded.
-            }
-        }
     }
 
     private fun showEmptyState(show: Boolean) {

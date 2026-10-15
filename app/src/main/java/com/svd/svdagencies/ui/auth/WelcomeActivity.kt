@@ -59,6 +59,11 @@ class WelcomeActivity : BaseActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
+        dialogView.findViewById<MaterialButton>(R.id.btnRegister).setOnClickListener {
+            dialog.dismiss()
+            startActivity(Intent(this, RegistrationActivity::class.java))
+        }
+
         dialog.show()
     }
 }

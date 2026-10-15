@@ -70,6 +70,13 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
             "• ${row.value("name")} × ${row.value("quantity")} @ ₹${row.value("unit_price")}" 
         }.orEmpty()
         body.addView(label(itemLines, 13, false).apply { setPadding(0, dp(8), 0, 0) })
+        body.addView(LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            addView(MaterialButton(this@AdminSubscriptionOffersActivity).apply {
+                text = "Edit"; isAllCaps = false
+                setOnClickListener { showEditDialog(offer) }
+            })
+        })
         card.addView(body); list.addView(card)
     }
 
@@ -117,6 +124,49 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
                 if (response.isSuccessful) { toast("Subscription offer created"); loadOffers() } else toast("Unable to create subscription offer")
             }
             override fun onFailure(call: Call<JsonObject>, error: Throwable) { loading.isVisible = false; toast("Unable to create subscription offer") }
+        })
+    }
+
+    private fun showEditDialog(offer: JsonObject) {
+        val form = layoutInflater.inflate(R.layout.admin_dialog_subscription_offer_form, null)
+        val name = form.findViewById<EditText>(R.id.etSubscriptionOfferName).apply { setText(offer.value("name")) }
+        val description = form.findViewById<EditText>(R.id.etSubscriptionOfferDescription).apply { setText(offer.value("description")) }
+        val duration = form.findViewById<EditText>(R.id.etSubscriptionDuration).apply { setText(offer.value("duration_value")) }
+        val durationUnit = form.findViewById<Spinner>(R.id.spinnerSubscriptionDurationUnit)
+        val frequency = form.findViewById<Spinner>(R.id.spinnerSubscriptionFrequency)
+        durationUnit.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOf("days", "weeks", "months"))
+        frequency.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOf("daily", "weekly", "monthly"))
+        durationUnit.setSelection(arrayOf("days", "weeks", "months").indexOf(offer.value("duration_unit")).coerceAtLeast(0))
+        frequency.setSelection(arrayOf("daily", "weekly", "monthly").indexOf(offer.value("delivery_frequency")).coerceAtLeast(0))
+
+        // Item rows are fixed by the plan. Editing plan metadata from Android
+        // keeps every saved item and price intact; the website supports full
+        // multi-item editing.
+        form.findViewById<Spinner>(R.id.spinnerSubscriptionItem).visibility = View.GONE
+        form.findViewById<EditText>(R.id.etSubscriptionItemQuantity).visibility = View.GONE
+        form.findViewById<EditText>(R.id.etSubscriptionItemPrice).visibility = View.GONE
+
+        AlertDialog.Builder(this).setTitle("Edit Subscription Offer").setView(form).setNegativeButton("Cancel", null)
+            .setPositiveButton("Save") { _, _ ->
+                val body = mapOf<String, Any>(
+                    "name" to name.text.toString().trim(),
+                    "description" to description.text.toString().trim(),
+                    "duration_value" to (duration.text.toString().toIntOrNull() ?: 0),
+                    "duration_unit" to durationUnit.selectedItem.toString(),
+                    "delivery_frequency" to frequency.selectedItem.toString(),
+                )
+                update(offer.get("id").asInt, body)
+            }.show()
+    }
+
+    private fun update(id: Int, body: Map<String, Any>) {
+        loading.isVisible = true
+        ApiClient.adminOffersApi.updateSubscriptionOffer(id, body).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                loading.isVisible = false
+                if (response.isSuccessful) { toast("Subscription offer updated"); loadOffers() } else toast("Unable to update subscription offer")
+            }
+            override fun onFailure(call: Call<JsonObject>, error: Throwable) { loading.isVisible = false; toast("Unable to update subscription offer") }
         })
     }
 

@@ -287,7 +287,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     displayRoutes.addAll(routes.map { it.name })
                     
                     autoRoute.setAdapter(
-                        ArrayAdapter(this@DeliveryBillToCustomerActivity, android.R.layout.simple_dropdown_item_1line, displayRoutes)
+                        ArrayAdapter(this@DeliveryBillToCustomerActivity, R.layout.delivery_dropdown_item, displayRoutes)
                     )
 
                     autoRoute.setOnItemClickListener { _, _, position, _ ->
@@ -342,7 +342,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     }
                     
                     autoCustomer.setAdapter(
-                        ArrayAdapter(this@DeliveryBillToCustomerActivity, android.R.layout.simple_dropdown_item_1line, labels)
+                        ArrayAdapter(this@DeliveryBillToCustomerActivity, R.layout.delivery_dropdown_item, labels)
                     )
                     
                     autoCustomer.setOnItemClickListener { _, _, position, _ ->

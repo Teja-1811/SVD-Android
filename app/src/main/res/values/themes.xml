@@ -64,6 +64,7 @@
         <item name="elevation">0dp</item>
         <item name="itemTextColor">@color/drawer_nav_item_colors</item>
         <item name="itemIconTint">@color/drawer_nav_icon_colors</item>
+        <item name="itemBackground">@drawable/bg_drawer_item_white</item>
     </style>
 
     <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">

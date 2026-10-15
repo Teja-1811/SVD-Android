@@ -35,6 +35,7 @@
         </activity>
 
         <activity android:name=".ui.auth.LoginActivity" />
+        <activity android:name=".ui.auth.RegistrationActivity" />
 
         <!-- Admin -->
         <activity android:name=".ui.admin.AdminDashboardActivity"/>

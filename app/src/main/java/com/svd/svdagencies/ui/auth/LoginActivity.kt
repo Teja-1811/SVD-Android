@@ -101,10 +101,15 @@ class LoginActivity : BaseActivity() {
 
                     val body = response.body()
                     if (body != null && body.status == "success" && body.token != null) {
-                        session.saveSession(body.token, body.role ?: "", body.userId ?: -1)
+                        val portalRole = if (body.accountType.equals("user", ignoreCase = true)) {
+                            UserRole.USER
+                        } else {
+                            body.role.orEmpty().lowercase()
+                        }
+                        session.saveSession(body.token, portalRole, body.userId ?: -1)
                         PushRegistrationManager.requestPermissionIfNeeded(this@LoginActivity)
                         PushRegistrationManager.registerCurrentDevice(this@LoginActivity)
-                        navigateToDashboard(body.role ?: "")
+                        navigateToDashboard(portalRole)
                         finish()
                     } else {
                         val msg = body?.message ?: "Login failed"

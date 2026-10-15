@@ -1,6 +1,7 @@
 package com.svd.svdagencies.ui.customer.fragment
 
 import android.content.res.ColorStateList
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -19,6 +20,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.OrderApi
@@ -43,6 +45,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
+import java.util.Calendar
+import java.text.SimpleDateFormat
 
 class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
@@ -68,6 +72,10 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     private lateinit var tvTotalAmount: TextView
     private lateinit var tvOrderingWindow: TextView
     private lateinit var btnPlaceOrder: MaterialButton
+    private lateinit var orderTypeToggle: MaterialButtonToggleGroup
+    private lateinit var btnPreOrderDate: MaterialButton
+    private lateinit var tvRegularDeliveryHint: TextView
+    private val preOrderDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }
 
     private var shouldLoadLatestOrder = false
     private var pendingServerOrder: LatestCustomerOrder? = null
@@ -84,9 +92,18 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         val rvSummary = view.findViewById<RecyclerView>(R.id.rvSummary)
         tvOrderingWindow = view.findViewById(R.id.tvOrderingWindow)
         btnPlaceOrder = view.findViewById(R.id.btnPlaceOrder)
+        orderTypeToggle = view.findViewById(R.id.orderTypeToggle)
+        btnPreOrderDate = view.findViewById(R.id.btnPreOrderDate)
+        tvRegularDeliveryHint = view.findViewById(R.id.tvRegularDeliveryHint)
         cardOrderSummary = view.findViewById(R.id.cardOrderSummary)
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount)
         shouldLoadLatestOrder = arguments?.getBoolean(ARG_EDIT_LATEST_ORDER, false) == true
+
+        orderTypeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) updateOrderTypeUi(checkedId == R.id.btnPreOrder)
+        }
+        btnPreOrderDate.setOnClickListener { choosePreOrderDate() }
+        updateOrderTypeUi(false)
 
         orderAdapter = OrderProductAdapter(
             products = viewModel.currentCategoryProducts,
@@ -170,7 +187,15 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         }
 
         val submittedOrderItems = buildLatestOrderItems()
-        val request = PlaceOrderRequest(items = orderItems)
+        val isPreOrder = orderTypeToggle.checkedButtonId == R.id.btnPreOrder
+        val deliveryDate = if (isPreOrder) {
+            SimpleDateFormat("yyyy-MM-dd", Locale.US).format(preOrderDate.time)
+        } else null
+        val request = PlaceOrderRequest(
+            items = orderItems,
+            orderType = if (isPreOrder) "pre_order" else "regular",
+            deliveryDate = deliveryDate,
+        )
         val api = ApiClient.retrofit.create(OrderApi::class.java)
 
         api.placeOrder(request).enqueue(object : Callback<PlaceOrderResponse> {
@@ -221,6 +246,29 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun updateOrderTypeUi(isPreOrder: Boolean) {
+        btnPreOrderDate.isVisible = isPreOrder
+        tvRegularDeliveryHint.text = if (isPreOrder) {
+            "Choose the future date on which you need delivery."
+        } else {
+            "Regular orders are delivered with your delivery agent's next route visit."
+        }
+        if (isPreOrder) updatePreOrderDateLabel()
+    }
+
+    private fun choosePreOrderDate() {
+        val picker = DatePickerDialog(requireContext(), { _, year, month, day ->
+            preOrderDate.set(year, month, day)
+            updatePreOrderDateLabel()
+        }, preOrderDate.get(Calendar.YEAR), preOrderDate.get(Calendar.MONTH), preOrderDate.get(Calendar.DAY_OF_MONTH))
+        picker.datePicker.minDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }.timeInMillis
+        picker.show()
+    }
+
+    private fun updatePreOrderDateLabel() {
+        btnPreOrderDate.text = "Delivery date: ${SimpleDateFormat("dd MMM yyyy", Locale.US).format(preOrderDate.time)}"
     }
 
     private fun fetchExistingOrderState() {

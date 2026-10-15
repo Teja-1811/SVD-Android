@@ -4,8 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.navigation.NavigationView
+import com.svd.svdagencies.R
 import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.databinding.DeliveryStockHistoryBinding
@@ -34,9 +37,13 @@ class DeliveryStockHistoryActivity : BaseActivity() {
     }
 
     private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        DeliveryNavigation.setup(
+            this,
+            findViewById<DrawerLayout>(R.id.deliveryDrawerLayout),
+            findViewById<NavigationView>(R.id.deliveryNavigationView),
+            toolbar = binding.toolbar,
+            selectedItemId = R.id.nav_delivery_stock_history,
+        )
     }
 
     private fun setupRecyclerView() {
