@@ -130,7 +130,7 @@
                             app:boxBackgroundColor="@color/editTextBackground"
                             app:boxStrokeColor="@color/divider_line">
 
-                            <AutoCompleteTextView
+                            <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
                                 android:id="@+id/spinnerMonth"
                                 android:layout_width="match_parent"
                                 android:layout_height="42dp"
@@ -159,7 +159,7 @@
                             app:boxBackgroundColor="@color/editTextBackground"
                             app:boxStrokeColor="@color/divider_line">
 
-                            <AutoCompleteTextView
+                            <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
                                 android:id="@+id/spinnerYear"
                                 android:layout_width="match_parent"
                                 android:layout_height="42dp"

@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import com.svd.svdagencies.utils.showDestructiveDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.zxing.BarcodeFormat
@@ -350,7 +350,7 @@ class AdminBillsActivity : AdminBaseActivity() {
                     .distinctBy { it.id }
                     .sortedBy { it.name?.lowercase(Locale.ROOT) }
                 val customerNames = customers.map { "${it.name} (${it.shop_name})" }
-                val adapter = ArrayAdapter(this@AdminBillsActivity, android.R.layout.simple_dropdown_item_1line, customerNames)
+                val adapter = ArrayAdapter(this@AdminBillsActivity, R.layout.delivery_dropdown_item, customerNames)
                 autoCompleteCustomer.setAdapter(adapter)
             } catch (e: Exception) {
                 Toast.makeText(this@AdminBillsActivity, "Error fetching customers: ${e.message}", Toast.LENGTH_SHORT).show()

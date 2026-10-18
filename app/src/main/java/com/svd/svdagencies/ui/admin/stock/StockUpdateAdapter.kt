@@ -137,18 +137,14 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
-                    currentItem?.let { item ->
-                        updateDraft(item)
-                    }
+                    if (!isBinding) currentItem?.let(::updateDraft)
                 }
             })
             etDiscount.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
-                    currentItem?.let { item ->
-                        updateDraft(item)
-                    }
+                    if (!isBinding) currentItem?.let(::updateDraft)
                 }
             })
             spinnerCompany.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -173,7 +169,7 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
             val draft = updates[item.id]
             etCrates.setText(draft?.crates?.toCleanString() ?: "0")
             etDiscount.setText(draft?.discount?.toCleanString() ?: "0")
-            val supplierAdapter = ArrayAdapter(itemView.context, android.R.layout.simple_spinner_dropdown_item, companies.map { it.name })
+            val supplierAdapter = ArrayAdapter(itemView.context, R.layout.delivery_dropdown_item, companies.map { it.name })
             spinnerCompany.adapter = supplierAdapter
             val selectedCompanyId = draft?.companyId ?: item.companyId
             val selectedIndex = companies.indexOfFirst { it.id == selectedCompanyId }.let { index ->
@@ -206,13 +202,13 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
             val discount = etDiscount.text.toString().toDoubleOrNull() ?: 0.0
             val quantity = crates * (item.pcsCount ?: 1)
             val supplier = companies.getOrNull(spinnerCompany.selectedItemPosition)
-            val isDodla = (supplier?.name ?: "").equals("Dodla", ignoreCase = true)
+            val isDodla = (supplier?.name ?: "").trim().equals("Dodla", ignoreCase = true)
             val value = if (isDodla) {
-                val invoiceQuantity = crates * item.litresPerCrate
+                val invoiceQuantity = crates * (item.litresPerCrate.takeIf { it != 0.0 } ?: 1.0)
                 val taxableValue = (invoiceQuantity * item.basePrice) * (1 - (discount / 100.0))
                 taxableValue + (taxableValue * item.gstPercentage / 100.0)
             } else {
-                (quantity * item.buyingPrice) - discount
+                quantity * (item.buyingPrice - discount)
             }.coerceAtLeast(0.0)
             tvQuantityPreview.text = "Quantity: %.3f".format(quantity)
             tvValuePreview.text = "Value: %.3f".format(value)

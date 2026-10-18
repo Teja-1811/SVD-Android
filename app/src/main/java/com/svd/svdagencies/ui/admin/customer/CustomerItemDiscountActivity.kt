@@ -73,7 +73,7 @@ class CustomerItemDiscountActivity : AdminBaseActivity() {
                         val labels = listOf("Select customer") + customers.map {
                             listOf(it.name, it.shop_name).filter(String::isNotBlank).joinToString(" — ")
                         }
-                        customerSpinner.adapter = ArrayAdapter(this@CustomerItemDiscountActivity, android.R.layout.simple_spinner_dropdown_item, labels)
+                        customerSpinner.adapter = ArrayAdapter(this@CustomerItemDiscountActivity, R.layout.delivery_dropdown_item, labels)
                         loadingCustomers = false
                     }
                     adapter.submitList(response.items)

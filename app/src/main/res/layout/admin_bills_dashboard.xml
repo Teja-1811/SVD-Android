@@ -48,7 +48,7 @@
                         app:boxCornerRadiusTopStart="4dp"
                         app:boxStrokeColor="?attr/colorOutline">
 
-                        <AutoCompleteTextView
+                        <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
                             android:id="@+id/autoCompleteCustomer"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
@@ -105,6 +105,17 @@
                         android:layout_marginTop="@dimen/spacing_small"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/fabCreateBill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/spacing_small"
+                            android:contentDescription="Generate bill"
+                            android:src="@drawable/ic_add"
+                            app:fabSize="mini"
+                            app:backgroundTint="@color/brand_red"
+                            app:tint="@color/white" />
 
                         <Button
                             android:id="@+id/btnSearch"
@@ -178,16 +189,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabCreateBill"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/spacing_large"
-            android:src="@drawable/ic_add"
-            app:backgroundTint="@color/brand_red"
-            app:tint="@color/white" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

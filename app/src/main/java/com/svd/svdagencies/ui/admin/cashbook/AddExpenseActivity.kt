@@ -55,7 +55,7 @@ class AddExpenseActivity : AdminBaseActivity() {
     }
 
     private fun setupCategorySpinner() {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categories)
+        val adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, categories)
         binding.spinnerCategory.setAdapter(adapter)
     }
 

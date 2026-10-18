@@ -126,7 +126,7 @@
                     android:textColor="@color/gray500"
                     android:layout_marginBottom="@dimen/spacing_tiny"/>
 
-                <Spinner
+                <Spinner android:popupBackground="@drawable/bg_delivery_dropdown"
                     android:id="@+id/spinnerCompany"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -142,7 +142,7 @@
                     android:textColor="@color/gray500"
                     android:layout_marginBottom="@dimen/spacing_tiny"/>
 
-                <Spinner
+                <Spinner android:popupBackground="@drawable/bg_delivery_dropdown"
                     android:id="@+id/spinnerCategory"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"

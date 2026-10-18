@@ -42,7 +42,7 @@ class CategorySalesActivity : AdminBaseActivity() {
         appliedRange = findViewById(R.id.tvAppliedSalesRange)
         val periods = listOf("Year", "Month", "Week", "Day")
         findViewById<Spinner>(R.id.spinnerPeriod).apply {
-            adapter = ArrayAdapter(this@CategorySalesActivity, android.R.layout.simple_spinner_dropdown_item, periods)
+            adapter = ArrayAdapter(this@CategorySalesActivity, R.layout.delivery_dropdown_item, periods)
             setSelection(0)
             onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: android.widget.AdapterView<*>?) = Unit

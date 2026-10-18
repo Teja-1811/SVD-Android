@@ -116,9 +116,10 @@ class StockLeakageAdapter(
         val h = holder as InfoHolder
         val entry = entries[position]
         h.title.text = entry.itemName ?: "Item"
-        h.subtitle.text = entry.companyName ?: "No company"
+        val type = (entry.entryType ?: "leakage").replaceFirstChar { it.titlecase(Locale.ROOT) }
+        h.subtitle.text = "${entry.companyName ?: "No company"} · $type"
         h.chip.text = entry.date
-        h.meta1Label.text = "Leakage Qty"
+        h.meta1Label.text = "Quantity"
         h.meta1Value.text = entry.quantity.toString()
         h.meta2Label.text = "Unit cost"
         h.meta2Value.text = String.format(Locale.getDefault(), "%.3f", entry.unitCost)

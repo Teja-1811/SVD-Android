@@ -67,8 +67,27 @@
             <com.google.android.material.textfield.TextInputEditText android:id="@+id/etRegistrationPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReadTerms"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="Read Terms and Conditions"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:id="@+id/tvTermsInstruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Open the terms before accepting them."
+            android:textColor="@color/textColorSecondary"
+            android:textSize="14sp" />
+
         <CheckBox
             android:id="@+id/cbAcceptTerms"
+            android:enabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"

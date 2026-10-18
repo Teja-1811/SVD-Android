@@ -28,8 +28,9 @@ import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import com.svd.svdagencies.data.model.admin.stock.StockDateEntry
 import com.svd.svdagencies.data.model.admin.stock.StockLeakageEntry
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import com.svd.svdagencies.utils.showDestructiveDialog
+import com.svd.svdagencies.utils.applyWhiteDialogSurface
 import android.view.LayoutInflater
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -291,11 +292,17 @@ class AdminStockActivity : AdminBaseActivity() {
         val etDiscount = view.findViewById<TextInputEditText>(R.id.etDiscount)
 
         etCrates.setText(entry.crates.toString())
-        etDiscount.setText("0") // Backend might not return previous discount, setting 0 as default
+        etDiscount.setText(entry.discount.toString())
 
+        val isDodla = entry.companyName.orEmpty().trim().equals("Dodla", ignoreCase = true)
+        val discountHelp = if (isDodla) {
+            "Discount is a percentage."
+        } else {
+            "Discount is in rupees per piece. Older entries may show a total discount; check it before updating."
+        }
         MaterialAlertDialogBuilder(this)
             .setTitle("Edit Stock Entry")
-            .setMessage("Updating ${entry.itemName} for ${entry.companyName}")
+            .setMessage("Updating ${entry.itemName} for ${entry.companyName}\n$discountHelp")
             .setView(view)
             .setPositiveButton("Update") { _, _ ->
                 val crates = etCrates.text.toString().toDoubleOrNull() ?: 0.0
@@ -383,8 +390,18 @@ class AdminStockActivity : AdminBaseActivity() {
         })
     }
 
+    private fun setupLeakageType(view: View, selectedType: String? = null): AutoCompleteTextView {
+        val type = view.findViewById<AutoCompleteTextView>(R.id.actvType)
+        val options = listOf("Leakage", "Shortage", "Home")
+        type.setAdapter(ArrayAdapter(this, R.layout.delivery_dropdown_item, options))
+        val selected = options.firstOrNull { it.equals(selectedType, ignoreCase = true) } ?: options.first()
+        type.setText(selected, false)
+        return type
+    }
+
     private fun showAddLeakageDialog() {
         val view = LayoutInflater.from(this).inflate(R.layout.admin_dialog_leakage, null)
+        val actvType = setupLeakageType(view)
         val actvItem = view.findViewById<AutoCompleteTextView>(R.id.actvItem)
         val etQuantity = view.findViewById<TextInputEditText>(R.id.etQuantity)
         val etDate = view.findViewById<TextInputEditText>(R.id.etDate)
@@ -400,7 +417,7 @@ class AdminStockActivity : AdminBaseActivity() {
         }
 
         val itemNames = allStockItems.map { "${it.name} (${it.companyName})" }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, itemNames)
+        val adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, itemNames)
         actvItem.setAdapter(adapter)
 
         MaterialAlertDialogBuilder(this)
@@ -413,7 +430,7 @@ class AdminStockActivity : AdminBaseActivity() {
                     val itemId = allStockItems[itemIndex].id
                     val qty = etQuantity.text.toString().toIntOrNull() ?: 0
                     if (qty > 0) {
-                        saveLeakage(itemId, qty, etDate.text.toString(), etNotes.text.toString())
+                        saveLeakage(itemId, qty, etDate.text.toString(), etNotes.text.toString(), actvType.text.toString().lowercase(Locale.ROOT))
                     } else {
                         Toast.makeText(this, "Enter valid quantity", Toast.LENGTH_SHORT).show()
                     }
@@ -423,13 +440,15 @@ class AdminStockActivity : AdminBaseActivity() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+            .applyWhiteDialogSurface()
     }
 
-    private fun saveLeakage(itemId: Int, quantity: Int, date: String, notes: String) {
+    private fun saveLeakage(itemId: Int, quantity: Int, date: String, notes: String, entryType: String) {
         showScreenLoading()
         val body = mapOf(
             "item" to itemId,
             "quantity" to quantity,
+            "entry_type" to entryType,
             "date" to date,
             "notes" to notes
         )
@@ -451,6 +470,7 @@ class AdminStockActivity : AdminBaseActivity() {
 
     private fun showEditLeakageDialog(entry: StockLeakageEntry) {
         val view = LayoutInflater.from(this).inflate(R.layout.admin_dialog_leakage, null)
+        val actvType = setupLeakageType(view, entry.entryType)
         val tilItem = view.findViewById<TextInputLayout>(R.id.tilItem)
         val actvItem = view.findViewById<AutoCompleteTextView>(R.id.actvItem)
         val etQuantity = view.findViewById<TextInputEditText>(R.id.etQuantity)
@@ -478,19 +498,21 @@ class AdminStockActivity : AdminBaseActivity() {
             .setPositiveButton("Update") { _, _ ->
                 val qty = etQuantity.text.toString().toIntOrNull() ?: 0
                 if (qty > 0) {
-                    updateLeakage(entry.id, qty, etDate.text.toString(), etNotes.text.toString())
+                    updateLeakage(entry.id, qty, etDate.text.toString(), etNotes.text.toString(), actvType.text.toString().lowercase(Locale.ROOT))
                 } else {
                     Toast.makeText(this, "Enter valid quantity", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
+            .applyWhiteDialogSurface()
     }
 
-    private fun updateLeakage(leakageId: Int, quantity: Int, date: String, notes: String) {
+    private fun updateLeakage(leakageId: Int, quantity: Int, date: String, notes: String, entryType: String) {
         showScreenLoading()
         val body = mapOf(
             "quantity" to quantity,
+            "entry_type" to entryType,
             "date" to date,
             "notes" to notes
         )

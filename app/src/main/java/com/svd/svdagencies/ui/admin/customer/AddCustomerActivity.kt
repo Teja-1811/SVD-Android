@@ -1,5 +1,7 @@
 package com.svd.svdagencies.ui.admin.customer
 
+import com.svd.svdagencies.R
+
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
@@ -36,7 +38,7 @@ class AddCustomerActivity : AdminBaseActivity() {
         setContentView(binding.root)
 
         api = ApiClient.adminCustomerDashboard
-        binding.spinnerEntryType.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, customerTypes.map { it.replaceFirstChar(Char::titlecase) })
+        binding.spinnerEntryType.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, customerTypes.map { it.replaceFirstChar(Char::titlecase) })
 
         // Check if we are in Update mode
         customerToUpdate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -133,7 +135,7 @@ class AddCustomerActivity : AdminBaseActivity() {
                 val response = withContext(Dispatchers.IO) { ApiClient.deliveryApi.getRoutes().awaitResponse() }
                 routes = response.body().orEmpty()
                 val routeNames = listOf("No Route") + routes.map { it.name }
-                val adapter = ArrayAdapter(this@AddCustomerActivity, android.R.layout.simple_dropdown_item_1line, routeNames)
+                val adapter = ArrayAdapter(this@AddCustomerActivity, R.layout.delivery_dropdown_item, routeNames)
                 binding.actRoute.setAdapter(adapter)
                 binding.actRoute.setOnClickListener {
                     binding.actRoute.showDropDown()

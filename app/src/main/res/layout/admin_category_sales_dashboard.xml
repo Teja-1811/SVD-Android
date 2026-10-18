@@ -61,7 +61,7 @@
                                 android:textColor="@color/textColorSecondary"
                                 android:textSize="14sp" />
 
-                            <Spinner
+                            <Spinner android:popupBackground="@drawable/bg_delivery_dropdown"
                                 android:id="@+id/spinnerPeriod"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

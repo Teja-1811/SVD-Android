@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/label_delivery_agent">
 
-        <AutoCompleteTextView
+        <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
             android:id="@+id/autoCompleteAgent"
             android:layout_width="match_parent"
             android:layout_height="52dp"

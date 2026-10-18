@@ -41,7 +41,7 @@
             android:text="Offer audience"
             android:textColor="@color/textColorSecondary" />
 
-        <Spinner
+        <Spinner android:popupBackground="@drawable/bg_delivery_dropdown"
             android:id="@+id/spinnerOfferFor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

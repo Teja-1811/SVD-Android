@@ -12,7 +12,7 @@ import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.card.MaterialCardView
@@ -136,7 +136,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
                     val names = customersList.map { it.name ?: "Unknown" }
                     withContext(Dispatchers.Main) {
                         if (isDestroyed || isFinishing) return@withContext
-                        val adapter = ArrayAdapter(this@AdminMonthlySummary, android.R.layout.simple_dropdown_item_1line, names)
+                        val adapter = ArrayAdapter(this@AdminMonthlySummary, R.layout.delivery_dropdown_item, names)
                         autoCustomer.setAdapter(adapter)
                         autoCustomer.setOnItemClickListener { _, _, position, _ ->
                             val selectedName = adapter.getItem(position)

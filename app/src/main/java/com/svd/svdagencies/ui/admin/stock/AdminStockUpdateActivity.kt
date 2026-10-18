@@ -176,7 +176,7 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
 
     private fun updateCompanyFilter(companies: List<String>) {
         val options = listOf("All companies") + companies
-        spinnerCompanyFilter.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, options))
+        spinnerCompanyFilter.setAdapter(ArrayAdapter(this, R.layout.delivery_dropdown_item, options))
         if (selectedCompany !in options) {
             selectedCompany = "All companies"
             spinnerCompanyFilter.setText(selectedCompany, false)

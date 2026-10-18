@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import com.svd.svdagencies.utils.showDestructiveDialog
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope

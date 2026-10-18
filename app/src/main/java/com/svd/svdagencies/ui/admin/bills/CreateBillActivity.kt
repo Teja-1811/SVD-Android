@@ -232,19 +232,24 @@ class CreateBillActivity : AdminBaseActivity() {
                 val userCustomersDeferred = async {
                     ApiClient.billsDashboardApi.getCustomersForBill(CUSTOMER_TYPE_USER)
                 }
+                val deliveryCustomersDeferred = async {
+                    ApiClient.billsDashboardApi.getCustomersForBill(CUSTOMER_TYPE_DELIVERY)
+                }
                 val itemsDeferred = async { fetchAllAvailableItems() }
                 
                 allCustomers = (
                     retailerCustomersDeferred.await().customers.orEmpty()
                         + userCustomersDeferred.await().customers.orEmpty()
+                        + deliveryCustomersDeferred.await().customers.orEmpty()
                     )
                     .filter { it.frozen != true }
                     .distinctBy { it.id }
-                    .sortedBy { it.name?.lowercase(Locale.ROOT) }
+                    .sortedWith(compareBy<CustomerItem> { !isDeliveryAgent(it) }
+                        .thenBy { it.name?.lowercase(Locale.ROOT).orEmpty() })
                 allAvailableItems = itemsDeferred.await()
 
                 val routes = (listOf("All Routes") + allCustomers.mapNotNull { it.route_name }.distinct().filter { it.isNotEmpty() }).sorted()
-                val routeAdapter = ArrayAdapter(this@CreateBillActivity, android.R.layout.simple_dropdown_item_1line, routes)
+                val routeAdapter = ArrayAdapter(this@CreateBillActivity, R.layout.delivery_dropdown_item, routes)
                 spinnerRoute.setAdapter(routeAdapter)
                 
                 spinnerRoute.setText("All Routes", false)
@@ -256,12 +261,16 @@ class CreateBillActivity : AdminBaseActivity() {
                     val billDetail = ApiClient.billsDashboardApi.getBillDetail(id)
                     val billItems = ApiClient.billsDashboardApi.getBillItems(id)
                     
-                    val customer = allCustomers.find { it.name == billDetail.customer }
+                    val customer = if (billDetail.customerId != null) {
+                        allCustomers.find { it.id == billDetail.customerId }
+                    } else {
+                        allCustomers.find { it.name == billDetail.customer }
+                    }
                     customer?.let {
                         selectedCustomer = it
                         spinnerRoute.setText(it.route_name ?: "All Routes", false)
                         filterCustomers()
-                        spinnerCustomer.setText(it.name ?: "", false)
+                        spinnerCustomer.setText(customerDisplayName(it), false)
                         selectedCustomer = it
                         it.id?.let(::loadCustomerDefaultDiscounts)
                     }
@@ -311,6 +320,12 @@ class CreateBillActivity : AdminBaseActivity() {
         }
     }
 
+    private fun isDeliveryAgent(customer: CustomerItem): Boolean =
+        customer.user_type?.trim()?.equals(CUSTOMER_TYPE_DELIVERY, ignoreCase = true) == true
+
+    private fun customerDisplayName(customer: CustomerItem): String =
+        (customer.name ?: "") + if (isDeliveryAgent(customer)) " (Delivery)" else ""
+
     private fun filterCustomers() {
         val selectedRoute = spinnerRoute.text.toString()
         filteredCustomers = if (selectedRoute == "All Routes" || selectedRoute.isEmpty()) {
@@ -319,8 +334,8 @@ class CreateBillActivity : AdminBaseActivity() {
             allCustomers.filter { it.route_name == selectedRoute }
         }
 
-        val names = filteredCustomers.map { it.name ?: "" }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, names)
+        val names = filteredCustomers.map(::customerDisplayName)
+        val adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, names)
         spinnerCustomer.setAdapter(adapter)
         
         spinnerCustomer.setText("", false)
@@ -339,7 +354,7 @@ class CreateBillActivity : AdminBaseActivity() {
         }
 
         val names = filteredItems.map { it.name }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, names)
+        val adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, names)
         spinnerItem.setAdapter(adapter)
     }
 
@@ -546,5 +561,6 @@ class CreateBillActivity : AdminBaseActivity() {
     private companion object {
         const val CUSTOMER_TYPE_RETAILER = "retailer"
         const val CUSTOMER_TYPE_USER = "user"
+        const val CUSTOMER_TYPE_DELIVERY = "delivery"
     }
 }

@@ -41,6 +41,12 @@
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+        <item name="android:datePickerDialogTheme">@style/Theme.App.WhiteDatePickerDialog</item>
+    </style>
+
+    <style name="Theme.App.WhiteDatePickerDialog" parent="android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/bg_white_date_dialog</item>
+        <item name="android:colorAccent">@color/brand_red</item>
     </style>
 
     <style name="Widget.App.CardView" parent="Widget.Material3.CardView.Filled">
@@ -110,6 +116,6 @@
     </style>
 
     <style name="Widget.App.BottomSheet" parent="Widget.Material3.BottomSheet">
-        <item name="backgroundTint">?attr/colorSurface</item>
+        <item name="backgroundTint">@color/white</item>
     </style>
 </resources>

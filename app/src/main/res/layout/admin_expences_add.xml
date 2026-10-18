@@ -120,7 +120,7 @@
                             app:hintEnabled="false"
                             app:boxBackgroundColor="@color/editTextBackground">
 
-                            <AutoCompleteTextView
+                            <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
                                 android:id="@+id/spinnerCategory"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

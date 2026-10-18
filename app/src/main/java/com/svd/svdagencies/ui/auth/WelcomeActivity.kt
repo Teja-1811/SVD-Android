@@ -3,7 +3,7 @@ package com.svd.svdagencies.ui.auth
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.BuildConfig

@@ -70,11 +70,11 @@ class AdminStatementActivity : AdminBaseActivity() {
     }
 
     private fun setupFilters() {
-        val monthAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, months)
+        val monthAdapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, months)
         binding.spinnerMonth.setAdapter(monthAdapter)
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         val years = (currentYear - 5..currentYear + 1).map { it.toString() }
-        binding.spinnerYear.setAdapter(ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, years))
+        binding.spinnerYear.setAdapter(ArrayAdapter(this, R.layout.delivery_dropdown_item, years))
 
         val currentMonthIndex = Calendar.getInstance().get(Calendar.MONTH)
         binding.spinnerMonth.setText(months[currentMonthIndex], false)

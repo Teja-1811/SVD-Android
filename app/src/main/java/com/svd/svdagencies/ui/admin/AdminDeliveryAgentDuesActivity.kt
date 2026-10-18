@@ -174,7 +174,7 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
         agents = response.agents
         val names = listOf("All Agents") + agents.map { it.name.orEmpty() }
         
-        headerAdapter.agentAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, names)
+        headerAdapter.agentAdapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, names)
         headerAdapter.summary = response.summary
         headerAdapter.notifyItemChanged(0)
 

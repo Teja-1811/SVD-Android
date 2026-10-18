@@ -60,7 +60,8 @@ data class StockDateEntry(
     @SerializedName("item_name") val itemName: String,
     @SerializedName("crates") val crates: Double,
     @SerializedName("quantity") val quantity: Double,
-    @SerializedName("value") val value: Double
+    @SerializedName("value") val value: Double,
+    @SerializedName("discount") val discount: Double = 0.0
 )
 
 data class StockCompanyTotal(
@@ -78,5 +79,6 @@ data class StockLeakageEntry(
     @SerializedName("quantity") val quantity: Int,
     @SerializedName("unit_cost") val unitCost: Double,
     @SerializedName("total_loss") val totalLoss: Double,
-    @SerializedName("notes") val notes: String? = null
+    @SerializedName("notes") val notes: String? = null,
+    @SerializedName("entry_type") val entryType: String? = "leakage"
 )

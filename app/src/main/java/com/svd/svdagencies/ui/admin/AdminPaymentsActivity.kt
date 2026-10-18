@@ -1,10 +1,12 @@
 package com.svd.svdagencies.ui.admin
 
+import com.svd.svdagencies.R
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.svd.svdagencies.utils.showDestructiveDialog
@@ -152,12 +154,13 @@ class AdminPaymentsActivity : AdminBaseActivity() {
             hint = "Payment status"
         }
         val statusInput = android.widget.AutoCompleteTextView(this).apply {
+            setDropDownBackgroundResource(R.drawable.bg_delivery_dropdown)
             inputType = android.text.InputType.TYPE_NULL
             setText(payment.status.orEmpty().uppercase(), false)
             setAdapter(
                 android.widget.ArrayAdapter(
                     this@AdminPaymentsActivity,
-                    android.R.layout.simple_dropdown_item_1line,
+                    R.layout.delivery_dropdown_item,
                     arrayOf("PENDING", "SUCCESS", "FAILED")
                 )
             )
@@ -202,6 +205,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
             .setPositiveButton(label) { _, _ -> updateStatus(payment.id, status) }
             .setNegativeButton("Cancel", null)
             .show()
+            .applyWhiteDialogSurface()
     }
 
     private fun updateStatus(paymentId: Int, status: String) {

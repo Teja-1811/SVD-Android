@@ -16,7 +16,8 @@ data class BillDetailResponse(
     @SerializedName("remaining_due") val remainingDue: Double = 0.0,
     val current_due: Double,
     val profit: Double,
-    val items: List<BillItemDetail>? = null
+    val items: List<BillItemDetail>? = null,
+    @SerializedName("customer_id") val customerId: Int? = null
 ) {
     val total_amount: Double get() = invoiceAmount
     val op_due_amount: Double get() = openingDue

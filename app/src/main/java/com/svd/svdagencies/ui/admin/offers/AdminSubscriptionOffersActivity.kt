@@ -9,7 +9,7 @@ import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.google.android.material.appbar.MaterialToolbar
@@ -91,13 +91,13 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
         val itemSpinner = form.findViewById<Spinner>(R.id.spinnerSubscriptionItem)
         val quantity = form.findViewById<EditText>(R.id.etSubscriptionItemQuantity).apply { setText("1") }
         val price = form.findViewById<EditText>(R.id.etSubscriptionItemPrice)
-        durationUnit.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOf("days", "weeks", "months"))
-        frequency.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOf("daily", "weekly", "monthly"))
+        durationUnit.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, arrayOf("days", "weeks", "months"))
+        frequency.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, arrayOf("daily", "weekly", "monthly"))
         val itemLabels = catalogueItems.map { item -> "${item.asJsonObject.value("name")} · ₹${item.asJsonObject.value("selling_price")}" }.toTypedArray()
-        itemSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, itemLabels)
+        itemSpinner.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, itemLabels)
         itemSpinner.setSelection(0)
         price.setText(catalogueItems[0].asJsonObject.value("selling_price"))
-        AlertDialog.Builder(this).setTitle("Create User Subscription Offer").setView(form).setNegativeButton("Cancel", null)
+        WhiteMaterialAlertDialogBuilder(this).setTitle("Create User Subscription Offer").setView(form).setNegativeButton("Cancel", null)
             .setPositiveButton("Create") { _, _ ->
                 val selectedItem = catalogueItems[itemSpinner.selectedItemPosition].asJsonObject
                 val item = mapOf(
@@ -134,8 +134,8 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
         val duration = form.findViewById<EditText>(R.id.etSubscriptionDuration).apply { setText(offer.value("duration_value")) }
         val durationUnit = form.findViewById<Spinner>(R.id.spinnerSubscriptionDurationUnit)
         val frequency = form.findViewById<Spinner>(R.id.spinnerSubscriptionFrequency)
-        durationUnit.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOf("days", "weeks", "months"))
-        frequency.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, arrayOf("daily", "weekly", "monthly"))
+        durationUnit.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, arrayOf("days", "weeks", "months"))
+        frequency.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, arrayOf("daily", "weekly", "monthly"))
         durationUnit.setSelection(arrayOf("days", "weeks", "months").indexOf(offer.value("duration_unit")).coerceAtLeast(0))
         frequency.setSelection(arrayOf("daily", "weekly", "monthly").indexOf(offer.value("delivery_frequency")).coerceAtLeast(0))
 
@@ -146,7 +146,7 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
         form.findViewById<EditText>(R.id.etSubscriptionItemQuantity).visibility = View.GONE
         form.findViewById<EditText>(R.id.etSubscriptionItemPrice).visibility = View.GONE
 
-        AlertDialog.Builder(this).setTitle("Edit Subscription Offer").setView(form).setNegativeButton("Cancel", null)
+        WhiteMaterialAlertDialogBuilder(this).setTitle("Edit Subscription Offer").setView(form).setNegativeButton("Cancel", null)
             .setPositiveButton("Save") { _, _ ->
                 val body = mapOf<String, Any>(
                     "name" to name.text.toString().trim(),

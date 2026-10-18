@@ -13,7 +13,7 @@ import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.view.GravityCompat
@@ -162,7 +162,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
             val row = offer.asJsonObject
             "${row.string("name")} · ₹${row.string("total_amount")}\n${row.string("delivery_count")} deliveries over ${row.string("duration_value")} ${row.string("duration_unit")}" 
         }.toTypedArray()
-        AlertDialog.Builder(this)
+        WhiteMaterialAlertDialogBuilder(this)
             .setTitle("Choose a subscription offer")
             .setItems(labels) { _, index -> showOfferStartForm(offers[index].asJsonObject) }
             .setNegativeButton("Cancel", null)
@@ -188,7 +188,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         form.addView(dateButton)
         val address = EditText(this).apply { hint = "Delivery address (optional)"; minLines = 2 }
         form.addView(address)
-        AlertDialog.Builder(this)
+        WhiteMaterialAlertDialogBuilder(this)
             .setTitle("Start subscription")
             .setView(form)
             .setNegativeButton("Cancel", null)
@@ -224,7 +224,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
     private fun showProductPicker(products: List<JsonObject>) {
         if (products.isEmpty()) return showMessage("No products are available for subscriptions right now.")
         val selected = BooleanArray(products.size)
-        AlertDialog.Builder(this)
+        WhiteMaterialAlertDialogBuilder(this)
             .setTitle("Choose products")
             .setMultiChoiceItems(products.map { "${it.string("name")}  ·  ₹${it.string("selling_price")}" }.toTypedArray(), selected) { _, which, checked -> selected[which] = checked }
             .setNegativeButton("Cancel", null)
@@ -249,7 +249,8 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         }
         form.addView(text("Delivery frequency", 14, true).apply { setPadding(0, dp(12), 0, 0) })
         val frequency = Spinner(this).apply {
-            adapter = ArrayAdapter(this@CustomerSubscriptionsActivity, android.R.layout.simple_spinner_dropdown_item, arrayOf("Every day", "Alternate days", "Every week"))
+            setPopupBackgroundResource(R.drawable.bg_delivery_dropdown)
+            adapter = ArrayAdapter(this@CustomerSubscriptionsActivity, R.layout.delivery_dropdown_item, arrayOf("Every day", "Alternate days", "Every week"))
         }
         form.addView(frequency)
         val startDate = Calendar.getInstance()
@@ -263,7 +264,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         form.addView(dateButton)
         val address = EditText(this).apply { hint = "Delivery address (optional)"; minLines = 2 }
         form.addView(address)
-        AlertDialog.Builder(this)
+        WhiteMaterialAlertDialogBuilder(this)
             .setTitle("New recurring delivery")
             .setView(form)
             .setNegativeButton("Cancel", null)
@@ -301,7 +302,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
     }
 
     private fun confirmCancel(id: Int) {
-        AlertDialog.Builder(this).setTitle("Cancel subscription?")
+        WhiteMaterialAlertDialogBuilder(this).setTitle("Cancel subscription?")
             .setMessage("Future recurring deliveries will stop.")
             .setNegativeButton("Keep", null)
             .setPositiveButton("Cancel subscription") { _, _ -> updateSubscription(id, "cancel") }

@@ -23,7 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import com.svd.svdagencies.utils.showDestructiveDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.svd.svdagencies.R
@@ -204,12 +204,12 @@ class AdminCashBookActivity : AdminBaseActivity() {
     }
 
     private fun setupFilters() {
-        val monthAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, months)
+        val monthAdapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, months)
         binding.spinnerMonth.setAdapter(monthAdapter)
 
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         val years = (currentYear - 2..currentYear + 1).map { it.toString() }
-        val yearAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, years)
+        val yearAdapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, years)
         binding.spinnerYear.setAdapter(yearAdapter)
 
         val currentMonthIdx = Calendar.getInstance().get(Calendar.MONTH)
@@ -417,11 +417,12 @@ class AdminCashBookActivity : AdminBaseActivity() {
             setPadding(32, 12, 32, 0)
         }
         val agentInput = AutoCompleteTextView(this).apply {
+            setDropDownBackgroundResource(R.drawable.bg_delivery_dropdown)
             hint = "Select delivery customer / agent"
             setAdapter(
                 ArrayAdapter(
                     this@AdminCashBookActivity,
-                    android.R.layout.simple_dropdown_item_1line,
+                    R.layout.delivery_dropdown_item,
                     salaryAgents.map { "${it.agent_name ?: "Agent"} - Due ₹%.2f".format(it.remaining_salary) }
                 )
             )
@@ -493,7 +494,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
         val etDescription = view.findViewById<TextInputEditText>(R.id.etDescription)
 
         val companyNames = allCompanies.map { it.name }
-        val companyAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, companyNames)
+        val companyAdapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, companyNames)
         actvCompany.setAdapter(companyAdapter)
 
         existing?.let {

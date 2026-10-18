@@ -111,7 +111,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
-                                android:dropDownBackground="@drawable/bg_delivery_dropdown"
+                                android:popupBackground="@drawable/bg_delivery_dropdown"
                                 android:paddingTop="10dp"
                                 android:paddingBottom="10dp"
                                 android:textSize="13sp" />
@@ -132,7 +132,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="none"
-                                android:dropDownBackground="@drawable/bg_delivery_dropdown"
+                                android:popupBackground="@drawable/bg_delivery_dropdown"
                                 android:paddingTop="10dp"
                                 android:paddingBottom="10dp"
                                 android:textSize="13sp" />

@@ -1,10 +1,12 @@
 package com.svd.svdagencies.ui.admin.cashbook
 
+import com.svd.svdagencies.R
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import com.svd.svdagencies.utils.showDestructiveDialog
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -67,12 +69,12 @@ class ViewExpensesActivity : AdminBaseActivity() {
     }
 
     private fun setupFilters() {
-        val monthAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, months)
+        val monthAdapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, months)
         binding.spinnerMonth.setAdapter(monthAdapter)
 
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         val years = (currentYear - 2..currentYear + 1).map { it.toString() }
-        val yearAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, years)
+        val yearAdapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, years)
         binding.spinnerYear.setAdapter(yearAdapter)
 
         val calendar = Calendar.getInstance()

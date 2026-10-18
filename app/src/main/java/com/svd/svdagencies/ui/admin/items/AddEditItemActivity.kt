@@ -95,12 +95,12 @@ class AddEditItemActivity : AdminBaseActivity() {
                         
                         // Setup Company Spinner
                         companyAdapter = ArrayAdapter(this@AddEditItemActivity, android.R.layout.simple_spinner_item, companyNames)
-                        companyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        companyAdapter.setDropDownViewResource(R.layout.delivery_dropdown_item)
                         binding.spinnerCompany.adapter = companyAdapter
 
                         // Setup Category Spinner
                         categoryAdapter = ArrayAdapter(this@AddEditItemActivity, android.R.layout.simple_spinner_item, sortedCategories)
-                        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        categoryAdapter.setDropDownViewResource(R.layout.delivery_dropdown_item)
                         binding.spinnerCategory.adapter = categoryAdapter
 
                         // If editing, populate fields and set correct selections

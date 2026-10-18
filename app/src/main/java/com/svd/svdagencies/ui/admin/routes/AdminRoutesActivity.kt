@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
@@ -65,7 +65,7 @@ class AdminRoutesActivity : AdminBaseActivity() {
         val input = form.findViewById<EditText>(R.id.etRouteName).apply {
             setText(existing?.name.orEmpty())
         }
-        AlertDialog.Builder(this)
+        WhiteMaterialAlertDialogBuilder(this)
             .setTitle(if (existing == null) "Add route" else "Edit route")
             .setView(form)
             .setNegativeButton("Cancel", null)
@@ -85,7 +85,7 @@ class AdminRoutesActivity : AdminBaseActivity() {
     }
 
     private fun deleteRoute(route: AdminRoute) {
-        AlertDialog.Builder(this).setMessage("Delete ${route.name}?").setNegativeButton("Cancel", null)
+        WhiteMaterialAlertDialogBuilder(this).setMessage("Delete ${route.name}?").setNegativeButton("Cancel", null)
             .setPositiveButton("Delete") { _, _ ->
                 ApiClient.adminRoutesApi.deleteRoute(route.id).enqueue(object : Callback<Map<String, Any>> {
                     override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) { if (response.isSuccessful) loadRoutes() else showMessage("Unable to delete route") }

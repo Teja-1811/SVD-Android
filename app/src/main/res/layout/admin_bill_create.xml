@@ -60,7 +60,7 @@
                                 android:layout_weight="1"
                                 android:hint="Filter by Route"
                                 android:layout_marginEnd="8dp">
-                                <AutoCompleteTextView
+                                <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
                                     android:id="@+id/spinnerRoute"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -74,11 +74,14 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:hint="Select Customer">
+                                android:hint="Select Customer"
+                                app:boxBackgroundColor="@color/white"
+                                app:boxStrokeColor="@color/black">
                                 <AutoCompleteTextView
                                     android:id="@+id/spinnerCustomer"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:popupBackground="@drawable/bg_delivery_dropdown"
                                     android:inputType="none"
                                     android:textSize="14sp"
                                     android:textColor="@color/textColorPrimary" />
@@ -156,7 +159,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:hint="Select Item">
-                            <AutoCompleteTextView
+                            <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
                                 android:id="@+id/spinnerItem"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

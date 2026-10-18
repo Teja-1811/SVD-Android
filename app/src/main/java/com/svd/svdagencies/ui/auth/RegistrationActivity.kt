@@ -1,7 +1,11 @@
 package com.svd.svdagencies.ui.auth
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.RadioGroup
+import android.widget.TextView
 import android.widget.CheckBox
 import android.widget.Toast
 import com.google.android.material.button.MaterialButton
@@ -18,18 +22,35 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class RegistrationActivity : BaseActivity() {
+    private var hasOpenedTerms = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
 
+        hasOpenedTerms = savedInstanceState?.getBoolean("hasOpenedTerms") ?: false
+        val termsAccepted = findViewById<CheckBox>(R.id.cbAcceptTerms)
+        val termsInstruction = findViewById<TextView>(R.id.tvTermsInstruction)
+        termsAccepted.isEnabled = hasOpenedTerms
+        if (hasOpenedTerms) termsInstruction.text = "You can now accept the terms to continue."
         findViewById<MaterialButton>(R.id.btnBack).setOnClickListener { finish() }
+        findViewById<MaterialButton>(R.id.btnReadTerms).setOnClickListener {
+            val termsUrl = Uri.parse(ApiClient.BASE_URL + "milk_agency/terms-and-conditions/")
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, termsUrl))
+                hasOpenedTerms = true
+                termsAccepted.isEnabled = true
+                termsInstruction.text = "You can now accept the terms to continue."
+            } catch (_: ActivityNotFoundException) {
+                Toast.makeText(this, "No browser available to open the terms", Toast.LENGTH_LONG).show()
+            }
+        }
         val typeGroup = findViewById<RadioGroup>(R.id.registrationTypeGroup)
         val name = findViewById<TextInputEditText>(R.id.etRegistrationName)
         val phone = findViewById<TextInputEditText>(R.id.etRegistrationPhone)
         val shop = findViewById<TextInputEditText>(R.id.etRegistrationShop)
         val area = findViewById<TextInputEditText>(R.id.etRegistrationArea)
         val password = findViewById<TextInputEditText>(R.id.etRegistrationPassword)
-        val termsAccepted = findViewById<CheckBox>(R.id.cbAcceptTerms)
         val submit = findViewById<MaterialButton>(R.id.btnSubmitRegistration)
 
         submit.setOnClickListener {
@@ -41,8 +62,8 @@ class RegistrationActivity : BaseActivity() {
                 Toast.makeText(this, "Enter name, mobile number, and a 6-character password", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            if (!termsAccepted.isChecked) {
-                Toast.makeText(this, "Accept the Terms and Conditions to continue", Toast.LENGTH_LONG).show()
+            if (!hasOpenedTerms || !termsAccepted.isChecked) {
+                Toast.makeText(this, "Open and accept the Terms and Conditions to continue", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
             submit.showLoading(true, "Submitting...")
@@ -66,5 +87,10 @@ class RegistrationActivity : BaseActivity() {
                 }
             })
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("hasOpenedTerms", hasOpenedTerms)
+        super.onSaveInstanceState(outState)
     }
 }

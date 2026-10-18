@@ -11,7 +11,7 @@ import android.widget.Spinner
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
 import com.svd.svdagencies.R
@@ -68,13 +68,13 @@ class AdminOffersActivity : AdminBaseActivity() {
         val name = form.findViewById<EditText>(R.id.etOfferName).apply { setText(existing?.name.orEmpty()) }
         val description = form.findViewById<EditText>(R.id.etOfferDescription).apply { setText(existing?.description.orEmpty()) }
         val offerFor = form.findViewById<Spinner>(R.id.spinnerOfferFor).apply {
-            adapter = ArrayAdapter(this@AdminOffersActivity, android.R.layout.simple_spinner_dropdown_item, arrayOf("retailer", "user"))
+            adapter = ArrayAdapter(this@AdminOffersActivity, R.layout.delivery_dropdown_item, arrayOf("retailer", "user"))
             setSelection(if (existing?.offer_for == "user") 1 else 0)
         }
         val price = form.findViewById<EditText>(R.id.etOfferPrice).apply { setText(existing?.price?.toString().orEmpty()) }
         val start = form.findViewById<EditText>(R.id.etOfferStartDate).apply { setText(existing?.start_date ?: LocalDate.now().toString()) }
         val end = form.findViewById<EditText>(R.id.etOfferEndDate).apply { setText(existing?.end_date ?: LocalDate.now().plusDays(30).toString()) }
-        AlertDialog.Builder(this).setTitle(if (existing == null) "Create offer" else "Edit offer").setView(form).setNegativeButton("Cancel", null)
+        WhiteMaterialAlertDialogBuilder(this).setTitle(if (existing == null) "Create offer" else "Edit offer").setView(form).setNegativeButton("Cancel", null)
             .setPositiveButton("Save") { _, _ ->
                 val body = mapOf<String, Any>("name" to name.text.toString(), "description" to description.text.toString(), "price" to (price.text.toString().toDoubleOrNull() ?: 0.0), "offer_for" to offerFor.selectedItem.toString(), "offer_type" to (existing?.offer_type ?: "bundle"), "start_date" to start.text.toString(), "end_date" to end.text.toString())
                 if (existing == null) createOffer(body) else saveOffer(existing, body)
@@ -89,7 +89,7 @@ class AdminOffersActivity : AdminBaseActivity() {
         val buyQty = form.findViewById<EditText>(R.id.etOfferBuyQuantity).apply { setText("1") }
         val freeQty = form.findViewById<EditText>(R.id.etOfferFreeQuantity).apply { setText("0") }
         val price = form.findViewById<EditText>(R.id.etOfferItemPrice).apply { setText("0") }
-        AlertDialog.Builder(this).setTitle("Add offer item").setView(form).setNegativeButton("Cancel", null)
+        WhiteMaterialAlertDialogBuilder(this).setTitle("Add offer item").setView(form).setNegativeButton("Cancel", null)
             .setPositiveButton("Add") { _, _ ->
                 val body = mapOf<String, Any>("item" to (itemId.text.toString().toIntOrNull() ?: 0), "buy_qty" to (buyQty.text.toString().toIntOrNull() ?: 0), "offer_qty" to (freeQty.text.toString().toIntOrNull() ?: 0), "offer_price" to (price.text.toString().toDoubleOrNull() ?: 0.0))
                 ApiClient.adminOffersApi.addOfferItem(offer.id, body).enqueue(reloadCallback())
@@ -97,7 +97,7 @@ class AdminOffersActivity : AdminBaseActivity() {
     }
 
     private fun saveOffer(offer: AdminOffer, body: Map<String, Any>) = ApiClient.adminOffersApi.updateOffer(offer.id, body).enqueue(reloadCallback())
-    private fun deleteOffer(offer: AdminOffer) = AlertDialog.Builder(this).setMessage("Delete ${offer.name}?").setNegativeButton("Cancel", null).setPositiveButton("Delete") { _, _ -> ApiClient.adminOffersApi.deleteOffer(offer.id).enqueue(reloadCallback()) }.show()
+    private fun deleteOffer(offer: AdminOffer) = WhiteMaterialAlertDialogBuilder(this).setMessage("Delete ${offer.name}?").setNegativeButton("Cancel", null).setPositiveButton("Delete") { _, _ -> ApiClient.adminOffersApi.deleteOffer(offer.id).enqueue(reloadCallback()) }.show()
     private fun reloadCallback() = object : Callback<Map<String, Any>> { override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) { if (response.isSuccessful) loadOffers() else message("Unable to save offer") }; override fun onFailure(call: Call<Map<String, Any>>, error: Throwable) = message("Unable to save offer") }
     private fun message(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
