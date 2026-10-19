@@ -2,6 +2,18 @@ package com.svd.svdagencies.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.ImageView
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.svd.svdagencies.data.api.auth.ApiClient
+import com.svd.svdagencies.data.api.customer.WelcomeProduct
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
 import android.view.LayoutInflater
 import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
 import androidx.appcompat.app.AppCompatActivity
@@ -43,8 +55,63 @@ class WelcomeActivity : BaseActivity() {
         }
         findViewById<android.widget.TextView>(R.id.tvVersion).text = "Version ${BuildConfig.VERSION_NAME}"
 
+        val productsView = findViewById<RecyclerView>(R.id.welcomeProducts)
+        productsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        loadWelcomeProducts()
+
         findViewById<MaterialButton>(R.id.btnStart).setOnClickListener {
             showAuthChoiceDialog()
+        }
+    }
+
+    private fun loadWelcomeProducts() {
+        val section = findViewById<View>(R.id.welcomeProductsSection)
+        val status = findViewById<TextView>(R.id.welcomeProductsStatus)
+        val productsView = findViewById<RecyclerView>(R.id.welcomeProducts)
+        status.setText(R.string.welcome_products_loading)
+        status.isClickable = false
+        status.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            try {
+                val products = ApiClient.productApi.getWelcomeProducts()
+                if (products.isEmpty()) {
+                    section.visibility = View.GONE
+                } else {
+                    productsView.adapter = WelcomeProductsAdapter(products)
+                    productsView.visibility = View.VISIBLE
+                    status.visibility = View.GONE
+                }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                status.setText(R.string.welcome_products_retry)
+                status.setOnClickListener { loadWelcomeProducts() }
+            }
+        }
+    }
+
+    private class WelcomeProductsAdapter(private val products: List<WelcomeProduct>) :
+        RecyclerView.Adapter<WelcomeProductsAdapter.Holder>() {
+        class Holder(view: View) : RecyclerView.ViewHolder(view) {
+            val image: ImageView = view.findViewById(R.id.productImage)
+            val name: TextView = view.findViewById(R.id.productName)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = Holder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_welcome_product, parent, false)
+        )
+
+        override fun getItemCount() = products.size
+
+        override fun onBindViewHolder(holder: Holder, position: Int) {
+            val product = products[position]
+            holder.name.text = product.name
+            Glide.with(holder.itemView)
+                .load(ApiClient.getImageUrl(product.image))
+                .placeholder(R.drawable.ic_milk_placeholder)
+                .error(R.drawable.ic_milk_placeholder)
+                .fitCenter()
+                .into(holder.image)
         }
     }
 

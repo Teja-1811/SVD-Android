@@ -1,9 +1,9 @@
 package com.svd.svdagencies.ui.auth
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.widget.ScrollView
+import androidx.core.text.HtmlCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.CheckBox
@@ -35,15 +35,31 @@ class RegistrationActivity : BaseActivity() {
         if (hasOpenedTerms) termsInstruction.text = "You can now accept the terms to continue."
         findViewById<MaterialButton>(R.id.btnBack).setOnClickListener { finish() }
         findViewById<MaterialButton>(R.id.btnReadTerms).setOnClickListener {
-            val termsUrl = Uri.parse(ApiClient.BASE_URL + "milk_agency/terms-and-conditions/")
-            try {
-                startActivity(Intent(Intent.ACTION_VIEW, termsUrl))
+            val padding = (20 * resources.displayMetrics.density).toInt()
+            val termsText = resources.openRawResource(R.raw.registration_terms).bufferedReader().use { it.readText() }
+            val content = TextView(this).apply {
+                text = HtmlCompat.fromHtml(termsText, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                textSize = 15f
+                setTextColor(androidx.core.content.ContextCompat.getColor(this@RegistrationActivity, R.color.textColorPrimary))
+                setPadding(padding, padding / 2, padding, padding)
+                setTextIsSelectable(true)
+            }
+            val scroll = ScrollView(this).apply { addView(content) }
+            val dialog = MaterialAlertDialogBuilder(this)
+                .setTitle("Terms & Conditions")
+                .setView(scroll)
+                .setPositiveButton("Done", null)
+                .create()
+            dialog.setOnShowListener {
+                dialog.window?.setLayout(
+                    (resources.displayMetrics.widthPixels * 0.92).toInt(),
+                    (resources.displayMetrics.heightPixels * 0.8).toInt()
+                )
                 hasOpenedTerms = true
                 termsAccepted.isEnabled = true
                 termsInstruction.text = "You can now accept the terms to continue."
-            } catch (_: ActivityNotFoundException) {
-                Toast.makeText(this, "No browser available to open the terms", Toast.LENGTH_LONG).show()
             }
+            dialog.show()
         }
         val typeGroup = findViewById<RadioGroup>(R.id.registrationTypeGroup)
         val name = findViewById<TextInputEditText>(R.id.etRegistrationName)

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_products_title">Our products</string>
+    <string name="welcome_products_description">Active products. Swipe to browse.</string>
+    <string name="welcome_products_loading">Loading products…</string>
+    <string name="welcome_products_retry">Couldn’t load products. Tap to retry.</string>
+</resources>

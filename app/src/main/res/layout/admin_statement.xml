@@ -80,7 +80,8 @@
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnApplyFilters"
-                            android:layout_width="42dp"
+                            android:contentDescription="Apply month and year filters"
+                            android:layout_width="48dp"
                             android:layout_height="42dp"
                             android:padding="0dp"
                             app:backgroundTint="@color/brand_blue"
@@ -98,18 +99,18 @@
                         android:columnCount="2"
                         android:columnOrderPreserved="false">
 
-                        <include android:id="@+id/statOpening" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny" />
-                        <include android:id="@+id/statCredit" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny" />
-                        <include android:id="@+id/statDebit" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny" />
-                        <include android:id="@+id/statClosing" layout="@layout/admin_stat_card" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny" />
+                        <include android:id="@+id/statOpening" layout="@layout/admin_statement_stat" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny" />
+                        <include android:id="@+id/statCredit" layout="@layout/admin_statement_stat" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny" />
+                        <include android:id="@+id/statDebit" layout="@layout/admin_statement_stat" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny" />
+                        <include android:id="@+id/statClosing" layout="@layout/admin_statement_stat" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_columnWeight="1" android:layout_margin="@dimen/spacing_tiny" />
                     </GridLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnPdf"
                         android:layout_width="match_parent"
-                        android:layout_height="52dp"
+                        android:layout_height="48dp"
                         android:layout_marginTop="@dimen/spacing_large"
-                        android:text="Generate PDF"
+                        android:text="Download PDF"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textStyle="bold"

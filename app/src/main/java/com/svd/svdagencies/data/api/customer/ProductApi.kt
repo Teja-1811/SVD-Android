@@ -6,7 +6,12 @@ import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+data class WelcomeProduct(val id: Int, val name: String, val image: String?)
+
 interface ProductApi {
+    @GET("api/welcome/products/")
+    suspend fun getWelcomeProducts(): List<WelcomeProduct>
+
 
     @GET("api/categories/")
     fun getCategories(): Call<JsonElement>
