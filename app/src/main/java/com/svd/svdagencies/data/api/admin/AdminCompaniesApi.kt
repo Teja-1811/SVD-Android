@@ -16,7 +16,8 @@ interface AdminCompaniesApi {
     suspend fun addCompany(
         @Part("name") name: RequestBody,
         @Part("website_link") websiteLink: RequestBody?,
-        @Part logo: MultipartBody.Part?
+        @Part logo: MultipartBody.Part?,
+        @Part("gstin") gstin: RequestBody? = null
     ): Map<String, Any>
 
     @Multipart
@@ -25,7 +26,8 @@ interface AdminCompaniesApi {
         @Path("id") id: Int,
         @Part("name") name: RequestBody?,
         @Part("website_link") websiteLink: RequestBody?,
-        @Part logo: MultipartBody.Part?
+        @Part logo: MultipartBody.Part?,
+        @Part("gstin") gstin: RequestBody? = null
     ): Map<String, Any>
 
     @GET("api/companies/items/{company_id}/")

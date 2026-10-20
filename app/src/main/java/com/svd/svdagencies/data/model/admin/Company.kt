@@ -16,7 +16,8 @@ data class Company(
     @SerializedName("total_qty")
     val totalQty: Double,
     @SerializedName("total_value")
-    val totalValue: Double
+    val totalValue: Double,
+    val gstin: String? = null
 ) : Parcelable
 
 

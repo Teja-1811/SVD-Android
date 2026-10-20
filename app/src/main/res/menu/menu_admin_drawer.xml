@@ -97,4 +97,6 @@
         android:title="Enquiries"
         android:icon="@drawable/ic_person"/>
 
+    <item android:id="@+id/nav_gst" android:title="GST Summary" android:icon="@drawable/ic_bill"/>
+    <item android:id="@+id/nav_purchase_reports" android:title="Purchase Reports" android:icon="@drawable/ic_calendar"/>
 </menu>

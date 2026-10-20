@@ -190,6 +190,14 @@ abstract class AdminBaseActivity : BaseActivity() {
                         }
                         true
                     }
+                    R.id.nav_gst -> {
+                        openAdminDestination(AdminGstActivity::class.java)
+                        true
+                    }
+                    R.id.nav_purchase_reports -> {
+                        openAdminDestination(AdminPurchaseReportsActivity::class.java)
+                        true
+                    }
                     else -> false
                 }
             }

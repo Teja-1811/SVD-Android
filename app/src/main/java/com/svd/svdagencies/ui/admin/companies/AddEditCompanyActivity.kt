@@ -32,6 +32,7 @@ class AddEditCompanyActivity : AdminBaseActivity() {
 
     private lateinit var binding: AdminCompanyAddEditBinding
     private var companyToUpdate: Company? = null
+    private lateinit var gstInput: android.widget.EditText
     private var selectedImageUri: Uri? = null
 
     private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -47,6 +48,15 @@ class AddEditCompanyActivity : AdminBaseActivity() {
         super.onCreate(savedInstanceState)
         binding = AdminCompanyAddEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        gstInput = android.widget.EditText(this).apply {
+            hint="Company GSTIN (optional)"
+            inputType=android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+            filters=arrayOf(android.text.InputFilter.LengthFilter(15))
+            layoutParams=android.widget.LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+        (binding.etWebsite.parent as? android.widget.LinearLayout)?.let { parent ->
+            parent.addView(gstInput, (parent.indexOfChild(binding.etWebsite)-1).coerceAtLeast(0))
+        }
 
         companyToUpdate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra("COMPANY_TO_UPDATE", Company::class.java)
@@ -72,6 +82,7 @@ class AddEditCompanyActivity : AdminBaseActivity() {
     private fun populateFields(company: Company) {
         binding.etCompanyName.setText(company.name)
         binding.etWebsite.setText(company.websiteLink)
+        gstInput.setText(company.gstin.orEmpty())
 
         if (!company.logo.isNullOrEmpty()) {
             val base = ApiClient.BASE_URL.removeSuffix("/")
@@ -100,6 +111,8 @@ class AddEditCompanyActivity : AdminBaseActivity() {
     private fun saveCompany() {
         val name = binding.etCompanyName.text.toString().trim()
         val website = binding.etWebsite.text.toString().trim()
+        val gstin = gstInput.text.toString().trim().uppercase(java.util.Locale.US)
+        if (gstin.isNotEmpty() && !Regex("[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]").matches(gstin)) { gstInput.error="Enter a valid 15-character GSTIN"; return }
 
         if (name.isEmpty()) {
             Toast.makeText(this, "Company name is required", Toast.LENGTH_SHORT).show()
@@ -112,6 +125,7 @@ class AddEditCompanyActivity : AdminBaseActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val namePart = name.toRequestBody("text/plain".toMediaTypeOrNull())
+                val gstinPart = gstin.toRequestBody("text/plain".toMediaTypeOrNull())
                 val websitePart = website.toRequestBody("text/plain".toMediaTypeOrNull())
 
                 var logoPart: MultipartBody.Part? = null
@@ -123,9 +137,9 @@ class AddEditCompanyActivity : AdminBaseActivity() {
                 }
 
                 if (companyToUpdate == null) {
-                    ApiClient.adminCompaniesApi.addCompany(namePart, websitePart, logoPart)
+                    ApiClient.adminCompaniesApi.addCompany(namePart, websitePart, logoPart, gstinPart)
                 } else {
-                    ApiClient.adminCompaniesApi.editCompany(companyToUpdate!!.id, namePart, websitePart, logoPart)
+                    ApiClient.adminCompaniesApi.editCompany(companyToUpdate!!.id, namePart, websitePart, logoPart, gstinPart)
                 }
 
                 withContext(Dispatchers.Main) {

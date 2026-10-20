@@ -63,6 +63,8 @@
         <activity android:name=".ui.admin.cashbook.AddExpenseActivity"/>
         <activity android:name=".ui.admin.cashbook.ViewExpensesActivity"/>
         <activity android:name=".ui.admin.AdminPaymentsActivity"/>
+        <activity android:name=".ui.admin.AdminGstActivity" android:exported="false"/>
+        <activity android:name=".ui.admin.AdminPurchaseReportsActivity" android:exported="false"/>
         <activity android:name=".ui.admin.AdminMonthlySummary"/>
         <activity android:name=".ui.admin.companies.AdminCompaniesActivity"/>
         <activity android:name=".ui.admin.companies.AddEditCompanyActivity"/>

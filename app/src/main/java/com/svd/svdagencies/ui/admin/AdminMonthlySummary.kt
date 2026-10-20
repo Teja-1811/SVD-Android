@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -13,6 +14,8 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder as MaterialAlertDialogBuilder
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CancellationException
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.material.card.MaterialCardView
@@ -54,6 +57,9 @@ class AdminMonthlySummary : AdminBaseActivity() {
     private var selectedCustomerArea: String = ""
     private val calendar = Calendar.getInstance()
     private var currentSummary: MonthlySummaryResponse? = null
+    private var statementView: View? = null
+    private var extraSummaryView: View? = null
+    private lateinit var monthLabel: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +83,20 @@ class AdminMonthlySummary : AdminBaseActivity() {
         tvDetailShop = findViewById(R.id.tvDetailShop) ?: return
         tvDetailPhone = findViewById(R.id.tvDetailPhone) ?: return
 
+        val filterRow = etMonth.parent as? LinearLayout
+        val customerField = autoCustomer.parent?.parent as? View
+        if (filterRow != null && customerField?.parent == filterRow) {
+            filterRow.orientation = LinearLayout.VERTICAL
+            customerField.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val actions = LinearLayout(this)
+            listOf(etMonth, btnDownload, btnWhatsappShare).forEach { button ->
+                filterRow.removeView(button)
+                actions.addView(button, LinearLayout.LayoutParams(0, (52 * resources.displayMetrics.density).toInt(), 1f))
+            }
+            filterRow.addView(actions)
+        }
+        monthLabel = TextView(this).apply { textSize=17f; setPadding(12,16,12,16) }
+        layoutResults.addView(monthLabel, 0)
         etMonth.setOnClickListener { showMonthPicker() }
         
         loadCustomers()
@@ -128,19 +148,19 @@ class AdminMonthlySummary : AdminBaseActivity() {
     }
 
     private fun loadCustomers() {
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getCustomers().awaitResponse()
                 if (response.isSuccessful) {
                     customersList = response.body()?.customers ?: emptyList()
-                    val names = customersList.map { it.name ?: "Unknown" }
+                    val names = customersList.map { "${it.name ?: "Unknown"} (#${it.id})" }
                     withContext(Dispatchers.Main) {
                         if (isDestroyed || isFinishing) return@withContext
                         val adapter = ArrayAdapter(this@AdminMonthlySummary, R.layout.delivery_dropdown_item, names)
                         autoCustomer.setAdapter(adapter)
                         autoCustomer.setOnItemClickListener { _, _, position, _ ->
                             val selectedName = adapter.getItem(position)
-                            val customer = customersList.find { it.name == selectedName }
+                            val customer = customersList.getOrNull(names.indexOf(selectedName))
                             selectedCustomerId = customer?.id
                             selectedCustomerArea = customer?.area ?: ""
                             
@@ -158,6 +178,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
                     }
                 }
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 withContext(Dispatchers.Main) {
                     if (isDestroyed || isFinishing) return@withContext
                     Toast.makeText(this@AdminMonthlySummary, "Failed to load customers", Toast.LENGTH_SHORT).show()
@@ -167,20 +188,30 @@ class AdminMonthlySummary : AdminBaseActivity() {
     }
 
     private fun fetchSummary() {
-        val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+        val sdf = SimpleDateFormat("yyyy-MM", Locale.US)
         val date = sdf.format(calendar.time)
         val customerId = selectedCustomerId ?: return
+        currentSummary = null
+        btnWhatsappShare.isEnabled = false
+        monthLabel.text = "Loading $date…"
+        cardFinancialSummary.visibility = View.GONE
+        cardVolumeSummary.visibility = View.GONE
+        statementView?.visibility = View.GONE
+        extraSummaryView?.visibility = View.GONE
 
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val response = api.getMonthlySalesSummary(date, customerId)
                 withContext(Dispatchers.Main) {
                     if (isDestroyed || isFinishing) return@withContext
-                    updateUI(response)
+                    if (selectedCustomerId == customerId && SimpleDateFormat("yyyy-MM", Locale.US).format(calendar.time) == date) updateUI(response)
                 }
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 withContext(Dispatchers.Main) {
-                    // Toast.makeText(this@AdminMonthlySummary, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    if (isDestroyed || isFinishing) return@withContext
+                    monthLabel.text = "Unable to load summary. Select the customer or month to retry."
+                    Toast.makeText(this@AdminMonthlySummary, "Unable to load monthly summary", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -193,10 +224,10 @@ class AdminMonthlySummary : AdminBaseActivity() {
             return
         }
 
-        val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+        val sdf = SimpleDateFormat("yyyy-MM", Locale.US)
         val date = sdf.format(calendar.time) // yyyy-MM
 
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 Log.d("DownloadPdf", "Starting download for date: $date, customer: $customerId, area: $selectedCustomerArea")
                 
@@ -240,6 +271,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
                     throw Exception("File creation failed or empty file")
                 }
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 Log.e("DownloadPdf", "Error: ${e.message}", e)
                 withContext(Dispatchers.Main) {
                     if (isDestroyed || isFinishing) return@withContext
@@ -302,6 +334,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
 
     private fun updateUI(data: MonthlySummaryResponse) {
         currentSummary = data
+        btnWhatsappShare.isEnabled = true
         layoutResults.visibility = View.VISIBLE
         cardCustomerDetails.visibility = View.VISIBLE
         cardFinancialSummary.visibility = View.VISIBLE
@@ -310,13 +343,25 @@ class AdminMonthlySummary : AdminBaseActivity() {
         // Update details from API response
         tvDetailName.text = data.customer.name
         tvDetailPhone.text = data.customer.phone
+        tvDetailShop.text = data.customer.shop_name ?: tvDetailShop.text
+        monthLabel.text = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(calendar.time)
+        statementView?.let { layoutResults.removeView(it) }
+        statementView = MonthlyStatementTable.create(this, data.statement_groups.orEmpty()).also {
+            layoutResults.addView(it, layoutResults.indexOfChild(cardVolumeSummary).coerceAtLeast(0))
+        }
 
+        extraSummaryView?.let { layoutResults.removeView(it) }
+        extraSummaryView = TextView(this).apply {
+            text = "Discounts: ₹${String.format("%.2f", data.summary.total_discount)}\nPeriod profit: ₹${String.format("%.2f", data.summary.selected_period_profit)} · Lifetime profit: ₹${String.format("%.2f", data.summary.overall_customer_profit)}"
+            textSize = 14f
+            setPadding(16,16,16,16)
+        }.also { layoutResults.addView(it, layoutResults.indexOfChild(cardFinancialSummary) + 1) }
         // Financial Summary
-        setupRow(findViewById(R.id.rowOpeningDue), "Opening Due", "₹${String.format("%.2f", data.summary.opening_due)}")
+        setupRow(findViewById(R.id.rowOpeningDue), "Account balance before period", "₹${String.format("%.2f", data.summary.opening_due)}")
         setupRow(findViewById(R.id.rowTotalSales), "Total Sales", "₹${String.format("%.2f", data.summary.total_sales)}")
         setupRow(findViewById(R.id.rowPaidAmount), "Paid Amount", "₹${String.format("%.2f", data.summary.paid_amount)}")
-        setupRow(findViewById(R.id.rowDueAmount), "Net Due", "₹${String.format("%.2f", data.summary.due_amount)}")
-        setupRow(findViewById(R.id.rowRemainingDue), "Remaining Balance", "₹${String.format("%.2f", data.summary.remaining_due)}", true)
+        setupRow(findViewById(R.id.rowDueAmount), "Month balance", "₹${String.format("%.2f", data.summary.due_amount)}")
+        setupRow(findViewById(R.id.rowRemainingDue), "Current account balance", "₹${String.format("%.2f", data.summary.remaining_due)}", true)
 
         // Volume Summary
         setupRow(findViewById(R.id.rowMilkVolume), "Milk Volume", "${String.format("%.2f", data.volume.milk_volume)} L")

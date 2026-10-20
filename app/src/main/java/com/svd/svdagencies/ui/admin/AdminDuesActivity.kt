@@ -44,6 +44,11 @@ class AdminDuesActivity : AdminBaseActivity() {
         setContentView(R.layout.admin_companies_due)
 
         setupAdminLayout("Company Payments")
+        val reportButton = MaterialButton(this).apply {
+            text="Download purchase report"
+            setOnClickListener { startActivity(android.content.Intent(this@AdminDuesActivity, AdminPurchaseReportsActivity::class.java).putExtra("year", currentYear).putExtra("month", currentMonth)) }
+        }
+        (findViewById<TextView>(R.id.tvDate).parent as? ViewGroup)?.let { parent -> parent.addView(reportButton) }
 
         val c = Calendar.getInstance()
         currentYear = c.get(Calendar.YEAR)
