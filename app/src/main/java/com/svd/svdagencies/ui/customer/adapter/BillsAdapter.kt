@@ -13,6 +13,12 @@ class BillsAdapter(
     private val onAction: (InvoiceItem, String) -> Unit
 ) : RecyclerView.Adapter<BillsAdapter.BillViewHolder>() {
 
+    private var paymentLocked = true
+    fun setPaymentLocked(locked: Boolean) {
+        paymentLocked = locked
+        notifyDataSetChanged()
+    }
+
     // ================= UPDATE DATA =================
     fun updateData(newBills: List<InvoiceItem>) {
         bills.clear()
@@ -44,6 +50,8 @@ class BillsAdapter(
         holder.tvTotalAmount.text = "₹%.2f".format(bill.amount)
 
         holder.btnDownload.setOnClickListener { onAction(bill, "download") }
+        holder.btnQR.isEnabled = !paymentLocked && bill.remainingDue > 0
+        holder.btnQR.alpha = if (holder.btnQR.isEnabled) 1f else 0.5f
         holder.btnQR.setOnClickListener { onAction(bill, "qr") }
     }
 

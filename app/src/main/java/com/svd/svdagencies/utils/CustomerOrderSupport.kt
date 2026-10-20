@@ -24,14 +24,19 @@ object LatestCustomerOrderStore {
     private const val KEY_LATEST_ORDER = "latest_order"
     private val gson = Gson()
 
+    private fun latestOrderKey(context: Context): String {
+        val session = SessionManager(context)
+        return "${KEY_LATEST_ORDER}_${session.getRole()}_${session.getUserId()}"
+    }
+
     fun save(context: Context, latestOrder: LatestCustomerOrder) {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putString(KEY_LATEST_ORDER, gson.toJson(latestOrder)).apply()
+        prefs.edit().putString(latestOrderKey(context), gson.toJson(latestOrder)).apply()
     }
 
     fun get(context: Context): LatestCustomerOrder? {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val json = prefs.getString(KEY_LATEST_ORDER, null) ?: return null
+        val json = prefs.getString(latestOrderKey(context), null) ?: return null
         return runCatching {
             val root = gson.fromJson(json, JsonObject::class.java)
             val items = root.getAsJsonArray("items")?.mapNotNull { element ->
@@ -58,7 +63,7 @@ object LatestCustomerOrderStore {
 
     fun clear(context: Context) {
         val prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        prefs.edit().remove(KEY_LATEST_ORDER).apply()
+        prefs.edit().remove(latestOrderKey(context)).apply()
     }
 }
 

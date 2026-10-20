@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.svd.svdagencies.utils.AppSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/userRefresh" android:layout_width="match_parent" android:layout_height="match_parent">
+    <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+            <TextView android:id="@+id/userGreeting" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Your account" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+            <TextView android:id="@+id/userAccountStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:textSize="14sp" android:textColor="@color/textColorSecondary" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Wallet balance" android:textSize="13sp" android:textColor="@color/textColorSecondary" />
+            <TextView android:id="@+id/userWallet" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="—" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="Outstanding amount" android:textSize="13sp" android:textColor="@color/textColorSecondary" />
+            <TextView android:id="@+id/userOutstanding" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="—" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/userBrowseProducts" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="24dp" android:text="Place an order" android:textAllCaps="false" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/userSubscriptions" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="8dp" android:text="My subscriptions" android:textAllCaps="false" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Latest order" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+            <TextView android:id="@+id/userLatestOrder" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Loading your orders…" android:textSize="15sp" android:textColor="@color/textColorSecondary" />
+            <TextView android:id="@+id/userOffersTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Offers for you" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:visibility="gone" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/userOffers" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:nestedScrollingEnabled="false" android:visibility="gone" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Available to order" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+            <LinearLayout android:id="@+id/userStockProducts" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</com.svd.svdagencies.utils.AppSwipeRefreshLayout>

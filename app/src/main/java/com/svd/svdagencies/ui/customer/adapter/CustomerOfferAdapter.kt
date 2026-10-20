@@ -13,7 +13,8 @@ data class CustomerOffer(
     val title: String,
     val subtitle: String,
     val actionText: String,
-    val colorHex: String? = null
+    val colorHex: String? = null,
+    val offerId: Int? = null
 )
 
 class CustomerOfferAdapter(
@@ -31,7 +32,8 @@ class CustomerOfferAdapter(
         val offer = offers[position]
         holder.tvTitle.text = offer.title
         holder.tvSubtitle.text = offer.subtitle
-        holder.btnAction.text = offer.actionText
+        holder.btnAction.text = "Place offer order"
+        holder.btnAction.contentDescription = "Place order for ${offer.title}"
         holder.btnAction.setOnClickListener { onActionClick(offer) }
 
         offer.colorHex?.let { colorStr ->

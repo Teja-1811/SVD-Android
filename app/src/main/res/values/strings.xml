@@ -25,7 +25,7 @@
     <string name="payment_entry_title">Enter Payment Amount</string>
     <string name="payment_entry_hint">Type the amount you are paying now</string>
     <string name="payment_button_text">Pay Now with UPI</string>
-    <string name="payment_apps_hint">Open PhonePe or any UPI app, pay to 9392890375@axl, and admin will verify the payment.</string>
+    <string name="payment_apps_hint">Open Google Pay, PhonePe or another supported UPI app, pay to 9392890375@okbizaxis, and admin will verify the payment.</string>
     <string name="payment_tip_title">Before you pay</string>
     <string name="payment_tip_one">Use the same mobile number registered with your SVD account where possible.</string>
     <string name="payment_tip_two">Use the payment note shown by the app so admin can match your payment.</string>
@@ -42,7 +42,7 @@
     <string name="payment_updated_successfully">Payment sent for admin verification</string>
     <string name="payment_update_failed">Payment update failed on server</string>
     <string name="failed_to_update_payment">Failed to update payment: %1$s</string>
-    <string name="payment_upi_label">UPI ID: 9392890375@axl</string>
+    <string name="payment_upi_label">UPI ID: 9392890375@okbizaxis</string>
 
     <!-- Redesign Strings -->
     <string name="login_trusted_security">Trusted Security</string>

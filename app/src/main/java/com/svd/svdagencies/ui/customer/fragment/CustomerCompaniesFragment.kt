@@ -102,7 +102,7 @@ class CustomerCompaniesFragment : Fragment() {
             isCheckable = true
             isClickable = true
             chipMinHeight = 40f
-            chipCornerRadius = 20f
+            shapeAppearanceModel = shapeAppearanceModel.withCornerSize(20f)
             chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.chip_background_color)
             setTextColor(ContextCompat.getColorStateList(context, R.color.chip_text_color))
             chipStrokeColor = ContextCompat.getColorStateList(context, R.color.chip_unselected_border)

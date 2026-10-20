@@ -36,6 +36,9 @@ interface CustomerApi {
         @Body body: Map<String, Any?>
     ): Call<GenericResponse>
 
+    @GET("api/customer/payment/attempt-status/")
+    fun getPaymentAttemptStatus(): Call<PaymentGatewayInitResponse>
+
     @POST("api/customer/payment/initiate/")
     fun initiateGatewayPayment(
         @Body body: Map<String, String>

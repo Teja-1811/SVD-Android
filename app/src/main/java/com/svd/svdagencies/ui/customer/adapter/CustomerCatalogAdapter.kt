@@ -1,5 +1,8 @@
 package com.svd.svdagencies.ui.customer.adapter
 
+import android.view.View
+import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.UserRole
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -34,7 +37,9 @@ class CustomerCatalogAdapter : ListAdapter<ProductData, CustomerCatalogAdapter.C
             val formatter = NumberFormat.getCurrencyInstance(Locale("en", "IN"))
             
             // Set Selling Price
-            binding.tvPrice.text = formatter.format(item.sellingPrice)
+            val user = SessionManager(binding.root.context).getRole() == UserRole.USER
+            binding.tvPrice.text = formatter.format(if (user) item.mrp else item.sellingPrice)
+            binding.tvMargin.visibility = if (user) View.GONE else View.VISIBLE
             
             // Set MRP
             binding.tvMrp.text = formatter.format(item.mrp)

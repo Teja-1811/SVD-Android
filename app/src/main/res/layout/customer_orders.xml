@@ -184,6 +184,7 @@
                             android:textColor="@color/textColorPrimary"/>
                     </LinearLayout>
 
+                    <TextView android:id="@+id/tvOrderDeliveryCharge" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Delivery charge: ₹10.00" android:textColor="@color/textColorSecondary" android:visibility="gone" />
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnPlaceOrder"
                         android:layout_width="match_parent"

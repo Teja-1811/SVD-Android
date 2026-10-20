@@ -18,7 +18,7 @@ interface ProductApi {
 
     @GET("api/products/")
     fun getProducts(
-        @Query("category_id") categoryId: Int
+        @Query("category_id") categoryId: Int? = null
     ): Call<JsonElement>
 
     @GET("api/cataloge/")

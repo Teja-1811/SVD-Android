@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_auth_hero"
+    android:background="@color/white"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="@dimen/grid_16">
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Customer Access"
-            android:textColor="@color/white"
+            android:textColor="@color/drawer_text_primary"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Orders, support and invoices"
-            android:textColor="#FFF3EC"
+            android:textColor="@color/textColorSecondary"
             android:textSize="13sp" />
     </LinearLayout>
 
@@ -50,5 +50,5 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="6dp"
         android:src="@drawable/ic_back"
-        app:tint="@color/white" />
+        app:tint="@color/drawer_icon_default" />
 </LinearLayout>

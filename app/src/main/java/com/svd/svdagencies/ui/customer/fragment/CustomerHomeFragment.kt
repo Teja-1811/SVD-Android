@@ -20,7 +20,7 @@ import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.customer.CustomerOfferResponse
 import com.svd.svdagencies.data.model.customer.OfferItem
 import com.svd.svdagencies.ui.customer.CustomerContactSupportActivity
-import com.svd.svdagencies.ui.customer.CustomerMainActivity
+import com.svd.svdagencies.ui.customer.PortalMainActivity
 import com.svd.svdagencies.ui.customer.CustomerRaisedQueriesActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -183,9 +183,10 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
 
     private fun setupOffersCarousel() {
         rvOffers.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        rvOffers.adapter = CustomerOfferAdapter(offersList) {
-            // Action for the offer - navigate to orders
-            (activity as? CustomerMainActivity)?.openOrdersScreen()
+        rvOffers.adapter = CustomerOfferAdapter(offersList) { selected ->
+            selected.offerId?.let { id ->
+                startActivity(android.content.Intent(requireContext(), com.svd.svdagencies.ui.customer.CustomerOfferOrderActivity::class.java).putExtra("offer_id", id))
+            }
         }
         
         if (rvOffers.onFlingListener == null) {
@@ -216,7 +217,8 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
                                 title = item.name,
                                 subtitle = subtitle.ifBlank { "Special discount available" },
                                 actionText = "Order Now",
-                                colorHex = colors[index % colors.size]
+                                colorHex = colors[index % colors.size],
+                                offerId = item.id
                             )
                         )
                     }
@@ -246,7 +248,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
             btnLatestOrderAction.text = "Place Order"
             btnLatestOrderAction.isEnabled = isOrderingOpen
             btnLatestOrderAction.setOnClickListener {
-                (activity as? CustomerMainActivity)?.openOrdersScreen(editLatestOrder = false)
+                (activity as? PortalMainActivity)?.openOrdersScreen(editLatestOrder = false)
             }
             return
         }
@@ -266,7 +268,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         btnLatestOrderAction.text = if (isOrderingOpen) "Edit Latest Order" else "Order Window Closed"
         btnLatestOrderAction.isEnabled = isOrderingOpen
         btnLatestOrderAction.setOnClickListener {
-            (activity as? CustomerMainActivity)?.openOrdersScreen(editLatestOrder = true)
+            (activity as? PortalMainActivity)?.openOrdersScreen(editLatestOrder = true)
         }
     }
 

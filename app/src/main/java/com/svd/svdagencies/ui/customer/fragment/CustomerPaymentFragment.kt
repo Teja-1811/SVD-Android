@@ -3,6 +3,8 @@ package com.svd.svdagencies.ui.customer.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import com.svd.svdagencies.utils.UpiPaymentLauncher
+import com.svd.svdagencies.utils.PaymentConfig
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -54,6 +56,10 @@ class CustomerPaymentFragment : Fragment() {
     private val selectedMonth = Calendar.getInstance()
     private val monthLabelFormat = SimpleDateFormat("MMM yyyy", Locale.US)
 
+    private var paymentLocked = true
+    private var attemptInProgress = false
+    private var activeAttempt: PaymentGatewayInitResponse? = null
+    private var referenceButton: com.google.android.material.button.MaterialButton? = null
     private lateinit var api: CustomerApi
     private lateinit var session: SessionManager
 
@@ -87,6 +93,16 @@ class CustomerPaymentFragment : Fragment() {
         api = ApiClient.customerApi
 
         btnUpi.setOnClickListener { startGatewayPayment() }
+        referenceButton = com.google.android.material.button.MaterialButton(requireContext()).apply {
+            text = "Submit payment transaction reference"
+            isAllCaps = false
+            visibility = View.GONE
+            setOnClickListener { activeAttempt?.let { showUtrEntryDialog(it) } }
+        }
+        (btnUpi.parent as? android.widget.LinearLayout)?.let { parent ->
+            parent.addView(referenceButton, parent.indexOfChild(btnUpi) + 1)
+        }
+        applyPaymentLock()
         swipeRefresh.setOnRefreshListener { loadAllData() }
 
         setupHistoryList()
@@ -134,7 +150,42 @@ class CustomerPaymentFragment : Fragment() {
         tvMonthLabel.text = monthLabelFormat.format(selectedMonth.time).uppercase()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (::api.isInitialized && view != null) loadAttemptStatus()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden && ::api.isInitialized && view != null) loadAttemptStatus()
+    }
+
+    private fun applyPaymentLock() {
+        if (!::btnUpi.isInitialized || view == null) return
+        btnUpi.isEnabled = !paymentLocked && !attemptInProgress
+        etAmount.isEnabled = !paymentLocked && !attemptInProgress
+        if (paymentLocked && !attemptInProgress) btnUpi.text = "Payment pending verification"
+        else if (!attemptInProgress) btnUpi.text = "Pay with UPI"
+        referenceButton?.visibility = if (activeAttempt != null && !attemptInProgress) View.VISIBLE else View.GONE
+    }
+
+    private fun loadAttemptStatus() {
+        val screen = view ?: return
+        api.getPaymentAttemptStatus().enqueue(object : Callback<PaymentGatewayInitResponse> {
+            override fun onResponse(call: Call<PaymentGatewayInitResponse>, response: Response<PaymentGatewayInitResponse>) {
+                if (view !== screen || attemptInProgress) return
+                val body = response.body() ?: return
+                if (!response.isSuccessful) return
+                paymentLocked = body.paymentLocked
+                activeAttempt = body.takeIf { it.paymentLocked }
+                applyPaymentLock()
+            }
+            override fun onFailure(call: Call<PaymentGatewayInitResponse>, error: Throwable) = Unit
+        })
+    }
+
     private fun loadAllData() {
+        loadAttemptStatus()
         loadDashboardData()
         loadPaymentHistory()
     }
@@ -203,7 +254,11 @@ class CustomerPaymentFragment : Fragment() {
     }
 
     private fun startGatewayPayment() {
+        if (paymentLocked || attemptInProgress) return
         val amount = getAmount() ?: return
+        paymentLocked = true
+        attemptInProgress = true
+        applyPaymentLock()
 
         // Format month as YYYY-MM to match backend expectations
         val monthStr = SimpleDateFormat("yyyy-MM", Locale.US).format(selectedMonth.time)
@@ -222,6 +277,8 @@ class CustomerPaymentFragment : Fragment() {
             ) {
                 if (!isAdded) return
                 btnUpi.showLoading(false)
+                attemptInProgress = false
+                applyPaymentLock()
 
                 val body = response.body()
                 if (response.isSuccessful && body?.success == true && body.canStartUpiPayment()) {
@@ -230,15 +287,24 @@ class CustomerPaymentFragment : Fragment() {
                         historyAdapter.submitList(it)
                         layoutEmptyHistory.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
                     }
+                    activeAttempt = body
+                    paymentLocked = true
+                    applyPaymentLock()
                     showUpiPaymentDialog(body)
                 } else {
-                    showToast(body?.error ?: body?.message ?: getString(R.string.payment_update_failed), Toast.LENGTH_LONG)
+                    if (response.code() in 400..499 && response.code() != 409) paymentLocked = false
+                    applyPaymentLock()
+                    val error = runCatching { com.google.gson.JsonParser.parseString(response.errorBody()?.string()).asJsonObject }.getOrNull()
+                    showToast(error?.get("message")?.asString ?: error?.get("error")?.asString ?: body?.error ?: body?.message ?: getString(R.string.payment_update_failed), Toast.LENGTH_LONG)
                 }
             }
 
             override fun onFailure(call: Call<PaymentGatewayInitResponse>, t: Throwable) {
                 if (!isAdded) return
                 btnUpi.showLoading(false)
+                attemptInProgress = false
+                applyPaymentLock()
+                loadAttemptStatus()
 
                 showToast(
                     getString(
@@ -260,7 +326,7 @@ class CustomerPaymentFragment : Fragment() {
         val updateMessage = payment.recordUpdateMessage ?: getString(R.string.payment_updated_successfully)
         val message = buildString {
             append("Amount: Rs.").append(String.format("%.2f", payment.amount ?: 0.0)).append("\n")
-            append("UPI ID: ").append(payment.upiId ?: "9392890375@axl")
+            append("UPI ID: ").append(PaymentConfig.UPI_ID)
             if (note.isNotBlank()) append("\nNote: ").append(note)
             append("\n\n").append(updateMessage)
         }
@@ -268,18 +334,15 @@ class CustomerPaymentFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Pay Now with UPI")
             .setMessage(message)
-            .setPositiveButton("Open PhonePe / UPI app") { _, _ -> openUpiApp(payment) }
+            .setPositiveButton("Choose UPI payment app") { _, _ -> openUpiApp(payment) }
             .setNegativeButton("Cancel", null)
             .show()
     }
 
     private fun openUpiApp(payment: PaymentGatewayInitResponse) {
         val upiUri = payment.upiUri ?: payment.qrPayload ?: return
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(upiUri)))
+        UpiPaymentLauncher.open(requireContext(), upiUri) {
             showUtrEntryDialog(payment)
-        } catch (_: Exception) {
-            showToast(getString(R.string.no_upi_app_found), Toast.LENGTH_LONG)
         }
     }
 
@@ -327,6 +390,8 @@ class CustomerPaymentFragment : Fragment() {
             override fun onResponse(call: Call<GenericResponse>, response: Response<GenericResponse>) {
                 if (!isAdded) return
                 btnUpi.showLoading(false)
+                attemptInProgress = false
+                applyPaymentLock()
 
                 if (response.isSuccessful) {
                     val body = response.body()
@@ -350,6 +415,8 @@ class CustomerPaymentFragment : Fragment() {
             override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
                 if (!isAdded) return
                 btnUpi.showLoading(false)
+                attemptInProgress = false
+                applyPaymentLock()
                 showToast("Error recording payment: ${t.localizedMessage}", Toast.LENGTH_LONG)
             }
         })

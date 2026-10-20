@@ -108,6 +108,8 @@ data class DeliveryTodayBill(
     @SerializedName("customer_shop_name") val customerShopName: String? = null,
     @SerializedName("current_due") val currentDue: Double = 0.0,
     @SerializedName("due_amount") val dueAmount: Double = 0.0,
+    @SerializedName("delivery_latitude") val deliveryLatitude: Double? = null,
+    @SerializedName("delivery_longitude") val deliveryLongitude: Double? = null,
     val items: List<DeliveryTodayBillItem> = emptyList()
 ) {
     val realId: Int get() = if (billId > 0) billId else id

@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.UserRole
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.customer.ProductResponse
@@ -59,6 +61,7 @@ class OrderProductAdapter(
         holder.tvPcs.text = "${product.pcs} pcs / crate"
         holder.tvMrp.text = "MRP: ₹${product.mrp}"
         holder.tvPrice.text = "₹${product.selling_price}"
+        holder.tvMargin.visibility = if (SessionManager(holder.itemView.context).getRole() == UserRole.USER) View.GONE else View.VISIBLE
         holder.tvMargin.text = "Margin: ${String.format("%.1f", product.margin)}%"
         holder.tvTotal.text = "₹${String.format("%.2f", total)}"
 

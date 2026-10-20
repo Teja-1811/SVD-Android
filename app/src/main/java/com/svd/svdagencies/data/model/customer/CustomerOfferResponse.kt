@@ -24,5 +24,7 @@ data class OfferProductItem(
     @SerializedName("item_name") val itemName: String,
     @SerializedName("buy_qty") val buyQty: Int,
     @SerializedName("offer_qty") val offerQty: Int,
+    @SerializedName("order_quantity") val orderQuantity: Int = 1,
+    val stock: Int = 0,
     @SerializedName("offer_price") val offerPrice: Double
 )

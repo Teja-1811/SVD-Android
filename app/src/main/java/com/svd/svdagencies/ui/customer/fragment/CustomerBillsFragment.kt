@@ -29,6 +29,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.InvoiceApi
+import com.svd.svdagencies.data.model.customer.PaymentGatewayInitResponse
 import com.svd.svdagencies.data.model.customer.InvoiceItem
 import com.svd.svdagencies.data.model.customer.InvoiceResponse
 import com.svd.svdagencies.ui.customer.adapter.BillsAdapter
@@ -53,6 +54,8 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
     private lateinit var adapter: BillsAdapter
     private lateinit var sessionManager: SessionManager
     private lateinit var api: InvoiceApi
+    private var paymentLocked = true
+    private var paymentStarting = false
     private val downloadIdsToOpen = mutableSetOf<Long>()
 
     private val onDownloadComplete: BroadcastReceiver = object : BroadcastReceiver() {
@@ -113,6 +116,7 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
 
     override fun onResume() {
         super.onResume()
+        loadPaymentAttemptLock()
         RefreshManager.startRefresh(swipeRefresh)
         loadBills()
     }
@@ -155,6 +159,7 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
 
     private fun loadBills() {
         tvStatus.text = "Loading bills..."
+        loadPaymentAttemptLock()
         RefreshManager.startRefresh(swipeRefresh)
 
         val monthYear = etMonth.text.toString().split("-")
@@ -258,14 +263,59 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
         }
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden && view != null && ::adapter.isInitialized) loadPaymentAttemptLock()
+    }
+
+    private fun loadPaymentAttemptLock() {
+        val screen = view ?: return
+        ApiClient.customerApi.getPaymentAttemptStatus().enqueue(object : Callback<PaymentGatewayInitResponse> {
+            override fun onResponse(call: Call<PaymentGatewayInitResponse>, response: Response<PaymentGatewayInitResponse>) {
+                if (view !== screen || paymentStarting || !response.isSuccessful) return
+                paymentLocked = response.body()?.paymentLocked ?: true
+                if (::adapter.isInitialized) adapter.setPaymentLocked(paymentLocked)
+            }
+            override fun onFailure(call: Call<PaymentGatewayInitResponse>, error: Throwable) = Unit
+        })
+    }
+
     private fun showQRDialog(bill: InvoiceItem) {
+        if (paymentLocked || paymentStarting || bill.remainingDue <= 0) return
+        paymentLocked = true
+        paymentStarting = true
+        adapter.setPaymentLocked(true)
+        val screen = view ?: return
+        ApiClient.customerApi.initiateGatewayPayment(mapOf("amount" to bill.remainingDue.toString(), "bill_id" to bill.id.toString(), "payment_for" to "GENERAL"))
+            .enqueue(object : Callback<PaymentGatewayInitResponse> {
+                override fun onResponse(call: Call<PaymentGatewayInitResponse>, response: Response<PaymentGatewayInitResponse>) {
+                    paymentStarting = false
+                    if (view !== screen) return
+                    val body = response.body()
+                    val payload = body?.qrPayload ?: body?.upiUri
+                    if (response.isSuccessful && body?.success == true && payload != null) renderQRDialog(bill, payload)
+                    else {
+                        if (response.code() in 400..499 && response.code() != 409) loadPaymentAttemptLock()
+                        Toast.makeText(requireContext(), "Payment could not start or is already pending verification. Please do not pay again.", Toast.LENGTH_LONG).show()
+                    }
+                }
+                override fun onFailure(call: Call<PaymentGatewayInitResponse>, error: Throwable) {
+                    paymentStarting = false
+                    if (view !== screen) return
+                    loadPaymentAttemptLock()
+                    Toast.makeText(requireContext(), "Could not confirm payment status. Refresh before trying again.", Toast.LENGTH_LONG).show()
+                }
+            })
+    }
+
+    private fun renderQRDialog(bill: InvoiceItem, paymentPayload: String) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_qr_code, null)
         val ivQrCode = dialogView.findViewById<ImageView>(R.id.ivQrCode)
         val tvQrAmount = dialogView.findViewById<TextView>(R.id.tvQrAmount)
         val tvBillInfo = dialogView.findViewById<TextView>(R.id.tvBillInfo)
         val btnCloseQr = dialogView.findViewById<MaterialButton>(R.id.btnCloseQr)
 
-        val amount = bill.amount
+        val amount = bill.remainingDue
         val billNo = bill.number
 
         tvQrAmount.text = "Amount: ₹%.2f".format(amount)
@@ -274,7 +324,7 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
 
         val upiId = PaymentConfig.UPI_ID
         val name = "Sri Vijay Durga Milk Agency"
-        val upiUrl = "upi://pay?pa=$upiId&pn=${Uri.encode(name)}&am=${"%.2f".format(amount)}&cu=INR&tn=${Uri.encode(billNo)}"
+        val upiUrl = paymentPayload
 
         try {
             val barcodeEncoder = BarcodeEncoder()

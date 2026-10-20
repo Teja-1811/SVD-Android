@@ -69,6 +69,7 @@
             android:textSize="@dimen/text_size_small"
             android:textStyle="bold" />
 
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnDeliveryMap" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Open delivery pin in Google Maps" android:textAllCaps="false" android:visibility="gone" />
         <TableLayout
             android:id="@+id/tvBillItems"
             android:layout_width="match_parent"

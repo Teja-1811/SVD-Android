@@ -49,7 +49,7 @@ class CustomerContactSupportActivity : BaseActivity() {
             when (item.itemId) {
                 R.id.nav_home -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
-                    startActivity(Intent(this, CustomerMainActivity::class.java))
+                    startActivity(PortalNavigation.homeIntent(this))
                     finish()
                     true
                 }
@@ -200,4 +200,9 @@ class CustomerContactSupportActivity : BaseActivity() {
             startActivity(Intent(this, activityClass))
         }
     }
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        PortalNavigation.configure(this, R.id.nav_support)
+    }
+
 }

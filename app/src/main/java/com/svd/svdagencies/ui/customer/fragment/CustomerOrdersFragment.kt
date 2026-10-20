@@ -3,6 +3,8 @@ package com.svd.svdagencies.ui.customer.fragment
 import android.content.res.ColorStateList
 import android.app.DatePickerDialog
 import android.os.Bundle
+import com.svd.svdagencies.utils.DeliveryCoordinates
+import com.svd.svdagencies.utils.DeliveryLocationPicker
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -36,6 +38,8 @@ import com.svd.svdagencies.data.model.customer.ProductResponse
 import com.svd.svdagencies.ui.customer.adapter.OrderProductAdapter
 import com.svd.svdagencies.ui.customer.adapter.SummaryAdapter
 import com.svd.svdagencies.ui.customer.viewmodel.PlaceOrderViewModel
+import com.svd.svdagencies.utils.SessionManager
+import com.svd.svdagencies.utils.UserRole
 import com.svd.svdagencies.utils.CustomerOrderWindow
 import com.svd.svdagencies.utils.LatestCustomerOrder
 import com.svd.svdagencies.utils.LatestCustomerOrderItem
@@ -53,15 +57,17 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     companion object {
         private const val ARG_EDIT_LATEST_ORDER = "edit_latest_order"
 
-        fun newInstance(editLatestOrder: Boolean = false): CustomerOrdersFragment {
+        fun newInstance(editLatestOrder: Boolean = false, productId: Int? = null): CustomerOrdersFragment {
             return CustomerOrdersFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(ARG_EDIT_LATEST_ORDER, editLatestOrder)
+                    productId?.let { putInt("initial_product_id", it) }
                 }
             }
         }
     }
 
+    private val deliveryLocation = DeliveryLocationPicker(this) { requireContext() }
     private lateinit var orderAdapter: OrderProductAdapter
     private lateinit var summaryAdapter: SummaryAdapter
     private val viewModel: PlaceOrderViewModel by viewModels()
@@ -154,7 +160,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
     private fun refreshOrdersScreen() {
         loadCategories()
-        fetchExistingOrderState()
+        if (shouldLoadLatestOrder) fetchExistingOrderState()
     }
 
     private fun updateSummary() {
@@ -166,11 +172,17 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             total += product.calculateTotal(qty)
         }
 
-        tvTotalAmount.text = currency.format(total)
+        val isUser = SessionManager(requireContext()).getRole() == UserRole.USER
+        val deliveryCharge = if (isUser && viewModel.cartQuantities.isNotEmpty()) 10.0 else 0.0
+        view?.findViewById<TextView>(R.id.tvOrderDeliveryCharge)?.apply {
+            isVisible = isUser
+            text = "Delivery charge: ${currency.format(deliveryCharge)}"
+        }
+        tvTotalAmount.text = currency.format(total + deliveryCharge)
         cardOrderSummary.isVisible = viewModel.cartQuantities.isNotEmpty()
     }
 
-    private fun placeOrder() {
+    private fun placeOrder(location: DeliveryCoordinates? = null) {
         if (!CustomerOrderWindow.isOpen()) {
             Toast.makeText(
                 requireContext(),
@@ -180,6 +192,10 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             return
         }
 
+        if (SessionManager(requireContext()).getRole() == UserRole.USER && location == null) {
+            deliveryLocation.choose { placeOrder(it) }
+            return
+        }
         btnPlaceOrder.isEnabled = false
 
         val orderItems = viewModel.cartQuantities.map { (productId, quantity) ->
@@ -195,6 +211,8 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             items = orderItems,
             orderType = if (isPreOrder) "pre_order" else "regular",
             deliveryDate = deliveryDate,
+            deliveryLatitude = location?.latitude,
+            deliveryLongitude = location?.longitude,
         )
         val api = ApiClient.retrofit.create(OrderApi::class.java)
 
@@ -256,6 +274,12 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             "Regular orders are delivered with your delivery agent's next route visit."
         }
         if (isPreOrder) updatePreOrderDateLabel()
+        if (::orderAdapter.isInitialized) {
+            viewModel.cartQuantities.clear()
+            pendingServerOrder = null
+            updateSummary()
+            loadProducts(chipGroup.checkedChipId.takeIf { it != View.NO_ID }?.let { chipGroup.findViewById<Chip>(it).tag as? Int })
+        }
     }
 
     private fun choosePreOrderDate() {
@@ -290,6 +314,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                     return
                 }
 
+                if (orderTypeToggle.checkedButtonId == R.id.btnPreOrder) return
                 val existingOrder = payload.orders.firstOrNull {
                     !it.items.isNullOrEmpty() && it.status !in setOf("cancelled", "rejected", "delivered")
                 }
@@ -303,7 +328,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 pendingServerOrder = latestOrder
                 LatestCustomerOrderStore.save(requireContext(), latestOrder)
 
-                if (viewModel.allProducts.isNotEmpty()) {
+                if (viewModel.allProducts.isNotEmpty() && shouldLoadLatestOrder) {
                     bindExistingServerOrderIfNeeded()
                 }
             }
@@ -337,6 +362,8 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 categories.forEachIndexed { index, category ->
                     val chip = Chip(context).apply {
                         text = category.name
+                        tag = category.id
+                        id = View.generateViewId()
                         isCheckable = true
                         chipBackgroundColor =
                             ContextCompat.getColorStateList(context, R.color.chip_background_color)
@@ -351,11 +378,13 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
                     chipGroup.addView(chip)
 
-                    if (index == 0) {
+                    if (index == 0 && arguments?.containsKey("initial_product_id") != true) {
                         chip.isChecked = true
                         loadProducts(category.id)
                     }
                 }
+
+                if (arguments?.containsKey("initial_product_id") == true) loadProducts(null)
 
                 if (shouldLoadLatestOrder) {
                     restoreLatestOrderIntoCart()
@@ -372,7 +401,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         })
     }
 
-    private fun loadProducts(categoryId: Int) {
+    private fun loadProducts(categoryId: Int?) {
         swipeRefresh.isRefreshing = true
 
         val api = ApiClient.retrofit.create(ProductApi::class.java)
@@ -384,7 +413,13 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 if (context == null) return
 
                 swipeRefresh.isRefreshing = false
-                val list = parseProducts(response.body())
+                val all = parseProducts(response.body())
+                val list = if (orderTypeToggle.checkedButtonId == R.id.btnPreOrder) all else all.filter { it.stock > 0 }
+                val initialId = arguments?.getInt("initial_product_id", -1) ?: -1
+                if (list.any { it.id == initialId }) {
+                    viewModel.cartQuantities[initialId] = 1.0
+                    arguments?.remove("initial_product_id")
+                }
 
                 viewModel.currentCategoryProducts.clear()
                 viewModel.currentCategoryProducts.addAll(list)
@@ -421,7 +456,10 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             body
         }
         val type = object : TypeToken<List<ProductResponse>>() {}.type
-        return runCatching { gson.fromJson<List<ProductResponse>>(json, type) }.getOrDefault(emptyList())
+        val products = runCatching { gson.fromJson<List<ProductResponse>>(json, type) }.getOrDefault(emptyList())
+        return if (SessionManager(requireContext()).getRole() == UserRole.USER) {
+            products.map { it.copy(selling_price = it.mrp, margin = 0.0) }
+        } else products
     }
 
     private fun updateOrderWindowUi() {
@@ -462,6 +500,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     }
 
     private fun bindExistingServerOrderIfNeeded() {
+        if (arguments?.getBoolean(ARG_EDIT_LATEST_ORDER, false) != true) return
         val serverOrder = pendingServerOrder ?: return
         pendingServerOrder = null
 

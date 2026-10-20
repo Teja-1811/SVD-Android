@@ -86,7 +86,7 @@ class CustomerStatementActivity : BaseActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
-                    startActivity(Intent(this, CustomerMainActivity::class.java))
+                    startActivity(PortalNavigation.homeIntent(this))
                     finishAffinity()
                     true
                 }
@@ -219,4 +219,9 @@ class CustomerStatementActivity : BaseActivity() {
             finish()
         }
     }
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        PortalNavigation.configure(this, R.id.nav_statement)
+    }
+
 }

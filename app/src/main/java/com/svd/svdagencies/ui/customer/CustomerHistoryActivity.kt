@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.svd.svdagencies.base.BaseActivity
+import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.CustomerMonthlyReport
 import com.svd.svdagencies.data.api.customer.CustomerOrderHistoryResponse
@@ -55,7 +56,7 @@ class CustomerHistoryActivity : BaseActivity() {
         content.addView(Button(this).apply { text = "Download product brochure"; setOnClickListener { downloadBrochure() } })
         content.addView(history)
         content.addView(orderActions)
-        setContentView(ScrollView(this).apply { addView(content) })
+        PortalNavigation.installPage(this, ScrollView(this).apply { addView(content) }, "Orders & reports", R.id.nav_history_reports)
         loadReport()
         loadHistory()
     }

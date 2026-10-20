@@ -1,6 +1,7 @@
 package com.svd.svdagencies.ui.delivery
 
 import android.view.LayoutInflater
+import com.svd.svdagencies.utils.DeliveryMaps
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -46,6 +47,7 @@ class DeliveryTodayBillAdapter(
         private val tvGrandTotal: TextView = view.findViewById(R.id.tvGrandTotal)
         private val tvPaidAmount: TextView = view.findViewById(R.id.tvPaidAmount)
         private val tvRemainingDue: TextView = view.findViewById(R.id.tvRemainingDue)
+        private val btnDeliveryMap: View = view.findViewById(R.id.btnDeliveryMap)
         private val btnQR: View = view.findViewById(R.id.btnQR)
         private val btnDeleteBill: View = view.findViewById(R.id.btnDeleteBill)
         private val btnWhatsapp: View? = view.findViewById(R.id.btnWhatsapp)
@@ -54,6 +56,12 @@ class DeliveryTodayBillAdapter(
             tvBillNumber.text = item.billNumber ?: "#${item.realId}"
             tvBillDate.text = item.date.orEmpty()
             tvCustomerName.text = item.customerName ?: item.customer ?: "Customer"
+            btnDeliveryMap.visibility = if (item.deliveryLatitude != null && item.deliveryLongitude != null) View.VISIBLE else View.GONE
+            btnDeliveryMap.setOnClickListener {
+                val latitude = item.deliveryLatitude
+                val longitude = item.deliveryLongitude
+                if (latitude != null && longitude != null) DeliveryMaps.open(itemView.context, latitude, longitude)
+            }
             bindItems(item)
 
             val grandTotal = item.invoiceAmount + item.openingDue

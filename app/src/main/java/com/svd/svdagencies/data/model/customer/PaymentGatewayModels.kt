@@ -5,6 +5,7 @@ import com.svd.svdagencies.data.model.delivery.DeliveryCustomerPaymentRecord
 
 data class PaymentGatewayInitResponse(
     val success: Boolean? = null,
+    @SerializedName("payment_locked") val paymentLocked: Boolean = false,
     val gateway: String? = null,
     @SerializedName("payment_for") val paymentFor: String? = null,
     @SerializedName("payment_order_id") val paymentOrderId: String? = null,

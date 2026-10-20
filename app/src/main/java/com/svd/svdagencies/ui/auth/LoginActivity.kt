@@ -101,10 +101,13 @@ class LoginActivity : BaseActivity() {
 
                     val body = response.body()
                     if (body != null && body.status == "success" && body.token != null) {
-                        val portalRole = if (body.accountType.equals("user", ignoreCase = true)) {
-                            UserRole.USER
-                        } else {
-                            body.role.orEmpty().lowercase()
+                        val receivedRole = body.role.orEmpty().trim().lowercase()
+                        val portalRole = when {
+                            receivedRole == UserRole.ADMIN || receivedRole == UserRole.DELIVERY -> receivedRole
+                            body.accountType.equals("user", ignoreCase = true) -> UserRole.USER
+                            body.accountType.equals("retailer", ignoreCase = true) -> UserRole.CUSTOMER
+                            receivedRole == "retailer" -> UserRole.CUSTOMER
+                            else -> receivedRole
                         }
                         session.saveSession(body.token, portalRole, body.userId ?: -1)
                         PushRegistrationManager.requestPermissionIfNeeded(this@LoginActivity)

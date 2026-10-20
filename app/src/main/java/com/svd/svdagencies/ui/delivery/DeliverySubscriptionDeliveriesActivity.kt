@@ -2,6 +2,7 @@ package com.svd.svdagencies.ui.delivery
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import com.svd.svdagencies.utils.DeliveryMaps
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -96,6 +97,9 @@ class DeliverySubscriptionDeliveriesActivity : BaseActivity() {
         val body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(14), dp(16), dp(12)) }
         body.addView(label(delivery.value("customer_name"), 18, true))
         body.addView(label(delivery.value("customer_phone"), 14, false))
+        val latitude = delivery.get("delivery_latitude")?.takeUnless { it.isJsonNull }?.asDouble
+        val longitude = delivery.get("delivery_longitude")?.takeUnless { it.isJsonNull }?.asDouble
+        if (latitude != null && longitude != null) body.addView(button("Open delivery pin in Google Maps") { DeliveryMaps.open(this, latitude, longitude) })
         val routeAddress = listOf(delivery.value("route"), delivery.value("address")).filter { it.isNotBlank() }.joinToString(" · ")
         if (routeAddress.isNotBlank()) body.addView(label(routeAddress, 14, false))
         body.addView(label("${delivery.value("frequency")} · ${delivery.value("status").replaceFirstChar { it.uppercase() }}", 14, true).apply { setPadding(0, dp(8), 0, 0) })
