@@ -73,17 +73,31 @@ object CustomerOrderWindow {
 
     fun refresh(done: () -> Unit = {}) {
         com.svd.svdagencies.data.api.auth.ApiClient.customerApi.getOrderTimings()
-            .enqueue(object : retrofit2.Callback<Map<String, Window>> {
-                override fun onResponse(call: retrofit2.Call<Map<String, Window>>, response: retrofit2.Response<Map<String, Window>>) {
-                    windows = if (response.isSuccessful) response.body().orEmpty() else emptyMap()
+            .enqueue(object : retrofit2.Callback<JsonObject> {
+                override fun onResponse(call: retrofit2.Call<JsonObject>, response: retrofit2.Response<JsonObject>) {
+                    windows = if (response.isSuccessful) parseWindows(response.body()) else emptyMap()
                     done()
                 }
-                override fun onFailure(call: retrofit2.Call<Map<String, Window>>, t: Throwable) {
+                override fun onFailure(call: retrofit2.Call<JsonObject>, t: Throwable) {
                     windows = emptyMap()
                     done()
                 }
             })
     }
+
+    // Parse explicitly: the release shrinker can erase the generic Map value type,
+    // leaving Gson map values that cannot be cast to Window.
+    internal fun parseWindows(body: JsonObject?): Map<String, Window> =
+        listOf("regular", "pre_order").mapNotNull { kind ->
+            val row = body?.get(kind)?.takeIf { it.isJsonObject }?.asJsonObject
+                ?: return@mapNotNull null
+            val open = row.get("is_open")?.takeIf { it.isJsonPrimitive }
+                ?.asJsonPrimitive?.takeIf { it.isBoolean }?.asBoolean ?: false
+            val message = row.get("message")?.takeIf { it.isJsonPrimitive }
+                ?.asJsonPrimitive?.takeIf { it.isString }?.asString
+                ?: "Order timings unavailable. Please refresh."
+            kind to Window(is_open = open, message = message)
+        }.toMap()
 
     fun isOpen(orderType: String = "regular"): Boolean =
         orderType == "pre_order" || windows[orderType]?.is_open == true

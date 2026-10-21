@@ -14,7 +14,7 @@ import com.google.gson.reflect.TypeToken
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -70,7 +70,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     private val deliveryLocation = DeliveryLocationPicker(this) { requireContext() }
     private lateinit var orderAdapter: OrderProductAdapter
     private lateinit var summaryAdapter: SummaryAdapter
-    private val viewModel: PlaceOrderViewModel by viewModels()
+    private val viewModel: PlaceOrderViewModel by activityViewModels()
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var chipGroup: ChipGroup
@@ -105,15 +105,8 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount)
         shouldLoadLatestOrder = arguments?.getBoolean(ARG_EDIT_LATEST_ORDER, false) == true
 
-        orderTypeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (isChecked) updateOrderTypeUi(checkedId == R.id.btnPreOrder)
-        }
-        btnPreOrderDate.setOnClickListener { choosePreOrderDate() }
-        orderTypeToggle.isVisible = SessionManager(requireContext()).getRole() == UserRole.USER
-        updateOrderTypeUi(false)
-
         orderAdapter = OrderProductAdapter(
-            products = viewModel.currentCategoryProducts,
+            products = viewModel.currentCategoryProducts.toMutableList(),
             cartQuantities = viewModel.cartQuantities
         ) {
             updateSummary()
@@ -125,6 +118,15 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         summaryAdapter = SummaryAdapter(viewModel.cartQuantities, viewModel.allProducts)
         rvSummary.layoutManager = LinearLayoutManager(requireContext())
         rvSummary.adapter = summaryAdapter
+
+        orderTypeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) updateOrderTypeUi(checkedId == R.id.btnPreOrder)
+        }
+        btnPreOrderDate.setOnClickListener { choosePreOrderDate() }
+        orderTypeToggle.isVisible = SessionManager(requireContext()).getRole() == UserRole.USER
+        orderTypeToggle.check(if (viewModel.isPreOrder) R.id.btnPreOrder else R.id.btnRegularOrder)
+        updateOrderTypeUi(viewModel.isPreOrder)
+
 
         swipeRefresh.setOnRefreshListener {
             refreshOrdersScreen()
@@ -160,11 +162,20 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         updateOrderWindowUi()
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden && view != null && ::orderAdapter.isInitialized) {
+            orderAdapter.notifyDataSetChanged()
+            updateSummary()
+            refreshOrderTimings()
+        }
+    }
+
     private fun selectedOrderType() = if (orderTypeToggle.checkedButtonId == R.id.btnPreOrder) "pre_order" else "regular"
 
     private fun refreshOrderTimings() {
         CustomerOrderWindow.refresh {
-            if (isAdded && view != null) updateOrderWindowUi()
+            if (isAdded && view != null && ::summaryAdapter.isInitialized) updateOrderWindowUi()
         }
     }
 
@@ -175,7 +186,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     }
 
     private fun updateSummary() {
-        summaryAdapter.notifyDataSetChanged()
+        summaryAdapter.refresh()
 
         var total = 0.0
         viewModel.cartQuantities.forEach { (id, qty) ->
@@ -232,6 +243,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 call: Call<PlaceOrderResponse>,
                 response: Response<PlaceOrderResponse>
             ) {
+                if (!isAdded || view == null) return
                 val context = context ?: return
                 btnPlaceOrder.isEnabled = true
 
@@ -280,6 +292,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             }
 
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
+                if (!isAdded || view == null) return
                 val context = context ?: return
                 btnPlaceOrder.isEnabled = CustomerOrderWindow.isOpen(selectedOrderType())
                 Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
@@ -288,6 +301,8 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     }
 
     private fun updateOrderTypeUi(isPreOrder: Boolean) {
+        val modeChanged = viewModel.isPreOrder != isPreOrder
+        viewModel.isPreOrder = isPreOrder
         btnPreOrderDate.isVisible = isPreOrder
         tvRegularDeliveryHint.text = if (isPreOrder) {
             "Pre-orders are open 24 hours. Choose delivery at least 2 days ahead."
@@ -296,7 +311,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         }
         if (isPreOrder) updatePreOrderDateLabel()
         updateOrderWindowUi()
-        if (::orderAdapter.isInitialized) {
+        if (::orderAdapter.isInitialized && modeChanged) {
             viewModel.cartQuantities.clear()
             pendingServerOrder = null
             updateSummary()
@@ -324,7 +339,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 call: Call<CurrentDayOrdersResponse>,
                 response: Response<CurrentDayOrdersResponse>
             ) {
-                if (context == null) return
+                if (!isAdded || view == null) return
 
                 if (response.code() == 404) {
                     clearPendingOrderState()
@@ -356,7 +371,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             }
 
             override fun onFailure(call: Call<CurrentDayOrdersResponse>, t: Throwable) {
-                if (context == null) return
+                if (!isAdded || view == null) return
                 swipeRefresh.isRefreshing = false
             }
         })
@@ -371,6 +386,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 call: Call<JsonElement>,
                 response: Response<JsonElement>
             ) {
+                if (!isAdded || view == null) return
                 val context = context ?: return
                 val categories = parseCategories(response.body())
 
@@ -416,6 +432,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             }
 
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
+                if (!isAdded || view == null) return
                 val context = context ?: return
                 swipeRefresh.isRefreshing = false
                 Toast.makeText(context, "Failed to load categories", Toast.LENGTH_SHORT).show()
@@ -432,7 +449,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                 call: Call<JsonElement>,
                 response: Response<JsonElement>
             ) {
-                if (context == null) return
+                if (!isAdded || view == null) return
 
                 swipeRefresh.isRefreshing = false
                 val all = parseProducts(response.body())
@@ -453,7 +470,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             }
 
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
-                if (context == null) return
+                if (!isAdded || view == null) return
                 swipeRefresh.isRefreshing = false
             }
         })
@@ -498,7 +515,8 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     }
 
     private fun restoreLatestOrderIntoCart() {
-        val context = context ?: return
+        if (!isAdded || view == null) return
+                val context = context ?: return
         val latestOrder = LatestCustomerOrderStore.get(context) ?: return
 
         if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {
@@ -584,7 +602,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         }
 
         orderAdapter.notifyDataSetChanged()
-        summaryAdapter.notifyDataSetChanged()
+        summaryAdapter.refresh()
     }
 
     private fun buildLatestOrderFromPayload(order: CustomerOrderPayload): LatestCustomerOrder {
@@ -603,7 +621,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         context?.let { LatestCustomerOrderStore.clear(it) }
         swipeRefresh.isRefreshing = false
         orderAdapter.notifyDataSetChanged()
-        summaryAdapter.notifyDataSetChanged()
+        summaryAdapter.refresh()
         updateSummary()
     }
 }

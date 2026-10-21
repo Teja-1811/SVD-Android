@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:padding="24dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="UPI payment" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+    <TextView android:id="@+id/upiDialogAmount" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" android:textSize="34sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+    <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeWidth="0dp" app:cardBackgroundColor="#F5F7F8">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+            <TextView android:id="@+id/upiDialogPayee" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:textSize="15sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+            <TextView android:id="@+id/upiDialogId" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" android:textSize="13sp" android:textColor="@color/textColorSecondary" android:textIsSelectable="true" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp"
+        android:text="Payment verification takes up to 5 minutes." android:textSize="13sp" android:textColor="@color/textColorSecondary" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="20dp">
+        <com.google.android.material.button.MaterialButton android:id="@+id/upiDialogCancel" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:minHeight="48dp"
+            android:text="Cancel" android:textAllCaps="false" android:textColor="@color/brand_red" app:strokeColor="@color/brand_red" app:cornerRadius="12dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/upiDialogPay"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:minHeight="48dp"
+            android:text="Pay" android:textAllCaps="false" android:textColor="@color/white" app:backgroundTint="@color/brand_red" app:cornerRadius="12dp" />
+    </LinearLayout>
+</LinearLayout>

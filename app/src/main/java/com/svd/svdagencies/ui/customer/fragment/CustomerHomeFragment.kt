@@ -157,7 +157,11 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
                 tvWelcome.text = "Welcome back, ${customer.name}"
                 tvPhone.text = "Mobile: ${customer.phone ?: "Not available"}"
                 tvShop.text = customer.shopName ?: "Shop not set"
-                tvBalance.text = formatCurrency(summary.balance)
+                tvBalance.text = formatCurrency(summary.walletBalance)
+                view?.findViewById<TextView>(R.id.retailerOutstanding)?.apply {
+                    visibility = if (customer.allowCredit) View.VISIBLE else View.GONE
+                    text = "Outstanding: ${formatCurrency(summary.outstandingDue)}"
+                }
                 applyAccountState(dashboard)
                 renderLatestOrderCard()
             }

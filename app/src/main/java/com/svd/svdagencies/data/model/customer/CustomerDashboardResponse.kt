@@ -24,7 +24,8 @@ data class CustomerDashboardCustomer(
     val pinCode: String? = null,
     @SerializedName("account_status")
     val accountStatus: String? = null,
-    val frozen: Boolean = false
+    val frozen: Boolean = false,
+    @SerializedName("allow_credit") val allowCredit: Boolean = false
 )
 
 data class CustomerDashboardSummary(

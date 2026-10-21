@@ -13,6 +13,16 @@ class SummaryAdapter(
     private val allProducts: MutableMap<Int, ProductResponse>
 ) : RecyclerView.Adapter<SummaryAdapter.SummaryViewHolder>() {
 
+    // RecyclerView must render a stable snapshot, not the cart changed by another tab.
+    private var items = cartQuantities.mapNotNull { (id, quantity) ->
+        allProducts[id]?.let { it to quantity }
+    }
+
+    fun refresh() {
+        items = cartQuantities.mapNotNull { (id, quantity) -> allProducts[id]?.let { it to quantity } }
+        notifyDataSetChanged()
+    }
+
     inner class SummaryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvProductName: TextView = view.findViewById(R.id.tvProductName)
         val tvProductTotal: TextView = view.findViewById(R.id.tvProductTotal)
@@ -26,9 +36,7 @@ class SummaryAdapter(
 
     override fun onBindViewHolder(holder: SummaryViewHolder, position: Int) {
 
-        val productId = cartQuantities.keys.toList()[position]
-        val quantity = cartQuantities[productId] ?: 0.0
-        val product = allProducts[productId] ?: return
+        val (product, quantity) = items[position]
 
         // 🏷 Show name + (crates, pcs)
         val qtyDescription = product.getCrateAndPcsDescription(quantity)
@@ -41,5 +49,5 @@ class SummaryAdapter(
             "₹${String.format("%.2f", total)}"
     }
 
-    override fun getItemCount(): Int = cartQuantities.size
+    override fun getItemCount(): Int = items.size
 }

@@ -258,6 +258,9 @@ class CustomerPaymentFragment : Fragment() {
 
                 val dashboard = response.body() ?: return
                 val summary = dashboard.summary
+                val outstandingVisibility = if (dashboard.customer.allowCredit) View.VISIBLE else View.GONE
+                view?.findViewById<View>(R.id.paymentOutstandingCard)?.visibility = outstandingVisibility
+                view?.findViewById<View>(R.id.paymentBalanceDivider)?.visibility = outstandingVisibility
                 tvCurrentDue.text = getString(R.string.format_currency, summary.outstandingDue)
                 tvCurrentBalance.text = getString(R.string.format_currency, summary.walletBalance)
             }
@@ -382,22 +385,25 @@ class CustomerPaymentFragment : Fragment() {
     }
 
     private fun showUpiPaymentDialog(payment: PaymentGatewayInitResponse) {
-        val note = payment.paymentNote.orEmpty()
-        val updateMessage = payment.recordUpdateMessage ?: getString(R.string.payment_updated_successfully)
-        val message = buildString {
-            append("Amount: Rs.").append(String.format("%.2f", payment.amount ?: 0.0)).append("\n")
-            append("UPI ID: ").append(PaymentConfig.UPI_ID)
-            if (note.isNotBlank()) append("\nNote: ").append(note)
-            append("\n\n").append(updateMessage)
-        }
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Pay Now with UPI")
-            .setMessage(message)
-            .setPositiveButton("Choose UPI payment app") { _, _ -> openUpiApp(payment) }
-            .setNegativeButton("Cancel") { _, _ -> releasePaymentButton() }
+        val content = layoutInflater.inflate(R.layout.dialog_upi_payment, null)
+        content.findViewById<TextView>(R.id.upiDialogAmount).text =
+            java.text.NumberFormat.getCurrencyInstance(Locale("en", "IN")).format(payment.amount ?: 0.0)
+        content.findViewById<TextView>(R.id.upiDialogPayee).text = PaymentConfig.PAYEE_NAME
+        content.findViewById<TextView>(R.id.upiDialogId).text = PaymentConfig.UPI_ID
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setView(content)
             .setOnCancelListener { releasePaymentButton() }
-            .show()
+            .create()
+        content.findViewById<MaterialButton>(R.id.upiDialogCancel).setOnClickListener {
+            dialog.dismiss()
+            releasePaymentButton()
+        }
+        content.findViewById<MaterialButton>(R.id.upiDialogPay).setOnClickListener { button ->
+            button.isEnabled = false
+            dialog.dismiss()
+            openUpiApp(payment)
+        }
+        dialog.show()
     }
 
     private fun releasePaymentButton() {

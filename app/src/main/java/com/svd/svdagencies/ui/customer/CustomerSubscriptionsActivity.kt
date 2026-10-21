@@ -126,16 +126,17 @@ class CustomerSubscriptionsActivity : BaseActivity() {
 
     private fun showSubscriptions(rows: JsonArray) {
         container.removeAllViews()
-        empty.isVisible = rows.size() == 0
-        container.addView(text("My active subscriptions", 20, true))
-        rows.filter { it.asJsonObject.string("status") != "cancelled" }.forEach { element -> addSubscriptionCard(element.asJsonObject) }
-        empty.isVisible = rows.none { it.asJsonObject.string("status") != "cancelled" }
+        empty.isVisible = false
+        val active = rows.filter { it.asJsonObject.string("status") != "cancelled" }
+        container.isVisible = active.isNotEmpty()
+        if (active.isNotEmpty()) container.addView(text("Active subscriptions", 20, true))
+        active.forEach { element -> addSubscriptionCard(element.asJsonObject) }
         loadPlans()
     }
 
     private fun loadPlans() {
         plans.removeAllViews()
-        plans.addView(text("Subscription plans", 20, true).apply { setPadding(0, dp(24), 0, dp(12)) })
+        plans.addView(text("Subscription plans", 22, true).apply { setPadding(0, if (container.isVisible) dp(24) else 0, 0, dp(16)) })
         ApiClient.subscriptionApi.getSubscriptionOffers().enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (isFinishing || isDestroyed) return
@@ -147,8 +148,10 @@ class CustomerSubscriptionsActivity : BaseActivity() {
                 offers.forEach { row ->
                     val offer = row.asJsonObject
                     val body = offerDetails(offer).apply {
-                        setPadding(dp(16), dp(16), dp(16), dp(16))
+                        setPadding(dp(20), dp(20), dp(20), dp(16))
                         addView(actionButton("Buy") { showOfferStartForm(offer) }.apply {
+                            cornerRadius = dp(12)
+                            minHeight = dp(48)
                             contentDescription = "Buy ${offer.string("name")}, ${offerMoney(offer, "total_amount")} total"
                             layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(16) }
                         })
@@ -185,10 +188,9 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         }
         body.addView(text("$status · ${subscription.string("frequency_label")}", 18, true))
         body.addView(text(subscription.string("offer_name"), 18, true))
-        body.addView(text("Delivery charge: Free", 14, false))
         val latitude = subscription.get("delivery_latitude")?.takeUnless { it.isJsonNull }?.asDouble
         val longitude = subscription.get("delivery_longitude")?.takeUnless { it.isJsonNull }?.asDouble
-        if (latitude != null && longitude != null) body.addView(actionButton("View delivery pin in Google Maps") { DeliveryMaps.open(this, latitude, longitude) })
+        if (latitude != null && longitude != null) body.addView(actionButton("Delivery location") { DeliveryMaps.open(this, latitude, longitude) })
         val total = subscription.get("delivery_count")?.asInt ?: 0
         val completed = subscription.get("completed_deliveries")?.asInt ?: 0
         val remaining = subscription.get("remaining_deliveries")?.asInt ?: (total - completed).coerceAtLeast(0)
@@ -207,8 +209,6 @@ class CustomerSubscriptionsActivity : BaseActivity() {
             "• ${row.string("name")} × ${row.string("quantity")}"
         }.orEmpty()
         body.addView(text(products, 14, false).apply { setPadding(0, dp(8), 0, 0) })
-        val upcoming = subscription.getAsJsonArray("upcoming_deliveries")?.joinToString(", ") { it.asString }.orEmpty()
-        if (upcoming.isNotBlank()) body.addView(text("Upcoming: $upcoming", 13, false).apply { setPadding(0, dp(8), 0, 0) })
         val actions = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.END }
         val id = subscription.get("id").asInt
         when (subscription.string("status")) {
@@ -251,28 +251,48 @@ class CustomerSubscriptionsActivity : BaseActivity() {
 
     private fun offerDetails(offer: JsonObject): LinearLayout = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
-        addView(text(offer.string("name"), 18, true))
-        offer.string("description").takeIf { it.isNotBlank() }?.let {
-            addView(text(it, 14, false).apply { setPadding(0, dp(6), 0, 0) })
-        }
-        addView(text("Total plan price: ${offerMoney(offer, "total_amount")}", 18, true).apply { setPadding(0, dp(14), 0, 0) })
-        addView(text("${offerMoney(offer, "per_delivery_amount")} per delivery", 14, false))
+        addView(text(offer.string("name"), 20, true))
+        addView(text(offerMoney(offer, "total_amount"), 30, true).apply {
+            setPadding(0, dp(12), 0, dp(2))
+        })
+        addView(text("${offerMoney(offer, "per_delivery_amount")} / delivery", 13, false).apply {
+            setTextColor(ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.textColorSecondary))
+        })
         val duration = offer.string("duration_value")
         val unit = offer.string("duration_unit").removeSuffix("s") + if (duration == "1") "" else "s"
         val frequency = when (offer.string("delivery_frequency")) {
-            "daily" -> "Every day"
-            "weekly" -> "Once a week"
-            "monthly" -> "Once a month"
+            "daily" -> "Daily"
+            "weekly" -> "Weekly"
+            "monthly" -> "Monthly"
             else -> offer.string("delivery_frequency")
         }
-        addView(text("Duration: $duration $unit", 14, false).apply { setPadding(0, dp(12), 0, 0) })
-        addView(text("Schedule: $frequency", 14, false))
-        addView(text("Total deliveries: ${offer.string("delivery_count")}", 14, false))
-        addView(text("Included in each delivery", 14, true).apply { setPadding(0, dp(14), 0, dp(4)) })
+        addView(LinearLayout(this@CustomerSubscriptionsActivity).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(dp(12), dp(12), dp(12), dp(12))
+            background = android.graphics.drawable.GradientDrawable().apply {
+                setColor(android.graphics.Color.parseColor("#F5F7F8"))
+                cornerRadius = dp(10).toFloat()
+            }
+            layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(16); bottomMargin = dp(12) }
+            listOf("$duration $unit", frequency, "${offer.string("delivery_count")} deliveries").forEach { label ->
+                addView(text(label, 12, true).apply {
+                    gravity = Gravity.CENTER
+                    layoutParams = LinearLayout.LayoutParams(0, -2, 1f)
+                })
+            }
+        })
         offer.getAsJsonArray("items")?.forEach { value ->
             val item = value.asJsonObject
             val quantity = NumberFormat.getNumberInstance(Locale("en", "IN")).format(item.get("quantity").asDouble)
-            addView(text("• ${item.string("name")} × $quantity", 14, false).apply { setPadding(0, dp(3), 0, dp(3)) })
+            addView(LinearLayout(this@CustomerSubscriptionsActivity).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, dp(8), 0, dp(8))
+                addView(text(item.string("name"), 14, false).apply {
+                    layoutParams = LinearLayout.LayoutParams(0, -2, 1f)
+                })
+                addView(text("× $quantity", 14, true).apply { setPadding(dp(12), 0, 0, 0) })
+            })
         }
     }
 

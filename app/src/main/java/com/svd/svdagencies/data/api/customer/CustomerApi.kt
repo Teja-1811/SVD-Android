@@ -17,7 +17,7 @@ import retrofit2.http.Query
 
 interface CustomerApi {
     @GET("api/order-timings/")
-    fun getOrderTimings(): Call<Map<String, com.svd.svdagencies.utils.CustomerOrderWindow.Window>>
+    fun getOrderTimings(): Call<com.google.gson.JsonObject>
 
     @GET("api/customer/profile/")
     fun getProfile(): Call<Map<String, Any>>
