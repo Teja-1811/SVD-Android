@@ -81,7 +81,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     private lateinit var orderTypeToggle: MaterialButtonToggleGroup
     private lateinit var btnPreOrderDate: MaterialButton
     private lateinit var tvRegularDeliveryHint: TextView
-    private val preOrderDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }
+    private val preOrderDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 2); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
 
     private var shouldLoadLatestOrder = false
     private var pendingServerOrder: LatestCustomerOrder? = null
@@ -109,6 +109,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             if (isChecked) updateOrderTypeUi(checkedId == R.id.btnPreOrder)
         }
         btnPreOrderDate.setOnClickListener { choosePreOrderDate() }
+        orderTypeToggle.isVisible = SessionManager(requireContext()).getRole() == UserRole.USER
         updateOrderTypeUi(false)
 
         orderAdapter = OrderProductAdapter(
@@ -132,10 +133,10 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         refreshOrdersScreen()
 
         btnPlaceOrder.setOnClickListener {
-            if (!CustomerOrderWindow.isOpen()) {
+            if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {
                 Toast.makeText(
                     requireContext(),
-                    "Orders can be placed or edited only between 9:00 AM and 4:30 PM.",
+                    CustomerOrderWindow.statusMessage(selectedOrderType()),
                     Toast.LENGTH_SHORT
                 ).show()
                 return@setOnClickListener
@@ -155,10 +156,20 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
     override fun onResume() {
         super.onResume()
+        refreshOrderTimings()
         updateOrderWindowUi()
     }
 
+    private fun selectedOrderType() = if (orderTypeToggle.checkedButtonId == R.id.btnPreOrder) "pre_order" else "regular"
+
+    private fun refreshOrderTimings() {
+        CustomerOrderWindow.refresh {
+            if (isAdded && view != null) updateOrderWindowUi()
+        }
+    }
+
     private fun refreshOrdersScreen() {
+        refreshOrderTimings()
         loadCategories()
         if (shouldLoadLatestOrder) fetchExistingOrderState()
     }
@@ -183,10 +194,10 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     }
 
     private fun placeOrder(location: DeliveryCoordinates? = null) {
-        if (!CustomerOrderWindow.isOpen()) {
+        if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {
             Toast.makeText(
                 requireContext(),
-                "Orders can be placed or edited only between 9:00 AM and 4:30 PM.",
+                CustomerOrderWindow.statusMessage(selectedOrderType()),
                 Toast.LENGTH_SHORT
             ).show()
             return
@@ -249,10 +260,20 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                     bindOrderItemsToCart(boundOrderItems)
                     updateOrderWindowUi()
                     updateSummary()
+                    if (SessionManager(context).getRole() == UserRole.USER && responseBody?.paymentFor == "ORDER") {
+                        val orderId = responseBody?.orderId
+                        val amount = responseBody?.grandTotal
+                        if (orderId != null && amount != null) {
+                            (activity as? com.svd.svdagencies.ui.customer.PortalMainActivity)?.openOrderPayment(orderId, amount)
+                        }
+                    }
                 } else {
+                    refreshOrderTimings()
                     Toast.makeText(
                         context,
-                        response.body()?.message ?: "Order failed",
+                        response.body()?.message ?: runCatching {
+                            com.google.gson.JsonParser.parseString(response.errorBody()?.string()).asJsonObject.get("message").asString
+                        }.getOrNull() ?: "Order failed",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -260,7 +281,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
                 val context = context ?: return
-                btnPlaceOrder.isEnabled = CustomerOrderWindow.isOpen()
+                btnPlaceOrder.isEnabled = CustomerOrderWindow.isOpen(selectedOrderType())
                 Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
@@ -269,11 +290,12 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     private fun updateOrderTypeUi(isPreOrder: Boolean) {
         btnPreOrderDate.isVisible = isPreOrder
         tvRegularDeliveryHint.text = if (isPreOrder) {
-            "Choose the future date on which you need delivery."
+            "Pre-orders are open 24 hours. Choose delivery at least 2 days ahead."
         } else {
             "Regular orders are delivered with your delivery agent's next route visit."
         }
         if (isPreOrder) updatePreOrderDateLabel()
+        updateOrderWindowUi()
         if (::orderAdapter.isInitialized) {
             viewModel.cartQuantities.clear()
             pendingServerOrder = null
@@ -287,7 +309,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
             preOrderDate.set(year, month, day)
             updatePreOrderDateLabel()
         }, preOrderDate.get(Calendar.YEAR), preOrderDate.get(Calendar.MONTH), preOrderDate.get(Calendar.DAY_OF_MONTH))
-        picker.datePicker.minDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }.timeInMillis
+        picker.datePicker.minDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 2); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }.timeInMillis
         picker.show()
     }
 
@@ -463,8 +485,8 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
     }
 
     private fun updateOrderWindowUi() {
-        val isOpen = CustomerOrderWindow.isOpen()
-        tvOrderingWindow.text = CustomerOrderWindow.statusMessage()
+        val isOpen = CustomerOrderWindow.isOpen(selectedOrderType())
+        tvOrderingWindow.text = CustomerOrderWindow.statusMessage(selectedOrderType())
         btnPlaceOrder.isEnabled = isOpen
         btnPlaceOrder.text = if (isOpen) "Place Order" else "Ordering Closed"
         btnPlaceOrder.backgroundTintList = ColorStateList.valueOf(
@@ -479,10 +501,10 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
         val context = context ?: return
         val latestOrder = LatestCustomerOrderStore.get(context) ?: return
 
-        if (!CustomerOrderWindow.isOpen()) {
+        if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {
             Toast.makeText(
                 context,
-                "Latest order can be edited only between 9:00 AM and 4:30 PM.",
+                CustomerOrderWindow.statusMessage(selectedOrderType()),
                 Toast.LENGTH_SHORT
             ).show()
             return

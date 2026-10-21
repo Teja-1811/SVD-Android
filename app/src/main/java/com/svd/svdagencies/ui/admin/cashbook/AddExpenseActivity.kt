@@ -23,7 +23,7 @@ class AddExpenseActivity : AdminBaseActivity() {
     private lateinit var binding: AdminExpencesAddBinding
     private var expenseId: Int? = null
 
-    private val categories = listOf("Ramesh", "Electricity", "Travel", "Bhanu")
+    private val categories = listOf("Food", "Travel", "Electricity", "Others")
     private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     override fun onCreate(savedInstanceState: Bundle?) {

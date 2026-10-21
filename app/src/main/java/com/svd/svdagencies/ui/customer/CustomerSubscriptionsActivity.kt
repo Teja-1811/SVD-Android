@@ -47,6 +47,7 @@ import java.util.Locale
 /** User-controlled recurring delivery plans: create, pause, resume and cancel. */
 class CustomerSubscriptionsActivity : BaseActivity() {
     private val deliveryLocation = DeliveryLocationPicker(this) { this }
+    private var creatingSubscription = false
     private lateinit var loading: ProgressBar
     private lateinit var empty: TextView
     private lateinit var plans: LinearLayout
@@ -88,7 +89,6 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         loading = screen.findViewById(R.id.subscriptionsLoading)
         empty = screen.findViewById(R.id.tvSubscriptionsEmpty)
         container = screen.findViewById(R.id.subscriptionsContainer)
-        screen.findViewById<MaterialButton>(R.id.btnCreateSubscription).setOnClickListener { selectProducts() }
         plans = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         (container.parent as LinearLayout).addView(plans)
         if (SessionManager(this).getRole() == UserRole.USER) {
@@ -146,8 +146,22 @@ class CustomerSubscriptionsActivity : BaseActivity() {
                 if (offers.size() == 0) plans.addView(text("No plans available right now.", 14, false))
                 offers.forEach { row ->
                     val offer = row.asJsonObject
-                    plans.addView(offerDetails(offer).apply { setPadding(dp(12), dp(16), dp(12), dp(8)) })
-                    plans.addView(actionButton("Choose ${offer.string("name")}") { showOfferStartForm(offer) })
+                    val body = offerDetails(offer).apply {
+                        setPadding(dp(16), dp(16), dp(16), dp(16))
+                        addView(actionButton("Buy") { showOfferStartForm(offer) }.apply {
+                            contentDescription = "Buy ${offer.string("name")}, ${offerMoney(offer, "total_amount")} total"
+                            layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(16) }
+                        })
+                    }
+                    plans.addView(MaterialCardView(this@CustomerSubscriptionsActivity).apply {
+                        layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(16) }
+                        radius = dp(16).toFloat()
+                        cardElevation = 0f
+                        strokeWidth = dp(1)
+                        strokeColor = ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.card_stroke_color)
+                        setCardBackgroundColor(ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.white))
+                        addView(body)
+                    })
                 }
             }
             override fun onFailure(call: Call<JsonObject>, error: Throwable) {
@@ -202,8 +216,15 @@ class CustomerSubscriptionsActivity : BaseActivity() {
             "paused" -> actions.addView(actionButton("Resume") { updateSubscription(id, "resume") })
         }
         if (subscription.string("status") != "cancelled") {
-            actions.addView(actionButton("Cancel") { confirmCancel(id) }.apply {
+            actions.addView(actionButton("Cancel") { confirmCancel(subscription) }.apply {
+                backgroundTintList = android.content.res.ColorStateList.valueOf(
+                    ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.white))
                 setTextColor(ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.brand_red))
+                strokeColor = android.content.res.ColorStateList.valueOf(
+                    ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.brand_red))
+                strokeWidth = dp(1)
+                contentDescription = "Cancel subscription"
+                layoutParams = LinearLayout.LayoutParams(-2, -2).apply { marginStart = dp(8) }
             })
         }
         body.addView(actions)
@@ -269,11 +290,11 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         offers.forEach { value ->
             val offer = value.asJsonObject
             val details = offerDetails(offer).apply { setPadding(dp(16), dp(16), dp(16), dp(12)) }
-            details.addView(actionButton("Choose this plan") {
+            details.addView(actionButton("Buy") {
                 dialog.dismiss()
                 showOfferStartForm(offer)
             }.apply {
-                contentDescription = "Choose ${offer.string("name")}, ${offerMoney(offer, "total_amount")} total"
+                contentDescription = "Buy ${offer.string("name")}, ${offerMoney(offer, "total_amount")} total"
                 layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) }
             })
             choices.addView(MaterialCardView(this).apply {
@@ -451,8 +472,31 @@ class CustomerSubscriptionsActivity : BaseActivity() {
             }
             return
         }
+        if (creatingSubscription) return
+        creatingSubscription = true
         loading.isVisible = true
-        ApiClient.subscriptionApi.createSubscription(request).enqueue(subscriptionCallback("Subscription started."))
+        ApiClient.subscriptionApi.createSubscription(request).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (isFinishing || isDestroyed) return
+                creatingSubscription = false
+                loading.isVisible = false
+                val subscription = response.body()?.getAsJsonObject("subscription")
+                if (response.isSuccessful && response.body()?.get("status")?.asBoolean == true && subscription != null) {
+                    startActivity(PortalNavigation.homeIntent(this@CustomerSubscriptionsActivity)
+                        .putExtra("user_tab", R.id.nav_payment)
+                        .putExtra("subscription_payment_id", subscription.get("id").asInt)
+                        .putExtra("subscription_payment_amount", subscription.get("total_amount").asDouble)
+                        .putExtra("subscription_payment_name", subscription.string("offer_name")))
+                    finish()
+                } else showMessage(response.body()?.string("message") ?: "Unable to confirm subscription.")
+            }
+            override fun onFailure(call: Call<JsonObject>, error: Throwable) {
+                if (isFinishing || isDestroyed) return
+                creatingSubscription = false
+                loading.isVisible = false
+                showMessage("Unable to confirm subscription. Please check your subscriptions before retrying.")
+            }
+        })
     }
 
     private fun showPauseOptions(id: Int) {
@@ -485,9 +529,18 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         call.enqueue(subscriptionCallback(when (action) { "pause" -> "Subscription paused."; "resume" -> "Subscription resumed."; else -> "Subscription cancelled." }))
     }
 
-    private fun confirmCancel(id: Int) {
+    private fun confirmCancel(subscription: JsonObject) {
+        val id = subscription.get("id").asInt
+        val remaining = subscription.get("remaining_deliveries")?.asInt ?: 0
+        val amount = subscription.get("refund_amount")?.takeUnless { it.isJsonNull }?.asDouble ?: 0.0
+        val money = NumberFormat.getCurrencyInstance(Locale("en", "IN")).format(amount)
+        val message = if (amount > 0.0) {
+            "$remaining deliveries remaining.\n\nRemaining amount: $money\n\nThis amount will be added to your wallet instantly when you confirm cancellation.\n\nFuture deliveries will stop. Do you want to cancel?"
+        } else {
+            "Remaining amount: $money. There are no verified unused funds to credit now. If payment is awaiting verification, eligible funds will be credited instantly once verified.\n\nFuture deliveries will stop. Do you want to cancel?"
+        }
         WhiteMaterialAlertDialogBuilder(this).setTitle("Cancel subscription?")
-            .setMessage("Future recurring deliveries will stop.")
+            .setMessage(message)
             .setNegativeButton("Keep", null)
             .setPositiveButton("Cancel subscription") { _, _ -> updateSubscription(id, "cancel") }
             .show()
@@ -497,7 +550,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
             loading.isVisible = false
             if (response.isSuccessful && response.body()?.get("status")?.asBoolean == true) {
-                showMessage(success); loadSubscriptions()
+                showMessage(response.body()?.string("message")?.takeIf { it.isNotBlank() } ?: success); loadSubscriptions()
             } else showMessage(response.body()?.string("message") ?: "Unable to update subscription.")
         }
         override fun onFailure(call: Call<JsonObject>, error: Throwable) {

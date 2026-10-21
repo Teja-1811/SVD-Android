@@ -14,6 +14,9 @@ import retrofit2.http.*
 import retrofit2.Call
 
 interface CustomerDashboardApi {
+    @POST("api/customer-credit/{id}/")
+    fun updateCredit(@Path("id") id: Int, @Body body: Map<String, Boolean>): Call<com.google.gson.JsonObject>
+
 
     // Get all customers
     @Headers("Cache-Control: no-cache")

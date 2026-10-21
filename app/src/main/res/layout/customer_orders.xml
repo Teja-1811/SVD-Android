@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_medium"
-                android:text="Place or edit orders before 8:00 PM today."
+                android:text="Checking regular order timings. Pre-orders are available 24 hours."
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_small" />
 

@@ -68,19 +68,30 @@ object LatestCustomerOrderStore {
 }
 
 object CustomerOrderWindow {
-    private const val START_MINUTES = 9 * 60
-    private const val END_MINUTES = (16 * 60) + 30
+    data class Window(val is_open: Boolean = false, val message: String = "Checking order timings...")
+    private var windows: Map<String, Window> = emptyMap()
 
-    fun isOpen(now: Calendar = Calendar.getInstance()): Boolean {
-        val currentMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
-        return currentMinutes >= START_MINUTES && currentMinutes < END_MINUTES
+    fun refresh(done: () -> Unit = {}) {
+        com.svd.svdagencies.data.api.auth.ApiClient.customerApi.getOrderTimings()
+            .enqueue(object : retrofit2.Callback<Map<String, Window>> {
+                override fun onResponse(call: retrofit2.Call<Map<String, Window>>, response: retrofit2.Response<Map<String, Window>>) {
+                    windows = if (response.isSuccessful) response.body().orEmpty() else emptyMap()
+                    done()
+                }
+                override fun onFailure(call: retrofit2.Call<Map<String, Window>>, t: Throwable) {
+                    windows = emptyMap()
+                    done()
+                }
+            })
     }
 
-    fun statusMessage(now: Calendar = Calendar.getInstance()): String {
-        return if (isOpen(now)) {
-            "Place or edit orders before 4:30 PM today."
-        } else {
-            "Order changes are available daily from 9:00 AM to 4:30 PM."
-        }
-    }
+    fun isOpen(orderType: String = "regular"): Boolean =
+        orderType == "pre_order" || windows[orderType]?.is_open == true
+
+    fun statusMessage(orderType: String = "regular"): String =
+        if (orderType == "pre_order")
+            "Pre-orders are open 24 hours. Choose delivery at least 2 days from today."
+        else if (windows.isEmpty())
+            "Refresh to check the admin's current order timings."
+        else windows[orderType]?.message ?: "Order timings unavailable. Please refresh."
 }

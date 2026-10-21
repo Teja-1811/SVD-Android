@@ -10,10 +10,11 @@ import java.util.Locale
 
 /** Launch only the selected payment activity; never fall back to a generic chooser. */
 object UpiPaymentLauncher {
-    fun open(context: Context, rawUri: String, onLaunched: () -> Unit = {}) {
+    fun open(context: Context, rawUri: String, onCancelled: () -> Unit = {}, onLaunched: () -> Unit = {}) {
         val original = Uri.parse(rawUri)
         if (original.scheme != "upi" || original.host != "pay") {
             Toast.makeText(context, "Could not prepare UPI payment details.", Toast.LENGTH_LONG).show()
+            onCancelled()
             return
         }
         val uri = original.buildUpon().clearQuery().apply {
@@ -36,6 +37,7 @@ object UpiPaymentLauncher {
             .sortedBy { it.loadLabel(manager).toString() }
         if (activities.isEmpty()) {
             Toast.makeText(context, "Install Google Pay, PhonePe, Paytm or another supported UPI app. WhatsApp payments are unavailable.", Toast.LENGTH_LONG).show()
+            onCancelled()
             return
         }
         var launched = false
@@ -54,9 +56,9 @@ object UpiPaymentLauncher {
                 Toast.makeText(context, "Could not open this UPI app. Choose another payment app.", Toast.LENGTH_LONG).show()
             }
         }
-        if (activities.size == 1) launch(0)
-        else WhiteMaterialAlertDialogBuilder(context).setTitle("Choose a UPI payment app")
+        WhiteMaterialAlertDialogBuilder(context).setTitle("Choose a UPI payment app")
             .setItems(activities.map { it.loadLabel(manager).toString() }.toTypedArray()) { _, index -> launch(index) }
-            .setNegativeButton("Cancel", null).show()
+            .setNegativeButton("Cancel", null)
+            .setOnDismissListener { if (!launched) onCancelled() }.show()
     }
 }

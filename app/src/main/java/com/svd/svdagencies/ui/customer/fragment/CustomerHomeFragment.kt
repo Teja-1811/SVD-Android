@@ -98,6 +98,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         setupOffersCarousel()
 
         RefreshManager.setupRefresh(swipeRefresh) {
+            CustomerOrderWindow.refresh { if (isAdded && view != null) renderLatestOrderCard() }
             loadDashboard()
             loadOffers()
         }
@@ -107,6 +108,9 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
 
     override fun onResume() {
         super.onResume()
+        CustomerOrderWindow.refresh {
+            if (isAdded && view != null) renderLatestOrderCard()
+        }
         RefreshManager.startRefresh(swipeRefresh)
         loadDashboard()
         loadOffers()
@@ -243,7 +247,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
 
         if (latestOrder == null) {
             tvLatestOrderTitle.text = "Ready for today's order?"
-            tvLatestOrderSubtitle.text = "Place a fresh order between 9:00 AM and 4:00 PM."
+            tvLatestOrderSubtitle.text = CustomerOrderWindow.statusMessage()
             tvLatestOrderItems.text = "Your latest order will appear here after checkout."
             btnLatestOrderAction.text = "Place Order"
             btnLatestOrderAction.isEnabled = isOrderingOpen

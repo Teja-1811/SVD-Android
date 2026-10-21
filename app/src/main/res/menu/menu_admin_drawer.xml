@@ -27,6 +27,8 @@
         android:title="Routes"
         android:icon="@drawable/ic_orders"/>
 
+    <item android:id="@+id/nav_order_timings" android:title="Order Timings" android:icon="@drawable/ic_orders" />
+
     <item
         android:id="@+id/nav_offers"
         android:title="Offers"

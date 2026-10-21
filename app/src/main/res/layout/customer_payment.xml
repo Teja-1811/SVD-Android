@@ -17,6 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:focusableInTouchMode="true"
+            android:descendantFocusability="beforeDescendants"
             android:padding="@dimen/grid_16">
 
             <!-- ================= HEADER ================= -->
@@ -163,6 +165,8 @@
                             android:background="@null"
                             android:hint="0.00"
                             android:inputType="numberDecimal"
+                            android:imeOptions="actionDone"
+                            android:singleLine="true"
                             android:textColor="@color/textColorPrimary"
                             android:textSize="32sp"
                             android:textStyle="bold" />

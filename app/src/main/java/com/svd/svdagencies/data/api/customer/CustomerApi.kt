@@ -16,6 +16,9 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface CustomerApi {
+    @GET("api/order-timings/")
+    fun getOrderTimings(): Call<Map<String, com.svd.svdagencies.utils.CustomerOrderWindow.Window>>
+
     @GET("api/customer/profile/")
     fun getProfile(): Call<Map<String, Any>>
 
@@ -37,7 +40,7 @@ interface CustomerApi {
     ): Call<GenericResponse>
 
     @GET("api/customer/payment/attempt-status/")
-    fun getPaymentAttemptStatus(): Call<PaymentGatewayInitResponse>
+    fun getPaymentAttemptStatus(@Query("payment_order_id") paymentOrderId: String? = null, @Query("subscription_id") subscriptionId: Int? = null): Call<PaymentGatewayInitResponse>
 
     @POST("api/customer/payment/initiate/")
     fun initiateGatewayPayment(

@@ -5,6 +5,9 @@ import com.svd.svdagencies.data.model.delivery.DeliveryCustomerPaymentRecord
 
 data class PaymentGatewayInitResponse(
     val success: Boolean? = null,
+    @SerializedName("support_available") val supportAvailable: Boolean = false,
+    @SerializedName("support_whatsapp_url") val supportWhatsappUrl: String? = null,
+    @SerializedName("verification_message") val verificationMessage: String? = null,
     @SerializedName("payment_locked") val paymentLocked: Boolean = false,
     val gateway: String? = null,
     @SerializedName("payment_for") val paymentFor: String? = null,

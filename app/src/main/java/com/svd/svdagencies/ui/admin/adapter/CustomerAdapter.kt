@@ -39,6 +39,35 @@ class CustomerAdapter(
         val c = items[position]
 
         holder.binding.apply {
+            checkAllowCredit.tag = c.id
+            checkAllowCredit.isChecked = c.allow_credit
+            checkAllowCredit.isEnabled = true
+            checkAllowCredit.visibility = if (c.user_type == "delivery") android.view.View.GONE else android.view.View.VISIBLE
+            checkAllowCredit.setOnClickListener {
+                val id = c.id ?: return@setOnClickListener
+                val requested = checkAllowCredit.isChecked
+                checkAllowCredit.isEnabled = false
+                com.svd.svdagencies.data.api.auth.ApiClient.adminCustomerDashboard.updateCredit(id, mapOf("allow_credit" to requested))
+                    .enqueue(object : retrofit2.Callback<com.google.gson.JsonObject> {
+                        override fun onResponse(call: retrofit2.Call<com.google.gson.JsonObject>, response: retrofit2.Response<com.google.gson.JsonObject>) {
+                            val body = response.body()
+                            val success = response.isSuccessful && body?.get("success")?.asBoolean == true
+                            if (success) c.allow_credit = body?.get("allow_credit")?.asBoolean ?: requested
+                            if (checkAllowCredit.tag == id) {
+                                checkAllowCredit.isChecked = c.allow_credit
+                                checkAllowCredit.isEnabled = true
+                            }
+                            if (!success) Toast.makeText(root.context, "Unable to save credit setting.", Toast.LENGTH_SHORT).show()
+                        }
+                        override fun onFailure(call: retrofit2.Call<com.google.gson.JsonObject>, error: Throwable) {
+                            if (checkAllowCredit.tag == id) {
+                                checkAllowCredit.isChecked = c.allow_credit
+                                checkAllowCredit.isEnabled = true
+                            }
+                            Toast.makeText(root.context, "Unable to save credit setting.", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+            }
             txtCustomerName.text = "${c.serial_no}. ${c.name}"
             txtShopName.text = c.shop_name
             txtRoute.text = "Route: ${c.route_name?.takeIf { it.isNotBlank() } ?: "-"}"

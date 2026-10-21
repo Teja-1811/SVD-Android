@@ -3,8 +3,11 @@ package com.svd.svdagencies.data.model.customer
 import com.google.gson.annotations.SerializedName
 
 data class PlaceOrderResponse(
+    @SerializedName("payment_for") val paymentFor: String? = null,
     @SerializedName("success") val success: Boolean = false,
     @SerializedName("message") val message: String? = null,
+    @SerializedName("order_id") val orderId: Int? = null,
+    @SerializedName("grand_total") val grandTotal: Double? = null,
     @SerializedName("order_number") val orderNumber: String? = null,
     @SerializedName("status") val status: String? = null,
     @SerializedName("current_day") val currentDay: String? = null,

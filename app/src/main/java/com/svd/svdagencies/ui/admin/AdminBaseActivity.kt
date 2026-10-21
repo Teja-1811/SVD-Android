@@ -106,6 +106,10 @@ abstract class AdminBaseActivity : BaseActivity() {
                         }
                         true
                     }
+                    R.id.nav_order_timings -> {
+                        if (this !is AdminOrderTimingsActivity) openAdminDestination(AdminOrderTimingsActivity::class.java)
+                        true
+                    }
                     R.id.nav_offers -> {
                         if (this !is AdminOffersActivity) {
                             openAdminDestination(AdminOffersActivity::class.java)

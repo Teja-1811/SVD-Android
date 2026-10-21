@@ -37,7 +37,7 @@ class CustomerOfferOrderActivity : BaseActivity() {
     private lateinit var retry: MaterialButton
     private var isPreorder = false
     private var submitting = false
-    private val deliveryDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }
+    private val deliveryDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 2); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
     private val money = NumberFormat.getCurrencyInstance(Locale("en", "IN"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,12 +51,12 @@ class CustomerOfferOrderActivity : BaseActivity() {
         status = TextView(this).apply { textSize = 14f; setPadding(0, 20, 0, 20) }
         root.addView(details); root.addView(status)
         regular = button("Regular order") { setMode(false) }.also { root.addView(it) }
-        preorder = button("Pre-order for a date") { setMode(true) }.also { root.addView(it) }
+        preorder = button("Pre-order for a date") { setMode(true) }.also { root.addView(it); it.visibility = if (SessionManager(this).getRole() == UserRole.USER) View.VISIBLE else View.GONE }
         date = button("") {
             DatePickerDialog(this, { _, year, month, day ->
                 deliveryDate.set(year, month, day); showDate()
             }, deliveryDate.get(Calendar.YEAR), deliveryDate.get(Calendar.MONTH), deliveryDate.get(Calendar.DAY_OF_MONTH)).apply {
-                datePicker.minDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }.timeInMillis
+                datePicker.minDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 2); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }.timeInMillis
             }.show()
         }.also { root.addView(it) }
         confirm = button("Place offer order") { placeOffer() }.also { root.addView(it); it.isEnabled = false }
@@ -66,6 +66,9 @@ class CustomerOfferOrderActivity : BaseActivity() {
     }
 
     private fun loadOffer() {
+        CustomerOrderWindow.refresh {
+            if (!isFinishing && !isDestroyed) status.text = CustomerOrderWindow.statusMessage(if (isPreorder) "pre_order" else "regular")
+        }
         retry.visibility = View.GONE
         ApiClient.customerApi.getOffers().enqueue(object : Callback<CustomerOfferResponse> {
             override fun onResponse(call: Call<CustomerOfferResponse>, response: Response<CustomerOfferResponse>) {
@@ -78,9 +81,10 @@ class CustomerOfferOrderActivity : BaseActivity() {
                     "${it.itemName} × ${it.orderQuantity}" + if (it.offerQty > 0) " (${it.offerQty} free)" else ""
                 } + "\n\nOffer price: ${money.format(chosen.price)}\nDelivery: ${money.format(charge)}\nTotal: ${money.format(chosen.price + charge)}"
                 regular.isEnabled = chosen.items.all { it.stock >= it.orderQuantity }
-                status.text = (if (regular.isEnabled) "Review the included items, then choose delivery." else "Some included items are out of stock. Choose a dated pre-order.") + "\n" + CustomerOrderWindow.statusMessage()
-                setMode(!regular.isEnabled)
-                confirm.isEnabled = true
+                status.text = (if (regular.isEnabled) "Review the included items, then choose delivery." else "Some included items are out of stock. Choose a dated pre-order.") + "\n" + CustomerOrderWindow.statusMessage(if (isPreorder) "pre_order" else "regular")
+                val isUser = SessionManager(this@CustomerOfferOrderActivity).getRole() == UserRole.USER
+                setMode(!regular.isEnabled && isUser)
+                confirm.isEnabled = regular.isEnabled || isUser
             }
             override fun onFailure(call: Call<CustomerOfferResponse>, error: Throwable) {
                 if (!isFinishing && !isDestroyed) unavailable()
@@ -101,6 +105,7 @@ class CustomerOfferOrderActivity : BaseActivity() {
         regular.text = if (!pre) "✓ Regular order" else "Regular order"
         preorder.text = if (pre) "✓ Pre-order for a date" else "Pre-order for a date"
         showDate()
+        status.text = CustomerOrderWindow.statusMessage(if (isPreorder) "pre_order" else "regular")
     }
 
     private fun showDate() { date.text = "Delivery: ${SimpleDateFormat("dd MMM yyyy", Locale.US).format(deliveryDate.time)}" }
@@ -108,7 +113,7 @@ class CustomerOfferOrderActivity : BaseActivity() {
     private fun placeOffer(location: DeliveryCoordinates? = null) {
         val chosen = offer ?: return
         if (submitting) return
-        if (!CustomerOrderWindow.isOpen()) { message(CustomerOrderWindow.statusMessage()); return }
+        if (!isPreorder && !CustomerOrderWindow.isOpen("regular")) { message(CustomerOrderWindow.statusMessage(if (isPreorder) "pre_order" else "regular")); return }
         if (SessionManager(this).getRole() == UserRole.USER && location == null) {
             deliveryLocation.choose { placeOffer(it) }; return
         }
@@ -127,7 +132,14 @@ class CustomerOfferOrderActivity : BaseActivity() {
                 submitting = false
                 confirm.isEnabled = true
                 if (response.isSuccessful && response.body()?.success == true) {
-                    message("Offer order placed: ${response.body()?.orderNumber.orEmpty()}"); finish()
+                    val body = response.body()
+                    if (SessionManager(this@CustomerOfferOrderActivity).getRole() == UserRole.USER && body?.paymentFor == "ORDER" && body.orderId != null && body.grandTotal != null) {
+                        startActivity(PortalNavigation.homeIntent(this@CustomerOfferOrderActivity)
+                            .putExtra("user_tab", R.id.nav_payment)
+                            .putExtra("order_payment_id", body.orderId)
+                            .putExtra("order_payment_amount", body.grandTotal))
+                    }
+                    message("Offer order placed: ${body?.orderNumber.orEmpty()}"); finish()
                 } else {
                     val error = runCatching { JsonParser.parseString(response.errorBody()?.string()).asJsonObject.get("message").asString }.getOrNull()
                     message(error ?: response.body()?.message ?: "Could not place this offer order. Please retry.")

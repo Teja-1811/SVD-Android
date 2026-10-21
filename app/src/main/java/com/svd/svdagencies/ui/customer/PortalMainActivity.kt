@@ -2,11 +2,15 @@ package com.svd.svdagencies.ui.customer
 
 import android.content.Intent
 import android.os.Bundle
+import android.graphics.Rect
+import android.view.WindowManager
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
@@ -62,6 +66,7 @@ abstract class PortalMainActivity : BaseActivity() {
         btnMenu = findViewById(R.id.btnCustomerMenu)
         btnLogout = findViewById(R.id.btnCustomerLogout)
         bottomNav = findViewById(R.id.customerBottomNav)
+        configureKeyboardInsets()
 
         if (portalBottomMenuRes != R.menu.menu_customer_bottom) {
             bottomNav.menu.clear()
@@ -113,6 +118,34 @@ abstract class PortalMainActivity : BaseActivity() {
 
         val restoredTab = savedInstanceState?.getInt("portal_tab", R.id.nav_home) ?: R.id.nav_home
         bottomNav.selectedItemId = intent.getIntExtra("user_tab", restoredTab)
+        openSubscriptionPaymentIfRequested()
+    }
+
+    private fun configureKeyboardInsets() {
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        val content = findViewById<View>(android.R.id.content)
+        val divider = findViewById<View>(R.id.dividerBottom)
+        var previousKeyboardHeight = 0
+        ViewCompat.setOnApplyWindowInsetsListener(content) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val keyboard = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val keyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            val gap = if (keyboardVisible) (8 * resources.displayMetrics.density).toInt() else 0
+            view.setPadding(bars.left, bars.top, bars.right, maxOf(bars.bottom, keyboard.bottom) + gap)
+            bottomNav.visibility = if (keyboardVisible) View.GONE else View.VISIBLE
+            divider.visibility = bottomNav.visibility
+            if (keyboardVisible && keyboard.bottom != previousKeyboardHeight) {
+                view.post {
+                    currentFocus?.takeIf { it.isAttachedToWindow }?.let { focused ->
+                        focused.requestRectangleOnScreen(Rect(0, 0, focused.width, focused.height), false)
+                    }
+                }
+            }
+            previousKeyboardHeight = keyboard.bottom
+            // The portal already applied these insets; children must not add them again.
+            WindowInsetsCompat.CONSUMED
+        }
+        ViewCompat.requestApplyInsets(content)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -120,7 +153,42 @@ abstract class PortalMainActivity : BaseActivity() {
         setIntent(intent)
         if (::bottomNav.isInitialized) {
             bottomNav.selectedItemId = intent.getIntExtra("user_tab", R.id.nav_home)
+            openSubscriptionPaymentIfRequested()
         }
+    }
+
+    fun openOrderPayment(orderId: Int, amount: Double) {
+        bottomNav.selectedItemId = R.id.nav_payment
+        val payment = CustomerPaymentFragment().apply {
+            arguments = Bundle().apply { putInt("order_id", orderId); putDouble("order_amount", amount) }
+        }
+        supportFragmentManager.beginTransaction().replace(R.id.customerFragmentContainer, payment, "customer_payment").commit()
+        activeTabId = R.id.nav_payment
+        tvToolbarTitle.text = getString(R.string.title_payment)
+    }
+
+    private fun openSubscriptionPaymentIfRequested() {
+        val subscriptionId = intent.getIntExtra("subscription_payment_id", -1)
+        if (subscriptionId == -1) {
+            val orderId = intent.getIntExtra("order_payment_id", -1)
+            if (orderId != -1) {
+                openOrderPayment(orderId, intent.getDoubleExtra("order_payment_amount", 0.0))
+                intent.removeExtra("order_payment_id")
+            }
+            return
+        }
+        val payment = CustomerPaymentFragment().apply {
+            arguments = Bundle().apply {
+                putInt("subscription_id", subscriptionId)
+                putDouble("subscription_amount", intent.getDoubleExtra("subscription_payment_amount", 0.0))
+                putString("subscription_name", intent.getStringExtra("subscription_payment_name"))
+            }
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.customerFragmentContainer, payment, "customer_payment").commit()
+        activeTabId = R.id.nav_payment
+        tvToolbarTitle.text = getString(R.string.title_payment)
+        intent.removeExtra("subscription_payment_id")
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
