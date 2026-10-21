@@ -52,7 +52,7 @@ class CustomerHistoryActivity : BaseActivity() {
         report = TextView(this).apply { textSize = 17f; setPadding(0, padding, 0, padding) }
         history = TextView(this).apply { textSize = 15f; setPadding(0, padding, 0, padding) }
         orderActions = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        content.setBackgroundColor(Color.rgb(252,244,245))
+        content.setBackgroundColor(android.graphics.Color.WHITE)
         report.setTextColor(Color.rgb(24,59,71))
         history.apply { textSize = 19f; setTypeface(typeface, Typeface.BOLD); setTextColor(Color.rgb(24,59,71)) }
         content.addView(progress)

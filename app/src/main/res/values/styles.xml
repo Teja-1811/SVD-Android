@@ -2,6 +2,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <!-- Keep raised white surfaces free of the brand-color tint. -->
+        <item name="elevationOverlayEnabled">false</item>
         <item name="colorPrimary">@color/brand_red</item>
         <item name="colorPrimaryVariant">@color/brand_red_dark</item>
         <item name="colorOnPrimary">@color/white</item>

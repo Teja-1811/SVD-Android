@@ -40,7 +40,7 @@ class CustomerProfileActivity : BaseActivity() {
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16),dp(20),dp(16),dp(24))
-            setBackgroundColor(Color.rgb(252,244,245))
+            setBackgroundColor(android.graphics.Color.WHITE)
         }
         val isUser = SessionManager(this).getRole() == UserRole.USER
         val account = section("Personal details")
@@ -75,7 +75,7 @@ class CustomerProfileActivity : BaseActivity() {
                 setOnClickListener { deliveryLocation.choose { pin -> showDeliveryPin(pin) } }
             }.also { location.addView(it) }
             mapButton = button("View in Google Maps").apply {
-                backgroundTintList = android.content.res.ColorStateList.valueOf(Color.rgb(248,241,242))
+                backgroundTintList = android.content.res.ColorStateList.valueOf(Color.WHITE)
                 setTextColor(Color.rgb(193,43,43))
                 visibility = View.GONE
                 setOnClickListener { deliveryPin?.let { DeliveryMaps.open(this@CustomerProfileActivity, it.latitude, it.longitude) } }
@@ -85,7 +85,7 @@ class CustomerProfileActivity : BaseActivity() {
         saveButton = button("Save changes").apply { setOnClickListener { save() } }
         root.addView(saveButton)
         PortalNavigation.installPage(this, ScrollView(this).apply {
-            setBackgroundColor(Color.rgb(252,244,245)); isFillViewport = true; addView(root)
+            setBackgroundColor(android.graphics.Color.WHITE); isFillViewport = true; addView(root)
         }, "My Profile", R.id.nav_profile)
         load()
     }

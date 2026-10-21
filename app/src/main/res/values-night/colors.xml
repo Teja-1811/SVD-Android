@@ -9,8 +9,8 @@
     <color name="colorPrimaryDark">#B71C1C</color>
     <color name="colorAccent">#FF5252</color>
 
-    <color name="window_background">#F4F7F7</color>
-    <color name="surface_background">#F7F9F9</color>
+    <color name="window_background">#FFFFFF</color>
+    <color name="surface_background">#FFFFFF</color>
     <color name="card_background">#FFFFFF</color>
     <color name="status_bar">#B71C1C</color>
     <color name="toolbar_background">#FFFFFF</color>
@@ -69,8 +69,8 @@
     <color name="hero_start">#8E1F1F</color>
     <color name="hero_end">#E24A37</color>
     <color name="hero_accent">#FFD8A8</color>
-    <color name="customer_shell_background">#FCF6F2</color>
-    <color name="customer_surface_alt">#FFF5EF</color>
+    <color name="customer_shell_background">#FFFFFF</color>
+    <color name="customer_surface_alt">#FFFFFF</color>
     <color name="customer_positive_bg">#EAF7EE</color>
     <color name="customer_warning_bg">#FFF2E3</color>
     <color name="customer_info_bg">#EEF5FF</color>

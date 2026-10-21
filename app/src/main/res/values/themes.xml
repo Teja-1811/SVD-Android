@@ -2,6 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.SVDAgency" parent="Theme.Material3.Light.NoActionBar">
         <!-- Primary brand color. -->
+        <!-- Keep raised white surfaces free of the brand-color tint. -->
+        <item name="elevationOverlayEnabled">false</item>
         <item name="colorPrimary">@color/brand_red</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryContainer">@color/brand_red_dark</item>

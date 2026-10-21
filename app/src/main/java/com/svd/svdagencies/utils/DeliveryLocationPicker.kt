@@ -108,7 +108,7 @@ class DeliveryLocationPicker(caller: ActivityResultCaller, private val context: 
         val longitude = coordinateField("Longitude")
         val preview = MaterialButton(ctx).apply {
             text = "Preview in Google Maps"; isAllCaps = false; cornerRadius = dp(12); minHeight = dp(48)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.rgb(252,244,245))
+            backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
             setTextColor(android.graphics.Color.rgb(195,43,43))
             layoutParams = LinearLayout.LayoutParams(-1,-2).apply { topMargin = dp(16); bottomMargin = dp(12) }
         }
