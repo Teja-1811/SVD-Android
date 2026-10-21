@@ -272,7 +272,7 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
                     bindOrderItemsToCart(boundOrderItems)
                     updateOrderWindowUi()
                     updateSummary()
-                    if (SessionManager(context).getRole() == UserRole.USER && responseBody?.paymentFor == "ORDER") {
+                    if (responseBody?.paymentFor == "ORDER") {
                         val orderId = responseBody?.orderId
                         val amount = responseBody?.grandTotal
                         if (orderId != null && amount != null) {

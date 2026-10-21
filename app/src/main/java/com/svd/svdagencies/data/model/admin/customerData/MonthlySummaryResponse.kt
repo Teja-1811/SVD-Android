@@ -40,5 +40,5 @@ data class VolumeSummary(
 
 
 
-data class MonthlyStatementGroup(val date: String, val total: Double, val paid: Double, val due: Double, val lines: List<MonthlyStatementLine>?)
+data class MonthlyStatementGroup(val date: String, val total: Double, val paid: Double, val due: Double, val lines: List<MonthlyStatementLine>?, val opening_due: Double = 0.0, val bill_number: String? = null)
 data class MonthlyStatementLine(val item_code: String?, val item_name: String?, val quantity: Double, val rate: Double, val amount: Double, val gst_rate: Double?, val gst_amount: Double?)

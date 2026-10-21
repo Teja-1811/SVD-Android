@@ -26,16 +26,16 @@ object MonthlyStatementTable {
             layoutParams = LinearLayout.LayoutParams(dp(width), if(merged) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT)
         }
         val panel = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL; setPadding(0,dp(16),0,dp(16)) }
-        panel.addView(TextView(context).apply { text="Daily statement · products by date"; textSize=18f; setTextColor(Color.rgb(24,59,71)); setTypeface(typeface,Typeface.BOLD); setPadding(0,0,0,dp(12)) })
+        panel.addView(TextView(context).apply { text="Daily statement · invoices"; textSize=18f; setTextColor(Color.rgb(24,59,71)); setTypeface(typeface,Typeface.BOLD); setPadding(0,0,0,dp(12)) })
         val scroll = HorizontalScrollView(context)
         val table = LinearLayout(context).apply { orientation=LinearLayout.VERTICAL }
-        val widths = listOf(100,100,200,65,95,110,100,110,95,95)
+        val widths = listOf(100,100,200,65,95,110,100,100,110,95,95)
         val header = LinearLayout(context)
-        listOf("Date","Item code","Item name","Qty","Price","GST","Item total","Grand total","Paid","Due").forEachIndexed { index, label -> header.addView(cell(label,widths[index],header=true)) }
+        listOf("Date","Item code","Item name","Qty","Price","GST","Item total","Opening Due","Grand total","Paid","Due").forEachIndexed { index, label -> header.addView(cell(label,widths[index],header=true)) }
         table.addView(header)
         groups.forEach { group ->
             val row = LinearLayout(context).apply { orientation=LinearLayout.HORIZONTAL; layoutParams=LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT) }
-            row.addView(cell(group.date,100,merged=true))
+            row.addView(cell(group.date + (group.bill_number?.let { "\n$it" } ?: ""),100,merged=true))
             val products = LinearLayout(context).apply { orientation=LinearLayout.VERTICAL }
             group.lines.orEmpty().forEach { line ->
                 val product = LinearLayout(context)
@@ -45,12 +45,13 @@ object MonthlyStatementTable {
                 products.addView(product)
             }
             row.addView(products)
+            row.addView(cell(money(group.opening_due),100,merged=true))
             row.addView(cell(money(group.total),110,merged=true));row.addView(cell(money(group.paid),95,merged=true));row.addView(cell(money(group.due),95,merged=true))
             table.addView(row)
         }
         scroll.addView(table);panel.addView(scroll)
         if(groups.isEmpty()) panel.addView(TextView(context).apply { text="No product records for this month.";setPadding(0,dp(12),0,0) })
-        panel.addView(TextView(context).apply { text="Swipe sideways for all columns. Price is per unit before discounts; item totals include discounts and GST. Date totals are shown once.";textSize=12f;setPadding(0,dp(10),0,0) })
+        panel.addView(TextView(context).apply { text="Swipe sideways for all columns. Price is per unit before discounts; item totals include discounts and GST. Invoice totals are shown once.";textSize=12f;setPadding(0,dp(10),0,0) })
         return panel
     }
 }
