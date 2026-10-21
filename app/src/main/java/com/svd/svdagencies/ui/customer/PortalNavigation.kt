@@ -47,6 +47,22 @@ object PortalNavigation {
     fun configure(activity: AppCompatActivity, selectedItem: Int, onHome: (() -> Unit)? = null) {
         val drawer = activity.findViewById<DrawerLayout>(R.id.customerDrawerLayout) ?: return
         val navigation = activity.findViewById<NavigationView>(R.id.customerNavigationView) ?: return
+        val drawerWhite = android.graphics.Color.WHITE
+        navigation.elevation = 0f
+        navigation.backgroundTintList = android.content.res.ColorStateList.valueOf(drawerWhite)
+        (navigation.background as? com.google.android.material.shape.MaterialShapeDrawable)?.apply {
+            elevation = 0f
+            fillColor = android.content.res.ColorStateList.valueOf(drawerWhite)
+        }
+        fun whitenMenu(view: android.view.View) {
+            if (view is androidx.recyclerview.widget.RecyclerView) view.setBackgroundColor(drawerWhite)
+            if (view is android.view.ViewGroup) {
+                for (index in 0 until view.childCount) whitenMenu(view.getChildAt(index))
+            }
+        }
+        whitenMenu(navigation)
+        if (navigation.headerCount > 0) navigation.getHeaderView(0).setBackgroundColor(drawerWhite)
+
         val user = SessionManager(activity).getRole() == UserRole.USER
         navigation.menu.clear()
         navigation.inflateMenu(if (user) R.menu.menu_user_drawer else R.menu.menu_customer_drawer)

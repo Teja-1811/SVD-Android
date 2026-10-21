@@ -119,6 +119,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/customer_nav_header"
-        app:menu="@menu/menu_customer_drawer" />
+        app:menu="@menu/menu_customer_drawer"
+        android:background="@color/white"
+        app:backgroundTint="@color/white" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

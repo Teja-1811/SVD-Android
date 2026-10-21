@@ -118,8 +118,8 @@
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/customerNavigationView"
-        android:background="@color/user_portal_background"
-        app:backgroundTint="@color/user_portal_background"
+        android:background="@color/white"
+        app:backgroundTint="@color/white"
         style="@style/Widget.App.NavigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
