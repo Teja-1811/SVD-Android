@@ -431,7 +431,7 @@ class CustomerPaymentFragment : Fragment() {
             releasePaymentButton()
         }
         content.findViewById<MaterialButton>(R.id.upiDialogPay).setOnClickListener { button ->
-            button.isEnabled = false
+            (button as MaterialButton).showLoading(true, "Opening UPI…")
             dialog.dismiss()
             openUpiApp(payment)
         }

@@ -31,8 +31,10 @@ fun MaterialButton.showLoading(isLoading: Boolean, loadingText: String? = null) 
         val progressDrawable = IndeterminateDrawable.createCircularDrawable(context, spec)
         
         this.icon = progressDrawable
+        progressDrawable.start()
         this.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
     } else {
+        (this.icon as? android.graphics.drawable.Animatable)?.stop()
         // Restore original state
         (this.tag as? Array<*>)?.let {
             this.text = it[0] as? CharSequence

@@ -26,8 +26,19 @@ class CompanyDuesDailyRecordsAdapter(
     }
 
     override fun onBindViewHolder(holder: DailyRecordViewHolder, position: Int) {
-        holder.bind(records[position])
+        holder.bind(records[position], position)
     }
+
+    override fun onBindViewHolder(holder: DailyRecordViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) holder.refreshBalance(position)
+        else super.onBindViewHolder(holder, position, payloads)
+    }
+
+    private fun cumulativeBalance(position: Int): java.math.BigDecimal =
+        records.take(position + 1).fold(java.math.BigDecimal.ZERO) { balance, row ->
+            balance + java.math.BigDecimal.valueOf(row.invoice_amount).setScale(2, java.math.RoundingMode.HALF_UP) -
+                java.math.BigDecimal.valueOf(row.paid_amount).setScale(2, java.math.RoundingMode.HALF_UP)
+        }
 
     override fun getItemCount(): Int = records.size
 
@@ -44,7 +55,7 @@ class CompanyDuesDailyRecordsAdapter(
 
         private var paidWatcher: TextWatcher? = null
 
-        fun bind(record: AdminSummaryItem) {
+        fun bind(record: AdminSummaryItem, position: Int) {
             tvDay.text = record.date
             tvInvoice.text = String.format(Locale.US, "₹%.2f", record.invoice_amount)
 
@@ -55,15 +66,17 @@ class CompanyDuesDailyRecordsAdapter(
                 etPaid.setText(paidText)
             }
 
-            updateDueCredit(record)
+            refreshBalance(position)
 
             paidWatcher = object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                 override fun afterTextChanged(s: Editable?) {
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                    if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
                         record.paid_amount = s.toString().toDoubleOrNull() ?: 0.0
-                        updateDueCredit(record)
+                        val row = bindingAdapterPosition
+                        refreshBalance(row)
+                        if (row + 1 < records.size) notifyItemRangeChanged(row + 1, records.size - row - 1, "balance")
                         onAmountChanged()
                     }
                 }
@@ -72,8 +85,8 @@ class CompanyDuesDailyRecordsAdapter(
             etPaid.addTextChangedListener(paidWatcher)
         }
 
-        private fun updateDueCredit(record: AdminSummaryItem) {
-            val diff = record.invoice_amount - record.paid_amount
+        fun refreshBalance(position: Int) {
+            val diff = cumulativeBalance(position).toDouble()
             
             when {
                 diff == 0.0 -> {

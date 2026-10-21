@@ -47,10 +47,12 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        stockAdapter = com.svd.svdagencies.ui.customer.adapter.UserStockProductAdapter(cart.cartQuantities) { product ->
+        stockAdapter = com.svd.svdagencies.ui.customer.adapter.UserStockProductAdapter(cart.cartQuantities) { product, delta ->
             val selected = cart.cartQuantities[product.id] ?: 0.0
-            if (selected < product.stock) {
-                cart.cartQuantities[product.id] = selected + 1.0
+            val updated = (selected + delta).coerceAtLeast(0.0)
+            if (delta < 0 || updated <= product.stock) {
+                if (updated == 0.0) cart.cartQuantities.remove(product.id)
+                else cart.cartQuantities[product.id] = updated
                 cart.allProducts[product.id] = product.copy(selling_price = product.mrp, margin = 0.0)
                 stockAdapter?.notifyDataSetChanged()
                 updateCartButton()

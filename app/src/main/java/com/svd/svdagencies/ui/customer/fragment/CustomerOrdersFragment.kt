@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import com.svd.svdagencies.utils.DeliveryCoordinates
 import com.svd.svdagencies.utils.DeliveryLocationPicker
+import com.svd.svdagencies.utils.showLoading
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -83,6 +84,9 @@ class CustomerOrdersFragment : Fragment() {
     private lateinit var tvRegularDeliveryHint: TextView
     private val preOrderDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 2); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
 
+    private var placingOrder = false
+    private var choosingLocation = false
+    private var orderCall: Call<PlaceOrderResponse>? = null
     private var shouldLoadLatestOrder = false
     private var pendingServerOrder: LatestCustomerOrder? = null
 
@@ -208,6 +212,7 @@ class CustomerOrdersFragment : Fragment() {
     }
 
     private fun placeOrder(location: DeliveryCoordinates? = null) {
+        if (placingOrder || (choosingLocation && location == null)) return
         if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {
             Toast.makeText(
                 requireContext(),
@@ -218,10 +223,20 @@ class CustomerOrdersFragment : Fragment() {
         }
 
         if (SessionManager(requireContext()).getRole() == UserRole.USER && location == null) {
-            deliveryLocation.choose { placeOrder(it) }
+            choosingLocation = true
+            btnPlaceOrder.showLoading(true, "Choose location…")
+            deliveryLocation.choose(onDismissed = {
+                choosingLocation = false
+                if (view != null && !placingOrder) { btnPlaceOrder.showLoading(false); updateOrderWindowUi() }
+            }) {
+                choosingLocation = false
+                btnPlaceOrder.showLoading(false)
+                placeOrder(it)
+            }
             return
         }
-        btnPlaceOrder.isEnabled = false
+        placingOrder = true
+        btnPlaceOrder.showLoading(true, "Placing order…")
 
         val orderItems = viewModel.cartQuantities.map { (productId, quantity) ->
             OrderItemRequest(itemId = productId, quantity = quantity)
@@ -241,14 +256,18 @@ class CustomerOrdersFragment : Fragment() {
         )
         val api = ApiClient.retrofit.create(OrderApi::class.java)
 
-        api.placeOrder(request).enqueue(object : Callback<PlaceOrderResponse> {
+        val screen = view ?: return
+        orderCall = api.placeOrder(request)
+        orderCall?.enqueue(object : Callback<PlaceOrderResponse> {
             override fun onResponse(
                 call: Call<PlaceOrderResponse>,
                 response: Response<PlaceOrderResponse>
             ) {
-                if (!isAdded || view == null) return
+                if (!isAdded || view !== screen || call.isCanceled) return
                 val context = context ?: return
-                btnPlaceOrder.isEnabled = true
+                placingOrder = false
+                btnPlaceOrder.showLoading(false)
+                updateOrderWindowUi()
 
                 if (response.isSuccessful && response.body()?.success == true) {
                     val responseBody = response.body()
@@ -295,7 +314,10 @@ class CustomerOrdersFragment : Fragment() {
             override fun onFailure(call: Call<PlaceOrderResponse>, t: Throwable) {
                 if (!isAdded || view == null) return
                 val context = context ?: return
-                btnPlaceOrder.isEnabled = CustomerOrderWindow.isOpen(selectedOrderType())
+                if (view !== screen || call.isCanceled) return
+                placingOrder = false
+                btnPlaceOrder.showLoading(false)
+                updateOrderWindowUi()
                 Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         })
@@ -502,7 +524,16 @@ class CustomerOrdersFragment : Fragment() {
         } else products
     }
 
+    override fun onDestroyView() {
+        orderCall?.cancel()
+        placingOrder = false
+        choosingLocation = false
+        if (::btnPlaceOrder.isInitialized) btnPlaceOrder.showLoading(false)
+        super.onDestroyView()
+    }
+
     private fun updateOrderWindowUi() {
+        if (placingOrder || choosingLocation) return
         val isOpen = CustomerOrderWindow.isOpen(selectedOrderType())
         tvOrderingWindow.text = CustomerOrderWindow.statusMessage(selectedOrderType())
         btnPlaceOrder.isEnabled = isOpen

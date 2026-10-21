@@ -16,7 +16,7 @@ import java.util.Locale
 
 class UserStockProductAdapter(
     private val quantities: Map<Int, Double>,
-    private val onAdd: (ProductResponse) -> Unit
+    private val onQuantityChange: (ProductResponse, Double) -> Unit
 ) : RecyclerView.Adapter<UserStockProductAdapter.Holder>() {
     private var products = emptyList<ProductResponse>()
     private val currency = NumberFormat.getCurrencyInstance(Locale("en", "IN"))
@@ -26,6 +26,10 @@ class UserStockProductAdapter(
         val name: TextView = view.findViewById(R.id.stockProductName)
         val price: TextView = view.findViewById(R.id.stockProductPrice)
         val quantity: TextView = view.findViewById(R.id.stockProductQuantity)
+        val stepper: View = view.findViewById(R.id.stockProductStepper)
+        val count: TextView = view.findViewById(R.id.stockProductCount)
+        val minus: MaterialButton = view.findViewById(R.id.stockProductMinus)
+        val plus: MaterialButton = view.findViewById(R.id.stockProductPlus)
         val add: MaterialButton = view.findViewById(R.id.stockProductAdd)
     }
 
@@ -41,10 +45,18 @@ class UserStockProductAdapter(
         holder.price.text = currency.format(product.mrp)
         holder.quantity.text = if (count > 0) "${count.toInt()} in cart" else "In stock"
         holder.image.contentDescription = product.name
-        holder.add.text = if (count >= product.stock) "In cart" else "Add to cart"
+        holder.add.visibility = if (count > 0) View.GONE else View.VISIBLE
+        holder.stepper.visibility = if (count > 0) View.VISIBLE else View.GONE
+        holder.count.text = count.toInt().toString()
+        holder.minus.contentDescription = "Remove one ${product.name}"
+        holder.plus.contentDescription = "Add one ${product.name}"
+        holder.plus.isEnabled = count < product.stock
+        holder.minus.setOnClickListener { onQuantityChange(product, -1.0) }
+        holder.plus.setOnClickListener { onQuantityChange(product, 1.0) }
+        holder.add.text = "Add to cart"
         holder.add.isEnabled = count < product.stock
         holder.add.contentDescription = "Add ${product.name} to cart"
-        holder.add.setOnClickListener { onAdd(product) }
+        holder.add.setOnClickListener { onQuantityChange(product, 1.0) }
         Glide.with(holder.itemView)
             .load(ApiClient.getImageUrl(product.image))
             .override(256, 256)

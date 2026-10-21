@@ -65,22 +65,53 @@ class DeliveryLocationPicker(caller: ActivityResultCaller, private val context: 
         else Toast.makeText(context(), "Location permission was declined. You can enter the pin coordinates instead.", Toast.LENGTH_LONG).show()
     }
 
-    fun choose(onSelected: (DeliveryCoordinates) -> Unit) {
+    fun choose(onDismissed: () -> Unit = {}, onSelected: (DeliveryCoordinates) -> Unit) {
         val ctx = context()
         val form = LinearLayout(ctx).apply {
             orientation = LinearLayout.VERTICAL
             val padding = (20 * resources.displayMetrics.density).toInt()
             setPadding(padding, 0, padding, 0)
         }
-        form.addView(TextView(ctx).apply { text = "Use your current location or enter coordinates from a Google Maps pin." })
+        fun dp(value: Int) = (value * ctx.resources.displayMetrics.density).toInt()
+        form.addView(TextView(ctx).apply {
+            text = "Delivery pin"; textSize = 22f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setTextColor(android.graphics.Color.rgb(24,59,71))
+            setPadding(0,dp(20),0,dp(6))
+        })
+        form.addView(TextView(ctx).apply {
+            text = "Choose your location or enter map coordinates."
+            textSize = 13f; setTextColor(android.graphics.Color.rgb(100,121,133))
+            setPadding(0,0,0,dp(16))
+        })
         val inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
-        val latitude = EditText(ctx).apply { hint = "Latitude"; this.inputType = inputType }
-        val longitude = EditText(ctx).apply { hint = "Longitude"; this.inputType = inputType }
-        val current = MaterialButton(ctx).apply { text = "Use current location"; isAllCaps = false }
+        val current = MaterialButton(ctx).apply {
+            text = "Use current location"; isAllCaps = false; cornerRadius = dp(12); minHeight = dp(48)
+            layoutParams = LinearLayout.LayoutParams(-1,-2).apply { bottomMargin = dp(8) }
+        }
         form.addView(current)
-        form.addView(latitude)
-        form.addView(longitude)
-        val preview = MaterialButton(ctx).apply { text = "Check pin in Google Maps"; isAllCaps = false }
+        fun coordinateField(label: String): EditText {
+            val box = com.google.android.material.textfield.TextInputLayout(ctx).apply {
+                hint = label
+                boxBackgroundMode = com.google.android.material.textfield.TextInputLayout.BOX_BACKGROUND_OUTLINE
+                setBoxCornerRadii(dp(12).toFloat(),dp(12).toFloat(),dp(12).toFloat(),dp(12).toFloat())
+                boxBackgroundColor = android.graphics.Color.WHITE
+                layoutParams = LinearLayout.LayoutParams(-1,-2).apply { topMargin = dp(12) }
+            }
+            val input = com.google.android.material.textfield.TextInputEditText(box.context).apply {
+                this.inputType = inputType; isSingleLine = true; textSize = 16f
+            }
+            box.addView(input, LinearLayout.LayoutParams(-1,-2)); form.addView(box)
+            return input
+        }
+        val latitude = coordinateField("Latitude")
+        val longitude = coordinateField("Longitude")
+        val preview = MaterialButton(ctx).apply {
+            text = "Preview in Google Maps"; isAllCaps = false; cornerRadius = dp(12); minHeight = dp(48)
+            backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.rgb(252,244,245))
+            setTextColor(android.graphics.Color.rgb(195,43,43))
+            layoutParams = LinearLayout.LayoutParams(-1,-2).apply { topMargin = dp(16); bottomMargin = dp(12) }
+        }
         form.addView(preview)
         fun point(): DeliveryCoordinates? {
             val lat = latitude.text.toString().trim().toDoubleOrNull()
@@ -90,7 +121,7 @@ class DeliveryLocationPicker(caller: ActivityResultCaller, private val context: 
             return DeliveryCoordinates(lat, lng)
         }
         preview.setOnClickListener { point()?.let { DeliveryMaps.open(ctx, it.latitude, it.longitude) } }
-        val dialog = WhiteMaterialAlertDialogBuilder(ctx).setTitle("Delivery location")
+        val dialog = WhiteMaterialAlertDialogBuilder(ctx)
             .setView(form).setNegativeButton("Cancel", null).setPositiveButton("Save and continue", null).create()
         val api = ApiClient.retrofit.create(DeliveryLocationApi::class.java)
         val handler = Handler(Looper.getMainLooper())
@@ -143,8 +174,14 @@ class DeliveryLocationPicker(caller: ActivityResultCaller, private val context: 
             else permission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
         }
         val loadCall = api.get()
-        dialog.setOnDismissListener { stopLocation(); afterPermission = null; loadCall.cancel() }
+        dialog.setOnDismissListener { onDismissed(); stopLocation(); afterPermission = null; loadCall.cancel() }
         dialog.setOnShowListener {
+            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(android.graphics.Color.rgb(100,121,133))
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).apply {
+                setTextColor(android.graphics.Color.WHITE)
+                backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.rgb(211,45,45))
+                isAllCaps = false
+            }
             loadCall.enqueue(object : Callback<JsonObject> {
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                     if (!dialog.isShowing || latitude.text.isNotBlank() || longitude.text.isNotBlank()) return

@@ -10,5 +10,10 @@
         <TextView android:id="@+id/stockProductPrice" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:textSize="19sp" android:textStyle="bold" android:textColor="@color/brand_red" />
         <TextView android:id="@+id/stockProductQuantity" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textSize="12sp" android:textColor="@color/textColorSecondary" />
         <com.google.android.material.button.MaterialButton android:id="@+id/stockProductAdd" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:layout_marginTop="8dp" android:text="Add to cart" android:textAllCaps="false" android:textSize="13sp" app:cornerRadius="12dp" />
+        <LinearLayout android:id="@+id/stockProductStepper" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:orientation="horizontal" android:gravity="center_vertical" android:visibility="gone">
+            <com.google.android.material.button.MaterialButton android:id="@+id/stockProductMinus" android:layout_width="48dp" android:layout_height="48dp" android:minWidth="0dp" android:padding="0dp" android:text="−" android:textSize="22sp" app:cornerRadius="12dp" />
+            <TextView android:id="@+id/stockProductCount" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:gravity="center" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:accessibilityLiveRegion="polite" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/stockProductPlus" android:layout_width="48dp" android:layout_height="48dp" android:minWidth="0dp" android:padding="0dp" android:text="+" android:textSize="22sp" app:cornerRadius="12dp" />
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

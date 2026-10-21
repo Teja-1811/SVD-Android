@@ -502,13 +502,15 @@ class CustomerSubscriptionsActivity : BaseActivity() {
                 loading.isVisible = false
                 val subscription = response.body()?.getAsJsonObject("subscription")
                 if (response.isSuccessful && response.body()?.get("status")?.asBoolean == true && subscription != null) {
-                    startActivity(PortalNavigation.homeIntent(this@CustomerSubscriptionsActivity)
-                        .putExtra("user_tab", R.id.nav_payment)
-                        .putExtra("subscription_payment_id", subscription.get("id").asInt)
-                        .putExtra("subscription_payment_amount", subscription.get("total_amount").asDouble)
-                        .putExtra("subscription_payment_name", subscription.string("offer_name")))
-                    finish()
-                } else showMessage(response.body()?.string("message") ?: "Unable to confirm subscription.")
+                    showMessage("Subscription purchased using wallet.")
+                    loadSubscriptions()
+                } else {
+                    val error = runCatching { com.google.gson.JsonParser.parseString(response.errorBody()?.string()).asJsonObject }.getOrNull()
+                    if (error?.get("code")?.asString == "insufficient_wallet") {
+                        WalletTopUpDialog.show(this@CustomerSubscriptionsActivity,
+                            error.get("required_amount").asDouble, error.get("top_up_amount").asDouble)
+                    } else showMessage(error?.string("message") ?: response.body()?.string("message") ?: "Unable to confirm subscription.")
+                }
             }
             override fun onFailure(call: Call<JsonObject>, error: Throwable) {
                 if (isFinishing || isDestroyed) return
