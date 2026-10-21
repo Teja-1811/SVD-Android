@@ -33,6 +33,7 @@ data class CustomerOrderHistoryItem(
     @SerializedName("status") val status: String = "",
     @SerializedName("order_date") val orderDate: String = "",
     @SerializedName("delivery_date") val deliveryDate: String = "",
+    @SerializedName("delivery_charge") val deliveryCharge: Double = 0.0,
     @SerializedName("grand_total") val grandTotal: Double = 0.0,
     @SerializedName("can_delete") val canDelete: Boolean = false,
     @SerializedName("items") val items: List<CustomerOrderHistoryLine> = emptyList(),
@@ -41,6 +42,7 @@ data class CustomerOrderHistoryItem(
 data class CustomerOrderHistoryLine(
     @SerializedName("item_name") val itemName: String = "",
     @SerializedName("requested_quantity") val quantity: Int = 0,
+    @SerializedName("discount") val discount: Double = 0.0,
     @SerializedName("requested_price") val unitPrice: Double = 0.0,
     @SerializedName("requested_total") val total: Double = 0.0,
 )

@@ -275,20 +275,18 @@ class CustomerOrdersFragment : Fragment() {
                     bindOrderItemsToCart(boundOrderItems)
                     updateOrderWindowUi()
                     updateSummary()
-                    if (responseBody?.paymentFor == "ORDER") {
-                        val orderId = responseBody?.orderId
-                        val amount = responseBody?.grandTotal
-                        if (orderId != null && amount != null) {
-                            (activity as? com.svd.svdagencies.ui.customer.PortalMainActivity)?.openOrderPayment(orderId, amount)
-                        }
-                    }
+
                 } else {
+                    val errorBody = runCatching { com.google.gson.JsonParser.parseString(response.errorBody()?.string()).asJsonObject }.getOrNull()
+                    if (errorBody?.get("code")?.asString == "insufficient_wallet") {
+                        com.svd.svdagencies.ui.customer.WalletTopUpDialog.show(this@CustomerOrdersFragment,
+                            errorBody.get("required_amount").asDouble, errorBody.get("top_up_amount").asDouble)
+                        return
+                    }
                     refreshOrderTimings()
                     Toast.makeText(
                         context,
-                        response.body()?.message ?: runCatching {
-                            com.google.gson.JsonParser.parseString(response.errorBody()?.string()).asJsonObject.get("message").asString
-                        }.getOrNull() ?: "Order failed",
+                        response.body()?.message ?: errorBody?.get("message")?.asString ?: "Order failed",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

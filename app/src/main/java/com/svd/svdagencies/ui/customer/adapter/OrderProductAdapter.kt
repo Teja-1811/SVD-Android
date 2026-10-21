@@ -72,6 +72,8 @@ class OrderProductAdapter(
 
         Glide.with(holder.itemView.context)
             .load(url)
+            .override(256, 256)
+            .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.AUTOMATIC)
             .placeholder(R.drawable.ic_milk_placeholder)
             .error(R.drawable.ic_milk_placeholder)
             .into(holder.imgProduct)

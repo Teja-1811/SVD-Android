@@ -71,6 +71,10 @@ class CustomerPaymentFragment : Fragment() {
             }
         }
     }
+    private var dashboardCall: Call<CustomerDashboardResponse>? = null
+    private var statusCall: Call<PaymentGatewayInitResponse>? = null
+    private var gatewayCall: Call<PaymentGatewayInitResponse>? = null
+    private var historyJob: kotlinx.coroutines.Job? = null
     private lateinit var api: CustomerApi
     private lateinit var session: SessionManager
 
@@ -189,6 +193,18 @@ class CustomerPaymentFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        dashboardCall?.cancel()
+        statusCall?.cancel()
+        gatewayCall?.cancel()
+        historyJob?.cancel()
+        dashboardCall = null
+        statusCall = null
+        gatewayCall = null
+        supportButton = null
+        verificationLabel = null
+        rvHistory.adapter = null
+        attemptInProgress = false
+        paymentLocked = false
         verificationHandler.removeCallbacks(verificationPoll)
         supportButton = null
         verificationLabel = null
@@ -217,7 +233,9 @@ class CustomerPaymentFragment : Fragment() {
 
     private fun loadAttemptStatus() {
         val screen = view ?: return
-        api.getPaymentAttemptStatus(activeAttempt?.paymentOrderId, arguments?.getInt("subscription_id", -1)?.takeIf { it != -1 }).enqueue(object : Callback<PaymentGatewayInitResponse> {
+        statusCall?.cancel()
+        statusCall = api.getPaymentAttemptStatus(activeAttempt?.paymentOrderId, arguments?.getInt("subscription_id", -1)?.takeIf { it != -1 })
+        statusCall?.enqueue(object : Callback<PaymentGatewayInitResponse> {
             override fun onResponse(call: Call<PaymentGatewayInitResponse>, response: Response<PaymentGatewayInitResponse>) {
                 if (view !== screen || attemptInProgress) return
                 val body = response.body() ?: return
@@ -244,12 +262,16 @@ class CustomerPaymentFragment : Fragment() {
     }
 
     private fun loadDashboardData() {
+        val screen = view ?: return
         swipeRefresh.isRefreshing = true
-        api.getDashboard().enqueue(object : Callback<CustomerDashboardResponse> {
+        dashboardCall?.cancel()
+        dashboardCall = api.getDashboard()
+        dashboardCall?.enqueue(object : Callback<CustomerDashboardResponse> {
             override fun onResponse(
                 call: Call<CustomerDashboardResponse>,
                 response: Response<CustomerDashboardResponse>
             ) {
+                if (!isAdded || view !== screen || call !== dashboardCall || call.isCanceled) return
                 swipeRefresh.isRefreshing = false
                 if (!response.isSuccessful) {
                     showToast(getString(R.string.server_error_code, response.code()))
@@ -266,6 +288,7 @@ class CustomerPaymentFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<CustomerDashboardResponse>, t: Throwable) {
+                if (!isAdded || view !== screen || call !== dashboardCall || call.isCanceled) return
                 swipeRefresh.isRefreshing = false
                 showToast(
                     getString(
@@ -278,10 +301,12 @@ class CustomerPaymentFragment : Fragment() {
     }
 
     private fun loadPaymentHistory() {
+        val screen = view ?: return
         val userId = session.getUserId()
         if (userId == -1) return
 
-        lifecycleScope.launch {
+        historyJob?.cancel()
+        historyJob = viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val response = ApiClient.deliveryApi.getCustomerPaymentRecords(
                     customerId = userId,
@@ -289,12 +314,16 @@ class CustomerPaymentFragment : Fragment() {
                     year = selectedMonth.get(Calendar.YEAR)
                 ).awaitResponse()
 
+                if (view !== screen || !isAdded) return@launch
                 if (response.isSuccessful) {
                     val payments = response.body()?.payments.orEmpty()
                     historyAdapter.submitList(payments)
                     layoutEmptyHistory.visibility = if (payments.isEmpty()) View.VISIBLE else View.GONE
                 }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
             } catch (e: Exception) {
+                if (view !== screen || !isAdded) return@launch
                 Log.e("CustomerPayment", "Error loading history", e)
             }
         }
@@ -310,6 +339,7 @@ class CustomerPaymentFragment : Fragment() {
     }
 
     private fun startGatewayPayment() {
+        val screen = view ?: return
         if (paymentLocked || attemptInProgress) return
         val amount = getAmount() ?: return
         paymentLocked = true
@@ -332,12 +362,14 @@ class CustomerPaymentFragment : Fragment() {
             paymentData["order_id"] = it.toString()
         }
         btnUpi.showLoading(true, "Initiating...")
-        api.initiateGatewayPayment(paymentData).enqueue(object : Callback<PaymentGatewayInitResponse> {
+        gatewayCall?.cancel()
+        gatewayCall = api.initiateGatewayPayment(paymentData)
+        gatewayCall?.enqueue(object : Callback<PaymentGatewayInitResponse> {
             override fun onResponse(
                 call: Call<PaymentGatewayInitResponse>,
                 response: Response<PaymentGatewayInitResponse>
             ) {
-                if (!isAdded) return
+                if (!isAdded || view !== screen || call !== gatewayCall || call.isCanceled) return
                 btnUpi.showLoading(false)
                 attemptInProgress = false
                 applyPaymentLock()
@@ -362,7 +394,7 @@ class CustomerPaymentFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<PaymentGatewayInitResponse>, t: Throwable) {
-                if (!isAdded) return
+                if (!isAdded || view !== screen || call !== gatewayCall || call.isCanceled) return
                 btnUpi.showLoading(false)
                 attemptInProgress = false
                 paymentLocked = false

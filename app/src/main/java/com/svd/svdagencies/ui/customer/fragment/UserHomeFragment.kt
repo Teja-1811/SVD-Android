@@ -36,6 +36,11 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
     private val cart: com.svd.svdagencies.ui.customer.viewmodel.PlaceOrderViewModel by activityViewModels()
     private var stockAdapter: com.svd.svdagencies.ui.customer.adapter.UserStockProductAdapter? = null
     private var lastRefreshStarted = 0L
+    private var dashboardFinished = true
+    private var offersFinished = true
+    private var productsFinished = true
+    private var productsLoaded = false
+    private var cachedProducts = emptyList<ProductResponse>()
     private var productsCall: Call<JsonElement>? = null
     private var dashboardCall: Call<CustomerDashboardResponse>? = null
     private var offersCall: Call<CustomerOfferResponse>? = null
@@ -59,6 +64,15 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
             (activity as? UserPortalActivity)?.openOrdersScreen()
         }
         view.findViewById<View>(R.id.userOffersStatus).setOnClickListener { loadOffers() }
+        view.findViewById<View>(R.id.userStockProductsStatus).setOnClickListener { loadProducts() }
+        if (productsLoaded) {
+            stockAdapter?.submitProducts(cachedProducts)
+            view.findViewById<View>(R.id.userStockProducts).visibility = if (cachedProducts.isEmpty()) View.GONE else View.VISIBLE
+            view.findViewById<TextView>(R.id.userStockProductsStatus).apply {
+                visibility = if (cachedProducts.isEmpty()) View.VISIBLE else View.GONE
+                text = "No items in stock."
+            }
+        }
         updateCartButton()
         view.findViewById<View>(R.id.userBrowseProducts).setOnClickListener {
             (activity as? UserPortalActivity)?.openOrdersScreen()
@@ -90,9 +104,9 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
         // show() and onResume can arrive together; do not cancel and restart the same requests.
         if (!force && lastRefreshStarted != 0L && now - lastRefreshStarted < 1500L) return
         lastRefreshStarted = now
-        loadDashboard()
-        loadOffers()
-        loadProducts()
+        if (force || dashboardCall == null || dashboardFinished) loadDashboard()
+        if (force || offersCall == null || offersFinished) loadOffers()
+        if (force || productsCall == null || productsFinished) loadProducts()
     }
 
     private fun updateCartButton() {
@@ -106,13 +120,15 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
 
     private fun loadDashboard() {
         val screen = view ?: return
+        dashboardFinished = false
         val refresh = screen.findViewById<SwipeRefreshLayout>(R.id.userRefresh)
         refresh.isRefreshing = true
         dashboardCall?.cancel()
         dashboardCall = ApiClient.customerApi.getDashboard()
         dashboardCall?.enqueue(object : Callback<CustomerDashboardResponse> {
             override fun onResponse(call: Call<CustomerDashboardResponse>, response: Response<CustomerDashboardResponse>) {
-                if (view !== screen) return
+                if (call !== dashboardCall || view !== screen) return
+                dashboardFinished = true
                 refresh.isRefreshing = false
                 val dashboard = response.body()
                 if (!response.isSuccessful || dashboard == null) {
@@ -135,7 +151,8 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
             }
 
             override fun onFailure(call: Call<CustomerDashboardResponse>, error: Throwable) {
-                if (call.isCanceled || view !== screen) return
+                if (call.isCanceled || call !== dashboardCall || view !== screen) return
+                dashboardFinished = true
                 refresh.isRefreshing = false
                 showError(NetworkMessageUtils.friendlyMessage(error, "Unable to load your account"))
             }
@@ -144,11 +161,13 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
 
     private fun loadOffers() {
         val screen = view ?: return
+        offersFinished = false
         offersCall?.cancel()
         offersCall = ApiClient.customerApi.getOffers()
         offersCall?.enqueue(object : Callback<CustomerOfferResponse> {
             override fun onResponse(call: Call<CustomerOfferResponse>, response: Response<CustomerOfferResponse>) {
-                if (view !== screen) return
+                if (call !== offersCall || view !== screen) return
+                offersFinished = true
                 val offerStatus = screen.findViewById<TextView>(R.id.userOffersStatus)
                 if (!response.isSuccessful || response.body() == null) {
                     offerStatus.text = "Could not load offers. Tap to retry."
@@ -171,7 +190,8 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
                 list.visibility = if (offers.isEmpty()) View.GONE else View.VISIBLE
             }
             override fun onFailure(call: Call<CustomerOfferResponse>, error: Throwable) {
-                if (call.isCanceled || view !== screen) return
+                if (call.isCanceled || call !== offersCall || view !== screen) return
+                offersFinished = true
                 screen.findViewById<TextView>(R.id.userOffersStatus).apply {
                     text = "Could not load offers. Tap to retry."
                     visibility = View.VISIBLE
@@ -182,24 +202,30 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
 
     private fun loadProducts() {
         val screen = view ?: return
+        productsFinished = false
         val list = screen.findViewById<RecyclerView>(R.id.userStockProducts)
         val status = screen.findViewById<TextView>(R.id.userStockProductsStatus)
-        status.text = "Loading available items..."
-        status.visibility = View.VISIBLE
-        list.visibility = View.GONE
+        if (!productsLoaded) {
+            status.text = "Loading available items..."
+            status.visibility = View.VISIBLE
+            list.visibility = View.GONE
+        }
         productsCall?.cancel()
         productsCall = ApiClient.retrofit.create(ProductApi::class.java).getProducts()
         productsCall?.enqueue(object : Callback<JsonElement> {
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
-                if (view !== screen) return
+                if (call !== productsCall || view !== screen) return
+                productsFinished = true
                 if (!response.isSuccessful) {
-                    status.text = "Could not load items. Pull down to retry."
+                    if (!productsLoaded) status.text = "Could not load items. Tap to retry."
                     return
                 }
                 val body = response.body()
                 val rows = if (body?.isJsonObject == true) body.asJsonObject.get("products") else body
                 val type = object : TypeToken<List<ProductResponse>>() {}.type
                 val products = runCatching { Gson().fromJson<List<ProductResponse>>(rows, type) }.getOrNull().orEmpty().filter { it.stock > 0 }
+                productsLoaded = true
+                cachedProducts = products
                 stockAdapter?.submitProducts(products)
                 list.visibility = if (products.isEmpty()) View.GONE else View.VISIBLE
                 status.visibility = if (products.isEmpty()) View.VISIBLE else View.GONE
@@ -207,8 +233,9 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
                 updateCartButton()
             }
             override fun onFailure(call: Call<JsonElement>, error: Throwable) {
-                if (call.isCanceled || view !== screen) return
-                status.text = "Could not load items. Pull down to retry."
+                if (call.isCanceled || call !== productsCall || view !== screen) return
+                productsFinished = true
+                if (!productsLoaded) status.text = "Could not load items. Tap to retry."
             }
         })
     }
@@ -221,6 +248,12 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
         dashboardCall?.cancel()
         offersCall?.cancel()
         productsCall?.cancel()
+        dashboardCall = null
+        offersCall = null
+        productsCall = null
+        dashboardFinished = true
+        offersFinished = true
+        productsFinished = true
         view?.findViewById<RecyclerView>(R.id.userStockProducts)?.adapter = null
         stockAdapter = null
         lastRefreshStarted = 0L

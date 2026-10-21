@@ -23,7 +23,6 @@ class SessionManager(private val context: Context) {
 
     fun getToken(): String? {
         val token = prefs.getString("token", null)
-        Log.d("SessionManager", "getToken: $token")
         return token
     }
 

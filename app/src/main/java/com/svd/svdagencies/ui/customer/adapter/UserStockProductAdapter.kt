@@ -47,6 +47,8 @@ class UserStockProductAdapter(
         holder.add.setOnClickListener { onAdd(product) }
         Glide.with(holder.itemView)
             .load(ApiClient.getImageUrl(product.image))
+            .override(256, 256)
+            .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.AUTOMATIC)
             .placeholder(R.drawable.ic_milk_placeholder)
             .error(R.drawable.ic_milk_placeholder)
             .fitCenter()

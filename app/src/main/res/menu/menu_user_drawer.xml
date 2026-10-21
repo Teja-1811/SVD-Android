@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_home" android:title="Home" android:icon="@drawable/ic_home" />
     <item android:id="@+id/nav_subscriptions" android:title="My Subscriptions" android:icon="@drawable/ic_orders" />
-    <item android:id="@+id/nav_statement" android:title="Account Statement" android:icon="@drawable/ic_cashbook" />
     <item android:id="@+id/nav_history_reports" android:title="Order History" android:icon="@drawable/ic_orders" />
     <item android:id="@+id/nav_profile" android:title="My Profile" android:icon="@drawable/ic_person" />
     <item android:id="@+id/nav_terms" android:title="Terms &amp; Conditions" android:icon="@drawable/ic_save" />
