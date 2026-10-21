@@ -35,6 +35,7 @@ import java.util.Locale
 class UserHomeFragment : Fragment(R.layout.user_home) {
     private val cart: com.svd.svdagencies.ui.customer.viewmodel.PlaceOrderViewModel by activityViewModels()
     private var stockAdapter: com.svd.svdagencies.ui.customer.adapter.UserStockProductAdapter? = null
+    private var lastRefreshStarted = 0L
     private var productsCall: Call<JsonElement>? = null
     private var dashboardCall: Call<CustomerDashboardResponse>? = null
     private var offersCall: Call<CustomerOfferResponse>? = null
@@ -57,6 +58,7 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
         view.findViewById<View>(R.id.userViewCart).setOnClickListener {
             (activity as? UserPortalActivity)?.openOrdersScreen()
         }
+        view.findViewById<View>(R.id.userOffersStatus).setOnClickListener { loadOffers() }
         updateCartButton()
         view.findViewById<View>(R.id.userBrowseProducts).setOnClickListener {
             (activity as? UserPortalActivity)?.openOrdersScreen()
@@ -64,14 +66,12 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
         view.findViewById<View>(R.id.userSubscriptions).setOnClickListener {
             startActivity(Intent(requireContext(), CustomerSubscriptionsActivity::class.java))
         }
-        view.findViewById<SwipeRefreshLayout>(R.id.userRefresh).setOnRefreshListener { loadDashboard(); loadOffers(); loadProducts() }
+        view.findViewById<SwipeRefreshLayout>(R.id.userRefresh).setOnRefreshListener { refreshHome(force = true) }
     }
 
     override fun onResume() {
         super.onResume()
-        loadDashboard()
-        loadOffers()
-        loadProducts()
+        refreshHome()
         updateCartButton()
     }
 
@@ -79,8 +79,20 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
         super.onHiddenChanged(hidden)
         if (!hidden && view != null) {
             stockAdapter?.notifyDataSetChanged()
+            refreshHome()
             updateCartButton()
         }
+    }
+
+    private fun refreshHome(force: Boolean = false) {
+        if (view == null || isHidden) return
+        val now = android.os.SystemClock.elapsedRealtime()
+        // show() and onResume can arrive together; do not cancel and restart the same requests.
+        if (!force && lastRefreshStarted != 0L && now - lastRefreshStarted < 1500L) return
+        lastRefreshStarted = now
+        loadDashboard()
+        loadOffers()
+        loadProducts()
     }
 
     private fun updateCartButton() {
@@ -137,20 +149,34 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
         offersCall?.enqueue(object : Callback<CustomerOfferResponse> {
             override fun onResponse(call: Call<CustomerOfferResponse>, response: Response<CustomerOfferResponse>) {
                 if (view !== screen) return
+                val offerStatus = screen.findViewById<TextView>(R.id.userOffersStatus)
+                if (!response.isSuccessful || response.body() == null) {
+                    offerStatus.text = "Could not load offers. Tap to retry."
+                    offerStatus.visibility = View.VISIBLE
+                    return
+                }
                 val offers = response.body()?.offers.orEmpty().map {
-                    CustomerOffer(it.name, it.description.orEmpty().ifBlank { "View this offer" }, "Place offer order", "#0C4A6E", it.id)
+                    CustomerOffer(it.name, it.description.orEmpty().ifBlank { money(it.price) }, "Place offer order", "#0C4A6E", it.id)
                 }
                 val list = screen.findViewById<RecyclerView>(R.id.userOffers)
                 list.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                list.adapter = CustomerOfferAdapter(offers) { selected ->
+                list.adapter = CustomerOfferAdapter(offers, R.layout.user_offer_card) { selected ->
                     selected.offerId?.let { id ->
                         startActivity(Intent(requireContext(), com.svd.svdagencies.ui.customer.CustomerOfferOrderActivity::class.java).putExtra("offer_id", id))
                     }
                 }
-                screen.findViewById<View>(R.id.userOffersTitle).visibility = if (offers.isEmpty()) View.GONE else View.VISIBLE
+                screen.findViewById<View>(R.id.userOffersTitle).visibility = View.VISIBLE
+                offerStatus.text = "No active offers right now."
+                offerStatus.visibility = if (offers.isEmpty()) View.VISIBLE else View.GONE
                 list.visibility = if (offers.isEmpty()) View.GONE else View.VISIBLE
             }
-            override fun onFailure(call: Call<CustomerOfferResponse>, error: Throwable) = Unit
+            override fun onFailure(call: Call<CustomerOfferResponse>, error: Throwable) {
+                if (call.isCanceled || view !== screen) return
+                screen.findViewById<TextView>(R.id.userOffersStatus).apply {
+                    text = "Could not load offers. Tap to retry."
+                    visibility = View.VISIBLE
+                }
+            }
         })
     }
 
@@ -197,6 +223,7 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
         productsCall?.cancel()
         view?.findViewById<RecyclerView>(R.id.userStockProducts)?.adapter = null
         stockAdapter = null
+        lastRefreshStarted = 0L
         super.onDestroyView()
     }
 }

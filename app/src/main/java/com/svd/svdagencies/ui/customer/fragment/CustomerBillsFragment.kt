@@ -40,7 +40,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.Calendar
 
-class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
+class CustomerBillsFragment : Fragment() {
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var rvBills: RecyclerView
@@ -71,6 +71,9 @@ class CustomerBillsFragment : Fragment(R.layout.customer_bills) {
             }
         }
     }
+
+    override fun onCreateView(inflater: android.view.LayoutInflater, container: android.view.ViewGroup?, savedInstanceState: Bundle?): View =
+        inflater.inflate(if (SessionManager(requireContext()).getRole() == com.svd.svdagencies.utils.UserRole.USER) R.layout.user_bills else R.layout.customer_bills, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

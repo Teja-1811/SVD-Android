@@ -19,12 +19,13 @@ data class CustomerOffer(
 
 class CustomerOfferAdapter(
     private val offers: List<CustomerOffer>,
+    private val layoutRes: Int = R.layout.customer_offer_banner,
     private val onActionClick: (CustomerOffer) -> Unit = {}
 ) : RecyclerView.Adapter<CustomerOfferAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.customer_offer_banner, parent, false)
+            .inflate(layoutRes, parent, false)
         return ViewHolder(view)
     }
 

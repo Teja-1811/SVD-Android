@@ -78,7 +78,7 @@ class CustomerPaymentFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.customer_payment, container, false)
+    ): View = inflater.inflate(if (SessionManager(requireContext()).getRole() == com.svd.svdagencies.utils.UserRole.USER) R.layout.user_payment else R.layout.customer_payment, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

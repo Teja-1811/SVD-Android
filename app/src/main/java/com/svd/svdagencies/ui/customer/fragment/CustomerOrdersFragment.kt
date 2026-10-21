@@ -52,7 +52,7 @@ import java.util.Locale
 import java.util.Calendar
 import java.text.SimpleDateFormat
 
-class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
+class CustomerOrdersFragment : Fragment() {
 
     companion object {
         private const val ARG_EDIT_LATEST_ORDER = "edit_latest_order"
@@ -88,6 +88,9 @@ class CustomerOrdersFragment : Fragment(R.layout.customer_orders) {
 
     private val currency = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("en-IN"))
     private val gson = Gson()
+
+    override fun onCreateView(inflater: android.view.LayoutInflater, container: android.view.ViewGroup?, savedInstanceState: Bundle?): View =
+        inflater.inflate(if (SessionManager(requireContext()).getRole() == com.svd.svdagencies.utils.UserRole.USER) R.layout.user_orders else R.layout.customer_orders, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

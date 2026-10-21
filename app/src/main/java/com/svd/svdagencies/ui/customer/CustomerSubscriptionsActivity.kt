@@ -56,7 +56,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.customer)
+        setContentView(if (SessionManager(this).getRole() == UserRole.USER) R.layout.user_portal else R.layout.customer)
 
         findViewById<TextView>(R.id.tvCustomerToolbarTitle).text = "My Subscriptions"
         findViewById<View>(R.id.customerBottomNav).visibility = View.GONE
@@ -84,7 +84,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
             finish()
         }
 
-        val screen = layoutInflater.inflate(R.layout.customer_subscriptions, findViewById(R.id.customerFragmentContainer), false)
+        val screen = layoutInflater.inflate(if (SessionManager(this).getRole() == UserRole.USER) R.layout.user_subscriptions else R.layout.customer_subscriptions, findViewById(R.id.customerFragmentContainer), false)
         findViewById<FrameLayout>(R.id.customerFragmentContainer).addView(screen)
         loading = screen.findViewById(R.id.subscriptionsLoading)
         empty = screen.findViewById(R.id.tvSubscriptionsEmpty)
