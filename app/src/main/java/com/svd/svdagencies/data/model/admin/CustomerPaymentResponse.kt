@@ -16,5 +16,6 @@ data class CustomerPaymentItem(
     val status: String?,
     val created_at: String?,
     val customer_name: String?,
-    val customer_phone: String?
+    val customer_phone: String?,
+    val receipt_url: String? = null
 )

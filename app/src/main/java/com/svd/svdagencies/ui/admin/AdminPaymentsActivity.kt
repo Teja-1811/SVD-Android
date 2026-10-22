@@ -62,6 +62,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
             Method: ${payment.payment_mode ?: "N/A"}
             Status: ${payment.status ?: "N/A"}
             Date: ${payment.created_at ?: "N/A"}
+            ${payment.receipt_url?.let { "PDF receipt: $it" } ?: ""}
             
             Thank you for your payment.
             Sri Vijaya Durga Milk Agencies.
