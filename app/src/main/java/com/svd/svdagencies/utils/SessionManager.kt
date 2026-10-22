@@ -2,6 +2,10 @@ package com.svd.svdagencies.utils
 
 import android.content.Context
 import android.util.Log
+import com.svd.svdagencies.data.api.auth.ApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SessionManager(private val context: Context) {
 
@@ -9,15 +13,15 @@ class SessionManager(private val context: Context) {
         context.getSharedPreferences("svd_session", Context.MODE_PRIVATE)
 
     fun saveSession(token: String, role: String, userId: Int) {
-        Log.d("SessionManager", "Saving session: Token=$token, Role=$role, User=$userId")
-        prefs.edit()
-            .putString("token", token)
-            .putString("role", role)
-            .putInt("user_id", userId)
-            .apply()
-            
-        if (role == UserRole.ADMIN) {
-            KeepAliveWorker.startNow(context)
+        synchronized(sessionLock) {
+            Log.d("SessionManager", "Saving signed-in account")
+            prefs.edit()
+                .putString("token", token)
+                .putString("role", role)
+                .putInt("user_id", userId)
+                .putBoolean("notification_permission_pending", true)
+                .apply()
+            if (role == UserRole.ADMIN) KeepAliveWorker.startNow(context)
         }
     }
 
@@ -31,9 +35,39 @@ class SessionManager(private val context: Context) {
     fun getUserId(): Int = prefs.getInt("user_id", -1)
 
     fun logout() {
-        Log.d("SessionManager", "Clearing session")
+        val token = getToken()
+        if (!token.isNullOrBlank() && invalidateIfTokenMatches(token)) {
+            // This uses the captured login token, so a delayed logout cannot
+            // revoke a newer login on the same phone.
+            ApiClient.authApi.logout("Token $token").enqueue(object : Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) = Unit
+                override fun onFailure(call: Call<Void>, error: Throwable) = Unit
+            })
+        } else if (token.isNullOrBlank()) {
+            synchronized(sessionLock) {
+                if (getToken().isNullOrBlank()) {
+                    KeepAliveWorker.stop(context)
+                    prefs.edit().clear().apply()
+                }
+            }
+        }
+    }
+
+    fun invalidateIfTokenMatches(expected: String): Boolean = synchronized(sessionLock) {
+        if (getToken() != expected) return@synchronized false
         KeepAliveWorker.stop(context)
         prefs.edit().clear().apply()
+        true
+    }
+
+    fun consumeNotificationPermissionPrompt(): Boolean {
+        if (!prefs.getBoolean("notification_permission_pending", false)) return false
+        prefs.edit().putBoolean("notification_permission_pending", false).apply()
+        return true
+    }
+
+    companion object {
+        private val sessionLock = Any()
     }
 
     fun saveSelectedRoute(id: Int?, name: String?) {

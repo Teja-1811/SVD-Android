@@ -3,6 +3,7 @@ package com.svd.svdagencies.data.api.auth
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Header
 
 interface AuthApi {
 
@@ -12,6 +13,9 @@ interface AuthApi {
     fun login(
         @Body request: LoginRequest
     ): Call<LoginResponse>
+
+    @POST("api/auth/logout/")
+    fun logout(@Header("Authorization") authorization: String): Call<Void>
 
     @POST("api/auth/register/")
     fun register(

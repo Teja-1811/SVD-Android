@@ -40,7 +40,6 @@ class LoginActivity : BaseActivity() {
         val session = SessionManager(this)
 
         session.getRole()?.let { role ->
-            PushRegistrationManager.requestPermissionIfNeeded(this)
             PushRegistrationManager.registerCurrentDevice(this)
             navigateToDashboard(role)
             finish()
@@ -110,7 +109,6 @@ class LoginActivity : BaseActivity() {
                             else -> receivedRole
                         }
                         session.saveSession(body.token, portalRole, body.userId ?: -1)
-                        PushRegistrationManager.requestPermissionIfNeeded(this@LoginActivity)
                         PushRegistrationManager.registerCurrentDevice(this@LoginActivity)
                         navigateToDashboard(portalRole)
                         finish()

@@ -40,7 +40,8 @@ object PushRegistrationManager {
 
     fun registerCurrentDevice(context: Context) {
         val session = SessionManager(context)
-        if (session.getToken().isNullOrBlank()) {
+        val loginToken = session.getToken()
+        if (loginToken.isNullOrBlank()) {
             Log.d(TAG, "Skipping push registration: no active token.")
             return
         }
@@ -51,14 +52,14 @@ object PushRegistrationManager {
                     Log.w(TAG, "Firebase returned an empty token.")
                     return@addOnSuccessListener
                 }
-                registerToken(context, fcmToken)
+                if (session.getToken() == loginToken) registerToken(context, fcmToken, loginToken)
             }
             .addOnFailureListener { error ->
                 Log.w(TAG, "Unable to get Firebase token.", error)
             }
     }
 
-    private fun registerToken(context: Context, fcmToken: String) {
+    private fun registerToken(context: Context, fcmToken: String, loginToken: String) {
         val request = PushDeviceRegisterRequest(
             token = fcmToken,
             deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
@@ -66,7 +67,7 @@ object PushRegistrationManager {
             userAgent = "SVD Android ${BuildConfig.VERSION_NAME}; SDK ${Build.VERSION.SDK_INT}; ${Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)}"
         )
 
-        ApiClient.pushApi.registerDevice(request).enqueue(object : Callback<PushDeviceResponse> {
+        ApiClient.pushApi.registerDevice(request, "Token $loginToken").enqueue(object : Callback<PushDeviceResponse> {
             override fun onResponse(
                 call: Call<PushDeviceResponse>,
                 response: Response<PushDeviceResponse>

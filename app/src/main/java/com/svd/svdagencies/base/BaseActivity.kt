@@ -48,8 +48,16 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val session = com.svd.svdagencies.utils.SessionManager(this)
+        if (!session.getToken().isNullOrBlank() && session.consumeNotificationPermissionPrompt()) {
+            com.svd.svdagencies.notifications.PushRegistrationManager.requestPermissionIfNeeded(this)
+        }
+    }
+
     fun logout() {
-        prefs.edit().clear().apply()
+        com.svd.svdagencies.utils.SessionManager(this).logout()
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

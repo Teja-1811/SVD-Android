@@ -1,5 +1,11 @@
 package com.svd.svdagencies.data.api.auth
 
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
+import com.svd.svdagencies.App
+import com.svd.svdagencies.ui.auth.LoginActivity
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -27,10 +33,22 @@ class AuthInterceptor(
 
         builder.header("Accept", "application/json")
         val token = sessionManager.getToken()
-        if (!token.isNullOrEmpty()) {
+        if (originalRequest.header("Authorization") == null && !token.isNullOrEmpty()) {
             builder.header("Authorization", "Token $token")
         }
-
-        return chain.proceed(builder.build())
+        val request = builder.build()
+        val response = chain.proceed(request)
+        val sentToken = request.header("Authorization")?.removePrefix("Token ")
+        if (response.code == 401 && !sentToken.isNullOrBlank() && sessionManager.invalidateIfTokenMatches(sentToken)) {
+            Handler(Looper.getMainLooper()).post {
+                if (sessionManager.getToken().isNullOrBlank()) {
+                    Toast.makeText(App.context, "Your session has ended. Please sign in again.", Toast.LENGTH_LONG).show()
+                    App.context.startActivity(Intent(App.context, LoginActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+                }
+            }
+        }
+        return response
     }
 }
