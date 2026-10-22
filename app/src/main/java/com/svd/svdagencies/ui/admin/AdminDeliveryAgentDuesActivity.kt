@@ -34,11 +34,15 @@ import com.svd.svdagencies.ui.delivery.*
 import com.svd.svdagencies.utils.AppSwipeRefreshLayout
 import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
+    private var filterRequest: Job? = null
+
     private lateinit var swipeRefresh: AppSwipeRefreshLayout
     private lateinit var rvUnified: RecyclerView
     
@@ -152,7 +156,8 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
     private fun loadReport(btn: MaterialButton? = null) {
         swipeRefresh.isRefreshing = true
         btn?.showLoading(true, "Applying...")
-        lifecycleScope.launch {
+        filterRequest?.cancel()
+        filterRequest = lifecycleScope.launch {
             try {
                 val response = ApiClient.billsDashboardApi.getDeliveryAgentDues(
                     deliveryBoyId = selectedAgentId(),
@@ -161,6 +166,7 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
                 )
                 render(response)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 Toast.makeText(this@AdminDeliveryAgentDuesActivity, "Failed: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 swipeRefresh.isRefreshing = false

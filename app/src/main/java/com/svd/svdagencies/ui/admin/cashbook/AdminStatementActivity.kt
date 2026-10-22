@@ -27,12 +27,16 @@ import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Calendar
 
 class AdminStatementActivity : AdminBaseActivity() {
+    private var filterRequest: Job? = null
+
 
     private lateinit var binding: AdminStatementBinding
     private var selectedMonth: Int? = null
@@ -50,7 +54,19 @@ class AdminStatementActivity : AdminBaseActivity() {
         setupAdminLayout("Statement")
         setupStats()
         setupFilters()
-        binding.btnApplyFilters.setOnClickListener { loadStatement() }
+        binding.btnApplyFilters.icon = null
+        binding.btnApplyFilters.layoutParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        binding.btnApplyFilters.minimumWidth = (72 * resources.displayMetrics.density).toInt()
+        binding.btnApplyFilters.text = "Clear"
+        binding.btnApplyFilters.contentDescription = "Clear filters"
+        binding.btnApplyFilters.setOnClickListener {
+            val now = Calendar.getInstance()
+            selectedMonth = now.get(Calendar.MONTH) + 1
+            selectedYear = now.get(Calendar.YEAR)
+            binding.spinnerMonth.setText(months[selectedMonth!! - 1], false)
+            binding.spinnerYear.setText(selectedYear.toString(), false)
+            loadStatement()
+        }
         binding.btnPdf.setOnClickListener { openPdf() }
         binding.swipeRefresh.setOnRefreshListener { loadStatement() }
         loadStatement()
@@ -88,19 +104,23 @@ class AdminStatementActivity : AdminBaseActivity() {
 
         binding.spinnerMonth.setOnItemClickListener { _, _, position, _ ->
             selectedMonth = position + 1
+            loadStatement()
         }
         binding.spinnerYear.setOnItemClickListener { _, _, position, _ ->
             selectedYear = years[position].toInt()
+            loadStatement()
         }
     }
 
     private fun loadStatement() {
         binding.swipeRefresh.isRefreshing = true
-        lifecycleScope.launch {
+        filterRequest?.cancel()
+        filterRequest = lifecycleScope.launch {
             try {
                 val response = ApiClient.cashbookApi.getStatement(selectedMonth, selectedYear)
                 bindStatement(response)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 Toast.makeText(
                     this@AdminStatementActivity,
                     NetworkMessageUtils.friendlyMessage(e, "Failed to load statement"),

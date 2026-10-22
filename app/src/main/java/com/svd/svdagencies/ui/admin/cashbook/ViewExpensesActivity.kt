@@ -15,10 +15,14 @@ import com.svd.svdagencies.data.model.admin.Cashbook.Expense
 import com.svd.svdagencies.databinding.AdminViewExpencesBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ViewExpensesActivity : AdminBaseActivity() {
+    private var filterRequest: Job? = null
+
 
     private lateinit var binding: AdminViewExpencesBinding
     private lateinit var adapter: ExpenseAdapter
@@ -62,7 +66,17 @@ class ViewExpensesActivity : AdminBaseActivity() {
             loadExpenses()
         }
 
+        binding.btnApplyFilters.icon = null
+        binding.btnApplyFilters.layoutParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        binding.btnApplyFilters.minimumWidth = (72 * resources.displayMetrics.density).toInt()
+        binding.btnApplyFilters.text = "Clear"
+        binding.btnApplyFilters.contentDescription = "Clear filters"
         binding.btnApplyFilters.setOnClickListener {
+            val now = Calendar.getInstance()
+            selectedMonth = now.get(Calendar.MONTH) + 1
+            selectedYear = now.get(Calendar.YEAR)
+            binding.spinnerMonth.setText(months[selectedMonth!! - 1], false)
+            binding.spinnerYear.setText(selectedYear.toString(), false)
             updateDatesFromFilters()
             loadExpenses()
         }
@@ -89,10 +103,14 @@ class ViewExpensesActivity : AdminBaseActivity() {
 
         binding.spinnerMonth.setOnItemClickListener { _, _, position, _ ->
             selectedMonth = position + 1
+            updateDatesFromFilters()
+            loadExpenses()
         }
 
         binding.spinnerYear.setOnItemClickListener { _, _, position, _ ->
             selectedYear = years[position].toInt()
+            updateDatesFromFilters()
+            loadExpenses()
         }
     }
 
@@ -112,12 +130,14 @@ class ViewExpensesActivity : AdminBaseActivity() {
 
     private fun loadExpenses() {
         binding.swipeRefresh.isRefreshing = true
-        lifecycleScope.launch {
+        filterRequest?.cancel()
+        filterRequest = lifecycleScope.launch {
             try {
                 val response = ApiClient.cashbookApi.getExpenses(startDate, endDate)
                 adapter.update(response.expenses)
                 binding.tvTotalExpenses.text = "₹ %.2f".format(response.total_expenses)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 if (!isFinishing) {
                     Toast.makeText(this@ViewExpensesActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }

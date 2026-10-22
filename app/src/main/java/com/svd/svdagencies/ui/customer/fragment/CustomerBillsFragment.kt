@@ -54,6 +54,7 @@ class CustomerBillsFragment : Fragment() {
     private lateinit var adapter: BillsAdapter
     private lateinit var sessionManager: SessionManager
     private lateinit var api: InvoiceApi
+    private var billRequest: Call<InvoiceResponse>? = null
     private var paymentLocked = true
     private var paymentStarting = false
     private val downloadIdsToOpen = mutableSetOf<Long>()
@@ -107,7 +108,8 @@ class CustomerBillsFragment : Fragment() {
 
         // ---------- ACTIONS ----------
         etMonth.setOnClickListener { showMonthYearPicker() }
-        btnFilter.setOnClickListener { loadBills() }
+        btnFilter.text = "Clear"
+        btnFilter.setOnClickListener { setCurrentMonth(); loadBills() }
 
         // Use RefreshManager to setup swipe refresh
         RefreshManager.setupRefresh(swipeRefresh) {
@@ -122,6 +124,12 @@ class CustomerBillsFragment : Fragment() {
         loadPaymentAttemptLock()
         RefreshManager.startRefresh(swipeRefresh)
         loadBills()
+    }
+
+    override fun onDestroyView() {
+        billRequest?.cancel()
+        billRequest = null
+        super.onDestroyView()
     }
 
     override fun onDestroy() {
@@ -175,16 +183,16 @@ class CustomerBillsFragment : Fragment() {
         val month = monthYear[0]
         val year = monthYear[1]
 
-        api.getCustomerInvoices(
-            month = month,
-            year = year
-        ).enqueue(object : Callback<InvoiceResponse> {
+        billRequest?.cancel()
+        val request = api.getCustomerInvoices(month = month, year = year)
+        billRequest = request
+        request.enqueue(object : Callback<InvoiceResponse> {
 
             override fun onResponse(
                 call: Call<InvoiceResponse>,
                 response: Response<InvoiceResponse>
             ) {
-                if (context == null) return
+                if (call !== billRequest || !isAdded || view == null) return
 
                 RefreshManager.stopRefresh(swipeRefresh)
 
@@ -212,6 +220,7 @@ class CustomerBillsFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<InvoiceResponse>, t: Throwable) {
+                if (call !== billRequest || call.isCanceled || !isAdded || view == null) return
                 if (context == null) return
                 RefreshManager.stopRefresh(swipeRefresh)
                 tvStatus.text = "Network error"

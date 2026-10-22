@@ -39,12 +39,16 @@ import com.svd.svdagencies.databinding.AdminStatCardBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 class AdminCashBookActivity : AdminBaseActivity() {
+    private var filterRequest: Job? = null
+
 
     private lateinit var binding: AdminCashbookBinding
     private lateinit var companyDueAdapter: CompanyDueAdapter
@@ -159,9 +163,13 @@ class AdminCashBookActivity : AdminBaseActivity() {
             loadDashboardData()
         }
 
-        binding.btnApplyFilters.setOnClickListener {
-            loadDashboardData()
-        }
+        binding.btnApplyFilters.icon = null
+        binding.btnApplyFilters.layoutParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        binding.btnApplyFilters.minimumWidth = (72 * resources.displayMetrics.density).toInt()
+        binding.btnApplyFilters.text = "Clear"
+        binding.btnApplyFilters.contentDescription = "Clear filters"
+        binding.btnApplyFilters.setOnClickListener { resetFilters() }
+        binding.btnResetFilters.visibility = View.GONE
 
         binding.btnResetFilters.setOnClickListener {
             resetFilters()
@@ -221,10 +229,12 @@ class AdminCashBookActivity : AdminBaseActivity() {
 
         binding.spinnerMonth.setOnItemClickListener { _, _, position, _ ->
             selectedMonth = position + 1
+            loadDashboardData()
         }
 
         binding.spinnerYear.setOnItemClickListener { _, _, position, _ ->
             selectedYear = years[position].toInt()
+            loadDashboardData()
         }
     }
 
@@ -304,11 +314,13 @@ class AdminCashBookActivity : AdminBaseActivity() {
 
     private fun loadDashboardData() {
         binding.swipeRefresh.isRefreshing = true
-        lifecycleScope.launch {
+        filterRequest?.cancel()
+        filterRequest = lifecycleScope.launch {
             try {
                 val response = ApiClient.cashbookApi.getDashboardData(selectedMonth, selectedYear)
                 populateUI(response)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 if (!isFinishing) {
                     Toast.makeText(
                         this@AdminCashBookActivity,

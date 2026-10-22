@@ -12,6 +12,8 @@ import com.google.android.material.textfield.TextInputLayout
 import com.svd.svdagencies.utils.showDestructiveDialog
 import com.svd.svdagencies.utils.applyWhiteDialogSurface
 import androidx.lifecycle.lifecycleScope
+import androidx.core.widget.doAfterTextChanged
+import kotlinx.coroutines.delay
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.CustomerPaymentItem
@@ -19,8 +21,13 @@ import com.svd.svdagencies.databinding.AdminCustomerPaymentBinding
 import com.svd.svdagencies.ui.admin.adapter.CustomerPaymentAdapter
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 
 class AdminPaymentsActivity : AdminBaseActivity() {
+    private var filterRequest: Job? = null
+    private var filterDebounce: Job? = null
+
 
     private lateinit var binding: AdminCustomerPaymentBinding
     private lateinit var adapter: CustomerPaymentAdapter
@@ -91,22 +98,30 @@ class AdminPaymentsActivity : AdminBaseActivity() {
             fetchPayments()
         }
         
-        binding.btnFilter.setOnClickListener {
-            val customer = binding.etFilterCustomer.text.toString().trim()
-            val txnId = binding.etFilterTxn.text.toString().trim()
-            fetchPayments(customer, txnId)
-        }
+        binding.btnFilter.visibility = android.view.View.GONE
+        binding.etFilterCustomer.doAfterTextChanged { scheduleFilterRefresh() }
+        binding.etFilterTxn.doAfterTextChanged { scheduleFilterRefresh() }
 
         binding.btnClear.setOnClickListener {
             binding.etFilterCustomer.text?.clear()
             binding.etFilterTxn.text?.clear()
+            filterDebounce?.cancel()
             fetchPayments()
         }
     }
 
-    private fun fetchPayments(customer: String? = null, transactionId: String? = null) {
+    private fun scheduleFilterRefresh() {
+        filterDebounce?.cancel()
+        filterDebounce = lifecycleScope.launch {
+            delay(400)
+            fetchPayments()
+        }
+    }
+
+    private fun fetchPayments(customer: String? = binding.etFilterCustomer.text.toString().trim(), transactionId: String? = binding.etFilterTxn.text.toString().trim()) {
         binding.swipeRefresh.isRefreshing = true
-        lifecycleScope.launch {
+        filterRequest?.cancel()
+        filterRequest = lifecycleScope.launch {
             try {
                 val response = ApiClient.adminPaymentsApi.getCustomerPayments(
                     customer = if (customer.isNullOrEmpty()) null else customer,
@@ -114,6 +129,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
                 )
                 adapter.setData(response.payments)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 Toast.makeText(this@AdminPaymentsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 binding.swipeRefresh.isRefreshing = false

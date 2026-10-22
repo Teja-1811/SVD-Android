@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.*
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -30,6 +31,8 @@ import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.RefreshManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
@@ -38,6 +41,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AdminBillsActivity : AdminBaseActivity() {
+    private var filterRequest: Job? = null
+
 
     private lateinit var autoCompleteCustomer: AutoCompleteTextView
     private lateinit var tvStartDate: TextView
@@ -294,7 +299,10 @@ class AdminBillsActivity : AdminBaseActivity() {
     private fun setupListeners() {
         tvStartDate.setOnClickListener { showDatePickerDialog(isStartDate = true) }
         tvEndDate.setOnClickListener { showDatePickerDialog(isStartDate = false) }
-        btnSearch.setOnClickListener { fetchBills(isRefresh = true) }
+        btnSearch.visibility = View.GONE
+        btnClearFilters.text = "Clear"
+        autoCompleteCustomer.setOnItemClickListener { _, _, _, _ -> fetchBills(isRefresh = true) }
+        autoCompleteCustomer.doAfterTextChanged { if (it.isNullOrEmpty()) fetchBills(isRefresh = true) }
         btnClearFilters.setOnClickListener { clearFilters() }
         btnPreviousPage.setOnClickListener { if (currentPage > 1) fetchBills(currentPage - 1) }
         btnNextPage.setOnClickListener { fetchBills(currentPage + 1) }
@@ -311,6 +319,7 @@ class AdminBillsActivity : AdminBaseActivity() {
             { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
                 updateDateTextView(isStartDate)
+                fetchBills(isRefresh = true)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -363,7 +372,6 @@ class AdminBillsActivity : AdminBaseActivity() {
     }
 
     private fun fetchBills(page: Int, isRefresh: Boolean = false) {
-        if (isLoading) return
         isLoading = true
 
         if (isRefresh) {
@@ -383,7 +391,8 @@ class AdminBillsActivity : AdminBaseActivity() {
         val startDateString = if (tvStartDate.text.isNotEmpty()) tvStartDate.text.toString() else null
         val endDateString = if (tvEndDate.text.isNotEmpty()) tvEndDate.text.toString() else null
 
-        lifecycleScope.launch {
+        filterRequest?.cancel()
+        filterRequest = lifecycleScope.launch {
             try {
                 val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString, page)
                 
@@ -392,6 +401,7 @@ class AdminBillsActivity : AdminBaseActivity() {
                 updatePagination(response.current_page, response.total_pages)
                 rvBills.scrollToPosition(0)
             } catch (e: Exception) {
+                if (e is CancellationException) throw e
                 Toast.makeText(this@AdminBillsActivity, "Error fetching bills: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 isLoading = false

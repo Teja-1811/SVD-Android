@@ -36,6 +36,7 @@ open class AdminReportsActivity : AdminBaseActivity() {
     private var companyIds = listOf("")
     private var config = JsonObject()
     private var busy = false
+    private var filtersReady = false
     private val controls = mutableListOf<android.view.View>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +56,7 @@ open class AdminReportsActivity : AdminBaseActivity() {
         firstDate=dateControl(if(purchase) "From date" else "Date",SimpleDateFormat("yyyy-MM-dd",Locale.US).format(calendar.time))
         calendar.set(Calendar.DAY_OF_MONTH,calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
         lastDate=if(purchase)dateControl("To date",SimpleDateFormat("yyyy-MM-dd",Locale.US).format(calendar.time)) else firstDate
-        button("View summary"){load()}
+        button("Clear"){clearFilters()}
         button("Download / print PDF"){download()}
         if(!purchase){
             button("Review purchase credit"){reviewPurchases()}
@@ -70,6 +71,8 @@ open class AdminReportsActivity : AdminBaseActivity() {
                 val companies=ApiClient.adminCompaniesApi.getCompanies().companies
                 companyIds=listOf("")+companies.map{it.id.toString()}
                 company.adapter=ArrayAdapter(this@AdminReportsActivity,android.R.layout.simple_spinner_dropdown_item,listOf("All companies")+companies.map{it.name})
+                setupAutomaticFilters()
+                filtersReady = true
                 load()
             }catch(error:Exception){if(error is CancellationException)throw error;status.text=errorMessage(error)}
         }
@@ -85,7 +88,30 @@ open class AdminReportsActivity : AdminBaseActivity() {
         val parts=view.text.toString().split("-").mapNotNull{it.toIntOrNull()}
         val calendar=Calendar.getInstance()
         if(parts.size==3)calendar.set(parts[0],parts[1]-1,parts[2])
-        DatePickerDialog(this,{_,year,month,day->view.text=String.format(Locale.US,"%04d-%02d-%02d",year,month+1,day)},calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show()
+        DatePickerDialog(this,{_,year,month,day->view.text=String.format(Locale.US,"%04d-%02d-%02d",year,month+1,day); if(filtersReady)load()},calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show()
+    }
+    private fun setupAutomaticFilters() {
+        val selectionListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                if (filtersReady) load()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
+        company.onItemSelectedListener = selectionListener
+        period.onItemSelectedListener = selectionListener
+    }
+    private fun clearFilters() {
+        company.setSelection(0)
+        period.setSelection(0)
+        val now = Calendar.getInstance()
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        if (purchase) now.set(Calendar.DAY_OF_MONTH, 1)
+        firstDate.text = format.format(now.time)
+        if (purchase) {
+            now.set(Calendar.DAY_OF_MONTH, now.getActualMaximum(Calendar.DAY_OF_MONTH))
+            lastDate.text = format.format(now.time)
+        }
+        load()
     }
     private fun filters():Map<String,String>{
         val values=mutableMapOf("company" to companyIds.getOrElse(company.selectedItemPosition){""})

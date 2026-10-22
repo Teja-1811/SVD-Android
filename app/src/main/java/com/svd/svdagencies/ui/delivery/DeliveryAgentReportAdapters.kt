@@ -58,7 +58,7 @@ class DeliveryAgentSummaryHeaderAdapter(
 
         init {
             btnClear.setOnClickListener { onClear() }
-            btnApply.setOnClickListener { onApply(it) }
+            btnApply.visibility = View.GONE
             tvStartDate.setOnClickListener { onPickStartDate() }
             tvEndDate.setOnClickListener { onPickEndDate() }
             autoCompleteAgent.setOnItemClickListener { _, _, _, _ ->
