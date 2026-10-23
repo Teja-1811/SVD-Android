@@ -16,7 +16,7 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/brand_red"
+            android:background="?attr/colorPrimary"
             app:elevation="0dp"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -104,7 +104,7 @@
                             android:layout_marginEnd="4dp"
                             android:hint="@string/label_route"
                             app:boxBackgroundColor="@color/white"
-                            app:boxStrokeColor="@color/black">
+                            app:boxStrokeColor="@color/black" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
                             <AutoCompleteTextView
                                 android:id="@+id/autoRoute"
@@ -125,7 +125,7 @@
                             android:layout_marginStart="4dp"
                             android:hint="@string/label_select_customer"
                             app:boxBackgroundColor="@color/white"
-                            app:boxStrokeColor="@color/black">
+                            app:boxStrokeColor="@color/black" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
                             <AutoCompleteTextView
                                 android:id="@+id/autoCustomer"
@@ -162,9 +162,9 @@
             android:id="@+id/cardSummary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="12dp"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:cardCornerRadius="@dimen/card_corner_radius_medium"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -186,7 +186,7 @@
                         android:layout_height="wrap_content"
                         android:text="Items:"
                         android:textColor="@color/textColorSecondary"
-                        android:textSize="11sp" />
+                        android:textSize="@dimen/text_size_body_small" />
 
                     <TextView
                         android:id="@+id/tvItemsTotal"
@@ -195,7 +195,7 @@
                         android:layout_marginStart="2dp"
                         android:text="₹ 0.00"
                         android:textColor="@color/textColorPrimary"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         android:textStyle="bold" />
 
                     <View
@@ -207,7 +207,7 @@
                         android:layout_height="wrap_content"
                         android:text="Due:"
                         android:textColor="@color/textColorSecondary"
-                        android:textSize="11sp" />
+                        android:textSize="@dimen/text_size_body_small" />
 
                     <TextView
                         android:id="@+id/tvOpeningDue"
@@ -216,7 +216,7 @@
                         android:layout_marginStart="2dp"
                         android:text="₹ 0.00"
                         android:textColor="@color/textColorPrimary"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         android:textStyle="bold" />
 
                     <View
@@ -228,7 +228,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total:"
-                        android:textColor="@color/brand_red"
+                        android:textColor="?attr/colorPrimary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
@@ -238,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"
                         android:text="@string/format_currency_symbol"
-                        android:textColor="@color/brand_red"
+                        android:textColor="?attr/colorPrimary"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         tools:text="₹ 0" />
@@ -272,10 +272,10 @@
                         android:minWidth="60dp"
                         android:text="@string/btn_clear"
                         android:textAllCaps="false"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         app:cornerRadius="6dp"
-                        app:strokeColor="@color/brand_red"
-                        android:textColor="@color/brand_red"
+                        app:strokeColor="?attr/colorPrimary"
+                        android:textColor="?attr/colorPrimary"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"/>
 

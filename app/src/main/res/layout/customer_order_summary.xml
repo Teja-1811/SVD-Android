@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Product Name"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_size_body_small"
         android:textColor="@color/textColorPrimary"/>
 
     <TextView
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="₹0.00"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_size_body_small"
         android:textStyle="bold"
         android:textColor="@color/textColorPrimary"/>
 </LinearLayout>

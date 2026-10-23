@@ -1,0 +1,33 @@
+<resources>
+    <style name="Theme.SVDAgency.Ocean" parent="Theme.SVDAgency">
+        <item name="colorPrimary">#075985</item>
+        <item name="colorPrimaryContainer">#E0F2FE</item>
+        <item name="colorOnPrimaryContainer">#0C4A6E</item>
+        <item name="colorSecondary">#0F766E</item>
+        <item name="colorSecondaryContainer">#CCFBF1</item>
+        <item name="colorOnSecondaryContainer">#134E4A</item>
+        <item name="android:statusBarColor">#075985</item>
+    </style>
+    <style name="Theme.SVDAgency.Forest" parent="Theme.SVDAgency">
+        <item name="colorPrimary">#166534</item>
+        <item name="colorPrimaryContainer">#DCFCE7</item>
+        <item name="colorOnPrimaryContainer">#14532D</item>
+        <item name="colorSecondary">#92400E</item>
+        <item name="colorSecondaryContainer">#FEF3C7</item>
+        <item name="colorOnSecondaryContainer">#78350F</item>
+        <item name="android:statusBarColor">#166534</item>
+    </style>
+    <string name="tools_appearance">Tools &amp; appearance</string>
+    <string name="tools_search">Search tools</string>
+    <string name="tools_empty">No matching tools. Try another search.</string>
+    <string name="tools_website_note">Website tools open inside the app. You may need to sign in with your website account.</string>
+    <string name="appearance_title">Make it yours</string>
+    <string name="appearance_description">Choose a colour theme for this device.</string>
+    <string name="theme_ruby">Ruby</string>
+    <string name="theme_ocean">Ocean</string>
+    <string name="theme_forest">Forest</string>
+    <string name="tools_back">Back</string>
+<style name="Widget.Svd.FormField" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+<item name="boxCornerRadiusTopStart">12dp</item><item name="boxCornerRadiusTopEnd">12dp</item>
+<item name="boxCornerRadiusBottomStart">12dp</item><item name="boxCornerRadiusBottomEnd">12dp</item>
+</style></resources>

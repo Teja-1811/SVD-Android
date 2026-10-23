@@ -34,8 +34,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
                         app:cardBackgroundColor="@color/card_background"
-                        app:cardCornerRadius="20dp"
-                        app:cardElevation="2dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                        app:cardElevation="0dp"
                         app:strokeColor="@color/card_stroke_color"
                         app:strokeWidth="1dp">
 
@@ -68,7 +68,7 @@
                                 android:layout_marginTop="16dp"
                                 android:text="Create Offer"
                                 android:textColor="@color/white"
-                                app:backgroundTint="@color/brand_red" />
+                                app:backgroundTint="?attr/colorPrimary" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/btnSubscriptionOffers"

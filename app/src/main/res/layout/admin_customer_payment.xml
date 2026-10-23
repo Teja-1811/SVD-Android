@@ -29,7 +29,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="@dimen/card_corner_radius_small"
+                    app:cardCornerRadius="@dimen/card_corner_radius_medium"
                     app:cardElevation="0dp"
                     app:strokeWidth="1dp"
                     app:strokeColor="@color/card_stroke_color"
@@ -65,13 +65,13 @@
                                 android:hint="Customer"
                                 android:layout_marginEnd="4dp"
                                 app:boxStrokeColor="@color/brand_blue"
-                                app:hintTextColor="@color/brand_blue">
+                                app:hintTextColor="@color/brand_blue" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/etFilterCustomer"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textSize="12sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     android:textColor="@color/textColorPrimary"
                                     android:inputType="text"/>
                             </com.google.android.material.textfield.TextInputLayout>
@@ -84,13 +84,13 @@
                                 android:hint="Txn ID"
                                 android:layout_marginStart="4dp"
                                 app:boxStrokeColor="@color/brand_blue"
-                                app:hintTextColor="@color/brand_blue">
+                                app:hintTextColor="@color/brand_blue" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
                                 <com.google.android.material.textfield.TextInputEditText
                                     android:id="@+id/etFilterTxn"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textSize="12sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     android:textColor="@color/textColorPrimary"
                                     android:inputType="text"/>
                             </com.google.android.material.textfield.TextInputLayout>
@@ -109,7 +109,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Clear"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textColor="@color/textColorPrimary"
                                 app:strokeColor="@color/textColorPrimary"
                                 android:layout_marginEnd="8dp"
@@ -120,7 +120,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Apply Filter"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 app:cornerRadius="8dp"
                                 app:backgroundTint="@color/brand_blue"
                                 android:textColor="@color/white"/>
@@ -145,7 +145,7 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/card_background"
+        android:background="@color/white"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"

@@ -10,7 +10,7 @@
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/swipeRefresh" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="12dp">
                 <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvDiscountItems" android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false" android:paddingBottom="12dp" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-            <com.google.android.material.button.MaterialButton android:id="@+id/btnSaveDiscounts" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="8dp" android:text="Save Discounts" android:textAllCaps="false" app:backgroundTint="@color/brand_red" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnSaveDiscounts" android:layout_width="match_parent" android:layout_height="52dp" android:layout_marginTop="8dp" android:text="Save Discounts" android:textAllCaps="false" app:backgroundTint="?attr/colorPrimary" />
         </LinearLayout>
     </LinearLayout>
     <com.google.android.material.navigation.NavigationView android:id="@+id/navigationView" android:layout_width="300dp" android:layout_height="match_parent" android:layout_gravity="start" app:headerLayout="@layout/admin_nav_header" app:menu="@menu/menu_admin_drawer" />

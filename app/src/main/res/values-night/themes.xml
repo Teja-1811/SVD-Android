@@ -4,10 +4,12 @@
         <!-- Primary brand color. -->
         <!-- Keep raised white surfaces free of the brand-color tint. -->
         <item name="elevationOverlayEnabled">false</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="textInputStyle">@style/Widget.Svd.FormField</item>
         <item name="colorPrimary">@color/brand_red</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">@color/brand_red_dark</item>
-        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorPrimaryContainer">#FCE7EB</item>
+        <item name="colorOnPrimaryContainer">#881337</item>
 
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/brand_red</item>
@@ -80,6 +82,8 @@
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">center</item>
         <item name="android:minWidth">0dp</item>
-        <item name="android:paddingHorizontal">10dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="cornerRadius">14dp</item>
+        <item name="android:minHeight">48dp</item>
     </style>
 </resources>

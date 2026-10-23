@@ -40,7 +40,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Meta info"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="12sp" />
+                android:textSize="@dimen/text_size_body_small" />
         </LinearLayout>
 
         <TextView

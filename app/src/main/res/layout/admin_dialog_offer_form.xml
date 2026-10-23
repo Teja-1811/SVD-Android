@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="Offer name"
-            app:boxBackgroundMode="outline">
+            app:boxBackgroundMode="outline" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etOfferName"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Description"
-            app:boxBackgroundMode="outline">
+            app:boxBackgroundMode="outline" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etOfferDescription"
@@ -68,7 +68,7 @@
             android:layout_marginTop="12dp"
             android:hint="Offer price"
             app:boxBackgroundMode="outline"
-            app:prefixText="₹">
+            app:prefixText="₹" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etOfferPrice"
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Start date (YYYY-MM-DD)"
-            app:boxBackgroundMode="outline">
+            app:boxBackgroundMode="outline" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etOfferStartDate"
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="End date (YYYY-MM-DD)"
-            app:boxBackgroundMode="outline">
+            app:boxBackgroundMode="outline" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etOfferEndDate"

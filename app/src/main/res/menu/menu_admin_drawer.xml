@@ -66,7 +66,7 @@
 
     <item
         android:id="@+id/nav_dues"
-        android:title="Dues"
+        android:title="Company Dues"
         android:icon="@drawable/ic_payments"/>
 
     <item
@@ -91,7 +91,7 @@
 
     <item
         android:id="@+id/nav_payments"
-        android:title="Payments"
+        android:title="Customer Payments"
         android:icon="@drawable/ic_payments"/>
 
     <item
@@ -101,4 +101,10 @@
 
     <item android:id="@+id/nav_gst" android:title="GST Summary" android:icon="@drawable/ic_bill"/>
     <item android:id="@+id/nav_purchase_reports" android:title="Purchase Reports" android:icon="@drawable/ic_calendar"/>
+    <item android:id="@+id/nav_tools_appearance"
+        android:title="@string/tools_appearance" android:icon="@drawable/ic_items" />
+<item android:id="@+id/nav_new_bill" android:title="New Bill" android:icon="@drawable/ic_bill" />
+<item android:id="@+id/nav_users" android:title="Users" android:icon="@drawable/ic_users" />
+<item android:id="@+id/nav_offer_usage" android:title="Offer Usage" android:icon="@drawable/ic_orders" />
+<item android:id="@+id/nav_subscription_report" android:title="Subscriptions" android:icon="@drawable/ic_orders" />
 </menu>

@@ -45,7 +45,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"
                             app:cardBackgroundColor="@color/card_background"
-                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:strokeColor="@color/card_stroke_color"
                             app:strokeWidth="1dp">
@@ -63,7 +63,7 @@
                                     android:text="Billing Period"
                                     android:textAllCaps="true"
                                     android:textColor="@color/textColorSecondary"
-                                    android:textSize="12sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -75,10 +75,10 @@
                                     android:paddingHorizontal="16dp"
                                     android:text="February, 2025"
                                     android:textColor="@color/textColorPrimary"
-                                    android:textSize="12sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     android:textStyle="bold"
                                     app:drawableEndCompat="@drawable/ic_calendar"
-                                    app:drawableTint="@color/brand_red" />
+                                    app:drawableTint="?attr/colorPrimary" />
                             </LinearLayout>
                         </com.google.android.material.card.MaterialCardView>
 
@@ -97,9 +97,9 @@
                                 android:layout_columnWeight="1"
                                 android:layout_margin="4dp"
                                 app:cardBackgroundColor="@color/payment_invoice_bg"
-                                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                                app:cardCornerRadius="@dimen/card_corner_radius_medium"
                                 app:cardElevation="0dp"
-                                app:strokeColor="@color/payment_invoice_text"
+                                app:strokeColor="@color/card_stroke_color"
                                 app:strokeWidth="1dp">
 
                                 <LinearLayout
@@ -136,9 +136,9 @@
                                 android:layout_columnWeight="1"
                                 android:layout_margin="4dp"
                                 app:cardBackgroundColor="@color/payment_paid_bg"
-                                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                                app:cardCornerRadius="@dimen/card_corner_radius_medium"
                                 app:cardElevation="0dp"
-                                app:strokeColor="@color/payment_paid_text"
+                                app:strokeColor="@color/card_stroke_color"
                                 app:strokeWidth="1dp">
 
                                 <LinearLayout
@@ -175,9 +175,9 @@
                                 android:layout_columnWeight="1"
                                 android:layout_margin="4dp"
                                 app:cardBackgroundColor="@color/payment_due_bg"
-                                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                                app:cardCornerRadius="@dimen/card_corner_radius_medium"
                                 app:cardElevation="0dp"
-                                app:strokeColor="@color/payment_due_text"
+                                app:strokeColor="@color/card_stroke_color"
                                 app:strokeWidth="1dp">
 
                                 <LinearLayout
@@ -214,9 +214,9 @@
                                 android:layout_columnWeight="1"
                                 android:layout_margin="4dp"
                                 app:cardBackgroundColor="@color/payment_advance_bg"
-                                app:cardCornerRadius="@dimen/card_corner_radius_small"
+                                app:cardCornerRadius="@dimen/card_corner_radius_medium"
                                 app:cardElevation="0dp"
-                                app:strokeColor="@color/payment_advance_text"
+                                app:strokeColor="@color/card_stroke_color"
                                 app:strokeWidth="1dp">
 
                                 <LinearLayout
@@ -278,7 +278,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:backgroundTint="@color/brand_red"
+                app:backgroundTint="?attr/colorPrimary"
                 app:cornerRadius="16dp"
                 app:elevation="4dp"
                 app:icon="@drawable/ic_save"
@@ -292,7 +292,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/card_background"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"
         app:itemTextColor="@color/drawer_nav_item_colors"

@@ -40,4 +40,6 @@
         android:id="@+id/nav_logout"
         android:icon="@drawable/ic_logout"
         android:title="Logout" />
+    <item android:id="@+id/nav_tools_appearance"
+        android:title="@string/tools_appearance" android:icon="@drawable/ic_items" />
 </menu>

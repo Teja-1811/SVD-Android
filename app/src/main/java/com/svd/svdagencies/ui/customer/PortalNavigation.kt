@@ -89,6 +89,7 @@ object PortalNavigation {
                 return@setNavigationItemSelectedListener true
             }
             val target = when (item.itemId) {
+                R.id.nav_tools_appearance -> com.svd.svdagencies.ui.ToolsActivity::class.java
                 R.id.nav_terms -> TermsConditionsActivity::class.java
                 R.id.nav_company -> CustomerCompanyDetailsActivity::class.java
                 R.id.nav_profile -> CustomerProfileActivity::class.java

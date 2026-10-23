@@ -63,7 +63,7 @@
             android:id="@+id/tvDialogTotalAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/brand_red"
+            android:textColor="?attr/colorPrimary"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:text="₹ 450.00" />
@@ -78,7 +78,7 @@
         android:text="Close"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        app:backgroundTint="@color/brand_red"
+        app:backgroundTint="?attr/colorPrimary"
         app:cornerRadius="12dp" />
 
 </LinearLayout>

@@ -15,15 +15,19 @@ import com.svd.svdagencies.utils.LoadingOverlayManager
 
 open class BaseActivity : AppCompatActivity() {
 
+    private var appliedPalette = -1
+
     lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        appliedPalette = com.svd.svdagencies.utils.Appearance.selected(this)
+        setTheme(com.svd.svdagencies.utils.Appearance.theme(this))
         super.onCreate(savedInstanceState)
         prefs = getSharedPreferences("svd_session", MODE_PRIVATE)
         
         // Enable Edge-to-Edge to correctly handle Keyboard Insets
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = getColor(com.svd.svdagencies.R.color.brand_red)
+        window.statusBarColor = com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorPrimary, android.graphics.Color.BLACK)
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
 
         // Ensure content is always above the keyboard
@@ -50,6 +54,10 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (appliedPalette != com.svd.svdagencies.utils.Appearance.selected(this)) {
+            recreate()
+            return
+        }
         val session = com.svd.svdagencies.utils.SessionManager(this)
         if (!session.getToken().isNullOrBlank() && session.consumeNotificationPermissionPrompt()) {
             com.svd.svdagencies.notifications.PushRegistrationManager.requestPermissionIfNeeded(this)

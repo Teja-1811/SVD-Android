@@ -35,7 +35,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CustomersData : AdminBaseActivity() {
+open class CustomersData : AdminBaseActivity() {
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var rvCustomers: androidx.recyclerview.widget.RecyclerView
@@ -64,6 +64,10 @@ class CustomersData : AdminBaseActivity() {
         api = ApiClient.adminCustomerDashboard
 
         initViews()
+        if (this is AdminUsersActivity) {
+            selectedType = "user"
+            findViewById<com.google.android.material.chip.ChipGroup>(R.id.chipGroupCustomerType).check(R.id.chipUser)
+        }
         setupListeners()
     }
 
@@ -237,8 +241,8 @@ class CustomersData : AdminBaseActivity() {
         val currentDue = customer.due ?: 0.0
 
         txtName.text = customer.name
-        txtBalance.text = "₹ %.2f".format(currentDue)
-        txtRemainingDue.text = "₹ %.2f".format(currentDue)
+        txtBalance.text = "â‚¹ %.2f".format(currentDue)
+        txtRemainingDue.text = "â‚¹ %.2f".format(currentDue)
 
         val dismissListener = View.OnClickListener { dialog.dismiss() }
         btnCancel.setOnClickListener(dismissListener)
@@ -248,7 +252,7 @@ class CustomersData : AdminBaseActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val paying = s.toString().toDoubleOrNull() ?: 0.0
-                txtRemainingDue.text = "₹ %.2f".format((currentDue - paying).coerceAtLeast(0.0))
+                txtRemainingDue.text = "â‚¹ %.2f".format((currentDue - paying).coerceAtLeast(0.0))
             }
 
             override fun afterTextChanged(s: Editable?) = Unit

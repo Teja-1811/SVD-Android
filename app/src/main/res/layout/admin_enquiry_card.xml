@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
-    app:cardCornerRadius="@dimen/card_corner_radius_small"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:cardElevation="0dp"
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="2024-05-20"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_body_small"
                 tools:text="2024-05-20 14:30" />
         </LinearLayout>
 
@@ -61,7 +61,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_users"
-                app:tint="@color/brand_red" />
+                app:tint="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/tvName"
@@ -86,7 +86,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_phone"
-                app:tint="@color/brand_red" />
+                app:tint="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/tvPhone"
@@ -154,7 +154,7 @@
             android:paddingVertical="4dp"
             android:text="RESOLVED"
             android:textColor="@color/white"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_size_body_small"
             android:textStyle="bold"
             android:visibility="gone"
             tools:visibility="visible" />

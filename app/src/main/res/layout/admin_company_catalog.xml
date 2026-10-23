@@ -16,7 +16,7 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/brand_red">
+            android:background="?attr/colorPrimary">
 
             <include layout="@layout/admin_toolbar" />
 
@@ -76,7 +76,7 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/card_background"
+        android:background="@color/white"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"

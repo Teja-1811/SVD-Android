@@ -22,9 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/window_background"
-            app:tabIndicatorColor="@color/brand_red"
+            app:tabIndicatorColor="?attr/colorPrimary"
             app:tabIndicatorHeight="3dp"
-            app:tabSelectedTextColor="@color/brand_red"
+            app:tabSelectedTextColor="?attr/colorPrimary"
             app:tabTextColor="@color/textColorSecondary">
 
             <com.google.android.material.tabs.TabItem
@@ -100,7 +100,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/card_background"
+        android:background="@color/white"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"
         app:itemTextColor="@color/drawer_nav_item_colors"

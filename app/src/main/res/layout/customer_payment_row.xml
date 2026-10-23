@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="12 Oct 2023, 10:30 AM"
             android:textColor="@color/textColorSecondary"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_body_small"
             app:layout_constraintEnd_toStartOf="@id/tvStatus"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +36,7 @@
             android:paddingVertical="2dp"
             android:text="SUCCESS"
             android:textColor="@color/white"
-            android:textSize="10sp"
+            android:textSize="@dimen/text_size_body_small"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="₹1,250.00"
-            android:textColor="@color/brand_red"
+            android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/tvPaymentFor"
@@ -73,7 +73,7 @@
             android:layout_marginTop="4dp"
             android:text="Method: Cash"
             android:textColor="@color/textColorSecondary"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_body_small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPaymentFor" />
 
@@ -84,7 +84,7 @@
             android:layout_marginTop="2dp"
             android:text="TXN: 9876543210"
             android:textColor="@color/textColorSecondary"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_body_small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPaymentMethod" />
 

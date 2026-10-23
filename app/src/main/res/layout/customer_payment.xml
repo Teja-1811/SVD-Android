@@ -45,9 +45,9 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="2dp"
-                app:strokeColor="@color/divider_line"
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/card_stroke_color"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -70,7 +70,7 @@
                             android:layout_height="wrap_content"
                             android:text="Outstanding Due"
                             android:textColor="@color/textColorSecondary"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/text_size_body_small" />
 
                         <TextView
                             android:id="@+id/tvCurrentDue"
@@ -78,7 +78,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="₹0.00"
-                            android:textColor="@color/brand_red"
+                            android:textColor="?attr/colorPrimary"
                             android:textSize="22sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -103,7 +103,7 @@
                             android:layout_height="wrap_content"
                             android:text="Advance Wallet"
                             android:textColor="@color/textColorSecondary"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/text_size_body_small" />
 
                         <TextView
                             android:id="@+id/tvCurrentBalance"
@@ -133,9 +133,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="20dp"
+                app:cardCornerRadius="@dimen/card_corner_radius_medium"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/divider_line"
+                app:strokeColor="@color/card_stroke_color"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
@@ -201,7 +201,7 @@
                         android:drawablePadding="8dp"
                         android:text="Secure UPI Payment"
                         android:textColor="@color/textColorSecondary"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         app:drawableTint="@color/icon_green" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -245,7 +245,7 @@
                         android:layout_marginHorizontal="8dp"
                         android:text="OCT 2023"
                         android:textColor="@color/brand_blue"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_body_small"
                         android:textStyle="bold" />
 
                     <ImageButton

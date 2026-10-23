@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="20dp"
     android:layout_marginVertical="4dp"
-    app:cardCornerRadius="@dimen/card_corner_radius_small"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:cardElevation="0dp"
     app:cardBackgroundColor="@color/card_background"
     app:strokeWidth="1dp"
@@ -52,7 +52,7 @@
                 android:background="@drawable/bg_badge_blue"
                 android:text="93"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_body_small"
                 android:textStyle="bold"
                 android:gravity="center" />
         </LinearLayout>
@@ -70,7 +70,7 @@
                 android:layout_weight="1"
                 android:text="Pcs / crate: 12"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="12sp" />
+                android:textSize="@dimen/text_size_body_small" />
 
             <TextView
                 android:id="@+id/tvBuyingPrice"
@@ -80,7 +80,7 @@
                 android:gravity="end"
                 android:text="Buying: 10.000"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="12sp" />
+                android:textSize="@dimen/text_size_body_small" />
         </LinearLayout>
 
         <LinearLayout
@@ -102,7 +102,7 @@
                     android:layout_marginBottom="4dp"
                     android:text="Crates received"
                     android:textColor="@color/textColorSecondary"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/text_size_body_small"
                     android:textStyle="bold" />
 
                 <EditText
@@ -131,7 +131,7 @@
                     android:layout_marginBottom="4dp"
                     android:text="Discount (% Dodla / ₹ per piece for others)"
                     android:textColor="@color/textColorSecondary"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/text_size_body_small"
                     android:textStyle="bold" />
 
                 <EditText

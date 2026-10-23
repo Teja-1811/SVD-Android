@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="Full Cream Milk 120 ML"
         android:textColor="@color/textColorPrimary"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_size_body_small"
         android:paddingStart="8dp"
         android:maxLines="2"
         android:ellipsize="end"/>
@@ -26,7 +26,7 @@
         android:background="@drawable/bg_badge_blue"
         android:text="0"
         android:textColor="@color/white"
-        android:textSize="11sp"
+        android:textSize="@dimen/text_size_body_small"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginHorizontal="2dp"/>
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:text="74.550"
         android:textColor="@color/textColorPrimary"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_size_body_small"
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginHorizontal="2dp"/>
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:text="₹285.60"
         android:textColor="@color/icon_green"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_size_body_small"
         android:textStyle="bold"
         android:gravity="center"
         android:paddingEnd="4dp"/>

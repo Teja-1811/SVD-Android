@@ -15,7 +15,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/brand_red"
+            android:background="?attr/colorPrimary"
             app:elevation="0dp">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -51,9 +51,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
                         app:cardBackgroundColor="@color/white"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
                         app:cardElevation="0dp"
-                        app:strokeWidth="0dp">
+                        app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -68,8 +68,8 @@
                                 android:layout_height="48dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
                                 android:src="@drawable/ic_back_arrow"
-                                android:tint="@color/brand_red"
-                                app:tint="@color/brand_red"
+                                android:tint="?attr/colorPrimary"
+                                app:tint="?attr/colorPrimary"
                                 android:contentDescription="Previous Month" />
 
                             <TextView
@@ -89,8 +89,8 @@
                                 android:layout_height="48dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
                                 android:src="@drawable/ic_arrow_forward"
-                                android:tint="@color/brand_red"
-                                app:tint="@color/brand_red"
+                                android:tint="?attr/colorPrimary"
+                                app:tint="?attr/colorPrimary"
                                 android:contentDescription="Next Month" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -128,9 +128,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="32dp"
                         app:cardBackgroundColor="@color/white"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
                         app:cardElevation="0dp"
-                        app:strokeWidth="0dp">
+                        app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
 
                         <LinearLayout
                             android:id="@+id/listContainer"

@@ -11,7 +11,7 @@
     </LinearLayout>
     <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="false">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp" android:paddingTop="8dp">
-            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" app:cardBackgroundColor="#EFF8F5" app:cardCornerRadius="16dp" app:strokeWidth="0dp" app:cardElevation="0dp">
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" app:cardBackgroundColor="#EFF8F5" app:cardCornerRadius="@dimen/card_corner_radius_medium" app:strokeWidth="1dp" app:cardElevation="0dp" app:strokeColor="@color/card_stroke_color">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="18dp" android:orientation="vertical">
                     <TextView android:id="@+id/subPlanName" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="18sp" android:textStyle="bold" android:textColor="#17323A" />
                     <TextView android:id="@+id/subSchedule" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:textSize="13sp" android:textColor="#526670" />

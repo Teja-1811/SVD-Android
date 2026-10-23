@@ -43,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="14dp"
                         app:cardBackgroundColor="@color/card_background"
-                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
                         app:cardElevation="0dp"
                         app:strokeColor="@color/card_stroke_color"
                         app:strokeWidth="1dp">
@@ -69,7 +69,7 @@
                                 android:layout_marginTop="2dp"
                                 android:text="Saved crates for selected date."
                                 android:textColor="@color/textColorSecondary"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/text_size_body_small" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -104,7 +104,7 @@
                                     android:textColor="@color/white"
                                     android:textSize="13sp"
                                     android:textStyle="bold"
-                                    app:backgroundTint="@color/brand_red"
+                                    app:backgroundTint="?attr/colorPrimary"
                                     app:cornerRadius="8dp" />
                             </LinearLayout>
 
@@ -141,7 +141,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:layout_columnWeight="1"
                             app:strokeWidth="1dp"
@@ -168,7 +168,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Total Items"
                                         android:textColor="@color/textColorSecondary"
-                                        android:textSize="10sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         android:textStyle="bold"
                                         android:textAllCaps="true"/>
 
@@ -199,7 +199,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:layout_columnWeight="1"
                             app:strokeWidth="1dp"
@@ -226,7 +226,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Total Stock Value"
                                         android:textColor="@color/textColorSecondary"
-                                        android:textSize="10sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         android:textStyle="bold"
                                         android:textAllCaps="true"/>
 
@@ -257,7 +257,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:layout_columnWeight="1"
                             app:strokeWidth="1dp"
@@ -284,7 +284,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Low Stock Items"
                                         android:textColor="@color/textColorSecondary"
-                                        android:textSize="10sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         android:textStyle="bold"
                                         android:textAllCaps="true"/>
 
@@ -315,7 +315,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:layout_columnWeight="1"
                             app:strokeWidth="1dp"
@@ -342,7 +342,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="30-Day Movement"
                                         android:textColor="@color/textColorSecondary"
-                                        android:textSize="10sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         android:textStyle="bold"
                                         android:textAllCaps="true"/>
 
@@ -358,7 +358,7 @@
                                             android:layout_height="wrap_content"
                                             android:text="In: 0"
                                             android:textColor="@color/icon_green"
-                                            android:textSize="10sp"
+                                            android:textSize="@dimen/text_size_body_small"
                                             android:textStyle="bold" />
 
                                         <TextView
@@ -366,15 +366,15 @@
                                             android:layout_height="wrap_content"
                                             android:text=" | "
                                             android:textColor="@color/textColorSecondary"
-                                            android:textSize="10sp" />
+                                            android:textSize="@dimen/text_size_body_small" />
 
                                         <TextView
                                             android:id="@+id/tvMovementOut"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:text="Out: 0"
-                                            android:textColor="@color/brand_red"
-                                            android:textSize="10sp"
+                                            android:textColor="?attr/colorPrimary"
+                                            android:textSize="@dimen/text_size_body_small"
                                             android:textStyle="bold" />
                                     </LinearLayout>
                                 </LinearLayout>
@@ -395,7 +395,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            app:cardCornerRadius="8dp"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:layout_columnWeight="1"
                             app:strokeWidth="1dp"
@@ -414,7 +414,7 @@
                                     android:text="Monthly Leakage Loss"
                                     android:textAllCaps="true"
                                     android:textColor="@color/textColorSecondary"
-                                    android:textSize="10sp"
+                                    android:textSize="@dimen/text_size_body_small"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -423,7 +423,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="4dp"
                                     android:text="Rs. 0.00"
-                                    android:textColor="@color/brand_red"
+                                    android:textColor="?attr/colorPrimary"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -442,7 +442,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"
-                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:strokeWidth="1dp"
                             app:strokeColor="@color/card_stroke_color"
@@ -490,7 +490,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="16dp"
-                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:strokeWidth="1dp"
                             app:strokeColor="@color/card_stroke_color"
@@ -539,7 +539,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="24dp"
-                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
                         app:strokeColor="@color/card_stroke_color"
@@ -599,7 +599,7 @@
                                             android:layout_height="wrap_content"
                                             android:text="ITEM"
                                             android:textColor="@color/white"
-                                            android:textSize="11sp"
+                                            android:textSize="@dimen/text_size_body_small"
                                             android:textStyle="bold"
                                             android:paddingStart="8dp" />
 
@@ -608,7 +608,7 @@
                                             android:layout_height="wrap_content"
                                             android:text="CURRENT"
                                             android:textColor="@color/white"
-                                            android:textSize="11sp"
+                                            android:textSize="@dimen/text_size_body_small"
                                             android:textStyle="bold"
                                             android:gravity="center" />
 
@@ -617,7 +617,7 @@
                                             android:layout_height="wrap_content"
                                             android:text="BUYING"
                                             android:textColor="@color/white"
-                                            android:textSize="11sp"
+                                            android:textSize="@dimen/text_size_body_small"
                                             android:textStyle="bold"
                                             android:gravity="center" />
 
@@ -626,7 +626,7 @@
                                             android:layout_height="wrap_content"
                                             android:text="VALUE"
                                             android:textColor="@color/white"
-                                            android:textSize="11sp"
+                                            android:textSize="@dimen/text_size_body_small"
                                             android:textStyle="bold"
                                             android:gravity="center" />
                                     </LinearLayout>
@@ -649,7 +649,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="24dp"
                         app:cardBackgroundColor="@color/card_background"
-                        app:cardCornerRadius="@dimen/card_corner_radius_small"
+                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
                         app:cardElevation="0dp"
                         app:strokeColor="@color/card_stroke_color"
                         app:strokeWidth="1dp">
@@ -689,10 +689,10 @@
                                         android:insetBottom="0dp"
                                         android:text="Report"
                                         android:textAllCaps="false"
-                                        android:textColor="@color/brand_red"
+                                        android:textColor="?attr/colorPrimary"
                                         android:textStyle="bold"
                                         app:cornerRadius="8dp"
-                                        app:strokeColor="@color/brand_red"
+                                        app:strokeColor="?attr/colorPrimary"
                                         app:strokeWidth="1dp" />
 
                                     <com.google.android.material.button.MaterialButton
@@ -707,7 +707,7 @@
                                         android:textAllCaps="false"
                                         android:textColor="@color/white"
                                         android:textStyle="bold"
-                                        app:backgroundTint="@color/brand_red"
+                                        app:backgroundTint="?attr/colorPrimary"
                                         app:cornerRadius="8dp" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -751,7 +751,7 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
+        android:background="@color/white"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"

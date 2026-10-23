@@ -56,6 +56,12 @@
         <activity android:name=".ui.auth.LoginActivity" />
         <activity android:name=".ui.auth.RegistrationActivity" />
 
+        <activity android:name=".ui.ToolsActivity" android:exported="false" />
+        <activity android:name=".ui.WebToolsActivity" android:exported="false" />
+
+        <activity android:name=".ui.admin.AdminOfferUsageActivity" android:exported="false" />
+        <activity android:name=".ui.admin.AdminSubscriptionsReportActivity" android:exported="false" />
+        <activity android:name=".ui.admin.customer.AdminUsersActivity" android:exported="false" />
         <!-- Admin -->
         <activity android:name=".ui.admin.AdminDashboardActivity"/>
         <activity android:name=".ui.admin.customer.CustomersData"/>

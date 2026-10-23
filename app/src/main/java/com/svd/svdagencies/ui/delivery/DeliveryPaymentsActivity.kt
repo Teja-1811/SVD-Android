@@ -106,13 +106,12 @@ class DeliveryPaymentsActivity : DeliveryReportBaseActivity() {
             }
             binding.tvStatus.setBackgroundResource(statusBg)
 
-            try {
-                item.createdAt?.let {
-                    val date = inputFormat.parse(it)
-                    binding.tvPaymentDate.text = outputFormat.format(date)
-                }
-            } catch (e: Exception) {
-                binding.tvPaymentDate.text = item.createdAt ?: "N/A"
+            binding.tvPaymentDate.text = try {
+                item.createdAt?.let { timestamp ->
+                    inputFormat.parse(timestamp)?.let { outputFormat.format(it) } ?: timestamp
+                } ?: "N/A"
+            } catch (e: java.text.ParseException) {
+                item.createdAt ?: "N/A"
             }
 
             listContainer.addView(binding.root)

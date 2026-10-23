@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/card_background"
-    app:cardCornerRadius="@dimen/card_corner_radius_large"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:cardElevation="0dp"
-    app:strokeWidth="0dp">
+    app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             android:text="Choose Action"
             android:textAllCaps="true"
             android:textColor="@color/customer_badge_text"
-            android:textSize="10sp"
+            android:textSize="@dimen/text_size_body_small"
             android:textStyle="bold" />
 
         <TextView
@@ -65,7 +65,7 @@
             android:textAllCaps="false"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/brand_red"
+            app:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="@dimen/card_corner_radius_large" />
 
         <com.google.android.material.button.MaterialButton
@@ -76,11 +76,11 @@
             android:layout_marginTop="12dp"
             android:text="Register"
             android:textAllCaps="false"
-            android:textColor="@color/brand_red"
+            android:textColor="?attr/colorPrimary"
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="@dimen/card_corner_radius_large"
-            app:strokeColor="@color/brand_red" />
+            app:strokeColor="?attr/colorPrimary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
             android:alpha="0.6"
             android:text="By continuing, you agree to our Terms"
             android:textColor="@color/textColorSecondary"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_size_body_small" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

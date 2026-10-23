@@ -42,7 +42,7 @@
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="8dp"
                             app:cardBackgroundColor="@color/card_background"
-                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:strokeColor="@color/card_stroke_color"
                             app:strokeWidth="1dp">
@@ -85,7 +85,7 @@
                                         android:padding="10dp"
                                         android:text="Items: 0"
                                         android:textColor="@color/textColorPrimary"
-                                        android:textSize="12sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         android:textStyle="bold" />
 
                                     <TextView
@@ -98,7 +98,7 @@
                                         android:padding="10dp"
                                         android:text="Entries: 0"
                                         android:textColor="@color/textColorPrimary"
-                                        android:textSize="12sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         android:textStyle="bold" />
 
                                     <TextView
@@ -111,7 +111,7 @@
                                         android:padding="10dp"
                                         android:text="Rs. 0.00"
                                         android:textColor="@color/textColorPrimary"
-                                        android:textSize="12sp"
+                                        android:textSize="@dimen/text_size_body_small"
                                         android:textStyle="bold" />
                                 </LinearLayout>
 
@@ -141,7 +141,7 @@
                                         android:layout_marginEnd="8dp"
                                         android:layout_weight="1"
                                         app:boxBackgroundColor="@color/editTextBackground"
-                                        app:hintEnabled="false">
+                                        app:hintEnabled="false" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
                                         <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
                                             android:id="@+id/spinnerCompanyFilter"
@@ -186,7 +186,7 @@
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginBottom="8dp"
                             app:cardBackgroundColor="@color/card_background"
-                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:strokeColor="@color/card_stroke_color"
                             app:strokeWidth="1dp">
@@ -231,7 +231,7 @@
                             android:layout_marginHorizontal="16dp"
                             android:layout_marginBottom="8dp"
                             app:cardBackgroundColor="@color/card_background"
-                            app:cardCornerRadius="@dimen/card_corner_radius_small"
+                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
                             app:cardElevation="0dp"
                             app:strokeColor="@color/card_stroke_color"
                             app:strokeWidth="1dp">
@@ -290,7 +290,7 @@
                         android:paddingHorizontal="32dp"
                         android:text="Update Stock Levels"
                         android:textAllCaps="false"
-                        android:backgroundTint="@color/brand_red"
+                        android:backgroundTint="?attr/colorPrimary"
                         app:cornerRadius="26dp"
                         android:textSize="15sp"
                         android:textStyle="bold"
@@ -314,7 +314,7 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
+        android:background="@color/white"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"

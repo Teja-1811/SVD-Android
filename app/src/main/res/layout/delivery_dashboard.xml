@@ -15,7 +15,7 @@
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/brand_red"
+        android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"
@@ -74,7 +74,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/ic_calendar"
-                    app:tint="@color/brand_red" />
+                    app:tint="?attr/colorPrimary" />
 
                 <TextView
                     android:id="@+id/tvSelectedDate"
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:text="2024-01-01"
-                    android:textColor="@color/brand_red"
+                    android:textColor="?attr/colorPrimary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -135,7 +135,7 @@
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/card_corner_radius_medium"
                     app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+                    app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -169,7 +169,7 @@
                                 android:gravity="center"
                                 android:text="Generated Bills\n0"
                                 android:textColor="@color/textColorPrimary"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -182,7 +182,7 @@
                                 android:gravity="center"
                                 android:text="Bill Amount\nRs. 0.00"
                                 android:textColor="@color/icon_orange"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -203,7 +203,7 @@
                                 android:gravity="center"
                                 android:text="Paid\nRs. 0.00"
                                 android:textColor="@color/brand_blue"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -215,8 +215,8 @@
                                 android:background="@drawable/bg_dashboard_chip"
                                 android:gravity="center"
                                 android:text="Need To Submit\nRs. 0.00"
-                                android:textColor="@color/brand_red"
-                                android:textSize="12sp"
+                                android:textColor="?attr/colorPrimary"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -237,7 +237,7 @@
                                 android:gravity="center"
                                 android:text="Total Profit\nRs. 0.00"
                                 android:textColor="@color/icon_green"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -250,7 +250,7 @@
                                 android:gravity="center"
                                 android:text="Collected\nRs. 0.00"
                                 android:textColor="@color/brand_blue"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -271,7 +271,7 @@
                                 android:gravity="center"
                                 android:text="Salary Earned\nRs. 0.00"
                                 android:textColor="@color/icon_green"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -284,7 +284,7 @@
                                 android:gravity="center"
                                 android:text="Salary Paid\nRs. 0.00"
                                 android:textColor="@color/icon_orange"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -297,7 +297,7 @@
                             android:gravity="center"
                             android:text="Pending Salary\nRs. 0.00"
                             android:textColor="@color/brand_blue"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/text_size_body_small"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -317,7 +317,7 @@
                                 android:gravity="center"
                                 android:text="Customer Bills\n0"
                                 android:textColor="@color/icon_green"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -330,7 +330,7 @@
                                 android:gravity="center"
                                 android:text="Self Bills\n0"
                                 android:textColor="@color/icon_orange"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/text_size_body_small"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -343,7 +343,7 @@
                             android:gravity="center"
                             android:text="Items Sale\nRs. 0.00"
                             android:textColor="@color/icon_green"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/text_size_body_small"
                             android:textStyle="bold" />
 
                         <TextView

@@ -20,7 +20,7 @@
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         android:text="Category"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_size_body_small"
         android:textColor="@color/textColorPrimary"
         android:textAllCaps="true"
         android:textStyle="bold"/>

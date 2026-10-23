@@ -1,6 +1,7 @@
 package com.svd.svdagencies.ui.delivery
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Intent
 import android.widget.ImageButton
 import androidx.core.view.GravityCompat
@@ -41,6 +42,7 @@ object DeliveryNavigation {
             }
 
             val target = when (item.itemId) {
+                R.id.nav_tools_appearance -> com.svd.svdagencies.ui.ToolsActivity::class.java
                 R.id.nav_delivery_home -> DeliveryBillToCustomerActivity::class.java
                 R.id.nav_delivery_stock_entry -> DeliveryStockEntryActivity::class.java
                 R.id.nav_delivery_catalog -> DeliveryCatalogActivity::class.java
@@ -57,8 +59,7 @@ object DeliveryNavigation {
                     val intent = Intent(activity, it).apply {
                         addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     }
-                    activity.startActivity(intent)
-                    activity.overridePendingTransition(0, 0)
+                    activity.startActivity(intent, ActivityOptions.makeCustomAnimation(activity, 0, 0).toBundle())
                 }
             }
             true

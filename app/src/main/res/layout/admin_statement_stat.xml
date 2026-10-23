@@ -4,7 +4,7 @@
     android:orientation="vertical" android:background="@drawable/bg_statement_stat"
     android:padding="12dp" android:minHeight="70dp">
     <TextView android:id="@+id/tvStatLabel" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:textSize="10sp"
+        android:layout_height="wrap_content" android:textSize="@dimen/text_size_body_small"
         android:textColor="#657985" android:letterSpacing="0.06" />
     <TextView android:id="@+id/tvStatValue" android:layout_width="match_parent"
         android:layout_height="wrap_content" android:layout_marginTop="5dp"

@@ -42,10 +42,10 @@
                         android:layout_marginBottom="@dimen/spacing_small"
                         app:hintEnabled="false"
                         app:boxBackgroundColor="?attr/colorSurface"
-                        app:boxCornerRadiusBottomEnd="4dp"
-                        app:boxCornerRadiusBottomStart="4dp"
-                        app:boxCornerRadiusTopEnd="4dp"
-                        app:boxCornerRadiusTopStart="4dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         app:boxStrokeColor="?attr/colorOutline">
 
                         <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
@@ -114,7 +114,7 @@
                             android:contentDescription="Generate bill"
                             android:src="@drawable/ic_add"
                             app:fabSize="mini"
-                            app:backgroundTint="@color/brand_red"
+                            app:backgroundTint="?attr/colorPrimary"
                             app:tint="@color/white" />
 
                         <Button
@@ -124,7 +124,7 @@
                             android:layout_weight="1"
                             android:text="Search"
                             android:textAllCaps="true"
-                            android:backgroundTint="@color/brand_red" />
+                            android:backgroundTint="?attr/colorPrimary" />
 
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnClearBillFilters"
@@ -196,7 +196,7 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/card_background"
+        android:background="@color/white"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"

@@ -25,7 +25,7 @@
             android:text="01 Jul"
             android:textColor="@color/textColorPrimary"
             android:textStyle="bold"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_body_small"
             android:gravity="start|center_vertical"/>
 
         <!-- Invoice (Bold Label) -->
@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:text="₹400.00"
             android:textColor="@color/textColorPrimary"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_body_small"
             android:textStyle="bold"
             android:gravity="center"/>
 
@@ -55,7 +55,7 @@
             android:paddingHorizontal="4dp"
             android:saveEnabled="false"
             android:textColor="@color/textColorPrimary"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_body_small"
             android:imeOptions="actionNext"
             android:selectAllOnFocus="true"/>
 
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:text="₹0.00"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_body_small"
                 android:textStyle="bold"/>
         </LinearLayout>
     </LinearLayout>

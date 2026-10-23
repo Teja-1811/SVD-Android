@@ -312,16 +312,20 @@ class AdminItemsActivity : AdminBaseActivity() {
             holder.bind(company, position == selectedPosition)
             
             holder.itemView.setOnClickListener {
-                if (selectedPosition == holder.adapterPosition) {
+                val clickedPosition = holder.bindingAdapterPosition
+                if (clickedPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+
+                val previousPosition = selectedPosition
+                if (previousPosition == clickedPosition) {
                     selectedPosition = -1
+                    notifyItemChanged(previousPosition)
                     onCompanySelected("") // Deselect
                 } else {
-                    val prev = selectedPosition
-                    selectedPosition = holder.adapterPosition
-                    notifyItemChanged(prev)
-                    onCompanySelected(company.name)
+                    selectedPosition = clickedPosition
+                    if (previousPosition != RecyclerView.NO_POSITION) notifyItemChanged(previousPosition)
+                    notifyItemChanged(clickedPosition)
+                    onCompanySelected(companies[clickedPosition].name)
                 }
-                notifyItemChanged(selectedPosition)
             }
         }
 
@@ -372,12 +376,14 @@ class AdminItemsActivity : AdminBaseActivity() {
             holder.bind(category, position == selectedPosition)
             
             holder.itemView.setOnClickListener {
-                if (selectedPosition != holder.adapterPosition) {
-                    val prev = selectedPosition
-                    selectedPosition = holder.adapterPosition
-                    notifyItemChanged(prev)
-                    notifyItemChanged(selectedPosition)
-                    onCategorySelected(category)
+                val clickedPosition = holder.bindingAdapterPosition
+                if (clickedPosition == RecyclerView.NO_POSITION) return@setOnClickListener
+                if (selectedPosition != clickedPosition) {
+                    val previousPosition = selectedPosition
+                    selectedPosition = clickedPosition
+                    if (previousPosition != RecyclerView.NO_POSITION) notifyItemChanged(previousPosition)
+                    notifyItemChanged(clickedPosition)
+                    onCategorySelected(categories[clickedPosition])
                 }
             }
         }

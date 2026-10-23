@@ -8,4 +8,6 @@
     <item android:id="@+id/nav_support" android:title="Contact Support" android:icon="@drawable/ic_phone" />
     <item android:id="@+id/nav_queries" android:title="Raised Queries" android:icon="@drawable/ic_bill" />
     <item android:id="@+id/nav_logout" android:title="Logout" android:icon="@drawable/ic_logout" />
+    <item android:id="@+id/nav_tools_appearance"
+        android:title="@string/tools_appearance" android:icon="@drawable/ic_items" />
 </menu>

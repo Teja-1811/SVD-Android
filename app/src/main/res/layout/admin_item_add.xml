@@ -84,10 +84,10 @@
                     android:hint="Item Name *"
                     android:layout_marginBottom="@dimen/grid_12"
                     app:hintTextAppearance="@style/TextSize11"
-                    app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                    app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                    app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                    app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -103,10 +103,10 @@
                     android:layout_height="wrap_content"
                     android:hint="Item Code"
                     android:layout_marginBottom="@dimen/grid_12"
-                    app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                    app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                    app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                    app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -162,10 +162,10 @@
                         android:layout_weight="1"
                         android:hint="Buying Price"
                         android:layout_marginEnd="@dimen/grid_8"
-                        app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -181,10 +181,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Selling Price"
-                        app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -210,10 +210,10 @@
                         android:layout_weight="1"
                         android:hint="Base Price"
                         android:layout_marginEnd="@dimen/grid_8"
-                        app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -229,10 +229,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="GST %"
-                        app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -257,10 +257,10 @@
                         android:layout_weight="1"
                         android:hint="MRP"
                         android:layout_marginEnd="@dimen/grid_8"
-                        app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -276,10 +276,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="LTR"
-                        app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                        app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -305,7 +305,7 @@
                         android:layout_weight="1"
                         android:hint="Stock Qty"
                         android:layout_marginEnd="@dimen/spacing_small"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStock"
@@ -320,7 +320,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Pcs Count"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etPcs"
@@ -337,10 +337,10 @@
                     android:layout_height="wrap_content"
                     android:hint="Description"
                     android:layout_marginTop="@dimen/grid_12"
-                    app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
-                    app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
-                    app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
-                    app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -396,7 +396,7 @@
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
+        android:background="@color/white"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"

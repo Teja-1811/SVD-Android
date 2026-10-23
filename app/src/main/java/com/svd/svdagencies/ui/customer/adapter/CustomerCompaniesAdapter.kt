@@ -1,7 +1,5 @@
 package com.svd.svdagencies.ui.customer.adapter
 
-import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -53,9 +51,8 @@ class CustomerCompaniesAdapter(
                 val url = company.websiteLink
                 if (!url.isNullOrEmpty()) {
                     try {
-                        val intent = Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(if (url.startsWith("http")) url else "http://$url")
+                        val intent = com.svd.svdagencies.ui.WebToolsActivity.intentForUrl(
+                            binding.root.context, url, company.name
                         )
                         binding.root.context.startActivity(intent)
                     } catch (e: Exception) {

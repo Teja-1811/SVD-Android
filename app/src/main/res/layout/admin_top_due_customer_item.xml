@@ -33,7 +33,7 @@
         android:id="@+id/txtDueAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/brand_red"
+        android:textColor="?attr/colorPrimary"
         android:textSize="@dimen/text_size_medium"
         android:textStyle="bold" />
 

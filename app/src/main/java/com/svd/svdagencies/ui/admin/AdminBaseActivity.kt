@@ -1,5 +1,6 @@
 package com.svd.svdagencies.ui.admin
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -76,6 +77,15 @@ abstract class AdminBaseActivity : BaseActivity() {
                 }
 
                 when (item.itemId) {
+                    R.id.nav_users -> { openAdminDestination(com.svd.svdagencies.ui.admin.customer.AdminUsersActivity::class.java); true }
+                    R.id.nav_offer_usage -> { openAdminDestination(AdminOfferUsageActivity::class.java); true }
+                    R.id.nav_subscription_report -> { openAdminDestination(AdminSubscriptionsReportActivity::class.java); true }
+                    R.id.nav_new_bill -> { openAdminDestination(com.svd.svdagencies.ui.admin.bills.CreateBillActivity::class.java); true }
+
+                    R.id.nav_tools_appearance -> {
+                        openAdminDestination(com.svd.svdagencies.ui.ToolsActivity::class.java)
+                        true
+                    }
                     R.id.nav_home -> {
                         if (this !is AdminDashboardActivity) {
                             openAdminDestination(AdminDashboardActivity::class.java)
@@ -212,7 +222,6 @@ abstract class AdminBaseActivity : BaseActivity() {
         val intent = Intent(this, activityClass).apply {
             addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
-        startActivity(intent)
-        overridePendingTransition(0, 0)
+        startActivity(intent, ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle())
     }
 }

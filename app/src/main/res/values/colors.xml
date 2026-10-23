@@ -11,7 +11,7 @@
     <color name="colorAccent">#FF5252</color>
 
     <!-- Semantic Colors (Light Mode) -->
-    <color name="window_background">#FFFFFF</color>
+    <color name="window_background">#F5F7FB</color>
     <color name="surface_background">#FFFFFF</color>
     <color name="card_background">#FFFFFF</color>
     <color name="status_bar">#B71C1C</color>
@@ -28,8 +28,8 @@
     <color name="brand_blue">#16B5C8</color>
 
     <!-- Text Colors -->
-    <color name="textColorPrimary">#17323A</color>
-    <color name="textColorSecondary">#61727B</color>
+    <color name="textColorPrimary">#183B47</color>
+    <color name="textColorSecondary">#617985</color>
     <color name="gray400">#B9C4C8</color>
     <color name="gray500">#8A989F</color>
     <color name="red600">#E53935</color>
@@ -44,9 +44,9 @@
     <color name="icon_gray_btn">#66777F</color>
 
     <!-- Surface / Background Colors -->
-    <color name="card_stroke_color">#D9E0E2</color>
-    <color name="divider_line">#E3E9EB</color>
-    <color name="surface_variant">#EEF3F4</color>
+    <color name="card_stroke_color">#DFE8EC</color>
+    <color name="divider_line">#DFE8EC</color>
+    <color name="surface_variant">#EDF2F7</color>
     <color name="on_surface_variant">#17323A</color>
 
     <!-- Input Fields -->
@@ -78,7 +78,7 @@
     <color name="chip_unselected_border">#D9E0E2</color>
 
     <!-- Special Backgrounds -->
-    <color name="bg_light_gray">#F4F7F7</color>
+    <color name="bg_light_gray">#F5F7FB</color>
     <color name="bg_light_green">#E8F5E9</color>
 
     <!-- Backgrounds for status/badges (Light Mode) -->
@@ -95,17 +95,17 @@
     <color name="hero_start">#8E1F1F</color>
     <color name="hero_end">#E24A37</color>
     <color name="hero_accent">#FFD8A8</color>
-    <color name="customer_shell_background">#FFFFFF</color>
-    <color name="customer_surface_alt">#FFFFFF</color>
+    <color name="customer_shell_background">#F5F7FB</color>
+    <color name="customer_surface_alt">#F5F7FB</color>
     <color name="customer_positive_bg">#EAF7EE</color>
     <color name="customer_warning_bg">#FFF2E3</color>
     <color name="customer_info_bg">#EEF5FF</color>
     <color name="customer_badge_text">#7A2F14</color>
-    <color name="customer_border_soft">#F0D7CC</color>
+    <color name="customer_border_soft">#DFE8EC</color>
 
     <!-- User Home Fragment Colors -->
-    <color name="text_primary">#17323A</color>
-    <color name="text_secondary">#61727B</color>
+    <color name="text_primary">#183B47</color>
+    <color name="text_secondary">#617985</color>
     <color name="error_red">#D32F2F</color>
     <color name="green_status">#4CAF50</color>
 

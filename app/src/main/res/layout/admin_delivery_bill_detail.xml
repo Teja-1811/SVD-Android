@@ -7,7 +7,7 @@
     android:layout_marginHorizontal="12dp"
     android:layout_marginVertical="8dp"
     app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:cardElevation="0dp"
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/label_invoice_no"
                     android:textColor="@color/textColorSecondary"
-                    android:textSize="11sp" />
+                    android:textSize="@dimen/text_size_body_small" />
                 <TextView
                     android:id="@+id/tvBillNumber"
                     android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/label_date"
                     android:textColor="@color/textColorSecondary"
-                    android:textSize="11sp" />
+                    android:textSize="@dimen/text_size_body_small" />
                 <TextView
                     android:id="@+id/tvBillDate"
                     android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/label_customer_details"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="11sp" />
+                android:textSize="@dimen/text_size_body_small" />
             <TextView
                 android:id="@+id/tvCustomerName"
                 android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                 android:layout_weight="65"
                 android:text="@string/label_item_header"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_body_small"
                 android:textStyle="bold" />
             <TextView
                 android:layout_width="0dp"
@@ -121,7 +121,7 @@
                 android:text="@string/label_qty_header"
                 android:gravity="center"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_body_small"
                 android:textStyle="bold" />
             <TextView
                 android:layout_width="0dp"
@@ -130,7 +130,7 @@
                 android:text="@string/label_total_header"
                 android:gravity="end"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_body_small"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -167,7 +167,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/label_bill_total"
                     android:textColor="@color/textColorSecondary"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/text_size_body_small" />
                 <TextView
                     android:id="@+id/tvBillAmount"
                     android:layout_width="100dp"
