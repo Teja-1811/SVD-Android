@@ -1,0 +1,6 @@
+// Give command-line packaging its own outputs so an IDE clean cannot remove
+// resources while AAPT or Kotlin is reading them.
+gradle.beforeProject { project ->
+    def modulePath = project.path == ':' ? 'root' : project.path.substring(1).replace(':', '/')
+    project.layout.buildDirectory.set(new File(project.rootDir, '.codex-build-output/' + modulePath))
+}
