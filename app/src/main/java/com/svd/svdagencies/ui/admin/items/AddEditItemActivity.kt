@@ -94,12 +94,12 @@ class AddEditItemActivity : AdminBaseActivity() {
                         hideScreenLoading()
                         
                         // Setup Company Spinner
-                        companyAdapter = ArrayAdapter(this@AddEditItemActivity, android.R.layout.simple_spinner_item, companyNames)
+                        companyAdapter = ArrayAdapter(this@AddEditItemActivity, com.svd.svdagencies.R.layout.delivery_dropdown_item, companyNames)
                         companyAdapter.setDropDownViewResource(R.layout.delivery_dropdown_item)
                         binding.spinnerCompany.adapter = companyAdapter
 
                         // Setup Category Spinner
-                        categoryAdapter = ArrayAdapter(this@AddEditItemActivity, android.R.layout.simple_spinner_item, sortedCategories)
+                        categoryAdapter = ArrayAdapter(this@AddEditItemActivity, com.svd.svdagencies.R.layout.delivery_dropdown_item, sortedCategories)
                         categoryAdapter.setDropDownViewResource(R.layout.delivery_dropdown_item)
                         binding.spinnerCategory.adapter = categoryAdapter
 

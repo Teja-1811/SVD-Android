@@ -126,7 +126,7 @@ class DeliveryPaymentsActivity : DeliveryReportBaseActivity() {
         titleView.text = title
         titleView.setTextColor(getColor(R.color.textColorPrimary))
         titleView.setPadding(16, 24, 16, 12)
-        titleView.textSize = 16f
+        titleView.textSize = 14f
         titleView.setTypeface(null, android.graphics.Typeface.BOLD)
         container.addView(titleView)
     }

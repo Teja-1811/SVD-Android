@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:textColor="@color/textColorPrimary"
-            android:textSize="15sp"
+            android:textSize="@dimen/svd_text_label"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/tvMargin"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
             tools:text="Amul Taaza 500ml" />
 
         <!-- MRP SECTION -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:id="@+id/layoutMrp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,10 +56,10 @@
                 android:textColor="@color/gray500"
                 android:textSize="@dimen/text_size_body_small"
                 tools:text="₹28.00" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <!-- ORDER PRICE -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -74,17 +74,17 @@
                 android:layout_height="wrap_content"
                 android:text="Order Price: "
                 android:textColor="@color/textColorPrimary"
-                android:textSize="13sp" />
+                android:textSize="@dimen/svd_text_label" />
 
             <TextView
                 android:id="@+id/tvPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/icon_green"
-                android:textSize="15sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textStyle="bold"
                 tools:text="₹26.50" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <!-- MARGIN BADGE (Top Right) -->
         <TextView

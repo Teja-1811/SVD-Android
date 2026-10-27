@@ -11,13 +11,13 @@
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -44,7 +44,7 @@
                 android:textSize="@dimen/text_size_body_small"
                 android:textStyle="bold"
                 tools:text="active" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <TextView
             android:id="@+id/tvQueryCreatedAt"
@@ -72,5 +72,5 @@
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_size_caption"
             tools:text="9392890375 | svd@example.com" />
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

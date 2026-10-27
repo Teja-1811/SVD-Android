@@ -16,6 +16,9 @@ import com.svd.svdagencies.utils.UserRole
 
 /** Shared account pages retain the portal selected by the authenticated role. */
 object PortalNavigation {
+    fun layoutFor(context: android.content.Context): Int =
+        if (SessionManager(context).getRole() == UserRole.USER) R.layout.user_portal else R.layout.customer
+
     fun homeIntent(activity: AppCompatActivity): Intent {
         val destination = when (SessionManager(activity).getRole()) {
             UserRole.USER -> UserPortalActivity::class.java
@@ -27,7 +30,7 @@ object PortalNavigation {
 
     /** Give standalone account pages the same toolbar and sidebar as the portal. */
     fun installPage(activity: AppCompatActivity, content: View, title: String, selectedItem: Int) {
-        activity.setContentView(R.layout.customer)
+        activity.setContentView(layoutFor(activity))
         val toolbar = activity.findViewById<MaterialToolbar>(R.id.customerToolbar)
         activity.setSupportActionBar(toolbar)
         activity.supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -47,7 +50,7 @@ object PortalNavigation {
     fun configure(activity: AppCompatActivity, selectedItem: Int, onHome: (() -> Unit)? = null) {
         val drawer = activity.findViewById<DrawerLayout>(R.id.customerDrawerLayout) ?: return
         val navigation = activity.findViewById<NavigationView>(R.id.customerNavigationView) ?: return
-        val drawerWhite = android.graphics.Color.WHITE
+        val drawerWhite = androidx.core.content.ContextCompat.getColor(activity, com.svd.svdagencies.R.color.surface_background)
         navigation.elevation = 0f
         navigation.backgroundTintList = android.content.res.ColorStateList.valueOf(drawerWhite)
         (navigation.background as? com.google.android.material.shape.MaterialShapeDrawable)?.apply {
@@ -64,6 +67,7 @@ object PortalNavigation {
         if (navigation.headerCount > 0) navigation.getHeaderView(0).setBackgroundColor(drawerWhite)
 
         val user = SessionManager(activity).getRole() == UserRole.USER
+        navigation.setTag(R.id.navigationView, null)
         navigation.menu.clear()
         navigation.inflateMenu(if (user) R.menu.menu_user_drawer else R.menu.menu_customer_drawer)
         navigation.setCheckedItem(selectedItem)
@@ -79,6 +83,12 @@ object PortalNavigation {
                     activity.startActivity(homeIntent(activity))
                     activity.finish()
                 }
+                return@setNavigationItemSelectedListener true
+            }
+            if (item.itemId == selectedItem) return@setNavigationItemSelectedListener true
+            val informationPage = com.svd.svdagencies.ui.InformationActivity.pageForMenu(item.itemId)
+            if (informationPage != null) {
+                activity.startActivity(com.svd.svdagencies.ui.InformationActivity.intent(activity, informationPage))
                 return@setNavigationItemSelectedListener true
             }
             if (item.itemId == selectedItem) return@setNavigationItemSelectedListener true

@@ -3,34 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:cardElevation="0dp"
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/window_background"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="@dimen/svd_space_section">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Record Payment"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
+            android:textSize="@dimen/svd_text_heading"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/svd_space_section"
             android:text="Customer name"
             android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="13sp" />
+            android:textSize="@dimen/svd_text_label" />
 
         <TextView
             android:id="@+id/txtCustomerName"
@@ -39,13 +39,13 @@
             android:layout_marginTop="4dp"
             android:text="Customer Name"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="17sp"
+            android:textSize="@dimen/svd_text_body"
             android:textStyle="bold" />
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/svd_space_section"
             android:orientation="horizontal">
 
             <TextView
@@ -54,7 +54,7 @@
                 android:layout_weight="1"
                 android:text="Current due"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="15sp" />
+                android:textSize="@dimen/svd_text_label" />
 
             <TextView
                 android:id="@+id/txtCurrentBalance"
@@ -62,31 +62,31 @@
                 android:layout_height="wrap_content"
                 android:text="₹ 0.00"
                 android:textColor="?attr/colorPrimary"
-                android:textSize="16sp"
+                android:textSize="@dimen/svd_text_body"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/svd_space_section"
             android:hint="Amount paying"
             app:boxBackgroundMode="outline"
             app:prefixText="₹" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input"
                 android:id="@+id/etAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="16sp" />
+                android:textSize="@dimen/svd_text_body"  android:minHeight="48dp" android:minWidth="48dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/svd_space_section"
             android:orientation="horizontal">
 
             <TextView
@@ -95,7 +95,7 @@
                 android:layout_weight="1"
                 android:text="Remaining due"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="15sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textStyle="bold" />
 
             <TextView
@@ -104,11 +104,11 @@
                 android:layout_height="wrap_content"
                 android:text="₹ 0.00"
                 android:textColor="@color/green_status"
-                android:textSize="16sp"
+                android:textSize="@dimen/svd_text_body"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
@@ -118,34 +118,34 @@
                 android:id="@+id/btnCancel"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="12dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
-                android:minWidth="0dp"
+                android:minWidth="48dp"
                 android:paddingHorizontal="8dp"
                 android:text="Cancel"
                 android:textAllCaps="false"
-                android:textSize="14sp" />
+                android:textSize="@dimen/svd_text_label"  android:minHeight="50dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdate"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
-                android:minWidth="0dp"
+                android:minWidth="48dp"
                 android:paddingHorizontal="8dp"
                 android:text="Submit Payment"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                app:backgroundTint="@color/green_status" />
-        </LinearLayout>
+                android:textSize="@dimen/svd_text_label"
+                app:backgroundTint="@color/green_status"  android:minHeight="50dp" />
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <!-- Retained for dialogs that share this layout; not part of this UI. -->
         <ImageView
@@ -157,19 +157,19 @@
         <com.google.android.material.chip.Chip
             android:id="@+id/chipAdd500"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"  app:ensureMinTouchTargetSize="true"  app:chipMinTouchTargetSize="48dp"  android:minHeight="48dp"  android:minWidth="48dp" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipAdd1000"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"  app:ensureMinTouchTargetSize="true"  app:chipMinTouchTargetSize="48dp"  android:minHeight="48dp"  android:minWidth="48dp" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipClear"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:visibility="gone"  app:ensureMinTouchTargetSize="true"  app:chipMinTouchTargetSize="48dp"  android:minHeight="48dp"  android:minWidth="48dp" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

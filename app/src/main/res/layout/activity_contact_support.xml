@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorSurface"
     android:clipToPadding="false"
-    android:padding="@dimen/spacing_large">
+    android:padding="@dimen/spacing_large" android:fillViewport="true">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -24,7 +24,7 @@
             app:strokeWidth="1dp"
             app:strokeColor="@color/card_stroke_color">
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -54,14 +54,14 @@
                     android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_size_medium" />
 
-                <LinearLayout
+                <com.svd.svdagencies.utils.CompactLinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_xlarge"
                     android:orientation="horizontal"
                     android:baselineAligned="false">
 
-                    <LinearLayout
+                    <com.svd.svdagencies.utils.CompactLinearLayout
                         android:id="@+id/btnCall"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -88,9 +88,9 @@
                             android:text="Call"
                             android:textColor="@color/text_primary"
                             android:textSize="@dimen/text_size_body_small" />
-                    </LinearLayout>
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
 
-                    <LinearLayout
+                    <com.svd.svdagencies.utils.CompactLinearLayout
                         android:id="@+id/btnWhatsapp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -117,9 +117,9 @@
                             android:text="WhatsApp"
                             android:textColor="@color/text_primary"
                             android:textSize="@dimen/text_size_body_small" />
-                    </LinearLayout>
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
 
-                    <LinearLayout
+                    <com.svd.svdagencies.utils.CompactLinearLayout
                         android:id="@+id/btnEmail"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -146,10 +146,10 @@
                             android:text="Email"
                             android:textColor="@color/text_primary"
                             android:textSize="@dimen/text_size_body_small" />
-                    </LinearLayout>
-                </LinearLayout>
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
+                </com.svd.svdagencies.utils.CompactLinearLayout>
 
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Message Form -->
@@ -176,12 +176,12 @@
             app:boxStrokeColor="?attr/colorPrimary"
             app:hintTextColor="?attr/colorPrimary">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input"
                 android:id="@+id/inputSubject"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapSentences"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/text_primary"  android:minHeight="48dp" android:minWidth="48dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -197,14 +197,14 @@
             app:boxStrokeColor="?attr/colorPrimary"
             app:hintTextColor="?attr/colorPrimary">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input"
                 android:id="@+id/inputMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:inputType="textMultiLine|textCapSentences"
                 android:minLines="4"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/text_primary"  android:minHeight="48dp" android:minWidth="48dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -220,12 +220,12 @@
             app:boxStrokeColor="?attr/colorPrimary"
             app:hintTextColor="?attr/colorPrimary">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input"
                 android:id="@+id/inputPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/text_primary"  android:minHeight="48dp" android:minWidth="48dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -241,23 +241,23 @@
             app:boxStrokeColor="?attr/colorPrimary"
             app:hintTextColor="?attr/colorPrimary">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input"
                 android:id="@+id/inputEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/text_primary"  android:minHeight="48dp" android:minWidth="48dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmit"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:text="Submit Message"
-            android:textColor="@color/white"
+            android:textColor="?attr/colorOnPrimary"
             android:textSize="@dimen/text_size_large"
             android:textStyle="bold"
-            app:cornerRadius="@dimen/card_corner_radius_medium" />
+            app:cornerRadius="@dimen/card_corner_radius_medium"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </ScrollView>

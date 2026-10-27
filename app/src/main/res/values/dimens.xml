@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Standardized Text Sizes -->
-    <dimen name="text_size_micro">10sp</dimen>
-    <dimen name="text_size_caption">11sp</dimen>
-    <dimen name="text_size_body_small">12sp</dimen>
+    <dimen name="text_size_micro">12sp</dimen>
+    <dimen name="text_size_caption">12sp</dimen>
+    <dimen name="text_size_body_small">13sp</dimen>
     <dimen name="text_size_small">13sp</dimen>
     <dimen name="text_size_medium">14sp</dimen>
-    <dimen name="text_size_label">15sp</dimen>
+    <dimen name="text_size_label">13sp</dimen>
     <dimen name="text_size_large">16sp</dimen>
     <dimen name="text_size_xlarge">18sp</dimen>
     <dimen name="text_size_xxlarge">20sp</dimen>
-    <dimen name="text_size_huge">24sp</dimen>
-    <dimen name="text_size_button">16sp</dimen>
-    <dimen name="text_size_body">15sp</dimen>
+    <dimen name="text_size_huge">22sp</dimen>
+    <dimen name="text_size_button">13sp</dimen>
+    <dimen name="text_size_body">14sp</dimen>
     <dimen name="text_size_body_medium">14sp</dimen>
-    <dimen name="text_size_body_large">18sp</dimen>
+    <dimen name="text_size_body_large">16sp</dimen>
 
     <!-- Standardized Spacings (8dp Grid) -->
     <dimen name="grid_4">4dp</dimen>
@@ -39,10 +39,10 @@
     <dimen name="card_elevation_medium">4dp</dimen>
 
     <dimen name="card_corner_radius_small">8dp</dimen>
-    <dimen name="card_corner_radius_medium">16dp</dimen>
-    <dimen name="card_corner_radius_large">28dp</dimen>
+    <dimen name="card_corner_radius_medium">12dp</dimen>
+    <dimen name="card_corner_radius_large">16dp</dimen>
 
     <!-- Button & Input Treatment -->
-    <dimen name="button_corner_radius">12dp</dimen>
-    <dimen name="input_corner_radius">12dp</dimen>
+    <dimen name="button_corner_radius">8dp</dimen>
+    <dimen name="input_corner_radius">8dp</dimen>
 </resources>

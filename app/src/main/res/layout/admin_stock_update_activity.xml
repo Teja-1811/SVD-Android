@@ -1,324 +1,295 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/window_background">
-
-    <LinearLayout
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/window_background">
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <include layout="@layout/admin_toolbar" />
-
         <com.svd.svdagencies.utils.AppSwipeRefreshLayout
-            android:id="@+id/swipeRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
                 <androidx.core.widget.NestedScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:fillViewport="true"
-                    android:paddingBottom="88dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingBottom="88dp">
+                    <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginTop="12dp"
-                            android:layout_marginBottom="8dp"
-                            app:cardBackgroundColor="@color/card_background"
-                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                            app:cardElevation="0dp"
-                            app:strokeColor="@color/card_stroke_color"
-                            app:strokeWidth="1dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                android:padding="14dp">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/card_background"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:strokeWidth="1dp">
+                            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
                                 <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="Add stock entries"
-                                    android:textColor="@color/textColorPrimary"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold" />
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add stock entries"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold" />
                                 <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:text="Enter crates and discounts for received items."
-                                    android:textColor="@color/textColorSecondary"
-                                    android:textSize="13sp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="12dp"
-                                    android:orientation="horizontal">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="Enter crates and discounts for received items."
+        android:textColor="@color/textColorSecondary"
+        android:textSize="@dimen/svd_text_label"  android:visibility="gone" />
+                                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
                                     <TextView
-                                        android:id="@+id/tvUpdateTotalItems"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginEnd="6dp"
-                                        android:layout_weight="1"
-                                        android:background="@drawable/bg_qty_outline"
-                                        android:padding="10dp"
-                                        android:text="Items: 0"
-                                        android:textColor="@color/textColorPrimary"
-                                        android:textSize="@dimen/text_size_body_small"
-                                        android:textStyle="bold" />
-
+        android:id="@+id/tvUpdateTotalItems"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_qty_outline"
+        android:padding="10dp"
+        android:text="Items: 0"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold" />
                                     <TextView
-                                        android:id="@+id/tvUpdateEntries"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginHorizontal="3dp"
-                                        android:layout_weight="1"
-                                        android:background="@drawable/bg_qty_outline"
-                                        android:padding="10dp"
-                                        android:text="Entries: 0"
-                                        android:textColor="@color/textColorPrimary"
-                                        android:textSize="@dimen/text_size_body_small"
-                                        android:textStyle="bold" />
-
+        android:id="@+id/tvUpdateEntries"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="3dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_qty_outline"
+        android:padding="10dp"
+        android:text="Entries: 0"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold" />
                                     <TextView
-                                        android:id="@+id/tvUpdateDayValue"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="6dp"
-                                        android:layout_weight="1"
-                                        android:background="@drawable/bg_qty_outline"
-                                        android:padding="10dp"
-                                        android:text="Rs. 0.00"
-                                        android:textColor="@color/textColorPrimary"
-                                        android:textSize="@dimen/text_size_body_small"
-                                        android:textStyle="bold" />
-                                </LinearLayout>
-
-                                <EditText
-                                    android:id="@+id/etStockSearch"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="44dp"
-                                    android:layout_marginTop="14dp"
-                                    android:background="@drawable/bg_qty_outline"
-                                    android:hint="Search item name or company"
-                                    android:inputType="text"
-                                    android:paddingHorizontal="12dp"
-                                    android:singleLine="true"
-                                    android:textColor="@color/textColorPrimary"
-                                    android:textSize="14sp" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
-                                    android:orientation="horizontal">
-
-                                    <com.google.android.material.textfield.TextInputLayout
-                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                                        android:layout_width="0dp"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginEnd="8dp"
-                                        android:layout_weight="1"
-                                        app:boxBackgroundColor="@color/editTextBackground"
-                                        app:hintEnabled="false" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
-
-                                        <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
-                                            android:id="@+id/spinnerCompanyFilter"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:hint="All companies"
-                                            android:inputType="none"
-                                            android:padding="12dp"
-                                            android:textColor="@color/textColorPrimary"
-                                            android:textSize="14sp" />
+        android:id="@+id/tvUpdateDayValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_qty_outline"
+        android:padding="10dp"
+        android:text="Rs. 0.00"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold" />
+                                </com.svd.svdagencies.utils.CompactLinearLayout>
+                                <EditText style="@style/Widget.Svd.PlainInput"
+        android:id="@+id/etStockSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:background="@drawable/bg_qty_outline"
+        android:hint="Search item name or company"
+        android:inputType="text"
+        android:paddingHorizontal="12dp"
+        android:singleLine="true"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:minHeight="48dp"  android:minWidth="48dp" android:visibility="gone" android:saveEnabled="false" />
+                                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+                                    <com.google.android.material.textfield.TextInputLayout style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        app:boxBackgroundColor="@color/surface_variant" app:boxStrokeWidth="0dp" app:boxStrokeWidthFocused="0dp"
+        app:hintEnabled="false"
+        app:boxCornerRadiusTopStart="24dp"
+        app:boxCornerRadiusTopEnd="24dp"
+        app:boxCornerRadiusBottomStart="24dp"
+        app:boxCornerRadiusBottomEnd="24dp">
+                                        <AutoCompleteTextView style="@style/Widget.Svd.PlainInput"
+        android:popupBackground="@drawable/bg_delivery_dropdown"
+        android:id="@+id/spinnerCompanyFilter"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="All companies"
+        android:inputType="none"
+        android:padding="8dp"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_label"
+        android:minHeight="48dp"  android:minWidth="48dp" android:singleLine="true" android:maxLines="1" android:ellipsize="end" />
                                     </com.google.android.material.textfield.TextInputLayout>
-
-                                    <EditText
-                                        android:id="@+id/etEntryDate"
-                                        android:layout_width="132dp"
-                                        android:layout_height="match_parent"
-                                        android:background="@drawable/bg_qty_outline"
-                                        android:clickable="true"
-                                        android:focusable="false"
-                                        android:gravity="center"
-                                        android:hint="Date"
-                                        android:inputType="none"
-                                        android:paddingHorizontal="10dp"
-                                        android:textColor="@color/textColorPrimary"
-                                        android:textSize="13sp" />
-                                </LinearLayout>
-                            </LinearLayout>
+                                    <EditText style="@style/Widget.Svd.PlainInput"
+        android:id="@+id/etEntryDate"
+        android:layout_width="112dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_stock_date_field"
+        android:clickable="true"
+        android:focusable="false"
+        android:gravity="center"
+        android:hint="Date"
+        android:inputType="none"
+        android:paddingHorizontal="8dp"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_label"
+        android:minHeight="48dp"  android:minWidth="48dp" android:backgroundTint="@null" android:singleLine="true" />
+                                </com.svd.svdagencies.utils.CompactLinearLayout>
+                            </com.svd.svdagencies.utils.CompactLinearLayout>
                         </com.google.android.material.card.MaterialCardView>
-
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rvUpdateStock"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clipToPadding="false"
-                            android:nestedScrollingEnabled="false"
-                            android:paddingBottom="8dp"
-                            tools:listitem="@layout/admin_stock_update_item" />
-
+        android:id="@+id/rvUpdateStock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false"
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/admin_stock_update_item" />
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginBottom="8dp"
-                            app:cardBackgroundColor="@color/card_background"
-                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                            app:cardElevation="0dp"
-                            app:strokeColor="@color/card_stroke_color"
-                            app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Company totals"
-                                android:textColor="@color/textColorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvNoUpdateCompanyTotals"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:gravity="center"
-                                android:padding="8dp"
-                                android:text="No stock entries saved for this date yet."
-                                android:textColor="@color/textColorSecondary" />
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvUpdateCompanyTotals"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:nestedScrollingEnabled="false"
-                                tools:listitem="@layout/admin_stock_info_item" />
-                        </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/card_background"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:strokeWidth="1dp">
+                            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+                                <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Company totals"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold" />
+                                <TextView
+        android:id="@+id/tvNoUpdateCompanyTotals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="No entries for this date."
+        android:textColor="@color/textColorSecondary" />
+                                <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvUpdateCompanyTotals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:nestedScrollingEnabled="false"
+        tools:listitem="@layout/admin_stock_info_item"
+        android:clipToPadding="false" />
+                            </com.svd.svdagencies.utils.CompactLinearLayout>
                         </com.google.android.material.card.MaterialCardView>
-
                         <com.google.android.material.card.MaterialCardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="16dp"
-                            android:layout_marginBottom="8dp"
-                            app:cardBackgroundColor="@color/card_background"
-                            app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                            app:cardElevation="0dp"
-                            app:strokeColor="@color/card_stroke_color"
-                            app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Saved entries"
-                                android:textColor="@color/textColorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvNoUpdateSavedEntries"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:gravity="center"
-                                android:padding="8dp"
-                                android:text="No entries saved for this date."
-                                android:textColor="@color/textColorSecondary" />
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rvUpdateSavedEntries"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:nestedScrollingEnabled="false"
-                                tools:listitem="@layout/admin_stock_info_item" />
-                        </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="@color/card_background"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:strokeWidth="1dp">
+                            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+                                <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Saved entries"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold" />
+                                <TextView
+        android:id="@+id/tvNoUpdateSavedEntries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="No entries saved for this date."
+        android:textColor="@color/textColorSecondary" />
+                                <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvUpdateSavedEntries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:nestedScrollingEnabled="false"
+        tools:listitem="@layout/admin_stock_info_item"
+        android:clipToPadding="false" />
+                            </com.svd.svdagencies.utils.CompactLinearLayout>
                         </com.google.android.material.card.MaterialCardView>
-                    </LinearLayout>
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
                 </androidx.core.widget.NestedScrollView>
-
-                <!-- Transparent Bottom Action Container -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="16dp"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:background="@android:color/transparent">
-
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="16dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@android:color/transparent">
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnSubmitUpdate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="52dp"
-                        android:paddingHorizontal="32dp"
-                        android:text="Update Stock Levels"
-                        android:textAllCaps="false"
-                        android:backgroundTint="?attr/colorPrimary"
-                        app:cornerRadius="26dp"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        app:icon="@drawable/ic_check"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp"
-                        app:iconSize="20dp"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        app:elevation="6dp"
-                        style="@style/Widget.MaterialComponents.Button" />
-
-                </LinearLayout>
+        android:id="@+id/btnSubmitUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="32dp"
+        android:text="Update Stock Levels"
+        android:textAllCaps="false"
+        android:backgroundTint="?attr/colorPrimary"
+        app:cornerRadius="26dp"
+        android:textSize="@dimen/svd_text_label"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnPrimary"
+        app:icon="@drawable/ic_check"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconSize="20dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:elevation="6dp" style="@style/Widget.MaterialComponents.Button"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
             </FrameLayout>
         </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
-
-    </LinearLayout>
-
+    </com.svd.svdagencies.utils.CompactLinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="?attr/colorSurface"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"
         app:itemTextColor="@color/drawer_nav_item_colors"
-        app:menu="@menu/menu_admin_drawer"/>
-
+        app:menu="@menu/menu_admin_drawer"
+        app:backgroundTint="?attr/colorSurface" />
 </androidx.drawerlayout.widget.DrawerLayout>

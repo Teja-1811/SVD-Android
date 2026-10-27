@@ -33,7 +33,7 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.admin_subscription_offers_dashboard)
-        findViewById<MaterialToolbar>(R.id.subscriptionOfferToolbar).setNavigationOnClickListener { finish() }
+        setupAdminLayout("Subscriptions")
         list = findViewById(R.id.subscriptionOffersList)
         loading = findViewById(R.id.subscriptionOffersLoading)
         findViewById<MaterialButton>(R.id.btnCreateSubscriptionOffer).setOnClickListener { showCreateDialog() }
@@ -58,10 +58,10 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
     private fun addOfferCard(offer: JsonObject) {
         val card = MaterialCardView(this).apply {
             layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(12) }
-            setCardBackgroundColor(ContextCompat.getColor(this@AdminSubscriptionOffersActivity, R.color.white))
+            setCardBackgroundColor(ContextCompat.getColor(this@AdminSubscriptionOffersActivity, R.color.surface_background))
             radius = dp(16).toFloat(); strokeWidth = dp(1); strokeColor = ContextCompat.getColor(this@AdminSubscriptionOffersActivity, R.color.card_stroke_color)
         }
-        val body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(14), dp(16), dp(14)) }
+        val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(14), dp(16), dp(14)) }
         body.addView(label(offer.value("name"), 18, true))
         body.addView(label("User Portal · ${offer.value("duration_value")} ${offer.value("duration_unit")} · ${offer.value("delivery_frequency")}", 14, false))
         body.addView(label("${offer.value("delivery_count")} deliveries · ₹${offer.value("total_amount")}", 15, true).apply { setPadding(0, dp(6), 0, 0) })
@@ -70,7 +70,7 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
             "• ${row.value("name")} × ${row.value("quantity")} @ ₹${row.value("unit_price")}" 
         }.orEmpty()
         body.addView(label(itemLines, 13, false).apply { setPadding(0, dp(8), 0, 0) })
-        body.addView(LinearLayout(this).apply {
+        body.addView(com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             addView(MaterialButton(this@AdminSubscriptionOffersActivity).apply {
                 text = "Edit"; isAllCaps = false
@@ -91,10 +91,10 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
         val itemSpinner = form.findViewById<Spinner>(R.id.spinnerSubscriptionItem)
         val quantity = form.findViewById<EditText>(R.id.etSubscriptionItemQuantity).apply { setText("1") }
         val price = form.findViewById<EditText>(R.id.etSubscriptionItemPrice)
-        durationUnit.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, arrayOf("days", "weeks", "months"))
-        frequency.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, arrayOf("daily", "weekly", "monthly"))
+        durationUnit.adapter = ArrayAdapter(this, com.svd.svdagencies.R.layout.delivery_dropdown_item, arrayOf("days", "weeks", "months"))
+        frequency.adapter = ArrayAdapter(this, com.svd.svdagencies.R.layout.delivery_dropdown_item, arrayOf("daily", "weekly", "monthly"))
         val itemLabels = catalogueItems.map { item -> "${item.asJsonObject.value("name")} · ₹${item.asJsonObject.value("selling_price")}" }.toTypedArray()
-        itemSpinner.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, itemLabels)
+        itemSpinner.adapter = ArrayAdapter(this, com.svd.svdagencies.R.layout.delivery_dropdown_item, itemLabels)
         itemSpinner.setSelection(0)
         price.setText(catalogueItems[0].asJsonObject.value("selling_price"))
         WhiteMaterialAlertDialogBuilder(this).setTitle("Create User Subscription Offer").setView(form).setNegativeButton("Cancel", null)
@@ -134,8 +134,8 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
         val duration = form.findViewById<EditText>(R.id.etSubscriptionDuration).apply { setText(offer.value("duration_value")) }
         val durationUnit = form.findViewById<Spinner>(R.id.spinnerSubscriptionDurationUnit)
         val frequency = form.findViewById<Spinner>(R.id.spinnerSubscriptionFrequency)
-        durationUnit.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, arrayOf("days", "weeks", "months"))
-        frequency.adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, arrayOf("daily", "weekly", "monthly"))
+        durationUnit.adapter = ArrayAdapter(this, com.svd.svdagencies.R.layout.delivery_dropdown_item, arrayOf("days", "weeks", "months"))
+        frequency.adapter = ArrayAdapter(this, com.svd.svdagencies.R.layout.delivery_dropdown_item, arrayOf("daily", "weekly", "monthly"))
         durationUnit.setSelection(arrayOf("days", "weeks", "months").indexOf(offer.value("duration_unit")).coerceAtLeast(0))
         frequency.setSelection(arrayOf("daily", "weekly", "monthly").indexOf(offer.value("delivery_frequency")).coerceAtLeast(0))
 

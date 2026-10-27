@@ -108,7 +108,7 @@ class CustomerBillsFragment : Fragment() {
 
         // ---------- ACTIONS ----------
         etMonth.setOnClickListener { showMonthYearPicker() }
-        btnFilter.text = "Clear"
+        com.svd.svdagencies.utils.RefreshButtonStyle.apply(btnFilter)
         btnFilter.setOnClickListener { setCurrentMonth(); loadBills() }
 
         // Use RefreshManager to setup swipe refresh
@@ -334,7 +334,6 @@ class CustomerBillsFragment : Fragment() {
         tvBillInfo.text = "Invoice: #$billNo"
         tvBillInfo.visibility = View.VISIBLE
 
-        val upiId = PaymentConfig.UPI_ID
         val name = "Sri Vijay Durga Milk Agency"
         val upiUrl = paymentPayload
 

@@ -57,7 +57,7 @@
         <activity android:name=".ui.auth.RegistrationActivity" />
 
         <activity android:name=".ui.ToolsActivity" android:exported="false" />
-        <activity android:name=".ui.WebToolsActivity" android:exported="false" />
+        <activity android:name=".ui.InformationActivity" android:exported="false" />
 
         <activity android:name=".ui.admin.AdminOfferUsageActivity" android:exported="false" />
         <activity android:name=".ui.admin.AdminSubscriptionsReportActivity" android:exported="false" />

@@ -10,22 +10,22 @@
     app:cardElevation="0dp"
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="?attr/colorSurface">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
 
         <!-- HEADER: Customer and Status -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -49,7 +49,7 @@
                     android:textColor="@color/textColorSecondary"
                     android:textSize="@dimen/text_size_body_small"
                     tools:text="8886307827"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <TextView
                 android:id="@+id/tvStatusBadge"
@@ -65,7 +65,7 @@
                 android:textStyle="bold"
                 tools:backgroundTint="#E0F2F1"
                 tools:text="SUCCESS" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -76,7 +76,7 @@
             android:alpha="0.5"/>
 
         <!-- INFO ROWS -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -96,9 +96,9 @@
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_body_small"
                 tools:text="PAY-BDF2C97502"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -118,9 +118,9 @@
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_body_small"
                 tools:text="CASH"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -141,9 +141,9 @@
                 android:textColor="@color/brand_blue"
                 android:textSize="@dimen/text_size_body_small"
                 tools:text="₹2000.00"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -163,7 +163,7 @@
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_body_small"
                 tools:text="11 May 2026"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <!-- Hidden tvStatus for binding compatibility -->
         <TextView
@@ -173,7 +173,7 @@
             android:visibility="gone" />
 
         <!-- ACTION BUTTONS -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -182,8 +182,8 @@
             <!-- WhatsApp -->
             <ImageButton
                 android:id="@+id/btnWhatsApp"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_whatsapp"
                 app:tint="@color/icon_green"
                 android:background="@drawable/bg_outline_green"
@@ -195,8 +195,8 @@
             <!-- Edit amount and status -->
             <ImageButton
                 android:id="@+id/btnEditStatus"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_edit"
                 app:tint="@color/brand_blue"
                 android:background="@drawable/bg_outline_blue"
@@ -209,8 +209,8 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMarkSuccess"
                 android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:minWidth="0dp"
+                android:layout_height="wrap_content" android:minHeight="48dp"
+                android:minWidth="48dp"
                 android:paddingHorizontal="@dimen/spacing_medium"
                 android:text="Success"
                 android:textAllCaps="false"
@@ -233,8 +233,8 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMarkFailure"
                 android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:minWidth="0dp"
+                android:layout_height="wrap_content" android:minHeight="48dp"
+                android:minWidth="48dp"
                 android:paddingHorizontal="@dimen/spacing_medium"
                 android:text="Failure"
                 android:textAllCaps="false"
@@ -244,7 +244,7 @@
                 android:insetBottom="0dp"
                 app:cornerRadius="4dp"
                 app:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnPrimary"
                 android:visibility="gone"/>
 
             <!-- For adapter logic compatibility, adding a hidden space -->
@@ -259,15 +259,15 @@
             <!-- Delete -->
             <ImageButton
                 android:id="@+id/btnDelete"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:src="@drawable/ic_trash"
                 app:tint="?attr/colorPrimary"
                 android:background="@drawable/bg_outline_red"
                 android:padding="@dimen/spacing_small"
                 android:scaleType="fitCenter"/>
 
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -12,7 +12,7 @@
     app:strokeColor="@color/card_stroke_color"
     app:cardBackgroundColor="@color/card_background">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -41,7 +41,7 @@
                     android:scaleType="fitCenter"/>
             </com.google.android.material.card.MaterialCardView>
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/cardLogo"
@@ -68,12 +68,12 @@
                     android:drawablePadding="@dimen/spacing_tiny"
                     app:drawableStartCompat="@drawable/ic_shop"
                     app:drawableTint="@color/brand_blue"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <ImageButton
                 android:id="@+id/btnEdit"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_edit"
@@ -89,13 +89,13 @@
             android:layout_marginVertical="@dimen/spacing_medium"/>
 
         <!-- Stats Row -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="3">
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -114,9 +114,9 @@
                     android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
                     android:textColor="@color/textColorPrimary"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -135,9 +135,9 @@
                     android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
                     android:textColor="@color/textColorPrimary"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -156,8 +156,8 @@
                     android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"
                     android:textColor="@color/icon_green"/>
-            </LinearLayout>
-        </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnItems"
@@ -176,7 +176,7 @@
             app:rippleColor="?attr/colorControlHighlight"
             app:strokeWidth="1dp"
             app:strokeColor="@color/card_stroke_color"
-            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+            style="@style/Widget.MaterialComponents.Button.TextButton" android:minHeight="48dp"  android:minWidth="48dp" />
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -44,7 +44,7 @@ open class CustomersData : AdminBaseActivity() {
     private lateinit var api: CustomerDashboardApi
 
     private lateinit var etSearch: EditText
-    private lateinit var fabAddCustomer: FloatingActionButton
+    private lateinit var fabAddCustomer: com.google.android.material.button.MaterialButton
     private lateinit var tvEmptyState: TextView
     private var selectedType = "delivery"
 
@@ -67,6 +67,14 @@ open class CustomersData : AdminBaseActivity() {
         if (this is AdminUsersActivity) {
             selectedType = "user"
             findViewById<com.google.android.material.chip.ChipGroup>(R.id.chipGroupCustomerType).check(R.id.chipUser)
+        }
+        if (this !is AdminUsersActivity) {
+            selectedType = intent.getStringExtra("DEFAULT_CUSTOMER_TYPE")?.takeIf { it in setOf("retailer", "delivery", "user") } ?: selectedType
+            findViewById<com.google.android.material.chip.ChipGroup>(R.id.chipGroupCustomerType).check(when (selectedType) {
+                "retailer" -> R.id.chipRetailer
+                "user" -> R.id.chipUser
+                else -> R.id.chipDelivery
+            })
         }
         setupListeners()
     }

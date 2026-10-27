@@ -1,15 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.svd.svdagencies.utils.AppSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/userRefresh" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/user_portal_background">
-<androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true"><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp"><TextView android:id="@+id/userGreeting" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Your account" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
-            <TextView android:id="@+id/userAccountStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:textSize="14sp" android:textColor="@color/textColorSecondary" />
-            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" app:cardCornerRadius="@dimen/card_corner_radius_medium" app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color" app:cardBackgroundColor="#FFFFFF"><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp"><TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Wallet balance" android:textSize="13sp" android:textColor="@color/textColorSecondary" /><TextView android:id="@+id/userWallet" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="—" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
-            <TextView android:id="@+id/userOutstandingLabel" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="Outstanding amount" android:textSize="13sp" android:textColor="@color/textColorSecondary" />
-            <TextView android:id="@+id/userOutstanding" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="—" android:textSize="22sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
-            </LinearLayout></com.google.android.material.card.MaterialCardView><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="12dp"><com.google.android.material.button.MaterialButton android:id="@+id/userBrowseProducts" android:layout_width="0dp" android:layout_height="56dp" android:layout_marginTop="0dp" android:text="Order now" android:textAllCaps="false" android:layout_weight="1" android:layout_marginHorizontal="4dp" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/userSubscriptions" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="56dp" android:layout_marginTop="0dp" android:text="Subscriptions" android:textAllCaps="false" android:layout_weight="1" android:layout_marginHorizontal="4dp" />
-            </LinearLayout><TextView android:id="@+id/userOffersTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Offers for you" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:layout_marginTop="22dp" android:layout_marginBottom="10dp" /><TextView android:id="@+id/userOffersStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Loading offers…" android:textColor="@color/textColorSecondary" /><androidx.recyclerview.widget.RecyclerView android:id="@+id/userOffers" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:nestedScrollingEnabled="false" android:visibility="gone" />
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Available to order" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:layout_marginTop="22dp" android:layout_marginBottom="10dp" /><TextView android:id="@+id/userStockProductsStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Loading available items..." android:textColor="@color/textColorSecondary" />
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/userStockProducts" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:paddingBottom="4dp" android:clipToPadding="false" android:nestedScrollingEnabled="false" android:visibility="gone" />
-            <com.google.android.material.button.MaterialButton android:id="@+id/userViewCart" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:layout_marginTop="12dp" android:text="View cart" android:textAllCaps="false" android:visibility="gone" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Latest order" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:layout_marginTop="22dp" android:layout_marginBottom="10dp" /><com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" app:cardCornerRadius="@dimen/card_corner_radius_medium" app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color" app:cardBackgroundColor="#FFFFFF"><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp"><TextView android:id="@+id/userLatestOrder" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Loading your orders…" android:textSize="15sp" android:textColor="@color/textColorSecondary" />
-            </LinearLayout></com.google.android.material.card.MaterialCardView></LinearLayout></androidx.core.widget.NestedScrollView></com.svd.svdagencies.utils.AppSwipeRefreshLayout>
+<com.svd.svdagencies.utils.AppSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/userRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/user_portal_background">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:clipToPadding="false">
+        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:paddingTop="16dp">
+            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/svd_space_section"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_portal_hero">
+                <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="YOUR DAILY DAIRY"
+        android:textSize="@dimen/svd_text_caption"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        android:textStyle="bold"
+        android:letterSpacing="0.08" />
+                <TextView
+        android:id="@+id/userGreeting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your account"
+        android:textSize="@dimen/svd_text_title"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        android:layout_marginTop="10dp" />
+                <TextView
+        android:id="@+id/userAccountStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="?attr/colorOnPrimaryContainer" />
+                <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fresh essentials, subscriptions and your next delivery."
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="@color/textColorSecondary"
+        android:layout_marginTop="12dp"  android:visibility="gone" />
+            </com.svd.svdagencies.utils.CompactLinearLayout>
+            <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:cardBackgroundColor="?attr/colorSurface">
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="18dp">
+                    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wallet balance"
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="@color/textColorSecondary" />
+                    <TextView
+        android:id="@+id/userWallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="—"
+        android:textSize="@dimen/svd_text_title"
+        android:textStyle="bold"
+        android:textColor="@color/textColorPrimary" />
+                    <TextView
+        android:id="@+id/userOutstandingLabel"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Outstanding amount"
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="@color/textColorSecondary" />
+                    <TextView
+        android:id="@+id/userOutstanding"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="—"
+        android:textSize="@dimen/svd_text_heading"
+        android:textStyle="bold"
+        android:textColor="@color/textColorPrimary" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+                <com.google.android.material.button.MaterialButton
+        android:id="@+id/userBrowseProducts"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:text="Order now"
+        android:textAllCaps="false"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="4dp"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
+                <com.google.android.material.button.MaterialButton
+        android:id="@+id/userSubscriptions" style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:text="Subscriptions"
+        android:textAllCaps="false"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="4dp"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
+            </com.svd.svdagencies.utils.CompactLinearLayout>
+            <TextView
+        android:id="@+id/userOffersTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Offers for you"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold"
+        android:textColor="@color/textColorPrimary"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="10dp" />
+            <TextView
+        android:id="@+id/userOffersStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Loading offers…"
+        android:textColor="@color/textColorSecondary" />
+            <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userOffers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:nestedScrollingEnabled="false"
+        android:visibility="gone"
+        android:clipToPadding="false" />
+            <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Available to order"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold"
+        android:textColor="@color/textColorPrimary"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="10dp" />
+            <TextView
+        android:id="@+id/userStockProductsStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Loading available items..."
+        android:textColor="@color/textColorSecondary" />
+            <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userStockProducts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="4dp"
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false"
+        android:visibility="gone" />
+            <com.google.android.material.button.MaterialButton
+        android:id="@+id/userViewCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/svd_touch_target"
+        android:layout_marginTop="12dp"
+        android:text="View cart"
+        android:textAllCaps="false"
+        android:visibility="gone"  android:minWidth="48dp" />
+            <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Latest order"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold"
+        android:textColor="@color/textColorPrimary"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="10dp" />
+            <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:cardBackgroundColor="?attr/colorSurface">
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="18dp">
+                    <TextView
+        android:id="@+id/userLatestOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Loading your orders…"
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="@color/textColorSecondary" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</com.svd.svdagencies.utils.AppSwipeRefreshLayout>

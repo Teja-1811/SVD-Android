@@ -33,7 +33,6 @@ object ApiClient {
 
     // Client for general API calls (includes AuthInterceptor)
     private val client = OkHttpClient.Builder()
-        .eventListenerFactory(com.svd.svdagencies.utils.NetworkRequestUi.listenerFactory())
         .cache(cache)
         .connectTimeout(60, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
@@ -46,7 +45,6 @@ object ApiClient {
 
     // Client specifically for Auth (NO AuthInterceptor to avoid interference)
     private val authClient = OkHttpClient.Builder()
-        .eventListenerFactory(com.svd.svdagencies.utils.NetworkRequestUi.listenerFactory())
         .connectTimeout(120, TimeUnit.SECONDS)
         .readTimeout(120, TimeUnit.SECONDS)
         .writeTimeout(120, TimeUnit.SECONDS)

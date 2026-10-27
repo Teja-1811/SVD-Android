@@ -42,13 +42,13 @@ class CustomerOfferOrderActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val root = LinearLayout(this).apply {
+        val root = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             val padding = (20 * resources.displayMetrics.density).toInt()
             setPadding(padding, padding, padding, padding)
         }
-        details = TextView(this).apply { textSize = 18f; text = "Loading offer…" }
-        status = TextView(this).apply { textSize = 14f; setPadding(0, 20, 0, 20) }
+        details = TextView(this).apply { textSize = 14f; text = "Loading offer…" }
+        status = TextView(this).apply { textSize = 13f; setPadding(0, 20, 0, 20) }
         root.addView(details); root.addView(status)
         regular = button("Regular order") { setMode(false) }.also { root.addView(it) }
         preorder = button("Pre-order for a date") { setMode(true) }.also { root.addView(it); it.visibility = if (SessionManager(this).getRole() == UserRole.USER) View.VISIBLE else View.GONE }
@@ -78,8 +78,8 @@ class CustomerOfferOrderActivity : BaseActivity() {
                 offer = chosen
                 val charge = if (SessionManager(this@CustomerOfferOrderActivity).getRole() == UserRole.USER) 10.0 else 0.0
                 details.text = "${chosen.name}\n\n" + chosen.items.joinToString("\n") {
-                    "${it.itemName} × ${it.orderQuantity}" + if (it.offerQty > 0) " (${it.offerQty} free)" else ""
-                } + "\n\nOffer price: ${money.format(chosen.price)}\nDelivery: ${money.format(charge)}\nTotal: ${money.format(chosen.price + charge)}"
+                    "${it.itemName} × ${it.orderQuantity}"
+                } + "\n\nBundle price: ${money.format(chosen.price)}\nDelivery: ${money.format(charge)}\nTotal: ${money.format(chosen.price + charge)}"
                 regular.isEnabled = chosen.items.all { it.stock >= it.orderQuantity }
                 status.text = (if (regular.isEnabled) "Review the included items, then choose delivery." else "Some included items are out of stock. Choose a dated pre-order.") + "\n" + CustomerOrderWindow.statusMessage(if (isPreorder) "pre_order" else "regular")
                 val isUser = SessionManager(this@CustomerOfferOrderActivity).getRole() == UserRole.USER

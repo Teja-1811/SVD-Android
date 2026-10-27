@@ -62,6 +62,11 @@ class CustomerProfileActivity : AdminBaseActivity() {
         isFrozen = customer.frozen == true
         updateFreezeButtonState()
 
+        binding.cardProfile.customerCardActions.visibility = View.GONE
+        binding.btnDeleteCustomer.setOnClickListener {
+            customer.id?.let { id -> com.svd.svdagencies.utils.CustomerDeletionAction.confirm(this, id, customer.name ?: "Customer") { finish() } }
+        }
+
         // Setup button listeners
         binding.btnUpdate.setOnClickListener {
             // Launch AddCustomerActivity in Update mode

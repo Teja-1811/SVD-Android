@@ -69,7 +69,7 @@ class ViewExpensesActivity : AdminBaseActivity() {
         binding.btnApplyFilters.icon = null
         binding.btnApplyFilters.layoutParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
         binding.btnApplyFilters.minimumWidth = (72 * resources.displayMetrics.density).toInt()
-        binding.btnApplyFilters.text = "Clear"
+        com.svd.svdagencies.utils.RefreshButtonStyle.apply(binding.btnApplyFilters)
         binding.btnApplyFilters.contentDescription = "Clear filters"
         binding.btnApplyFilters.setOnClickListener {
             val now = Calendar.getInstance()

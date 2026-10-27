@@ -66,9 +66,9 @@ object LoadingOverlayManager {
 
         val progress = CircularProgressIndicator(activity).apply {
             isIndeterminate = true
-            indicatorSize = 72
-            trackThickness = 6
-            setIndicatorColor(ContextCompat.getColor(activity, R.color.brand_red))
+            indicatorSize = (48 * activity.resources.displayMetrics.density).toInt()
+            trackThickness = (4 * activity.resources.displayMetrics.density).toInt()
+            setIndicatorColor(com.google.android.material.color.MaterialColors.getColor(activity, com.google.android.material.R.attr.colorPrimary, ContextCompat.getColor(activity, R.color.colorPrimary)))
         }
 
         overlay.addView(

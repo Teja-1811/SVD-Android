@@ -4,19 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:cardElevation="0dp"
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -37,9 +37,9 @@
                 android:layout_weight="1"
                 android:text="Fresh Milk 500ml"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="15sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -51,11 +51,11 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2"
+            android:columnCount="@integer/svd_summary_columns"
             android:rowCount="2">
 
             <!-- Morning -->
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -75,11 +75,11 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="@color/brand_blue"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/svd_text_label"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -99,12 +99,12 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="?attr/colorPrimary"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/svd_text_label"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <!-- Evening -->
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -125,11 +125,11 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="@color/brand_blue"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/svd_text_label"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -150,9 +150,9 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="?attr/colorPrimary"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/svd_text_label"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
         </GridLayout>
 
@@ -163,13 +163,13 @@
             android:background="@color/divider_line" />
 
         <!-- Calculations -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -188,11 +188,11 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="@color/textColorPrimary"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/svd_text_label"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -211,11 +211,11 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="@color/icon_green"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/svd_text_label"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -234,11 +234,11 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="?attr/colorPrimary"
-                    android:textSize="15sp"
+                    android:textSize="@dimen/svd_text_label"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

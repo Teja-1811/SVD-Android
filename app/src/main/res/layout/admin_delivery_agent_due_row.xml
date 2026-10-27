@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1.15"
         android:textColor="@color/textColorPrimary"
-        android:textSize="13sp" />
+        android:textSize="@dimen/svd_text_label" />
 
     <TextView
         android:id="@+id/tvDueCollected"
@@ -21,7 +21,7 @@
         android:layout_weight="1"
         android:gravity="end"
         android:textColor="@color/textColorPrimary"
-        android:textSize="13sp" />
+        android:textSize="@dimen/svd_text_label" />
 
     <TextView
         android:id="@+id/tvDueSubmitted"
@@ -30,7 +30,7 @@
         android:layout_weight="1"
         android:gravity="end"
         android:textColor="@color/textColorPrimary"
-        android:textSize="13sp" />
+        android:textSize="@dimen/svd_text_label" />
 
     <TextView
         android:id="@+id/tvDueBalance"
@@ -40,5 +40,5 @@
         android:gravity="end"
         android:textColor="@color/textColorPrimary"
         android:textStyle="bold"
-        android:textSize="13sp" />
-</LinearLayout>
+        android:textSize="@dimen/svd_text_label" />
+</com.svd.svdagencies.utils.CompactLinearLayout>

@@ -131,6 +131,7 @@ class CustomerOrdersFragment : Fragment() {
         }
         btnPreOrderDate.setOnClickListener { choosePreOrderDate() }
         orderTypeToggle.isVisible = SessionManager(requireContext()).getRole() == UserRole.USER
+        if (SessionManager(requireContext()).getRole() != UserRole.USER) viewModel.isPreOrder = false
         orderTypeToggle.check(if (viewModel.isPreOrder) R.id.btnPreOrder else R.id.btnRegularOrder)
         updateOrderTypeUi(viewModel.isPreOrder)
 
@@ -548,7 +549,7 @@ class CustomerOrdersFragment : Fragment() {
 
     private fun restoreLatestOrderIntoCart() {
         if (!isAdded || view == null) return
-                val context = context ?: return
+        val context = context ?: return
         val latestOrder = LatestCustomerOrderStore.get(context) ?: return
 
         if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {

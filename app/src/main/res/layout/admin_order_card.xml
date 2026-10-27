@@ -11,13 +11,13 @@
     app:strokeColor="@color/card_stroke_color"
     app:cardBackgroundColor="@color/card_background">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <!-- Header -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
@@ -29,7 +29,7 @@
                 android:layout_weight="1"
                 android:text="ORD-2026..."
                 android:textStyle="bold"
-                android:textSize="13sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textColor="@color/textColorPrimary"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -41,12 +41,12 @@
                 android:paddingVertical="2dp"
                 android:textSize="@dimen/text_size_body_small"
                 android:textColor="@color/white"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider_line"/>
 
         <!-- Details -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Customer: Test"
-                android:textSize="13sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textStyle="bold"
                 android:textColor="@color/textColorPrimary"/>
 
@@ -73,23 +73,23 @@
                 android:text="Items:"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
-                android:textSize="13sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textColor="@color/textColorPrimary"/>
 
             <!-- Items Table Header -->
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp">
+            <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp">
                 <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2.5" android:text="Item" android:textSize="@dimen/text_size_body_small" android:textStyle="bold" android:textColor="@color/textColorPrimary"/>
                 <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Qty" android:gravity="center" android:textSize="@dimen/text_size_body_small" android:textStyle="bold" android:textColor="@color/textColorPrimary"/>
                 <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Disc" android:gravity="center" android:textSize="@dimen/text_size_body_small" android:textStyle="bold" android:textColor="@color/textColorPrimary"/>
                 <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="0.8" android:text="AQ" android:gravity="center" android:textSize="@dimen/text_size_body_small" android:textStyle="bold" android:textColor="@color/textColorPrimary"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <!-- Dynamic Items Container -->
-            <LinearLayout android:id="@+id/layoutItems" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
-        </LinearLayout>
+            <com.svd.svdagencies.utils.CompactLinearLayout android:id="@+id/layoutItems" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <!-- Actions -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -108,7 +108,7 @@
                 android:textStyle="bold"
                 app:cornerRadius="@dimen/button_corner_radius"
                 android:textColor="@color/white"
-                app:iconTint="@color/white"/>
+                app:iconTint="@color/white" android:minHeight="48dp"  android:minWidth="48dp" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
                 android:layout_width="0dp"
@@ -122,8 +122,8 @@
                 android:textAllCaps="false"
                 android:textStyle="bold"
                 app:cornerRadius="@dimen/button_corner_radius"
-                android:textColor="@color/white"
-                app:iconTint="@color/white"/>
-        </LinearLayout>
-    </LinearLayout>
+                android:textColor="?attr/colorOnPrimary"
+                app:iconTint="?attr/colorOnPrimary" android:minHeight="48dp"  android:minWidth="48dp" />
+        </com.svd.svdagencies.utils.CompactLinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

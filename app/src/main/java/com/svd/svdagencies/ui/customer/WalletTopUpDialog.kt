@@ -61,7 +61,7 @@ object WalletTopUpDialog {
                         val content = activity.layoutInflater.inflate(com.svd.svdagencies.R.layout.dialog_upi_payment,null)
                         content.findViewById<android.widget.TextView>(com.svd.svdagencies.R.id.upiDialogAmount).text = money.format(shortfall)
                         content.findViewById<android.widget.TextView>(com.svd.svdagencies.R.id.upiDialogPayee).text = com.svd.svdagencies.utils.PaymentConfig.PAYEE_NAME
-                        content.findViewById<android.widget.TextView>(com.svd.svdagencies.R.id.upiDialogId).text = com.svd.svdagencies.utils.PaymentConfig.UPI_ID
+                        content.findViewById<android.widget.TextView>(com.svd.svdagencies.R.id.upiDialogId).text = payment.upiId ?: android.net.Uri.parse(uri).getQueryParameter("pa").orEmpty()
                         val init = WhiteMaterialAlertDialogBuilder(activity).setView(content).create()
                         content.findViewById<android.view.View>(com.svd.svdagencies.R.id.upiDialogCancel).setOnClickListener { init.dismiss() }
                         content.findViewById<com.google.android.material.button.MaterialButton>(com.svd.svdagencies.R.id.upiDialogPay).setOnClickListener { view ->

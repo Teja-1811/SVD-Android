@@ -88,14 +88,14 @@ class AdminMonthlySummary : AdminBaseActivity() {
         if (filterRow != null && customerField?.parent == filterRow) {
             filterRow.orientation = LinearLayout.VERTICAL
             customerField.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            val actions = LinearLayout(this)
+            val actions = com.svd.svdagencies.utils.CompactLinearLayout(this)
             listOf(etMonth, btnDownload, btnWhatsappShare).forEach { button ->
                 filterRow.removeView(button)
                 actions.addView(button, LinearLayout.LayoutParams(0, (52 * resources.displayMetrics.density).toInt(), 1f))
             }
             filterRow.addView(actions)
         }
-        monthLabel = TextView(this).apply { textSize=17f; setPadding(12,16,12,16) }
+        monthLabel = TextView(this).apply { textSize=14f; setPadding(12,16,12,16) }
         layoutResults.addView(monthLabel, 0)
         etMonth.setOnClickListener { showMonthPicker() }
         
@@ -210,7 +210,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
                 if (e is CancellationException) throw e
                 withContext(Dispatchers.Main) {
                     if (isDestroyed || isFinishing) return@withContext
-                    monthLabel.text = "Unable to load summary. Select the customer or month to retry."
+                    monthLabel.text = "Couldn't load summary. Try again."
                     Toast.makeText(this@AdminMonthlySummary, "Unable to load monthly summary", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -353,7 +353,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
         extraSummaryView?.let { layoutResults.removeView(it) }
         extraSummaryView = TextView(this).apply {
             text = "Discounts: ₹${String.format("%.2f", data.summary.total_discount)}\nPeriod profit: ₹${String.format("%.2f", data.summary.selected_period_profit)} · Lifetime profit: ₹${String.format("%.2f", data.summary.overall_customer_profit)}"
-            textSize = 14f
+            textSize = 13f
             setPadding(16,16,16,16)
         }.also { layoutResults.addView(it, layoutResults.indexOfChild(cardFinancialSummary) + 1) }
         // Financial Summary
@@ -380,10 +380,10 @@ class AdminMonthlySummary : AdminBaseActivity() {
         
         if (isBold) {
             tvValue?.setTextColor(ContextCompat.getColor(this, R.color.brand_red))
-            tvValue?.textSize = 16f
+            tvValue?.textSize = 14f
         } else {
             tvValue?.setTextColor(ContextCompat.getColor(this, R.color.black))
-            tvValue?.textSize = 14f
+            tvValue?.textSize = 13f
         }
     }
 }

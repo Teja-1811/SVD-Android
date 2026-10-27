@@ -1,0 +1,16 @@
+<resources>
+<string name="svd_a11y_btnmenu">Open navigation</string>
+<string name="svd_a11y_btncustomermenu">Open navigation</string>
+<string name="svd_a11y_btnlogout">Log out</string>
+<string name="svd_a11y_btncustomerlogout">Log out</string>
+<string name="svd_a11y_btnback">Go back</string>
+<string name="svd_a11y_btnclosedrawer">Close navigation</string>
+<string name="svd_a11y_btnrefresh">Refresh</string>
+<string name="svd_a11y_btnsearch">Search</string>
+<string name="svd_a11y_btndone">Done</string>
+<string name="svd_a11y_btnplus">Increase quantity</string>
+<string name="svd_a11y_btnminus">Decrease quantity</string>
+<string name="svd_a11y_btnincrease">Increase quantity</string>
+<string name="svd_a11y_btndecrease">Decrease quantity</string>
+<string name="svd_a11y_ivqrcode">Payment QR code</string>
+</resources>

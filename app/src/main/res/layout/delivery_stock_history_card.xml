@@ -10,7 +10,7 @@
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -28,7 +28,7 @@
                 android:layout_alignParentStart="true"
                 android:text="2024-01-01"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="16sp"
+                android:textSize="@dimen/svd_text_body"
                 android:textStyle="bold" />
 
             <TextView
@@ -44,7 +44,7 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2"
+            android:columnCount="@integer/svd_summary_columns"
             android:rowCount="2">
 
             <TextView
@@ -54,7 +54,7 @@
                 android:layout_columnWeight="1"
                 android:text="Mng: 100 / 10"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="13sp" />
+                android:textSize="@dimen/svd_text_label" />
 
             <TextView
                 android:id="@+id/tvEvening"
@@ -63,9 +63,9 @@
                 android:layout_columnWeight="1"
                 android:text="Eve: 50 / 5"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="13sp" />
+                android:textSize="@dimen/svd_text_label" />
 
         </GridLayout>
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

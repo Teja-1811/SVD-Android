@@ -1,161 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.svd.svdagencies.utils.AppSwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/billsSwipeRefresh"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
-
-    <LinearLayout
+<com.svd.svdagencies.utils.AppSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/billsSwipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/window_background">
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="?attr/colorSurface"
         android:padding="@dimen/spacing_large">
-
-        <!-- ================= FILTER ROW ================= -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/spacing_medium">
-
-            <EditText
-                android:id="@+id/etMonth"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:hint="Month"
-                android:focusable="false"
-                android:clickable="true"
-                android:drawableEnd="@drawable/ic_calendar"
-                android:padding="@dimen/spacing_medium"
-                android:textSize="@dimen/text_size_medium"
-                android:background="@drawable/bg_qty_outline"
-                android:textColor="@color/textColorPrimary"
-                android:textColorHint="@color/textColorSecondary"/>
-
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Shop invoices"
+        android:textSize="@dimen/svd_text_title"
+        android:textColor="@color/textColorPrimary"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp" />
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Review billing and account totals."
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="@color/textColorSecondary"
+        android:layout_marginBottom="16dp"  android:visibility="gone" />
+        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/spacing_medium">
+            <EditText style="@style/Widget.Svd.PlainInput"
+        android:id="@+id/etMonth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="Month"
+        android:focusable="false"
+        android:clickable="true"
+        android:drawableEnd="@drawable/ic_calendar"
+        android:padding="@dimen/spacing_medium"
+        android:textSize="@dimen/text_size_medium"
+        android:background="@drawable/bg_qty_outline"
+        android:textColor="@color/textColorPrimary"
+        android:textColorHint="@color/textColorSecondary"
+        android:minHeight="48dp"  android:minWidth="48dp" />
             <Button
-                android:id="@+id/btnFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:text="Filter"
-                android:textSize="@dimen/text_size_button"
-                android:layout_marginStart="@dimen/spacing_small"
-                android:backgroundTint="?attr/colorPrimary"
-                android:textColor="@color/white"/>
-        </LinearLayout>
-
-        <!-- ================= STATS ROW ================= -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="@dimen/spacing_medium">
-
+        android:id="@+id/btnFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter"
+        android:textSize="@dimen/text_size_button"
+        android:layout_marginStart="@dimen/spacing_small"
+        app:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"  android:minHeight="48dp"  android:minWidth="48dp" />
+        </com.svd.svdagencies.utils.CompactLinearLayout>
+        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/spacing_medium">
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/spacing_small"
-                app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/card_stroke_color"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_large">
-
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/spacing_small"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:cardBackgroundColor="@color/card_background">
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_large">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Total Bills"
-                        android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/textColorSecondary"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Bills"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/textColorSecondary" />
                     <TextView
-                        android:id="@+id/tvTotalBills"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="@dimen/text_size_medium"
-                        android:textStyle="bold"
-                        android:textColor="@color/textColorPrimary"/>
-                </LinearLayout>
+        android:id="@+id/tvTotalBills"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textSize="@dimen/text_size_medium"
+        android:textStyle="bold"
+        android:textColor="@color/textColorPrimary" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/spacing_small"
-                app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/card_stroke_color"
-                app:cardBackgroundColor="@color/card_background">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_large">
-
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/spacing_small"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:cardBackgroundColor="@color/card_background">
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_large">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Total Amount"
-                        android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/textColorSecondary"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Amount"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/textColorSecondary" />
                     <TextView
-                        android:id="@+id/tvTotalAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0.0"
-                        android:textSize="@dimen/text_size_medium"
-                        android:textStyle="bold"
-                        android:textColor="@color/textColorPrimary"/>
-                </LinearLayout>
+        android:id="@+id/tvTotalAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.0"
+        android:textSize="@dimen/text_size_medium"
+        android:textStyle="bold"
+        android:textColor="@color/textColorPrimary" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
+        </com.svd.svdagencies.utils.CompactLinearLayout>
         <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="@dimen/text_size_small"
-            android:layout_marginBottom="@dimen/spacing_small"
-            android:textColor="@color/textColorSecondary"/>
-
-        <!-- ================= EMPTY STATE ================= -->
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_small"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:textColor="@color/textColorSecondary" />
         <TextView
-            android:id="@+id/tvEmptyBills"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="No bills found"
-            android:textSize="@dimen/text_size_medium"
-            android:textColor="@color/textColorSecondary"
-            android:gravity="center"
-            android:visibility="gone"
-            android:layout_marginTop="40dp"/>
-
-        <!-- ================= BILLS LIST ================= -->
+        android:id="@+id/tvEmptyBills"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No bills found"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="@color/textColorSecondary"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="40dp" />
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvBills"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/spacing_small"/>
-
-    </LinearLayout>
-
+        android:id="@+id/rvBills"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/spacing_small" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.svd.svdagencies.utils.AppSwipeRefreshLayout>

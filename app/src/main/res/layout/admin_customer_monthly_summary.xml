@@ -1,277 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_light_gray"
-    tools:context=".ui.admin.AdminMonthlySummary">
-
-    <LinearLayout
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/drawerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_light_gray"
+        tools:context=".ui.admin.AdminMonthlySummary">
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <include layout="@layout/admin_toolbar" />
-
         <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <!-- 🔹 FILTER SECTION -->
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:layout_weight="1"
+        android:clipToPadding="false">
+            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="@color/card_stroke_color"
-                    android:layout_marginBottom="20dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="12dp"
-                        android:gravity="center_vertical">
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:hint="Select Customer"
-                            app:boxCornerRadiusTopStart="12dp"
-                            app:boxCornerRadiusTopEnd="12dp"
-                            app:boxCornerRadiusBottomStart="12dp"
-                            app:boxCornerRadiusBottomEnd="12dp"
-                            app:boxStrokeColor="?attr/colorPrimary"
-                            app:hintTextColor="?attr/colorPrimary">
-
-                            <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
-                                android:id="@+id/autoCustomer"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:inputType="none"
-                                android:textSize="14sp"
-                                android:padding="12dp"
-                                android:textColor="@color/textColorPrimary" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color"
+        android:layout_marginBottom="@dimen/svd_space_section">
+                    <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+                        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="Select Customer"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxStrokeColor="?attr/colorPrimary"
+        app:hintTextColor="?attr/colorPrimary">
+                            <AutoCompleteTextView style="@style/Widget.Svd.PlainInput"
+        android:popupBackground="@drawable/bg_delivery_dropdown"
+        android:id="@+id/autoCustomer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="none"
+        android:textSize="@dimen/svd_text_body"
+        android:padding="12dp"
+        android:textColor="@color/textColorPrimary"
+        android:minHeight="48dp"  android:minWidth="48dp" />
                         </com.google.android.material.textfield.TextInputLayout>
-
                         <ImageButton
-                            android:id="@+id/etMonth"
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/bg_rounded_light_blue"
-                            android:src="@drawable/ic_calendar"
-                            android:contentDescription="Select Month"
-                            app:tint="?attr/colorPrimary"/>
-
+        android:id="@+id/etMonth"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_rounded_light_blue"
+        android:src="@drawable/ic_calendar"
+        android:contentDescription="Select Month"
+        app:tint="?attr/colorPrimary" />
                         <ImageButton
-                            android:id="@+id/btnDownload"
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/bg_rounded_blue"
-                            android:src="@drawable/ic_download"
-                            android:contentDescription="Download Summary"
-                            app:tint="@color/white"/>
-
+        android:id="@+id/btnDownload"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_rounded_blue"
+        android:src="@drawable/ic_download"
+        android:contentDescription="Download Summary"
+        app:tint="@color/white" />
                         <ImageButton
-                            android:id="@+id/btnWhatsappShare"
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/bg_rounded_green"
-                            android:src="@drawable/ic_whatsapp"
-                            android:contentDescription="Share on WhatsApp"
-                            app:tint="@color/white"/>
-
-                    </LinearLayout>
+        android:id="@+id/btnWhatsappShare"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_rounded_green"
+        android:src="@drawable/ic_whatsapp"
+        android:contentDescription="Share on WhatsApp"
+        app:tint="@color/white" />
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
-                <LinearLayout
-                    android:id="@+id/layoutResults"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <!-- 🔹 CUSTOMER PROFILE HEADER -->
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:id="@+id/layoutResults"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardCustomerDetails"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/card_background"
-                        android:layout_marginBottom="20dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:padding="16dp">
-
+        android:id="@+id/cardCustomerDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:cardBackgroundColor="@color/card_background"
+        android:layout_marginBottom="@dimen/svd_space_section">
+                        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
                             <de.hdodenhof.circleimageview.CircleImageView
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
-                                android:src="@drawable/ic_person"
-                                app:civ_border_width="2dp"
-                                app:civ_border_color="@color/white"
-                                android:elevation="0dp"/>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical"
-                                android:layout_marginStart="16dp">
-
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_person"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/white"
+        android:elevation="0dp" />
+                            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp">
                                 <TextView
-                                    android:id="@+id/tvDetailName"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Customer Name"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold"
-                                    android:textColor="@color/textColorPrimary"/>
-
+        android:id="@+id/tvDetailName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Customer Name"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold"
+        android:textColor="@color/textColorPrimary" />
                                 <TextView
-                                    android:id="@+id/tvDetailShop"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Shop Name"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/textColorSecondary"
-                                    android:layout_marginTop="2dp"/>
-
+        android:id="@+id/tvDetailShop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shop Name"
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="@color/textColorSecondary"
+        android:layout_marginTop="2dp" />
                                 <TextView
-                                    android:id="@+id/tvDetailPhone"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="+91 00000 00000"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/gray500"
-                                    android:layout_marginTop="2dp"/>
-                            </LinearLayout>
-                        </LinearLayout>
+        android:id="@+id/tvDetailPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+91 00000 00000"
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="@color/gray500"
+        android:layout_marginTop="2dp" />
+                            </com.svd.svdagencies.utils.CompactLinearLayout>
+                        </com.svd.svdagencies.utils.CompactLinearLayout>
                     </com.google.android.material.card.MaterialCardView>
-
-                    <!-- 🔹 FINANCIAL BREAKDOWN -->
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="FINANCIAL BREAKDOWN"
-                        android:textSize="@dimen/text_size_body_small"
-                        android:textStyle="bold"
-                        android:textColor="@color/textColorSecondary"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginStart="4dp"
-                        android:letterSpacing="0.05"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FINANCIAL BREAKDOWN"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold"
+        android:textColor="@color/textColorSecondary"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="4dp"
+        android:letterSpacing="0.05" />
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardFinancialSummary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/card_background"
-                        android:layout_marginBottom="20dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowOpeningDue" />
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowTotalSales" />
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowPaidAmount" />
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowDueAmount" />
+        android:id="@+id/cardFinancialSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:cardBackgroundColor="@color/card_background"
+        android:layout_marginBottom="@dimen/svd_space_section">
+                        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowOpeningDue" />
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowTotalSales" />
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowPaidAmount" />
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowDueAmount" />
                             <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:background="@color/divider_line"
-                                android:layout_marginVertical="12dp"/>
-
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowRemainingDue" />
-                        </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_line"
+        android:layout_marginVertical="12dp" />
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowRemainingDue" />
+                        </com.svd.svdagencies.utils.CompactLinearLayout>
                     </com.google.android.material.card.MaterialCardView>
-
-                    <!-- 🔹 VOLUME ANALYSIS -->
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="VOLUME ANALYSIS"
-                        android:textSize="@dimen/text_size_body_small"
-                        android:textStyle="bold"
-                        android:textColor="@color/textColorSecondary"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginStart="4dp"
-                        android:letterSpacing="0.05"/>
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VOLUME ANALYSIS"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold"
+        android:textColor="@color/textColorSecondary"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="4dp"
+        android:letterSpacing="0.05" />
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardVolumeSummary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="1dp"
-                        app:strokeColor="@color/card_stroke_color"
-                        app:cardBackgroundColor="@color/card_background"
-                        android:layout_marginBottom="32dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowMilkVolume" />
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowCurdVolume" />
-
+        android:id="@+id/cardVolumeSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:cardBackgroundColor="@color/card_background"
+        android:layout_marginBottom="32dp">
+                        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowMilkVolume" />
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowCurdVolume" />
                             <View
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:background="@color/divider_line"
-                                android:layout_marginVertical="12dp"/>
-
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowAvgMilk" />
-                            <include layout="@layout/admin_m_row_summary_item" android:id="@+id/rowAvgCurd" />
-                        </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_line"
+        android:layout_marginVertical="12dp" />
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowAvgMilk" />
+                            <include layout="@layout/admin_m_row_summary_item"
+        android:id="@+id/rowAvgCurd" />
+                        </com.svd.svdagencies.utils.CompactLinearLayout>
                     </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-            </LinearLayout>
+                </com.svd.svdagencies.utils.CompactLinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
         </androidx.core.widget.NestedScrollView>
-    </LinearLayout>
-
+    </com.svd.svdagencies.utils.CompactLinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="?attr/colorSurface"
         android:layout_gravity="start"
         app:headerLayout="@layout/admin_nav_header"
         app:itemIconTint="@color/drawer_nav_icon_colors"
         app:itemTextColor="@color/drawer_nav_item_colors"
-        app:menu="@menu/menu_admin_drawer"/>
-
+        app:menu="@menu/menu_admin_drawer"
+        app:backgroundTint="?attr/colorSurface" />
 </androidx.drawerlayout.widget.DrawerLayout>

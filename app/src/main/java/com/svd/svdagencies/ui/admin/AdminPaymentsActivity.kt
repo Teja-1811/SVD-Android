@@ -26,6 +26,7 @@ import kotlinx.coroutines.CancellationException
 
 class AdminPaymentsActivity : AdminBaseActivity() {
     private var filterRequest: Job? = null
+    private var routeCustomerFilters: com.svd.svdagencies.utils.RouteCustomerFilters? = null
     private var filterDebounce: Job? = null
 
 
@@ -40,6 +41,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
         setupAdminLayout("Customer Payments")
         setupRecyclerView()
         setupListeners()
+        routeCustomerFilters=com.svd.svdagencies.utils.RouteCustomerFilters(this,binding.paymentRouteFilter,binding.etFilterCustomer) { fetchPayments() }
     }
 
     override fun onResume() {
@@ -98,8 +100,8 @@ class AdminPaymentsActivity : AdminBaseActivity() {
             fetchPayments()
         }
         
-        binding.btnFilter.visibility = android.view.View.GONE
-        binding.etFilterCustomer.doAfterTextChanged { scheduleFilterRefresh() }
+        binding.btnFilter.setOnClickListener { fetchPayments() }
+
         binding.etFilterTxn.doAfterTextChanged { scheduleFilterRefresh() }
 
         binding.btnClear.setOnClickListener {
@@ -118,14 +120,15 @@ class AdminPaymentsActivity : AdminBaseActivity() {
         }
     }
 
-    private fun fetchPayments(customer: String? = binding.etFilterCustomer.text.toString().trim(), transactionId: String? = binding.etFilterTxn.text.toString().trim()) {
+    private fun fetchPayments(customer: String? = null, transactionId: String? = binding.etFilterTxn.text.toString().trim()) {
         binding.swipeRefresh.isRefreshing = true
         filterRequest?.cancel()
         filterRequest = lifecycleScope.launch {
             try {
                 val response = ApiClient.adminPaymentsApi.getCustomerPayments(
                     customer = if (customer.isNullOrEmpty()) null else customer,
-                    transactionId = if (transactionId.isNullOrEmpty()) null else transactionId
+                    transactionId = if (transactionId.isNullOrEmpty()) null else transactionId,
+                    routeId = routeCustomerFilters?.routeId, customerId = routeCustomerFilters?.customerId
                 )
                 adapter.setData(response.payments)
             } catch (e: Exception) {
@@ -151,7 +154,7 @@ class AdminPaymentsActivity : AdminBaseActivity() {
 
     private fun showEditPaymentDialog(payment: CustomerPaymentItem) {
         val padding = (20 * resources.displayMetrics.density).toInt()
-        val content = android.widget.LinearLayout(this).apply {
+        val content = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = android.widget.LinearLayout.VERTICAL
             setPadding(padding, 0, padding, 0)
         }

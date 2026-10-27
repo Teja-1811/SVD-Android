@@ -631,31 +631,32 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             tvBillInfo.visibility = android.view.View.VISIBLE
         }
 
-        val upiId = PaymentConfig.UPI_ID
-        val name = "Sri Vijay Durga Milk Agency"
+        PaymentConfig.withUpiId(this) { upiId ->
+            val name = "Sri Vijay Durga Milk Agency"
         
-        val paymentMsg = if (billNumber != null && customerName != null) {
-            "($billNumber-$customerName)"
-        } else {
-            ""
-        }
+            val paymentMsg = if (billNumber != null && customerName != null) {
+                "($billNumber-$customerName)"
+            } else {
+                ""
+            }
         
-        val upiUrl = "upi://pay?pa=$upiId&pn=${Uri.encode(name)}&am=${"%.2f".format(qrAmount)}&cu=INR&tn=${Uri.encode(paymentMsg)}"
+            val upiUrl = "upi://pay?pa=$upiId&pn=${Uri.encode(name)}&am=${"%.2f".format(qrAmount)}&cu=INR&tn=${Uri.encode(paymentMsg)}"
 
-        try {
-            val barcodeEncoder = BarcodeEncoder()
-            val bitmap = barcodeEncoder.encodeBitmap(upiUrl, BarcodeFormat.QR_CODE, 512, 512)
-            ivQrCode.setImageBitmap(bitmap)
-        } catch (e: Exception) {
-            e.printStackTrace()
+            try {
+                val barcodeEncoder = BarcodeEncoder()
+                val bitmap = barcodeEncoder.encodeBitmap(upiUrl, BarcodeFormat.QR_CODE, 512, 512)
+                ivQrCode.setImageBitmap(bitmap)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            val dialog = MaterialAlertDialogBuilder(this)
+                .setView(dialogView)
+                .create()
+
+            btnCloseQr.setOnClickListener { dialog.dismiss() }
+            dialog.show()
         }
-
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setView(dialogView)
-            .create()
-
-        btnCloseQr.setOnClickListener { dialog.dismiss() }
-        dialog.show()
     }
 
     private fun generateBill() {

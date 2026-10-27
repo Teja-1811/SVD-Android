@@ -39,7 +39,7 @@ class RegistrationActivity : BaseActivity() {
             val termsText = resources.openRawResource(R.raw.registration_terms).bufferedReader().use { it.readText() }
             val content = TextView(this).apply {
                 text = HtmlCompat.fromHtml(termsText, HtmlCompat.FROM_HTML_MODE_COMPACT)
-                textSize = 15f
+                textSize = 13f
                 setTextColor(androidx.core.content.ContextCompat.getColor(this@RegistrationActivity, R.color.textColorPrimary))
                 setPadding(padding, padding / 2, padding, padding)
                 setTextIsSelectable(true)

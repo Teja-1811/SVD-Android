@@ -17,17 +17,23 @@
         <item name="colorOnSecondaryContainer">#78350F</item>
         <item name="android:statusBarColor">#166534</item>
     </style>
-    <string name="tools_appearance">Tools &amp; appearance</string>
+    <string name="tools_appearance">Settings</string>
     <string name="tools_search">Search tools</string>
     <string name="tools_empty">No matching tools. Try another search.</string>
-    <string name="tools_website_note">Website tools open inside the app. You may need to sign in with your website account.</string>
-    <string name="appearance_title">Make it yours</string>
+    <string name="tools_website_note">Your account tools and information, available directly in the app.</string>
+    <string name="appearance_title">Theme</string>
     <string name="appearance_description">Choose a colour theme for this device.</string>
-    <string name="theme_ruby">Ruby</string>
+    <string name="theme_ruby">Portal default</string>
     <string name="theme_ocean">Ocean</string>
     <string name="theme_forest">Forest</string>
     <string name="tools_back">Back</string>
 <style name="Widget.Svd.FormField" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-<item name="boxCornerRadiusTopStart">12dp</item><item name="boxCornerRadiusTopEnd">12dp</item>
-<item name="boxCornerRadiusBottomStart">12dp</item><item name="boxCornerRadiusBottomEnd">12dp</item>
-</style></resources>
+<item name="hintTextAppearance">@style/TextAppearance.Svd.Label</item>
+<item name="boxStrokeWidth">1dp</item>
+<item name="boxStrokeWidthFocused">1dp</item>
+<item name="boxCollapsedPaddingTop">6dp</item>
+<item name="boxCornerRadiusTopStart">8dp</item><item name="boxCornerRadiusTopEnd">8dp</item>
+<item name="boxCornerRadiusBottomStart">8dp</item><item name="boxCornerRadiusBottomEnd">8dp</item>
+</style>
+    <style name="Theme.SVDAgency.User" parent="Theme.SVDAgency" />
+</resources>

@@ -1,54 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="@dimen/grid_16">
-
-    <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:background="@drawable/circular_white_background"
-        android:padding="1dp"
-        android:contentDescription="logo"
-        android:scaleType="centerInside"
-        android:src="@drawable/logo" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvCustomerName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Customer Access"
-            android:textColor="@color/drawer_text_primary"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvCustomerDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Orders, support and invoices"
-            android:textColor="@color/textColorSecondary"
-            android:textSize="13sp" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/btnCloseDrawer"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="6dp"
-        android:src="@drawable/ic_back"
-        app:tint="@color/drawer_icon_default" />
-</LinearLayout>
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="?attr/colorSurface" android:gravity="center_vertical" android:orientation="horizontal" android:padding="@dimen/grid_16">
+    <ImageView android:id="@+id/imgLogo" android:layout_width="56dp" android:layout_height="56dp" android:background="@drawable/circular_white_background" android:padding="1dp" android:contentDescription="logo" android:scaleType="centerInside" android:src="@drawable/logo" />
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:orientation="vertical">
+        <TextView android:id="@+id/tvCustomerName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Customer Access" android:textColor="@color/drawer_text_primary" android:textSize="@dimen/svd_text_label" android:textStyle="bold" />
+        <TextView android:id="@+id/tvCustomerDetail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Orders, support and invoices" android:textColor="@color/textColorSecondary" android:textSize="@dimen/svd_text_label" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+    <ImageView android:id="@+id/btnCloseDrawer" android:layout_width="48dp" android:layout_height="48dp" android:background="?attr/selectableItemBackgroundBorderless" android:padding="12dp" android:src="@drawable/ic_back" app:tint="@color/drawer_icon_default" android:contentDescription="Close menu" />
+</com.svd.svdagencies.utils.CompactLinearLayout>

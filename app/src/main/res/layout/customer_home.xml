@@ -1,334 +1,324 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.svd.svdagencies.utils.AppSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipeRefresh"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
-
+<com.svd.svdagencies.utils.AppSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/window_background">
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="@dimen/grid_16"
-            android:paddingTop="36dp"
-            android:paddingBottom="@dimen/grid_16">
-
-            <!-- ================= HEADER GREETING ================= -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvWelcome"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Welcome back,"
-                        android:textColor="@color/textColorSecondary"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvPhone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Mobile: -"
-                        android:textColor="@color/textColorSecondary"
-                        android:textSize="@dimen/text_size_body_small" />
-
-                    <TextView
-                        android:id="@+id/tvShop"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Shop Name"
-                        android:textColor="@color/textColorPrimary"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/divider_line"
-                    app:strokeWidth="1dp">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="8dp"
-                        android:src="@drawable/logo" />
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <!-- ================= BUSINESS METRICS ================= -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#F0F9FF"
-                    app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                android:src="@drawable/ic_rupee"
-                                app:tint="#0369A1" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="6dp"
-                                android:text="Wallet"
-                                android:textColor="#0369A1"
-                                android:textSize="@dimen/text_size_body_small"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
+        android:fillViewport="true"
+        android:clipToPadding="false">
+        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/grid_16"
+        android:paddingTop="16dp"
+        android:paddingBottom="@dimen/grid_16">
+            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/svd_space_section"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_portal_hero">
+                <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="RETAILER WORKSPACE"
+        android:textSize="@dimen/svd_text_caption"
+        android:textColor="?attr/colorOnPrimaryContainer"
+        android:textStyle="bold"
+        android:letterSpacing="0.08" />
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+                    <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
                         <TextView
-                            android:id="@+id/tvBalance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="₹0.00"
-                            android:textColor="#0C4A6E"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                        <TextView android:id="@+id/retailerOutstanding" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="?attr/colorPrimary" android:textSize="14sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#FEF2F2"
-                    app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                android:src="@drawable/ic_check"
-                                app:tint="#991B1B" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="6dp"
-                                android:text="Status"
-                                android:textColor="#991B1B"
-                                android:textSize="@dimen/text_size_body_small"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-
+        android:id="@+id/tvWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome back,"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="@dimen/svd_text_label" />
                         <TextView
-                            android:id="@+id/tvStatus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Active"
-                            android:textColor="#7F1D1D"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
+        android:id="@+id/tvPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Mobile: -"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="@dimen/text_size_body_small" />
+                        <TextView
+        android:id="@+id/tvShop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Shop Name"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_title"
+        android:textStyle="bold" />
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
+                    <com.google.android.material.card.MaterialCardView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/divider_line"
+        app:strokeWidth="1dp">
+                        <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:src="@drawable/logo" />
+                    </com.google.android.material.card.MaterialCardView>
+                </com.svd.svdagencies.utils.CompactLinearLayout>
+                <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your shop, orders and account in one place."
+        android:textSize="@dimen/svd_text_label"
+        android:textColor="@color/textColorSecondary"
+        android:layout_marginTop="12dp"  android:visibility="gone" />
+            </com.svd.svdagencies.utils.CompactLinearLayout>
+            <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/svd_space_section"
+        android:orientation="horizontal"
+        android:weightSum="2">
+                <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="#F0F9FF"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color">
+                    <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+                        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+                            <ImageView
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:src="@drawable/ic_rupee"
+        app:tint="#0369A1" />
+                            <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="Wallet"
+        android:textColor="#0369A1"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold" />
+                        </com.svd.svdagencies.utils.CompactLinearLayout>
+                        <TextView
+        android:id="@+id/tvBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="₹0.00"
+        android:textColor="#0C4A6E"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold" />
+                        <TextView
+        android:id="@+id/retailerOutstanding"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="@dimen/svd_text_label" />
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
-
-            <!-- ================= OFFERS CAROUSEL ================= -->
+                <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="#FEF2F2"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color">
+                    <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+                        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+                            <ImageView
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:src="@drawable/ic_check"
+        app:tint="#991B1B" />
+                            <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="Status"
+        android:textColor="#991B1B"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold" />
+                        </com.svd.svdagencies.utils.CompactLinearLayout>
+                        <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Active"
+        android:textColor="#7F1D1D"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold" />
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:text="Exclusive Offers"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:text="Exclusive Offers"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold" />
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvOffers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:clipToPadding="false"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/customer_offer_banner" />
-
-            <!-- ================= LATEST ORDER ================= -->
+        android:id="@+id/rvOffers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/svd_space_section"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/customer_offer_banner" />
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke_color"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/card_stroke_color"
+        app:strokeWidth="1dp">
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/svd_space_section">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Latest Order"
-                        android:textColor="@color/textColorPrimary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latest Order"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold" />
                     <TextView
-                        android:id="@+id/tvOrderWindow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_status_yellow"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp"
-                        android:text="Order Window: 9 AM - 4:30 PM"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_size_body_small"
-                        android:textStyle="bold" />
-
+        android:id="@+id/tvOrderWindow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_status_yellow"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:text="Order Window: 9 AM - 4:30 PM"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_body_small"
+        android:textStyle="bold" />
                     <TextView
-                        android:id="@+id/tvLatestOrderTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Ready for today's order?"
-                        android:textColor="@color/textColorPrimary"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
+        android:id="@+id/tvLatestOrderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Ready for today's order?"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_label"
+        android:textStyle="bold" />
                     <TextView
-                        android:id="@+id/tvLatestOrderSubtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Place your regular or bulk order now."
-                        android:textColor="@color/textColorSecondary"
-                        android:textSize="13sp" />
-
+        android:id="@+id/tvLatestOrderSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Place your regular or bulk order now."
+        android:textColor="@color/textColorSecondary"
+        android:textSize="@dimen/svd_text_label" />
                     <TextView
-                        android:id="@+id/tvLatestOrderItems"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:background="#F8FAFC"
-                        android:padding="12dp"
-                        android:text="Order details will appear here."
-                        android:textColor="@color/textColorSecondary"
-                        android:textSize="@dimen/text_size_body_small"
-                        android:visibility="gone" />
-
+        android:id="@+id/tvLatestOrderItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@color/window_background"
+        android:padding="12dp"
+        android:text="Order details will appear here."
+        android:textColor="@color/textColorSecondary"
+        android:textSize="@dimen/text_size_body_small"
+        android:visibility="gone" />
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnLatestOrderAction"
-                        style="@style/Widget.Material3.Button"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginTop="20dp"
-                        android:text="Place Order"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="?attr/colorPrimary"
-                        app:cornerRadius="16dp"
-                        app:rippleColor="#40FFFFFF" />
-                </LinearLayout>
+        android:id="@+id/btnLatestOrderAction" style="@style/Widget.Material3.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/svd_space_section"
+        android:text="Place Order"
+        android:textAllCaps="false"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold"
+        app:backgroundTint="?attr/colorPrimary"
+        app:cornerRadius="16dp"
+        app:rippleColor="#40FFFFFF"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- ================= ACCOUNT STATUS INFO ================= -->
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardBackgroundColor="#F1FDF9"
-                app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/svd_space_section"
+        app:cardBackgroundColor="#F1FDF9"
+        app:cardCornerRadius="@dimen/card_corner_radius_medium"
+        app:cardElevation="0dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/card_stroke_color">
+                <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_check"
-                        app:tint="#059669" />
-
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_check"
+        app:tint="#059669" />
                     <TextView
-                        android:id="@+id/tvStatusMessage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="Your account is synced and ready."
-                        android:textColor="#047857"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+        android:id="@+id/tvStatusMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="Your account is synced and ready."
+        android:textColor="#047857"
+        android:textSize="@dimen/svd_text_label"
+        android:textStyle="bold" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 </com.svd.svdagencies.utils.AppSwipeRefreshLayout>

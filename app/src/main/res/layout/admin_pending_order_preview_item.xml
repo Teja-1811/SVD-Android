@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -11,13 +11,13 @@
         android:layout_marginBottom="@dimen/spacing_small"
         android:background="@color/divider_line" />
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -39,7 +39,7 @@
                 android:text="Customer Name"
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_small" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <TextView
             android:id="@+id/txtOrderAmount"
@@ -49,5 +49,5 @@
             android:textColor="?attr/colorPrimary"
             android:textSize="@dimen/text_size_medium"
             android:textStyle="bold" />
-    </LinearLayout>
-</LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+</com.svd.svdagencies.utils.CompactLinearLayout>

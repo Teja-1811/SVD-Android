@@ -13,7 +13,7 @@
     android:clickable="true"
     android:focusable="true">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Company Name"
-            android:textSize="14sp"
+            android:textSize="@dimen/svd_text_label"
             android:textStyle="bold"
             android:textColor="@color/textColorPrimary"
             android:gravity="center"
@@ -44,14 +44,14 @@
             android:id="@+id/tvWebsite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="visit website"
+            android:text="Browse products"
             android:textSize="@dimen/text_size_body_small"
-            android:textColor="@color/brand_blue"
+            android:textColor="?attr/colorPrimary"
             android:layout_marginTop="2dp"
             android:padding="4dp"
             android:background="?attr/selectableItemBackground"/>
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -73,19 +73,19 @@
                 android:text=" items"
                 android:textSize="@dimen/text_size_body_small"
                 android:textColor="@color/textColorSecondary"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnItems"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
+            android:layout_height="wrap_content" android:minHeight="48dp"
             android:layout_marginTop="@dimen/grid_8"
             android:text="View Catalog"
             android:textSize="@dimen/text_size_body_small"
             android:padding="0dp"
             android:textAllCaps="false"
             app:cornerRadius="@dimen/button_corner_radius"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"/>
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton" android:minWidth="48dp" />
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

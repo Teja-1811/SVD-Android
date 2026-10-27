@@ -11,14 +11,14 @@
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="Item Name"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="14sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textStyle="bold" />
 
             <TextView
@@ -41,7 +41,7 @@
                 android:text="Meta info"
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_body_small" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <TextView
             android:id="@+id/tvItemAmount"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:text="₹0.00"
             android:textColor="@color/brand_blue"
-            android:textSize="15sp"
+            android:textSize="@dimen/svd_text_label"
             android:textStyle="bold" />
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

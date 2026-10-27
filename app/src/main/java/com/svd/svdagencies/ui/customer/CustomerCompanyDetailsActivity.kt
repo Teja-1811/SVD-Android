@@ -24,7 +24,7 @@ class CustomerCompanyDetailsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.customer)
+        setContentView(PortalNavigation.layoutFor(this))
 
         val drawerLayout = findViewById<DrawerLayout>(R.id.customerDrawerLayout)
         val navigationView = findViewById<NavigationView>(R.id.customerNavigationView)
@@ -92,12 +92,20 @@ class CustomerCompanyDetailsActivity : BaseActivity() {
         val container = findViewById<FrameLayout>(R.id.customerFragmentContainer)
         val inflatedView = layoutInflater.inflate(R.layout.activity_company_details, container, false)
         container.addView(inflatedView)
+        com.svd.svdagencies.utils.PaymentConfig.load(this) { data ->
+            inflatedView.findViewById<TextView>(R.id.agencyLicenceDetails).text =
+                data.get("licence_text")?.asString.orEmpty().ifBlank { "Registration details have not been added." }
+        }
 
         inflatedView.findViewById<MaterialButton>(R.id.btnOpenMap).setOnClickListener {
             val gmmIntentUri = Uri.parse("geo:0,0?q=Sri+Vijaya+Durga+Milk+Agencies+Gundugolanu")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
-            startActivity(mapIntent)
+            try { startActivity(mapIntent) }
+            catch (_: android.content.ActivityNotFoundException) {
+                try { startActivity(Intent(Intent.ACTION_VIEW, gmmIntentUri)) }
+                catch (_: android.content.ActivityNotFoundException) { android.widget.Toast.makeText(this, "Install a maps app to view the location.", android.widget.Toast.LENGTH_LONG).show() }
+            }
         }
     }
 

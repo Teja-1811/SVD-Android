@@ -184,7 +184,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
             tvStatusMessage.setTextColor(ContextCompat.getColor(context, R.color.icon_green))
         } else {
             tvStatus.text = "Attention Needed"
-            tvStatusMessage.text = "Account needs attention before the next delivery cycle"
+            tvStatusMessage.text = "Account needs attention."
             tvStatusMessage.setTextColor(ContextCompat.getColor(context, R.color.brand_red))
         }
     }
@@ -214,17 +214,15 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
                     val colors = listOf("#0C4A6E", "#D32F2F", "#35BFA0", "#7B1FA2", "#F57C00")
                     
                     remoteOffers.forEachIndexed { index, item ->
-                        var subtitle = item.description ?: ""
-                        if (subtitle.isBlank() && item.offerType == "buy_x_get_y" && item.items.isNotEmpty()) {
-                            val first = item.items[0]
-                            subtitle = "Buy ${first.buyQty} get ${first.offerQty} ${first.itemName} free!"
-                        }
+                        val bundlePrice = java.text.NumberFormat.getCurrencyInstance(java.util.Locale.forLanguageTag("en-IN")).format(item.price)
+                        val subtitle = "$bundlePrice for the bundle · ${item.items.size} products"
+
 
                         offersList.add(
                             CustomerOffer(
                                 title = item.name,
-                                subtitle = subtitle.ifBlank { "Special discount available" },
-                                actionText = "Order Now",
+                                subtitle = subtitle,
+                                actionText = "View bundle",
                                 colorHex = colors[index % colors.size],
                                 offerId = item.id
                             )
@@ -252,7 +250,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         if (latestOrder == null) {
             tvLatestOrderTitle.text = "Ready for today's order?"
             tvLatestOrderSubtitle.text = CustomerOrderWindow.statusMessage()
-            tvLatestOrderItems.text = "Your latest order will appear here after checkout."
+            tvLatestOrderItems.text = "No orders yet."
             btnLatestOrderAction.text = "Place Order"
             btnLatestOrderAction.isEnabled = isOrderingOpen
             btnLatestOrderAction.setOnClickListener {

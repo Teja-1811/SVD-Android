@@ -1,154 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_login_gradient">
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="24dp">
-
-            <ImageView
-                android:id="@+id/login_logo"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_marginTop="48dp"
-                android:background="@drawable/circular_white_background"
-                android:contentDescription="@string/app_name"
-                android:elevation="4dp"
-                android:padding="5dp"
-                android:src="@drawable/logo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvWelcome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/login_welcome_back"
-                android:textColor="@color/white"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/login_logo" />
-
-            <TextView
-                android:id="@+id/tvSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:alpha="0.8"
-                android:text="@string/login_subtitle"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvWelcome" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/loginCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="@dimen/card_corner_radius_medium"
-                app:cardElevation="0dp"
-                app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
-                app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@color/white"
-                    android:padding="28dp">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/username_layout"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/login_mobile_number_hint"
-                        app:boxBackgroundColor="@color/white"
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp"
-                        app:startIconDrawable="@drawable/ic_phone"
-                        app:startIconTint="?attr/colorPrimary">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etUsername"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="phone"
-                            android:textStyle="bold" />
+<?xml version='1.0' encoding='utf-8'?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@drawable/bg_login_gradient">
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:scrollbars="none" android:clipToPadding="false">
+        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="@dimen/svd_space_section">
+            <ImageView android:id="@+id/login_logo" android:layout_width="140dp" android:layout_height="140dp" android:layout_marginTop="48dp" android:background="@drawable/circular_white_background" android:contentDescription="@string/app_name" android:elevation="4dp" android:padding="5dp" android:src="@drawable/logo" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" />
+            <TextView android:id="@+id/tvWelcome" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/svd_space_section" android:text="@string/login_welcome_back" android:textColor="@color/white" android:textSize="@dimen/svd_text_display" android:textStyle="bold" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/login_logo" />
+            <TextView android:id="@+id/tvSubtitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:alpha="0.8" android:text="@string/login_subtitle" android:textColor="@color/white" android:textSize="@dimen/svd_text_body" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/tvWelcome"  android:visibility="gone" />
+            <com.google.android.material.card.MaterialCardView android:id="@+id/loginCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="40dp" app:cardBackgroundColor="?attr/colorSurface" app:cardCornerRadius="@dimen/card_corner_radius_medium" app:cardElevation="0dp" app:layout_constraintTop_toBottomOf="@id/tvSubtitle" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
+                <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="?attr/colorSurface" android:padding="28dp">
+                    <com.google.android.material.textfield.TextInputLayout android:id="@+id/username_layout" style="@style/Widget.Svd.FormField" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/login_mobile_number_hint" app:boxBackgroundColor="?attr/colorSurface" app:boxCornerRadiusBottomEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusTopStart="12dp" app:startIconTint="?attr/colorPrimary">
+                        <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input" android:id="@+id/etUsername" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="phone" android:textStyle="bold" android:minHeight="@dimen/svd_touch_target" android:singleLine="true" android:paddingStart="14dp" android:paddingEnd="14dp" android:textSize="@dimen/svd_text_body"  android:minWidth="48dp" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/password_layout"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:hint="@string/login_password_hint"
-                        app:boxBackgroundColor="@color/white"
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp"
-                        app:endIconMode="password_toggle"
-                        app:startIconDrawable="@drawable/ic_lock"
-                        app:startIconTint="?attr/colorPrimary">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etPassword"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textPassword" />
+                    <com.google.android.material.textfield.TextInputLayout android:id="@+id/password_layout" style="@style/Widget.Svd.FormField" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/svd_space_section" android:hint="@string/login_password_hint" app:boxBackgroundColor="?attr/colorSurface" app:boxCornerRadiusBottomEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusTopStart="12dp" app:endIconMode="password_toggle" app:startIconTint="?attr/colorPrimary">
+                        <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input" android:id="@+id/etPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPassword" android:minHeight="@dimen/svd_touch_target" android:singleLine="true" android:paddingStart="14dp" android:paddingEnd="14dp" android:textSize="@dimen/svd_text_body"  android:minWidth="48dp" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-                    <TextView
-                        android:id="@+id/tvForgotPassword"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="12dp"
-                        android:padding="8dp"
-                        android:text="@string/login_forgot_password"
-                        android:textColor="?attr/colorPrimary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnLogin"
-                        android:layout_width="match_parent"
-                        android:layout_height="64dp"
-                        android:layout_marginTop="24dp"
-                        android:text="@string/login_sign_in"
-                        android:textAllCaps="false"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:cornerRadius="16dp"
-                        app:icon="@drawable/ic_arrow_forward"
-                        app:iconGravity="textEnd" />
-
-                </LinearLayout>
+                    <TextView android:id="@+id/tvForgotPassword" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="end" android:layout_marginTop="12dp" android:padding="8dp" android:text="@string/login_forgot_password" android:textColor="?attr/colorPrimary" android:textSize="@dimen/svd_text_label" android:textStyle="bold" />
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btnLogin" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/svd_space_section" android:text="@string/login_sign_in" android:textAllCaps="false" android:textSize="@dimen/svd_text_body" android:textStyle="bold" app:cornerRadius="16dp" app:icon="@drawable/ic_arrow_forward" app:iconGravity="textEnd"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

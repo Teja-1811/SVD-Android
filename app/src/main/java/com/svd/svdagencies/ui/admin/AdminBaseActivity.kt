@@ -77,6 +77,7 @@ abstract class AdminBaseActivity : BaseActivity() {
                 }
 
                 when (item.itemId) {
+                    R.id.nav_change_theme -> { openAdminDestination(com.svd.svdagencies.ui.ToolsActivity::class.java); true }
                     R.id.nav_users -> { openAdminDestination(com.svd.svdagencies.ui.admin.customer.AdminUsersActivity::class.java); true }
                     R.id.nav_offer_usage -> { openAdminDestination(AdminOfferUsageActivity::class.java); true }
                     R.id.nav_subscription_report -> { openAdminDestination(AdminSubscriptionsReportActivity::class.java); true }

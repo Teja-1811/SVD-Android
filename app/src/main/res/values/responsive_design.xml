@@ -1,0 +1,30 @@
+<resources>
+    <dimen name="svd_text_caption">12sp</dimen>
+    <dimen name="svd_text_label">13sp</dimen>
+    <dimen name="svd_text_body">14sp</dimen>
+    <dimen name="svd_text_heading">16sp</dimen>
+    <dimen name="svd_text_title">20sp</dimen>
+    <dimen name="svd_text_display">24sp</dimen>
+    <dimen name="svd_touch_target">48dp</dimen>
+    <dimen name="svd_space_section">16dp</dimen>
+    <dimen name="svd_page_gutter">12dp</dimen>
+    <dimen name="svd_form_max_width">640dp</dimen>
+    <style name="Widget.Svd.Input" parent="Widget.Material3.TextInputEditText.OutlinedBox">
+        <item name="android:textSize">@dimen/svd_text_body</item>
+        <item name="android:minHeight">@dimen/svd_touch_target</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+    </style>
+    <style name="Widget.Svd.PlainInput" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">@dimen/svd_text_body</item>
+        <item name="android:minHeight">@dimen/svd_touch_target</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+    <style name="TextAppearance.Svd.Body" parent="TextAppearance.Material3.BodyMedium"><item name="android:textSize">@dimen/svd_text_body</item></style>
+    <style name="TextAppearance.Svd.Label" parent="TextAppearance.Material3.LabelMedium"><item name="android:textSize">@dimen/svd_text_label</item></style>
+    <style name="TextAppearance.Svd.Heading" parent="TextAppearance.Material3.TitleMedium"><item name="android:textSize">@dimen/svd_text_heading</item></style>
+    <style name="TextAppearance.Svd.Title" parent="TextAppearance.Material3.TitleLarge"><item name="android:textSize">@dimen/svd_text_title</item></style>
+</resources>

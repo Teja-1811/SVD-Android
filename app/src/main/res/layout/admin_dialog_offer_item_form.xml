@@ -1,71 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingStart="24dp"
-    android:paddingTop="8dp"
-    android:paddingEnd="24dp"
-    android:paddingBottom="4dp">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Set the qualifying quantity and the reward for this offer."
-        android:textColor="@color/textColorSecondary"
-        android:textSize="14sp" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="Item ID"
-        app:boxBackgroundMode="outline" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etOfferItemId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Buy quantity"
-        app:boxBackgroundMode="outline" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etOfferBuyQuantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Offer/free quantity"
-        app:boxBackgroundMode="outline" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etOfferFreeQuantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="Offer price"
-        app:boxBackgroundMode="outline"
-        app:prefixText="₹" app:boxCornerRadiusTopStart="12dp" app:boxCornerRadiusTopEnd="12dp" app:boxCornerRadiusBottomStart="12dp" app:boxCornerRadiusBottomEnd="12dp">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etOfferItemPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-    </com.google.android.material.textfield.TextInputLayout>
-</LinearLayout>
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/svd_space_section">
+<TextView android:id="@+id/tvBundlePrice" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="One price for the complete bundle" android:textSize="@dimen/svd_text_body" android:textStyle="bold" android:textColor="@color/textColorPrimary" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Select an included product and its quantity. Product changes do not change the bundle price." android:textSize="@dimen/svd_text_label" android:textColor="@color/textColorSecondary" android:layout_marginTop="8dp"  android:visibility="gone" />
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Product" android:textSize="@dimen/svd_text_label" android:layout_marginTop="16dp" />
+<Spinner android:id="@+id/spinnerOfferProduct" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_qty_outline" android:contentDescription="Included product"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
+<com.google.android.material.textfield.TextInputLayout style="@style/Widget.Svd.FormField" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Included quantity" android:layout_marginTop="14dp">
+<com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input" android:id="@+id/etOfferBuyQuantity" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:text="1" android:singleLine="true"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
+</com.google.android.material.textfield.TextInputLayout>
+</com.svd.svdagencies.utils.CompactLinearLayout>

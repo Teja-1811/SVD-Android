@@ -21,7 +21,8 @@ interface BillsDashboardApi {
         @Query("customer") customerId: Int? = null,
         @Query("start_date") startDate: String? = null,
         @Query("end_date") endDate: String? = null,
-        @Query("page") page: Int? = 1
+        @Query("page") page: Int? = 1,
+        @Query("route_id") routeId: Int? = null
     ): BillListResponse
 
     @GET("api/customer-list/")

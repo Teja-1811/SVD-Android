@@ -87,18 +87,20 @@ class CustomerAdapter(
                 txtStatus.text = "Frozen"
                 txtStatus.setTextColor(ContextCompat.getColor(root.context, R.color.icon_red))
                 // Frozen State: Unfreeze (Green)
-                btnPassword.setImageResource(R.drawable.ic_unlock)
-                btnPassword.setBackgroundResource(R.drawable.bg_icon_btn_green)
-                btnPassword.imageTintList = ColorStateList.valueOf(
+                btnPassword.setIconResource(R.drawable.ic_unlock)
+                btnPassword.text = "Unfreeze"
+                btnPassword.contentDescription = "Unfreeze customer"
+                btnPassword.iconTint = ColorStateList.valueOf(
                     ContextCompat.getColor(root.context, R.color.icon_green)
                 )
             } else {
                 txtStatus.text = "Active"
                 txtStatus.setTextColor(ContextCompat.getColor(root.context, R.color.icon_green))
                 // Active State: Freeze (Red/Gray)
-                btnPassword.setImageResource(R.drawable.ic_lock)
-                btnPassword.setBackgroundResource(R.drawable.bg_icon_btn_red)
-                btnPassword.imageTintList = ColorStateList.valueOf(
+                btnPassword.setIconResource(R.drawable.ic_lock)
+                btnPassword.text = "Freeze"
+                btnPassword.contentDescription = "Freeze customer"
+                btnPassword.iconTint = ColorStateList.valueOf(
                     ContextCompat.getColor(root.context, R.color.icon_red)
                 )
             }
@@ -121,41 +123,14 @@ class CustomerAdapter(
                 navigateToProfile(root.context, c)
             }
 
+            btnWhatsapp.visibility = if (c.user_type == "delivery") android.view.View.GONE else android.view.View.VISIBLE
             btnWhatsapp.setOnClickListener {
-                val context = root.context
-                val phoneNumber = c.phone
-                
-                val absDue = Math.abs(due)
-                val formattedDue = "₹ %.2f".format(absDue)
-                
-                val statusMessage = if (due >= 0) {
-                    "Your pending balance is $formattedDue."
-                } else {
-                    "You have a wallet balance of $formattedDue."
-                }
-
-                // Removed shop name from the message as requested
-                val message = "Hello ${c.name},\n$statusMessage\n\nVisit us: https://svd-dqw3.onrender.com/\nThank you for your business!"
-
-                if (!phoneNumber.isNullOrEmpty()) {
-                    try {
-                        val url = "https://api.whatsapp.com/send?phone=+91$phoneNumber&text=${URLEncoder.encode(message, "UTF-8")}"
-                        val intent = Intent(Intent.ACTION_VIEW).apply {
-                            data = Uri.parse(url)
-                            setPackage("com.whatsapp")
-                        }
-                        context.startActivity(intent)
-                    } catch (e: Exception) {
-                        try {
-                            val url = "https://api.whatsapp.com/send?phone=+91$phoneNumber&text=${URLEncoder.encode(message, "UTF-8")}"
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            context.startActivity(intent)
-                        } catch (e2: Exception) {
-                            Toast.makeText(context, "WhatsApp not installed", Toast.LENGTH_SHORT).show()
-                        }
+                val activity = root.context as? androidx.appcompat.app.AppCompatActivity ?: return@setOnClickListener
+                c.id?.let { id ->
+                    com.svd.svdagencies.utils.CustomerDeletionAction.confirm(activity, id, c.name ?: "Customer") {
+                        items = items.filterNot { it.id == id }
+                        notifyDataSetChanged()
                     }
-                } else {
-                    Toast.makeText(context, "Phone number not available", Toast.LENGTH_SHORT).show()
                 }
             }
         }

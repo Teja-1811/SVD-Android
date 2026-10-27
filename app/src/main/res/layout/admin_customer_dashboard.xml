@@ -1,176 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/window_background">
-
-    <!-- ================= MAIN CONTENT ================= -->
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!-- COMMON ADMIN TOOLBAR -->
-        <include
-            layout="@layout/admin_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <!-- ================= SEARCH & ADD ================= -->
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_medium"
-            android:gravity="center_vertical"
-            android:background="@color/card_background"
-            android:elevation="@dimen/card_elevation_small">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupCustomerType"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:singleSelection="true"
-                    app:selectionRequired="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipDelivery"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="Delivery"
-                    android:textColor="@color/customer_type_chip_text"
-                    app:chipBackgroundColor="@color/customer_type_chip_background"
-                    app:chipStrokeColor="@color/customer_type_chip_stroke"
-                    app:chipStrokeWidth="1dp"
-                    android:checked="true"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipRetailer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="Retailers"
-                    android:textColor="@color/customer_type_chip_text"
-                    app:chipBackgroundColor="@color/customer_type_chip_background"
-                    app:chipStrokeColor="@color/customer_type_chip_stroke"
-                    app:chipStrokeWidth="1dp" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="Users"
-                    android:textColor="@color/customer_type_chip_text"
-                    app:chipBackgroundColor="@color/customer_type_chip_background"
-                    app:chipStrokeColor="@color/customer_type_chip_stroke"
-                    app:chipStrokeWidth="1dp" />
+<?xml version='1.0' encoding='utf-8'?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/drawerLayout" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/window_background">
+    <com.svd.svdagencies.utils.CompactLinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent">
+        <include layout="@layout/admin_toolbar" android:layout_width="match_parent" android:layout_height="wrap_content" />
+        <com.svd.svdagencies.utils.CompactLinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="@dimen/spacing_medium" android:gravity="center_vertical" android:background="@color/card_background" android:elevation="@dimen/card_elevation_small">
+            <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:gravity="center_vertical" android:orientation="horizontal">
+                <com.google.android.material.chip.ChipGroup android:id="@+id/chipGroupCustomerType" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" app:singleSelection="true" app:selectionRequired="true" app:singleLine="false">
+                    <com.google.android.material.chip.Chip android:id="@+id/chipDelivery" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checkable="true" android:text="Delivery" android:textColor="@color/customer_type_chip_text" app:chipBackgroundColor="@color/customer_type_chip_background" app:chipStrokeColor="@color/customer_type_chip_stroke" app:chipStrokeWidth="1dp" android:checked="true" android:textSize="@dimen/text_size_caption" android:paddingStart="0dp" android:paddingEnd="0dp" app:chipMinTouchTargetSize="48dp" app:chipStartPadding="3dp" app:chipEndPadding="3dp" app:textStartPadding="2dp" app:textEndPadding="2dp" app:chipIconVisible="false" app:checkedIconVisible="false"  app:ensureMinTouchTargetSize="true"  android:minHeight="48dp"  android:minWidth="48dp" />
+                    <com.google.android.material.chip.Chip android:id="@+id/chipRetailer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checkable="true" android:text="Retailers" android:textColor="@color/customer_type_chip_text" app:chipBackgroundColor="@color/customer_type_chip_background" app:chipStrokeColor="@color/customer_type_chip_stroke" app:chipStrokeWidth="1dp" android:textSize="@dimen/text_size_caption" android:paddingStart="0dp" android:paddingEnd="0dp" app:chipMinTouchTargetSize="48dp" app:chipStartPadding="3dp" app:chipEndPadding="3dp" app:textStartPadding="2dp" app:textEndPadding="2dp" app:chipIconVisible="false" app:checkedIconVisible="false"  app:ensureMinTouchTargetSize="true"  android:minHeight="48dp"  android:minWidth="48dp" />
+                    <com.google.android.material.chip.Chip android:id="@+id/chipUser" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checkable="true" android:text="Users" android:textColor="@color/customer_type_chip_text" app:chipBackgroundColor="@color/customer_type_chip_background" app:chipStrokeColor="@color/customer_type_chip_stroke" app:chipStrokeWidth="1dp" android:textSize="@dimen/text_size_caption" android:paddingStart="0dp" android:paddingEnd="0dp" app:chipMinTouchTargetSize="48dp" app:chipStartPadding="3dp" app:chipEndPadding="3dp" app:textStartPadding="2dp" app:textEndPadding="2dp" app:chipIconVisible="false" app:checkedIconVisible="false"  app:ensureMinTouchTargetSize="true"  android:minHeight="48dp"  android:minWidth="48dp" />
                 </com.google.android.material.chip.ChipGroup>
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabAddCustomer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    app:backgroundTint="@color/icon_blue"
-                    app:fabSize="mini"
-                    app:srcCompat="@drawable/ic_add"
-                    app:tint="@color/white" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-            <!-- Search Bar -->
-            <FrameLayout
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_icon_btn"
-                android:backgroundTint="?attr/colorSurfaceVariant"
-                android:paddingStart="@dimen/spacing_small"
-                android:paddingEnd="@dimen/spacing_small">
-
-                <EditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:hint="Search customer..."
-                    android:textSize="@dimen/text_size_body_small"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textColorHint="@color/gray500"
-                    android:maxLines="1"
-                    android:drawableStart="@drawable/ic_search"
-                    android:drawablePadding="@dimen/spacing_small"
-                    app:drawableTint="@color/gray500"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/fabAddCustomer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:backgroundTint="@color/icon_blue" app:srcCompat="@drawable/ic_add" app:tint="@color/white" android:text="Add customer" android:textAllCaps="false" android:textSize="@dimen/svd_text_caption" android:paddingStart="8dp" android:paddingEnd="8dp" android:minWidth="48dp"  android:minHeight="48dp" />
+            </com.svd.svdagencies.utils.CompactLinearLayout>
+            <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                <FrameLayout android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:background="@drawable/bg_icon_btn" android:backgroundTint="?attr/colorSurfaceVariant" android:paddingStart="@dimen/spacing_small" android:paddingEnd="@dimen/spacing_small" android:paddingTop="0dp" android:paddingBottom="0dp">
+                    <EditText style="@style/Widget.Svd.PlainInput" android:id="@+id/etSearch" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@null" android:hint="Search customer..." android:textSize="@dimen/text_size_body_small" android:textColor="?attr/colorOnSurface" android:textColorHint="@color/gray500" android:maxLines="1" android:drawableStart="@drawable/ic_search" android:drawablePadding="@dimen/spacing_small" app:drawableTint="@color/gray500" android:minHeight="48dp"  android:minWidth="48dp" />
+                </FrameLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout android:id="@+id/swipeRefresh" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+            <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent">
+                <TextView android:id="@+id/tvEmptyState" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="No customers found" android:textSize="@dimen/text_size_small" android:textColor="@color/gray500" android:gravity="center" android:layout_gravity="center" android:padding="@dimen/spacing_large" android:visibility="gone" />
+                <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvCustomers" android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false" android:padding="@dimen/spacing_medium" />
             </FrameLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- ================= CUSTOMERS LIST ================= -->
-        <com.svd.svdagencies.utils.AppSwipeRefreshLayout
-            android:id="@+id/swipeRefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <!-- Empty State -->
-                <TextView
-                    android:id="@+id/tvEmptyState"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="No customers found"
-                    android:textSize="@dimen/text_size_small"
-                    android:textColor="@color/gray500"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:padding="@dimen/spacing_large"
-                    android:visibility="gone"/>
-
-                <!-- List -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvCustomers"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:padding="@dimen/spacing_medium"/>
-
-            </FrameLayout>
-
         </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
-    </LinearLayout>
-
-    <!-- ================= DRAWER ================= -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/admin_nav_header"
-        app:itemIconTint="@color/drawer_nav_icon_colors"
-        app:itemTextColor="@color/drawer_nav_item_colors"
-        app:menu="@menu/menu_admin_drawer"/>
-
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+    <com.google.android.material.navigation.NavigationView android:id="@+id/navigationView" android:layout_width="wrap_content" android:layout_height="match_parent" android:background="?attr/colorSurface" android:layout_gravity="start" app:headerLayout="@layout/admin_nav_header" app:itemIconTint="@color/drawer_nav_icon_colors" app:itemTextColor="@color/drawer_nav_item_colors" app:menu="@menu/menu_admin_drawer" app:backgroundTint="?attr/colorSurface" />
 </androidx.drawerlayout.widget.DrawerLayout>

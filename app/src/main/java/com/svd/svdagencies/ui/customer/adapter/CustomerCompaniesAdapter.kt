@@ -34,7 +34,7 @@ class CustomerCompaniesAdapter(
 
         fun bind(company: Company) {
             binding.tvCompanyName.text = company.name
-            binding.tvWebsite.text = if (company.websiteLink.isNullOrEmpty()) "No website" else "visit website"
+            binding.tvWebsite.text = "Browse products"
             binding.tvItemCount.text = company.totalItems.toString()
 
             if (!company.logo.isNullOrEmpty()) {
@@ -47,19 +47,7 @@ class CustomerCompaniesAdapter(
                 binding.ivCompanyLogo.setImageResource(R.drawable.ic_milk_placeholder)
             }
 
-            binding.tvWebsite.setOnClickListener {
-                val url = company.websiteLink
-                if (!url.isNullOrEmpty()) {
-                    try {
-                        val intent = com.svd.svdagencies.ui.WebToolsActivity.intentForUrl(
-                            binding.root.context, url, company.name
-                        )
-                        binding.root.context.startActivity(intent)
-                    } catch (e: Exception) {
-                        Toast.makeText(binding.root.context, "Could not open link", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+            binding.tvWebsite.setOnClickListener { onViewCatalogClick(company) }
 
             binding.btnItems.setOnClickListener { onViewCatalogClick(company) }
         }

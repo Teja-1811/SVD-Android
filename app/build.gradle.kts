@@ -124,3 +124,23 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 }
 
+
+// Native layout gallery (opt-in only). Normal application builds are unchanged.
+if (providers.gradleProperty("portalSnapshots").orNull == "true") {
+    configure<ApplicationExtension> {
+        testOptions.unitTests.isIncludeAndroidResources = true
+        sourceSets.getByName("test").java.srcDir("src/snapshots/java")
+    }
+    dependencies { add("testImplementation", "org.robolectric:robolectric:4.14.1") }
+    tasks.withType<org.gradle.api.tasks.testing.Test>().configureEach {
+        maxHeapSize = "2048m"
+        maxParallelForks = 1
+        systemProperty("robolectric.dependency.repo.url", "https://repo.maven.apache.org/maven2")
+        systemProperty("robolectric.dependency.repo.id", "central")
+        systemProperty("maven.repo.local", rootProject.file(".codex-gradle-cache/robolectric-sdk").absolutePath)
+        systemProperty("portal.snapshot.dir", providers.gradleProperty("portalSnapshotDir").get())
+        systemProperty("portal.snapshot.manifest", providers.gradleProperty("portalSnapshotManifest").get())
+        systemProperty("portal.snapshot.smoke", providers.gradleProperty("portalSnapshotSmoke").orNull ?: "false")
+        testLogging { events("passed", "failed", "standardOut", "standardError") }
+    }
+}

@@ -1,21 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SVDAgency" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.SVDAgency" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <!-- Keep raised white surfaces free of the brand-color tint. -->
+        <!-- Use neutral surfaces without elevation tint. -->
         <item name="elevationOverlayEnabled">false</item>
         <item name="android:fontFamily">sans</item>
+        <item name="android:datePickerDialogTheme">@style/Theme.App.WhiteDatePickerDialog</item>
         <item name="textInputStyle">@style/Widget.Svd.FormField</item>
-        <item name="colorPrimary">@color/brand_red</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">#FCE7EB</item>
-        <item name="colorOnPrimaryContainer">#881337</item>
+        <item name="editTextStyle">@style/Widget.Svd.Input</item>
+        <item name="android:editTextStyle">@style/Widget.Svd.PlainInput</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Svd.Body</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Svd.Body</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Svd.Label</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Svd.Title</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Svd.Heading</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Svd.Title</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">#5F1414</item>
+        <item name="colorPrimaryContainer">#5F2423</item>
+        <item name="colorOnPrimaryContainer">#FFDAD6</item>
 
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/brand_red</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="colorSecondaryContainer">@color/brand_red_dark</item>
-        <item name="colorOnSecondaryContainer">@color/white</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorOnSecondary">#5F1414</item>
+        <item name="colorSecondaryContainer">@color/surface_variant</item>
+        <item name="colorOnSecondaryContainer">@color/textColorPrimary</item>
 
         <item name="colorSurface">@color/surface_background</item>
         <item name="colorOnSurface">@color/textColorPrimary</item>
@@ -49,24 +58,29 @@
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+
+        <item name="android:timePickerDialogTheme">@style/Theme.App.WhiteDatePickerDialog</item>
+        <item name="android:alertDialogTheme">@style/Theme.App.WhiteDatePickerDialog</item>
     </style>
 
     <!-- Dialog Styling for Night Mode -->
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-        <!-- Keep confirmations and all Material alert dialogs white. -->
-        <item name="colorSurface">@color/white</item>
-        <item name="colorSurfaceContainer">@color/white</item>
-        <item name="colorSurfaceContainerHigh">@color/white</item>
-        <item name="colorSurfaceContainerHighest">@color/white</item>
-        <item name="android:colorBackground">@color/white</item>
+        <!-- Dialog surfaces follow the current system appearance. -->
+        <item name="colorSurface">@color/surface_background</item>
+        <item name="colorSurfaceContainer">@color/surface_background</item>
+        <item name="colorSurfaceContainerHigh">@color/surface_background</item>
+        <item name="colorSurfaceContainerHighest">@color/surface_background</item>
+        <item name="android:colorBackground">@color/surface_background</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Dialog.PositiveButton</item>
+
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Dialog.ActionButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.App.Dialog.ActionButton</item>
     </style>
 
-    <style name="Widget.App.Dialog.PositiveButton" parent="Widget.Material3.Button.TextButton.Dialog">
-        <item name="backgroundTint">@color/green_status</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="cornerRadius">20dp</item>
+    <style name="Widget.App.Dialog.PositiveButton" parent="Widget.App.Dialog.ActionButton">
+        <item name="android:background">@drawable/bg_dialog_primary_button</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
     </style>
 
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
@@ -74,16 +88,27 @@
     </style>
 
     <style name="Widget.App.BottomSheet" parent="Widget.Material3.BottomSheet">
-        <item name="backgroundTint">@color/white</item>
+        <item name="backgroundTint">@color/surface_background</item>
     </style>
 
     <style name="Widget.App.Button" parent="Widget.Material3.Button">
-        <item name="android:maxLines">1</item>
+        <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">center</item>
-        <item name="android:minWidth">0dp</item>
-        <item name="android:paddingHorizontal">16dp</item>
-        <item name="cornerRadius">14dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/text_size_button</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
         <item name="android:minHeight">48dp</item>
+    </style>
+    <style name="Theme.App.WhiteDatePickerDialog" parent="android:style/Theme.Material.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/bg_white_date_dialog</item>
+        <item name="android:colorAccent">@color/textColorPrimary</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/Widget.Svd.Calendar.ActionButton</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/Widget.Svd.Calendar.ActionButton</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/Widget.Svd.Calendar.ActionButton</item>
+        <item name="android:buttonBarButtonStyle">@style/Widget.Svd.Calendar.ActionButton</item>
     </style>
 </resources>

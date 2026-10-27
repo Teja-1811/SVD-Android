@@ -64,7 +64,7 @@
                 android:layout_height="48dp"
                 android:layout_marginEnd="@dimen/spacing_tiny"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Done"
+                android:contentDescription="@string/svd_a11y_btndone"
                 android:src="@drawable/ic_check"
                 android:visibility="gone"
                 app:tint="@color/icon_green"

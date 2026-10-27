@@ -17,13 +17,7 @@ object UpiPaymentLauncher {
             onCancelled()
             return
         }
-        val uri = original.buildUpon().clearQuery().apply {
-            original.queryParameterNames.filter { it != "pa" && it != "pn" }.forEach { key ->
-                original.getQueryParameters(key).forEach { value -> appendQueryParameter(key, value) }
-            }
-            appendQueryParameter("pa", PaymentConfig.UPI_ID)
-            appendQueryParameter("pn", PaymentConfig.PAYEE_NAME)
-        }.build()
+        val uri = original
         val intent = Intent(Intent.ACTION_VIEW, uri)
         val manager = context.packageManager
         // Discover all exported UPI handlers, including apps that do not mark
@@ -87,7 +81,7 @@ object UpiPaymentLauncher {
             override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View {
                 val density = context.resources.displayMetrics.density
                 fun dp(value: Int) = (value * density).toInt()
-                val row = android.widget.LinearLayout(context).apply {
+                val row = com.svd.svdagencies.utils.CompactLinearLayout(context).apply {
                     orientation = android.widget.LinearLayout.HORIZONTAL
                     gravity = android.view.Gravity.CENTER_VERTICAL
                     setPadding(dp(20), dp(12), dp(20), dp(12))
@@ -101,7 +95,7 @@ object UpiPaymentLauncher {
                 }, android.widget.LinearLayout.LayoutParams(dp(40), dp(40)))
                 row.addView(android.widget.TextView(context).apply {
                     text = app.loadLabel(manager)
-                    textSize = 16f
+                    textSize = 14f
                     setTextColor(androidx.core.content.ContextCompat.getColor(context, com.svd.svdagencies.R.color.textColorPrimary))
                 }, android.widget.LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(16) })
                 return row

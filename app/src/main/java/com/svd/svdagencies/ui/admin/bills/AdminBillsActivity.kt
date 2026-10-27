@@ -42,6 +42,7 @@ import java.util.*
 
 class AdminBillsActivity : AdminBaseActivity() {
     private var filterRequest: Job? = null
+    private var routeCustomerFilters: com.svd.svdagencies.utils.RouteCustomerFilters? = null
 
 
     private lateinit var autoCompleteCustomer: AutoCompleteTextView
@@ -50,7 +51,7 @@ class AdminBillsActivity : AdminBaseActivity() {
     private lateinit var btnSearch: Button
     private lateinit var btnClearFilters: MaterialButton
     private lateinit var rvBills: RecyclerView
-    private lateinit var fabCreateBill: FloatingActionButton
+    private lateinit var fabCreateBill: MaterialButton
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var btnPreviousPage: MaterialButton
     private lateinit var btnNextPage: MaterialButton
@@ -75,7 +76,10 @@ class AdminBillsActivity : AdminBaseActivity() {
         setupRecyclerView()
         setupListeners()
 
-        fetchCustomers()
+        routeCustomerFilters = com.svd.svdagencies.utils.RouteCustomerFilters(this, findViewById(R.id.billRouteFilter), autoCompleteCustomer) {
+            customers=routeCustomerFilters?.customers.orEmpty()
+            fetchBills(isRefresh=true)
+        }
     }
 
     override fun onResume() {
@@ -95,7 +99,7 @@ class AdminBillsActivity : AdminBaseActivity() {
         btnPreviousPage = findViewById(R.id.btnPreviousBillsPage)
         btnNextPage = findViewById(R.id.btnNextBillsPage)
         tvPageIndicator = findViewById(R.id.tvBillsPageIndicator)
-        
+
         // Use RefreshManager to setup swipe refresh
         RefreshManager.setupRefresh(swipeRefreshLayout) {
             fetchBills(isRefresh = true)
@@ -221,11 +225,11 @@ class AdminBillsActivity : AdminBaseActivity() {
             Bill #: ${bill.bill_number}
             Date: ${bill.date}
             Total Amount: ₹${bill.total_amount}
-            
+
             *Customer Details*
             Name: ${bill.customer_name}
             $dueStatusMessage
-            
+
             Visit us: https://svd-dqw3.onrender.com/
             Thank you for your business!
         """.trimIndent()
@@ -242,7 +246,7 @@ class AdminBillsActivity : AdminBaseActivity() {
 
     private fun showDeleteConfirmation(billId: Int?, billNumber: String?) {
         if (billId == null) return
-        
+
         MaterialAlertDialogBuilder(this)
             .setTitle("Delete Bill")
             .setMessage("Are you sure you want to delete bill #$billNumber?")
@@ -272,7 +276,7 @@ class AdminBillsActivity : AdminBaseActivity() {
                 val responseBody = ApiClient.billsDashboardApi.downloadBill(billId)
                 val fileName = "bill_$billId.pdf"
                 val file = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
-                
+
                 withContext(Dispatchers.IO) {
                     val inputStream = responseBody.byteStream()
                     val outputStream = FileOutputStream(file)
@@ -300,13 +304,13 @@ class AdminBillsActivity : AdminBaseActivity() {
         tvStartDate.setOnClickListener { showDatePickerDialog(isStartDate = true) }
         tvEndDate.setOnClickListener { showDatePickerDialog(isStartDate = false) }
         btnSearch.visibility = View.GONE
-        btnClearFilters.text = "Clear"
-        autoCompleteCustomer.setOnItemClickListener { _, _, _, _ -> fetchBills(isRefresh = true) }
-        autoCompleteCustomer.doAfterTextChanged { if (it.isNullOrEmpty()) fetchBills(isRefresh = true) }
+        btnClearFilters.text = ""
+
+
         btnClearFilters.setOnClickListener { clearFilters() }
         btnPreviousPage.setOnClickListener { if (currentPage > 1) fetchBills(currentPage - 1) }
         btnNextPage.setOnClickListener { fetchBills(currentPage + 1) }
-        fabCreateBill.setOnClickListener { 
+        fabCreateBill.setOnClickListener {
             val intent = Intent(this, CreateBillActivity::class.java)
             startActivity(intent)
         }
@@ -340,7 +344,7 @@ class AdminBillsActivity : AdminBaseActivity() {
     }
 
     private fun clearFilters() {
-        autoCompleteCustomer.setText("", false)
+        routeCustomerFilters?.clear()
         tvStartDate.text = ""
         tvEndDate.text = ""
         startDate = Calendar.getInstance()
@@ -382,11 +386,8 @@ class AdminBillsActivity : AdminBaseActivity() {
         }
 
         Log.d("AdminBillsActivity", "fetchBills called: page=$page, isRefresh=$isRefresh")
-        
-        val selectedText = autoCompleteCustomer.text.toString()
-        val customerId = if (selectedText.isNotEmpty()) {
-            customers.find { "${it.name} (${it.shop_name})" == selectedText }?.id
-        } else null
+
+        val customerId = routeCustomerFilters?.customerId
 
         val startDateString = if (tvStartDate.text.isNotEmpty()) tvStartDate.text.toString() else null
         val endDateString = if (tvEndDate.text.isNotEmpty()) tvEndDate.text.toString() else null
@@ -394,8 +395,8 @@ class AdminBillsActivity : AdminBaseActivity() {
         filterRequest?.cancel()
         filterRequest = lifecycleScope.launch {
             try {
-                val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString, page)
-                
+                val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString, page, routeCustomerFilters?.routeId)
+
                 currentPage = response.current_page
                 billAdapter.updateList(response.results)
                 updatePagination(response.current_page, response.total_pages)
@@ -430,24 +431,25 @@ class AdminBillsActivity : AdminBaseActivity() {
         tvBillInfo.text = "Invoice: #$billNo"
         tvBillInfo.visibility = View.VISIBLE
 
-        val upiId = PaymentConfig.UPI_ID
-        val name = "Sri Vijay Durga Milk Agency"
-        val upiUrl = "upi://pay?pa=$upiId&pn=${Uri.encode(name)}&am=${"%.2f".format(amount)}&cu=INR&tn=${Uri.encode(billNo)}"
+        PaymentConfig.withUpiId(this) { upiId ->
+            val name = "Sri Vijay Durga Milk Agency"
+            val upiUrl = "upi://pay?pa=$upiId&pn=${Uri.encode(name)}&am=${"%.2f".format(amount)}&cu=INR&tn=${Uri.encode(billNo)}"
 
-        try {
-            val barcodeEncoder = BarcodeEncoder()
-            val bitmap = barcodeEncoder.encodeBitmap(upiUrl, BarcodeFormat.QR_CODE, 512, 512)
-            ivQrCode.setImageBitmap(bitmap)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "Error generating QR code", Toast.LENGTH_SHORT).show()
+            try {
+                val barcodeEncoder = BarcodeEncoder()
+                val bitmap = barcodeEncoder.encodeBitmap(upiUrl, BarcodeFormat.QR_CODE, 512, 512)
+                ivQrCode.setImageBitmap(bitmap)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "Error generating QR code", Toast.LENGTH_SHORT).show()
+            }
+
+            val dialog = MaterialAlertDialogBuilder(this)
+                .setView(dialogView)
+                .create()
+
+            btnCloseQr.setOnClickListener { dialog.dismiss() }
+            dialog.show()
         }
-
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setView(dialogView)
-            .create()
-
-        btnCloseQr.setOnClickListener { dialog.dismiss() }
-        dialog.show()
     }
 }

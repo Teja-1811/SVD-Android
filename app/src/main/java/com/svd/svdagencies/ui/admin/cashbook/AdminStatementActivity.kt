@@ -57,7 +57,7 @@ class AdminStatementActivity : AdminBaseActivity() {
         binding.btnApplyFilters.icon = null
         binding.btnApplyFilters.layoutParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
         binding.btnApplyFilters.minimumWidth = (72 * resources.displayMetrics.density).toInt()
-        binding.btnApplyFilters.text = "Clear"
+        com.svd.svdagencies.utils.RefreshButtonStyle.apply(binding.btnApplyFilters)
         binding.btnApplyFilters.contentDescription = "Clear filters"
         binding.btnApplyFilters.setOnClickListener {
             val now = Calendar.getInstance()
@@ -167,22 +167,26 @@ class AdminStatementActivity : AdminBaseActivity() {
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
-    private fun displayDate(value: String): String = runCatching {
-        java.time.LocalDate.parse(value).format(java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy"))
-    }.getOrDefault(value)
+    private fun displayDate(value: String): String = com.svd.svdagencies.utils.PortalDates.display(value)
 
     private fun label(value: String, size: Float, color: String, bold: Boolean = false) = TextView(this).apply {
         text = value
         textSize = size
-        setTextColor(Color.parseColor(color))
+        setTextColor(when (color) {
+            "#17353E" -> this@AdminStatementActivity.getColor(R.color.textColorPrimary)
+            "#526670", "#657985" -> this@AdminStatementActivity.getColor(R.color.textColorSecondary)
+            "#16704A" -> if ((resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES) Color.parseColor("#97D8B1") else Color.parseColor(color)
+            "#AD3449" -> if ((resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES) Color.parseColor("#FFB3C0") else Color.parseColor(color)
+            else -> Color.parseColor(color)
+        })
         if (bold) setTypeface(typeface, Typeface.BOLD)
     }
 
-    private fun surface() = LinearLayout(this).apply {
+    private fun surface() = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
         setPadding(dp(14), dp(14), dp(14), dp(14))
         background = GradientDrawable().apply {
-            setColor(Color.WHITE)
+            setColor(this@AdminStatementActivity.getColor(R.color.surface_background))
             cornerRadius = dp(12).toFloat()
         }
         layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(8) }
@@ -198,7 +202,7 @@ class AdminStatementActivity : AdminBaseActivity() {
             transaction.reference?.takeIf { it.isNotBlank() }?.let {
                 addView(label(it, 11f, "#657985").apply { setPadding(0, dp(4), 0, 0) })
             }
-            addView(LinearLayout(this@AdminStatementActivity).apply {
+            addView(com.svd.svdagencies.utils.CompactLinearLayout(this@AdminStatementActivity).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
                 setPadding(0, dp(12), 0, 0)
@@ -223,7 +227,7 @@ class AdminStatementActivity : AdminBaseActivity() {
     private fun rowText(text: String, empty: Boolean): TextView {
         return TextView(this).apply {
             this.text = text
-            setTextColor(if (empty) Color.parseColor("#6B7280") else Color.parseColor("#17353E"))
+            setTextColor(if (empty) this@AdminStatementActivity.getColor(R.color.textColorSecondary) else this@AdminStatementActivity.getColor(R.color.textColorPrimary))
             textSize = if (empty) 14f else 13f
             setPadding(dp(14), dp(16), dp(14), dp(16))
             setBackgroundResource(R.drawable.bg_edit_text)
@@ -233,8 +237,8 @@ class AdminStatementActivity : AdminBaseActivity() {
     private fun sectionHeader(text: String): TextView {
         return TextView(this).apply {
             this.text = text
-            setTextColor(Color.parseColor("#17353E"))
-            textSize = 15f
+            setTextColor(this@AdminStatementActivity.getColor(R.color.textColorPrimary))
+            textSize = 13f
             setPadding(dp(2), dp(16), dp(2), dp(10))
             setTypeface(typeface, android.graphics.Typeface.BOLD)
         }

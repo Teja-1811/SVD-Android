@@ -1,206 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/window_background"
-    tools:context=".ui.admin.bills.AdminBillsActivity">
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <include
-                layout="@layout/admin_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_medium">
-
-                <!-- Filters -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="@dimen/spacing_medium">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/spacing_small"
-                        app:hintEnabled="false"
-                        app:boxBackgroundColor="?attr/colorSurface"
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp"
-                        app:boxStrokeColor="?attr/colorOutline">
-
-                        <AutoCompleteTextView android:popupBackground="@drawable/bg_delivery_dropdown"
-                            android:id="@+id/autoCompleteCustomer"
-                            android:layout_width="match_parent"
-                            android:layout_height="50dp"
-                            android:hint="Select Customer"
-                            android:inputType="none"
-                            android:paddingVertical="@dimen/spacing_medium"
-                            android:textSize="@dimen/text_size_medium"
-                            android:textColor="?attr/colorOnSurface"
-                            android:textColorHint="@color/gray500" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tvStartDate"
-                            android:layout_width="0dp"
-                            android:layout_height="45dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_qty_outline"
-                            android:backgroundTint="?attr/colorSurfaceVariant"
-                            android:gravity="center_vertical"
-                            android:hint="Start Date"
-                            android:paddingHorizontal="@dimen/spacing_medium"
-                            android:layout_marginEnd="@dimen/spacing_tiny"
-                            android:drawableEnd="@drawable/ic_calendar"
-                            android:drawablePadding="@dimen/spacing_small"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textColorHint="@color/gray500" />
-
-                        <TextView
-                            android:id="@+id/tvEndDate"
-                            android:layout_width="0dp"
-                            android:layout_height="45dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_qty_outline"
-                            android:backgroundTint="?attr/colorSurfaceVariant"
-                            android:gravity="center_vertical"
-                            android:hint="End Date"
-                            android:paddingHorizontal="@dimen/spacing_medium"
-                            android:layout_marginStart="@dimen/spacing_tiny"
-                            android:drawableEnd="@drawable/ic_calendar"
-                            android:drawablePadding="@dimen/spacing_small"
-                            android:textColor="?attr/colorOnSurfaceVariant"
-                            android:textColorHint="@color/gray500" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_small"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/fabCreateBill"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/spacing_small"
-                            android:contentDescription="Generate bill"
-                            android:src="@drawable/ic_add"
-                            app:fabSize="mini"
-                            app:backgroundTint="?attr/colorPrimary"
-                            app:tint="@color/white" />
-
-                        <Button
-                            android:id="@+id/btnSearch"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Search"
-                            android:textAllCaps="true"
-                            android:backgroundTint="?attr/colorPrimary" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnClearBillFilters"
-                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/spacing_small"
-                            android:text="Clear"
-                            android:textAllCaps="false" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <com.svd.svdagencies.utils.AppSwipeRefreshLayout
-                    android:id="@+id/swipeRefreshLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvBills"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:listitem="@layout/admin_bill_card" />
+<?xml version='1.0' encoding='utf-8'?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:id="@+id/drawerLayout" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/window_background" tools:context=".ui.admin.bills.AdminBillsActivity">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+            <include layout="@layout/admin_toolbar" android:layout_width="match_parent" android:layout_height="wrap_content" />
+            <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:orientation="vertical" android:padding="@dimen/spacing_medium" android:layout_weight="1">
+                <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginBottom="@dimen/spacing_medium">
+                    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="8dp" android:tag="svd-fixed-row">
+                        <AutoCompleteTextView style="@style/Widget.Svd.PlainInput" android:id="@+id/billRouteFilter" android:hint="All routes" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:inputType="none" android:padding="10dp" android:textSize="@dimen/svd_text_label" android:singleLine="true" android:background="@drawable/bg_qty_outline" android:layout_marginEnd="8dp" android:minHeight="@dimen/svd_touch_target" android:minWidth="48dp" android:layout_marginStart="0dp" />
+                        <AutoCompleteTextView style="@style/Widget.Svd.PlainInput" android:popupBackground="@drawable/bg_delivery_dropdown" android:id="@+id/autoCompleteCustomer" android:layout_width="0dp" android:layout_height="wrap_content" android:hint="Select Customer" android:inputType="none" android:paddingVertical="@dimen/spacing_medium" android:textSize="@dimen/svd_text_label" android:textColor="?attr/colorOnSurface" android:textColorHint="@color/gray500" android:minHeight="@dimen/svd_touch_target" android:layout_weight="1" android:background="@drawable/bg_qty_outline" android:padding="10dp" android:singleLine="true" android:layout_marginEnd="8dp" android:minWidth="48dp" android:layout_marginStart="0dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/btnClearBillFilters" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="48dp" android:layout_height="wrap_content" android:layout_marginStart="0dp" android:text="" android:textAllCaps="false" android:layout_marginEnd="0dp" android:contentDescription="Refresh" android:minWidth="48dp" android:padding="12dp" app:icon="@drawable/ic_refresh" app:iconPadding="0dp" app:iconGravity="textStart" android:minHeight="48dp" />
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
+                    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                        <TextView android:id="@+id/tvStartDate" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:background="@drawable/bg_qty_outline" android:backgroundTint="?attr/colorSurfaceVariant" android:gravity="center_vertical" android:hint="Start Date" android:paddingHorizontal="4dp" android:layout_marginEnd="@dimen/spacing_tiny" android:drawablePadding="@dimen/spacing_small" android:textColor="?attr/colorOnSurfaceVariant" android:textColorHint="@color/gray500" android:minHeight="48dp" android:textSize="@dimen/svd_text_caption" android:maxLines="1" android:visibility="gone" />
+                        <TextView android:id="@+id/tvEndDate" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:background="@drawable/bg_qty_outline" android:backgroundTint="?attr/colorSurfaceVariant" android:gravity="center_vertical" android:hint="End Date" android:paddingHorizontal="4dp" android:layout_marginStart="@dimen/spacing_tiny" android:drawablePadding="@dimen/spacing_small" android:textColor="?attr/colorOnSurfaceVariant" android:textColorHint="@color/gray500" android:minHeight="48dp" android:textSize="@dimen/svd_text_caption" android:maxLines="1" android:visibility="gone" />
+                        <Button android:id="@+id/btnSearch" android:layout_width="48dp" android:layout_height="wrap_content" android:layout_weight="0" android:text="" android:textAllCaps="false" app:backgroundTint="?attr/colorPrimary" android:minWidth="48dp" android:paddingStart="12dp" android:paddingEnd="12dp" android:paddingTop="0dp" android:paddingBottom="0dp" android:drawablePadding="0dp" android:gravity="center_vertical" android:contentDescription="Apply filters" android:drawableStart="@drawable/ic_refresh" android:drawableTint="@color/white" android:layout_marginStart="8dp" android:visibility="gone" android:minHeight="48dp" />
+                        <com.google.android.material.button.MaterialButton android:id="@+id/fabCreateBill" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="0dp" android:contentDescription="Generate bill" app:backgroundTint="?attr/colorPrimary" android:layout_marginStart="8dp" android:text="Generate bill" android:textAllCaps="false" app:icon="@drawable/ic_add" android:minHeight="48dp" android:minWidth="48dp" android:visibility="gone" />
+                    </com.svd.svdagencies.utils.CompactLinearLayout>
+                </com.svd.svdagencies.utils.CompactLinearLayout>
+                <com.svd.svdagencies.utils.AppSwipeRefreshLayout android:id="@+id/swipeRefreshLayout" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+                    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvBills" android:layout_width="match_parent" android:layout_height="match_parent" tools:listitem="@layout/admin_bill_card" android:clipToPadding="false" />
                 </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
-
-                <LinearLayout
-                    android:id="@+id/layoutBillPagination"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnPreviousBillsPage"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Previous"
-                        android:textAllCaps="false" />
-
-                    <TextView
-                        android:id="@+id/tvBillsPageIndicator"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="Page 1 of 1"
-                        android:textColor="@color/textColorSecondary"
-                        android:textSize="14sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnNextBillsPage"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Next"
-                        android:textAllCaps="false" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
+                <com.svd.svdagencies.utils.CompactLinearLayout android:id="@+id/layoutBillPagination" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/spacing_small" android:gravity="center_vertical" android:orientation="horizontal">
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btnPreviousBillsPage" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Previous" android:textAllCaps="false" android:minHeight="48dp" android:minWidth="48dp" />
+                    <TextView android:id="@+id/tvBillsPageIndicator" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="Page 1 of 1" android:textColor="@color/textColorSecondary" android:textSize="@dimen/svd_text_label" />
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btnNextBillsPage" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Next" android:textAllCaps="false" android:minHeight="48dp" android:minWidth="48dp" />
+                </com.svd.svdagencies.utils.CompactLinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/admin_nav_header"
-        app:itemIconTint="@color/drawer_nav_icon_colors"
-        app:itemTextColor="@color/drawer_nav_item_colors"
-        app:menu="@menu/menu_admin_drawer"/>
-
+    <com.google.android.material.navigation.NavigationView android:id="@+id/navigationView" android:layout_width="wrap_content" android:layout_height="match_parent" android:background="?attr/colorSurface" android:layout_gravity="start" app:headerLayout="@layout/admin_nav_header" app:itemIconTint="@color/drawer_nav_icon_colors" app:itemTextColor="@color/drawer_nav_item_colors" app:menu="@menu/menu_admin_drawer" app:backgroundTint="?attr/colorSurface" />
 </androidx.drawerlayout.widget.DrawerLayout>

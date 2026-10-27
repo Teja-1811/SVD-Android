@@ -1,6 +1,5 @@
 package com.svd.svdagencies.data.api.customer
 
-import com.svd.svdagencies.data.model.admin.CompaniesListResponse
 import com.svd.svdagencies.data.model.customer.CustomerContactResponse
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.customer.CustomerOfferResponse
@@ -46,9 +45,6 @@ interface CustomerApi {
     fun initiateGatewayPayment(
         @Body body: Map<String, String>
     ): Call<PaymentGatewayInitResponse>
-
-    @GET("api/companies/")
-    suspend fun getCompanies(): CompaniesListResponse
 
     @POST("api/contact/")
     fun submitContact(

@@ -56,6 +56,10 @@ class CustomerSubscriptionsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (SessionManager(this).getRole() != UserRole.USER) {
+            finish()
+            return
+        }
         setContentView(if (SessionManager(this).getRole() == UserRole.USER) R.layout.user_portal else R.layout.customer)
 
         findViewById<TextView>(R.id.tvCustomerToolbarTitle).text = "My Subscriptions"
@@ -89,7 +93,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         loading = screen.findViewById(R.id.subscriptionsLoading)
         empty = screen.findViewById(R.id.tvSubscriptionsEmpty)
         container = screen.findViewById(R.id.subscriptionsContainer)
-        plans = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        plans = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         (container.parent as LinearLayout).addView(plans)
         if (SessionManager(this).getRole() == UserRole.USER) {
             findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.customerBottomNav).apply {
@@ -162,7 +166,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
                         cardElevation = 0f
                         strokeWidth = dp(1)
                         strokeColor = ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.card_stroke_color)
-                        setCardBackgroundColor(ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.white))
+                        setCardBackgroundColor(ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.surface_background))
                         addView(body)
                     })
                 }
@@ -177,12 +181,12 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         val status = subscription.string("status").replaceFirstChar { it.uppercase() }
         val card = MaterialCardView(this).apply {
             layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) }
-            setCardBackgroundColor(ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.white))
+            setCardBackgroundColor(ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.surface_background))
             radius = dp(16).toFloat()
             strokeWidth = dp(1)
             strokeColor = ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.card_stroke_color)
         }
-        val body = LinearLayout(this).apply {
+        val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(14), dp(16), dp(14))
         }
@@ -209,7 +213,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
             "• ${row.string("name")} × ${row.string("quantity")}"
         }.orEmpty()
         body.addView(text(products, 14, false).apply { setPadding(0, dp(8), 0, 0) })
-        val actions = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.END }
+        val actions = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.END }
         val id = subscription.get("id").asInt
         when (subscription.string("status")) {
             "active" -> actions.addView(actionButton("Pause") { showPauseOptions(id) })
@@ -218,10 +222,10 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         if (subscription.string("status") != "cancelled") {
             actions.addView(actionButton("Cancel") { confirmCancel(subscription) }.apply {
                 backgroundTintList = android.content.res.ColorStateList.valueOf(
-                    ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.white))
-                setTextColor(ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.brand_red))
+                    ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.surface_background))
+                setTextColor(com.google.android.material.color.MaterialColors.getColor(this@CustomerSubscriptionsActivity, com.google.android.material.R.attr.colorError, ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.brand_red)))
                 strokeColor = android.content.res.ColorStateList.valueOf(
-                    ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.brand_red))
+                    com.google.android.material.color.MaterialColors.getColor(this@CustomerSubscriptionsActivity, com.google.android.material.R.attr.colorError, ContextCompat.getColor(this@CustomerSubscriptionsActivity, R.color.brand_red)))
                 strokeWidth = dp(1)
                 contentDescription = "Cancel subscription"
                 layoutParams = LinearLayout.LayoutParams(-2, -2).apply { marginStart = dp(8) }
@@ -249,7 +253,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
     private fun offerMoney(offer: JsonObject, key: String): String =
         NumberFormat.getCurrencyInstance(Locale("en", "IN")).format(offer.get(key)?.takeUnless { it.isJsonNull }?.asDouble ?: 0.0)
 
-    private fun offerDetails(offer: JsonObject): LinearLayout = LinearLayout(this).apply {
+    private fun offerDetails(offer: JsonObject): LinearLayout = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
         addView(text(offer.string("name"), 20, true))
         addView(text(offerMoney(offer, "total_amount"), 30, true).apply {
@@ -266,7 +270,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
             "monthly" -> "Monthly"
             else -> offer.string("delivery_frequency")
         }
-        addView(LinearLayout(this@CustomerSubscriptionsActivity).apply {
+        addView(com.svd.svdagencies.utils.CompactLinearLayout(this@CustomerSubscriptionsActivity).apply {
             orientation = LinearLayout.HORIZONTAL
             setPadding(dp(12), dp(12), dp(12), dp(12))
             background = android.graphics.drawable.GradientDrawable().apply {
@@ -284,7 +288,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         offer.getAsJsonArray("items")?.forEach { value ->
             val item = value.asJsonObject
             val quantity = NumberFormat.getNumberInstance(Locale("en", "IN")).format(item.get("quantity").asDouble)
-            addView(LinearLayout(this@CustomerSubscriptionsActivity).apply {
+            addView(com.svd.svdagencies.utils.CompactLinearLayout(this@CustomerSubscriptionsActivity).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
                 setPadding(0, dp(8), 0, dp(8))
@@ -298,7 +302,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
 
     private fun showOfferPicker(offers: JsonArray) {
         if (offers.size() == 0) return showMessage("No subscription offers are available right now.")
-        val choices = LinearLayout(this).apply {
+        val choices = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(8), dp(20), dp(8))
         }
@@ -322,7 +326,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
                 cardElevation = 0f
                 strokeWidth = dp(1)
                 strokeColor = android.graphics.Color.parseColor("#DCE3E6")
-                setCardBackgroundColor(android.graphics.Color.WHITE)
+                setCardBackgroundColor(androidx.core.content.ContextCompat.getColor(this@CustomerSubscriptionsActivity, com.svd.svdagencies.R.color.surface_background))
                 addView(details)
                 layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(12) }
             })
@@ -351,7 +355,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         offer.getAsJsonArray("items")?.forEach { value ->
             val item = value.asJsonObject
             val quantity = NumberFormat.getNumberInstance(Locale("en", "IN")).format(item.get("quantity").asDouble)
-            products.addView(LinearLayout(this).apply {
+            products.addView(com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
                 gravity = Gravity.CENTER_VERTICAL
                 setPadding(0, dp(10), 0, dp(10))
                 addView(text(item.string("name"), 14, false), LinearLayout.LayoutParams(0, -2, 1f))
@@ -371,7 +375,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         val address = screen.findViewById<TextInputEditText>(R.id.subAddress)
         if (SessionManager(this).getRole() == UserRole.USER) {
             (address.parent.parent as? View)?.visibility = View.GONE
-            screen.findViewById<TextView>(R.id.subDeliveryLabel).text = "Choose your delivery pin when you confirm. Subscription delivery is free."
+            screen.findViewById<TextView>(R.id.subDeliveryLabel).text = "Delivery location not set."
         }
         screen.findViewById<View>(R.id.subClose).setOnClickListener { sheet.dismiss() }
         screen.findViewById<MaterialButton>(R.id.subConfirm).setOnClickListener {
@@ -387,7 +391,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
             panel?.let {
                 it.layoutParams.height = (resources.displayMetrics.heightPixels * 0.9).toInt()
                 it.background = android.graphics.drawable.GradientDrawable().apply {
-                    setColor(android.graphics.Color.WHITE)
+                    setColor(androidx.core.content.ContextCompat.getColor(this@CustomerSubscriptionsActivity, com.svd.svdagencies.R.color.surface_background))
                     cornerRadii = floatArrayOf(dp(24).toFloat(), dp(24).toFloat(), dp(24).toFloat(), dp(24).toFloat(), 0f, 0f, 0f, 0f)
                 }
                 BottomSheetBehavior.from(it).apply { state = BottomSheetBehavior.STATE_EXPANDED; skipCollapsed = true }
@@ -432,7 +436,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
     }
 
     private fun showSubscriptionForm(products: List<JsonObject>) {
-        val form = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(22), 0, dp(22), 0) }
+        val form = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(22), 0, dp(22), 0) }
         form.addView(text("Set the quantity for each delivery", 14, false))
         val quantities = mutableMapOf<Int, EditText>()
         products.forEach { product ->

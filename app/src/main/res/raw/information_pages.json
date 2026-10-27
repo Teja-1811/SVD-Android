@@ -1,0 +1,590 @@
+[
+  {
+    "id": "about",
+    "title": "About Us",
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "Sri Vijaya Durga Milk Agency"
+      },
+      {
+        "type": "body",
+        "text": "A dairy distribution business serving households, retailers, and nearby businesses with structured service and account management."
+      },
+      {
+        "type": "body",
+        "text": "Gundugolanu, Bhimadolu, Eluru"
+      },
+      {
+        "type": "body",
+        "text": "+91 9392890375"
+      },
+      {
+        "type": "body",
+        "text": "svdagencies12@gmail.com"
+      },
+      {
+        "type": "heading",
+        "text": "Who We Are"
+      },
+      {
+        "type": "body",
+        "text": "Sri Vijaya Durga Milk Agency is based in Gundugolanu, Bhimadolu, Eluru District, Andhra Pradesh. We distribute milk, curd, and related dairy products to households, retail outlets, hotels, and local businesses."
+      },
+      {
+        "type": "body",
+        "text": "Our operating focus includes product handling, scheduled delivery, visible pricing, accurate invoicing, and customer service coordination."
+      },
+      {
+        "type": "heading",
+        "text": "Business Details"
+      },
+      {
+        "type": "body",
+        "text": "Business Type: Local dairy distributor and delivery service"
+      },
+      {
+        "type": "body",
+        "text": "Service Area: Gundugolanu, Bhimadolu, Eluru and nearby locations"
+      },
+      {
+        "type": "body",
+        "text": "Working Hours: Monday to Sunday, 5:00 AM to 9:00 PM"
+      },
+      {
+        "type": "body",
+        "text": "Address: Main road Gundugolanu, Near Santa Market, Besides Srivasa Pesticides, Gundugolanu, Bhimadolu Mandal, Eluru Dist, 534427"
+      },
+      {
+        "type": "heading",
+        "text": "Services"
+      },
+      {
+        "type": "bullet",
+        "text": "Daily household milk delivery"
+      },
+      {
+        "type": "bullet",
+        "text": "Wholesale supply to retailers and hotels"
+      },
+      {
+        "type": "bullet",
+        "text": "Subscription-based delivery services"
+      },
+      {
+        "type": "bullet",
+        "text": "Bulk dairy order fulfilment"
+      },
+      {
+        "type": "heading",
+        "text": "What We Value"
+      },
+      {
+        "type": "bullet",
+        "text": "Honesty and transparency"
+      },
+      {
+        "type": "bullet",
+        "text": "Quality-focused handling"
+      },
+      {
+        "type": "bullet",
+        "text": "On-time delivery commitment"
+      },
+      {
+        "type": "bullet",
+        "text": "Customer-first service"
+      }
+    ]
+  },
+  {
+    "id": "contact",
+    "title": "Contact Us",
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "Reach Our Team"
+      },
+      {
+        "type": "body",
+        "text": "Contact us regarding delivery service, wholesale supply, subscriptions, invoices, payments, or order-related queries."
+      },
+      {
+        "type": "heading",
+        "text": "Business Contact"
+      },
+      {
+        "type": "body",
+        "text": "Business Name:\nSri Vijaya Durga Milk Agency"
+      },
+      {
+        "type": "body",
+        "text": "Address:\nMain road Gundugolanu, Near Santa Market,\nBesides Srivasa Pesticides, Gundugolanu,\nBhimadolu Mandal, Eluru Dist, 534427"
+      },
+      {
+        "type": "body",
+        "text": "Phone:\n+91 9392890375"
+      },
+      {
+        "type": "body",
+        "text": "Email:\nsvdagencies12@gmail.com"
+      },
+      {
+        "type": "body",
+        "text": "Working Hours:\nMonday - Sunday\n5:00 AM to 9:00 PM"
+      },
+      {
+        "type": "heading",
+        "text": "Support We Provide"
+      },
+      {
+        "type": "body",
+        "text": "Household milk delivery enquiries"
+      },
+      {
+        "type": "body",
+        "text": "Retail and wholesale supply requests"
+      },
+      {
+        "type": "body",
+        "text": "Subscription and recurring delivery enquiries"
+      },
+      {
+        "type": "body",
+        "text": "Invoice, payment and refund assistance"
+      },
+      {
+        "type": "heading",
+        "text": "Location"
+      }
+    ]
+  },
+  {
+    "id": "privacy",
+    "title": "Privacy Policy",
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "How We Handle Customer Information"
+      },
+      {
+        "type": "body",
+        "text": "This policy explains how Sri Vijaya Durga Milk Agency collects, uses, stores and protects information shared through the website, enquiry forms, billing workflows and customer portal."
+      },
+      {
+        "type": "heading",
+        "text": "1. Scope"
+      },
+      {
+        "type": "body",
+        "text": "This Privacy Policy applies to visitors, customers and users who interact with Sri Vijaya Durga Milk Agency through this website, our enquiry forms, billing records, customer support communication and customer portal features."
+      },
+      {
+        "type": "heading",
+        "text": "2. Information We Collect"
+      },
+      {
+        "type": "bullet",
+        "text": "Name, mobile number, email address and delivery address shared during enquiries, orders or account use"
+      },
+      {
+        "type": "bullet",
+        "text": "Order details, subscription selections, delivery preferences and invoice records"
+      },
+      {
+        "type": "bullet",
+        "text": "Payment references, transaction status and billing history for approved dues or online payments"
+      },
+      {
+        "type": "bullet",
+        "text": "Messages, support requests and service-related communication sent to our team"
+      },
+      {
+        "type": "bullet",
+        "text": "Basic technical information such as IP address, browser type, device details and access logs collected for security and performance monitoring"
+      },
+      {
+        "type": "heading",
+        "text": "3. How We Use Information"
+      },
+      {
+        "type": "bullet",
+        "text": "To create and manage customer accounts, invoices, subscriptions and delivery schedules"
+      },
+      {
+        "type": "bullet",
+        "text": "To process orders, verify dues, record payments and provide customer support"
+      },
+      {
+        "type": "bullet",
+        "text": "To send service updates, order confirmations, delivery communication and account-related notices"
+      },
+      {
+        "type": "bullet",
+        "text": "To improve operational accuracy, resolve disputes, prevent misuse and maintain internal records"
+      },
+      {
+        "type": "bullet",
+        "text": "To comply with legal, tax, accounting and business record-keeping obligations"
+      },
+      {
+        "type": "heading",
+        "text": "4. Sharing Of Information"
+      },
+      {
+        "type": "body",
+        "text": "We do not sell or rent personal information. We may share limited information only when required to operate our services, such as with payment service providers, delivery coordination tools, hosting providers, accountants or legal authorities where disclosure is necessary for business operations or compliance with law."
+      },
+      {
+        "type": "heading",
+        "text": "5. Cookies And Technical Data"
+      },
+      {
+        "type": "body",
+        "text": "This website may use cookies, session storage or similar technologies to support login sessions, site performance and basic analytics. You may control cookies through your browser settings, but some parts of the site may not function properly if essential cookies are disabled."
+      },
+      {
+        "type": "heading",
+        "text": "6. Data Retention"
+      },
+      {
+        "type": "body",
+        "text": "We retain customer, billing and transaction information only for as long as it is required for business operations, customer support, accounting, dispute handling and compliance with applicable legal obligations. When data is no longer required, we may delete, archive or anonymize it as appropriate."
+      },
+      {
+        "type": "heading",
+        "text": "7. Data Security"
+      },
+      {
+        "type": "body",
+        "text": "We take reasonable administrative and technical steps to protect information against unauthorized access, misuse, alteration or disclosure. While we work to safeguard customer data, no internet transmission or storage system can be guaranteed to be completely secure."
+      },
+      {
+        "type": "heading",
+        "text": "8. Your Choices And Rights"
+      },
+      {
+        "type": "body",
+        "text": "Subject to applicable law, you may request access to the personal information we hold about you, ask us to correct inaccurate details, or request deletion of information that is no longer required for legitimate business or legal purposes. To make a privacy-related request, contact us using the details below."
+      },
+      {
+        "type": "heading",
+        "text": "9. Children's Privacy"
+      },
+      {
+        "type": "body",
+        "text": "Our services are intended for customers who can lawfully place orders and manage payments. We do not knowingly collect personal information directly from children. If you believe information belonging to a child has been shared with us in error, please contact us so we can review and take appropriate action."
+      },
+      {
+        "type": "heading",
+        "text": "10. Policy Updates"
+      },
+      {
+        "type": "body",
+        "text": "We may update this Privacy Policy from time to time to reflect operational, legal or service changes. Any revised version will be posted on this page with the updated effective date."
+      },
+      {
+        "type": "heading",
+        "text": "11. Contact Us"
+      },
+      {
+        "type": "body",
+        "text": "Sri Vijaya Durga Milk Agency\n\nMain Road Gundugolanu, Near Santa Market, Besides Srivasa Pesticides, Gundugolanu, Bhimadolu Mandal, Eluru District, Andhra Pradesh - 534427\n\nEmail: svdagencies12@gmail.com\n\nPhone: +91 9392890375"
+      }
+    ]
+  },
+  {
+    "id": "terms",
+    "title": "Terms & Conditions",
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "Website, Order And Payment Terms"
+      },
+      {
+        "type": "body",
+        "text": "These terms apply to the public website, customer portal, enquiry forms, invoice access and approved online payment collection for existing customers."
+      },
+      {
+        "type": "heading",
+        "text": "Important Clauses"
+      },
+      {
+        "type": "heading",
+        "text": "Acceptance of Terms"
+      },
+      {
+        "type": "body",
+        "text": "By accessing and using this website, you agree to comply with and be bound by these Terms & Conditions."
+      },
+      {
+        "type": "heading",
+        "text": "Definitions"
+      },
+      {
+        "type": "body",
+        "text": "\"Company\" refers to Sri Vijaya Durga Milk Agencies. \"User\" refers to any individual accessing this website. \"Services\" include product enquiry, ordering, invoicing, and payments."
+      },
+      {
+        "type": "heading",
+        "text": "User Eligibility & Obligations"
+      },
+      {
+        "type": "body",
+        "text": "Users must be at least 18 years old and agree not to misuse the website or engage in unlawful activities."
+      },
+      {
+        "type": "heading",
+        "text": "General Use"
+      },
+      {
+        "type": "body",
+        "text": "Users agree to use the website lawfully and provide accurate information while placing orders or making enquiries."
+      },
+      {
+        "type": "heading",
+        "text": "Order Confirmation"
+      },
+      {
+        "type": "body",
+        "text": "Orders are subject to verification and confirmation. Quantity, address, schedule, and invoice details may be reviewed before processing."
+      },
+      {
+        "type": "heading",
+        "text": "Pricing & Payments"
+      },
+      {
+        "type": "body",
+        "text": "Payments are collected based on agreed terms. Direct UPI payments are accepted at 9392890375@okbizaxis for confirmed invoices and approved dues. Payment records are updated after admin verification."
+      },
+      {
+        "type": "heading",
+        "text": "Refunds & Cancellations"
+      },
+      {
+        "type": "body",
+        "text": "Refunds and cancellations are processed as per the Refund Policy available on this website."
+      },
+      {
+        "type": "heading",
+        "text": "Intellectual Property"
+      },
+      {
+        "type": "body",
+        "text": "All website content, including text, images, and branding, is the property of the company and cannot be reused without permission."
+      },
+      {
+        "type": "heading",
+        "text": "Limitation of Liability"
+      },
+      {
+        "type": "body",
+        "text": "The company shall not be liable for any indirect or incidental damages arising from the use of this website or services."
+      },
+      {
+        "type": "heading",
+        "text": "Third-Party Services"
+      },
+      {
+        "type": "body",
+        "text": "Payment details must be entered carefully before sending funds to the listed UPI ID. The company will verify payments against bank records before updating account records."
+      },
+      {
+        "type": "heading",
+        "text": "Termination"
+      },
+      {
+        "type": "body",
+        "text": "We reserve the right to suspend or terminate access to our services in case of misuse or violation of terms."
+      },
+      {
+        "type": "heading",
+        "text": "Governing Law"
+      },
+      {
+        "type": "body",
+        "text": "These terms are governed by the laws of India. Any disputes shall fall under the jurisdiction of Andhra Pradesh courts."
+      },
+      {
+        "type": "heading",
+        "text": "Modification of Terms"
+      },
+      {
+        "type": "body",
+        "text": "The company reserves the right to update or modify these Terms & Conditions at any time without prior notice."
+      },
+      {
+        "type": "heading",
+        "text": "Contact"
+      },
+      {
+        "type": "body",
+        "text": "Sri Vijaya Durga Milk Agencies Main road Gundugolanu, Near Santa Market, Besides Srivasa Pesticides, Gundugolanu, Bhimadolu Mandal, Eluru Dist, 534427 Email: svdagencies12@gmail.com Phone: +91 9392890375"
+      }
+    ]
+  },
+  {
+    "id": "refund",
+    "title": "Refund Policy",
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "Refund & Cancellation Terms"
+      },
+      {
+        "type": "body",
+        "text": "This policy applies to confirmed delivery orders, recurring supply orders and invoice payments accepted by Sri Vijaya Durga Milk Agency."
+      },
+      {
+        "type": "heading",
+        "text": "Refund Eligibility"
+      },
+      {
+        "type": "bullet",
+        "text": "Refunds will be processed only for orders that are cancelled before confirmation"
+      },
+      {
+        "type": "bullet",
+        "text": "Cancelled orders approved by Sri Vijaya Durga Milk Agency for refund review"
+      },
+      {
+        "type": "heading",
+        "text": "Non-Refundable Cases"
+      },
+      {
+        "type": "bullet",
+        "text": "Orders that are already confirmed"
+      },
+      {
+        "type": "bullet",
+        "text": "Products already consumed"
+      },
+      {
+        "type": "bullet",
+        "text": "Complaints raised long after delivery"
+      },
+      {
+        "type": "bullet",
+        "text": "Wrong address or customer unavailability at delivery time"
+      },
+      {
+        "type": "heading",
+        "text": "Refund Method & Timeline"
+      },
+      {
+        "type": "body",
+        "text": "Refunds may be processed through bill adjustment or the original payment method depending on the case. Eligible refund adjustments are normally handled within 5 to 7 working days after review and approval."
+      },
+      {
+        "type": "heading",
+        "text": "Cancellations"
+      },
+      {
+        "type": "body",
+        "text": "Customers should request cancellation before the order is confirmed. Once an order is confirmed, refund processing will not be available. Same-day delivery requests that have already been packed, dispatched or delivered may not be eligible for cancellation."
+      },
+      {
+        "type": "body",
+        "text": "For refund queries, contact Sri Vijaya Durga Milk Agency at svdagencies12@gmail.com or +91 9392890375."
+      }
+    ]
+  },
+  {
+    "id": "shipment",
+    "title": "Shipment Policy",
+    "blocks": [
+      {
+        "type": "heading",
+        "text": "Delivery & Shipment Policy"
+      },
+      {
+        "type": "body",
+        "text": "This Shipment Policy applies to all orders placed with\nSri Vijaya Durga Milk Agency through\ndirect UPI and billing systems."
+      },
+      {
+        "type": "heading",
+        "text": "Order Confirmation"
+      },
+      {
+        "type": "body",
+        "text": "Orders will be considered confirmed after approved cash billing confirmation\nor payment verification by Sri Vijaya Durga Milk Agency."
+      },
+      {
+        "type": "heading",
+        "text": "Shipment & Delivery Timeline"
+      },
+      {
+        "type": "body",
+        "text": "Sri Vijaya Durga Milk Agency supplies milk, curd and dairy products\nthrough fast local delivery services."
+      },
+      {
+        "type": "bullet",
+        "text": "Confirmed orders are processed immediately after payment confirmation"
+      },
+      {
+        "type": "bullet",
+        "text": "Shipment and delivery are normally completed within\n15 minutes from the time of order confirmation"
+      },
+      {
+        "type": "bullet",
+        "text": "Delivery timing may slightly vary based on location,\ntraffic conditions, weather or product availability"
+      },
+      {
+        "type": "bullet",
+        "text": "Customers should ensure availability at the delivery address\nduring the delivery time"
+      },
+      {
+        "type": "heading",
+        "text": "Delivery Coverage"
+      },
+      {
+        "type": "body",
+        "text": "Deliveries are available only in selected service areas operated by\nSri Vijaya Durga Milk Agency. Orders placed outside the delivery zone\nmay be rejected or cancelled."
+      },
+      {
+        "type": "heading",
+        "text": "Failed Delivery Attempts"
+      },
+      {
+        "type": "bullet",
+        "text": "Incorrect address provided by customer"
+      },
+      {
+        "type": "bullet",
+        "text": "Customer unavailable during delivery"
+      },
+      {
+        "type": "bullet",
+        "text": "Phone not reachable during delivery confirmation"
+      },
+      {
+        "type": "bullet",
+        "text": "Restricted or inaccessible delivery location"
+      },
+      {
+        "type": "body",
+        "text": "In such situations, re-delivery may not be guaranteed and refund\nrequests may not be approved."
+      },
+      {
+        "type": "heading",
+        "text": "Cancellation Policy"
+      },
+      {
+        "type": "body",
+        "text": "Customers must request cancellation before the order is confirmed.\nOnce the order is confirmed and shipment processing begins,\ncancellation may not be possible due to the perishable nature\nof dairy products."
+      },
+      {
+        "type": "heading",
+        "text": "Contact Information"
+      },
+      {
+        "type": "body",
+        "text": "For shipment or delivery related support, contact:"
+      },
+      {
+        "type": "body",
+        "text": "Sri Vijaya Durga Milk Agency\n\n\nEmail:\n\nsvdagencies12@gmail.com\n\n\n\n\nPhone:\n\n+91 9392890375"
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+<resources>
+<style name="Theme.SVDAgency.Ocean" parent="Theme.SVDAgency">
+<item name="colorPrimary">#A4D1F0</item><item name="colorOnPrimary">@color/svd_on_primary</item>
+<item name="colorPrimaryContainer">#193C50</item><item name="colorOnPrimaryContainer">#CBE8FA</item>
+<item name="colorSecondary">@color/colorAccent</item><item name="colorOnSecondary">@color/svd_on_primary</item>
+<item name="colorSecondaryContainer">@color/surface_variant</item><item name="colorOnSecondaryContainer">@color/textColorPrimary</item>
+<item name="android:statusBarColor">@color/status_bar</item></style>
+<style name="Theme.SVDAgency.Forest" parent="Theme.SVDAgency">
+<item name="colorPrimary">#9BDBAC</item><item name="colorOnPrimary">@color/svd_on_primary</item>
+<item name="colorPrimaryContainer">#173E28</item><item name="colorOnPrimaryContainer">#CCF2D5</item>
+<item name="colorSecondary">@color/colorAccent</item><item name="colorOnSecondary">@color/svd_on_primary</item>
+<item name="colorSecondaryContainer">@color/surface_variant</item><item name="colorOnSecondaryContainer">@color/textColorPrimary</item>
+<item name="android:statusBarColor">@color/status_bar</item></style>
+<style name="Theme.SVDAgency.User" parent="Theme.SVDAgency" />
+</resources>

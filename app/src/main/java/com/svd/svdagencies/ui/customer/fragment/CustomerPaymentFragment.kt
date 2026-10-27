@@ -109,7 +109,7 @@ class CustomerPaymentFragment : Fragment() {
 
         btnUpi.setOnClickListener { startGatewayPayment() }
         verificationLabel = TextView(requireContext()).apply {
-            text = "Payment verification takes 5 minutes. If it has not updated after 5 minutes, contact us on WhatsApp with your registered number."
+            text = "Verification: up to 5 min."
             setPadding(0, 16, 0, 8)
         }
         supportButton = com.google.android.material.button.MaterialButton(requireContext()).apply {
@@ -421,7 +421,7 @@ class CustomerPaymentFragment : Fragment() {
         content.findViewById<TextView>(R.id.upiDialogAmount).text =
             java.text.NumberFormat.getCurrencyInstance(Locale("en", "IN")).format(payment.amount ?: 0.0)
         content.findViewById<TextView>(R.id.upiDialogPayee).text = PaymentConfig.PAYEE_NAME
-        content.findViewById<TextView>(R.id.upiDialogId).text = PaymentConfig.UPI_ID
+        content.findViewById<TextView>(R.id.upiDialogId).text = payment.upiId ?: android.net.Uri.parse(payment.upiUri ?: payment.qrPayload.orEmpty()).getQueryParameter("pa").orEmpty()
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(content)
             .setOnCancelListener { releasePaymentButton() }

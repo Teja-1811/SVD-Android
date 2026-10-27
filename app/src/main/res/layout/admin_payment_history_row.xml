@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,9 +17,9 @@
         <TextView android:layout_width="80dp" android:layout_height="wrap_content" android:text="Method" android:textSize="@dimen/text_size_body_small" android:textStyle="bold" android:gravity="center" android:textColor="@color/textColorPrimary" />
         <TextView android:layout_width="120dp" android:layout_height="wrap_content" android:text="Transaction" android:textSize="@dimen/text_size_body_small" android:textStyle="bold" android:gravity="center" android:textColor="@color/textColorPrimary" />
         <TextView android:layout_width="120dp" android:layout_height="wrap_content" android:text="Date" android:textSize="@dimen/text_size_body_small" android:textStyle="bold" android:gravity="center" android:textColor="@color/textColorPrimary" />
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -31,7 +31,7 @@
         <TextView android:id="@+id/tvMethod" android:layout_width="80dp" android:layout_height="wrap_content" android:text="UPI" android:textSize="@dimen/text_size_body_small" android:gravity="center" android:textColor="@color/textColorPrimary" />
         <TextView android:id="@+id/tvTxnId" android:layout_width="120dp" android:layout_height="wrap_content" android:text="TXN123" android:textSize="@dimen/text_size_body_small" android:gravity="center" android:textColor="@color/textColorPrimary" />
         <TextView android:id="@+id/tvDate" android:layout_width="120dp" android:layout_height="wrap_content" android:text="Date" android:textSize="@dimen/text_size_body_small" android:gravity="center" android:textColor="@color/textColorPrimary" />
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 
     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider_line" />
-</LinearLayout>
+</com.svd.svdagencies.utils.CompactLinearLayout>

@@ -61,56 +61,72 @@ class AdminOrderTimingsActivity : AdminBaseActivity() {
         setContentView(R.layout.admin_order_timings)
         setupAdminLayout("Order Timings")
         fields = findViewById(R.id.orderTimingsFields)
-        text("Regular order timings", 22)
-        text("All times are in India time (Asia/Kolkata).", 14)
-        text("User pre-orders are available 24 hours, with delivery at least 2 days ahead. Retailers can place regular orders only.", 14)
-        status = text("Loading saved timings...", 16)
+        status = text("Loading…", 14)
         val card = MaterialCardView(this).apply {
             radius = dp(16).toFloat()
-            setCardBackgroundColor(android.graphics.Color.WHITE)
+            setCardBackgroundColor(getColor(R.color.card_background))
             strokeWidth = dp(1)
-            strokeColor = android.graphics.Color.LTGRAY
-            layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) }
+            strokeColor = getColor(R.color.card_stroke_color)
+            layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) }
         }
-        val body = LinearLayout(this).apply {
+        val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(16), dp(12), dp(16), dp(16))
         }
         card.addView(body)
         fields.addView(card)
-        openingButton = button(body, "Opening time") { pickTime(true) }
-        closingButton = button(body, "Closing time") { pickTime(false) }
-        body.addView(TextView(this).apply { text = "Working days"; textSize = 18f; setPadding(0, dp(16), 0, dp(4)) })
+        heading(body, "Order hours · IST")
+        val times = flow(body)
+        openingButton = button(times, "Opening") { pickTime(true) }
+        closingButton = button(times, "Closing") { pickTime(false) }
+        heading(body, "Working days")
+        val dayRow = flow(body)
         listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday").forEach { day ->
-            MaterialCheckBox(this).apply { text = day; isChecked = true; body.addView(this); days.add(this) }
+            MaterialCheckBox(this).apply {
+                text = day.take(3); contentDescription = day; isChecked = true
+                minHeight = dp(48); minWidth = dp(72)
+                dayRow.addView(this); days.add(this)
+            }
         }
-        body.addView(TextView(this).apply { text = "Ordering override"; textSize = 18f; setPadding(0, dp(16), 0, dp(8)) })
+        heading(body, "Ordering mode")
         overrideSpinner = Spinner(this).apply {
-            adapter = ArrayAdapter(this@AdminOrderTimingsActivity, android.R.layout.simple_spinner_dropdown_item,
+            adapter = ArrayAdapter(this@AdminOrderTimingsActivity, com.svd.svdagencies.R.layout.delivery_dropdown_item,
                 listOf("Use schedule", "Open now", "Closed now"))
         }
         body.addView(overrideSpinner, LinearLayout.LayoutParams(-1, dp(56)))
-        expiryButton = button(body, "Override ends: Until changed") { pickExpiry() }
-        button(body, "Clear override end time") { expiry = null; updateLabels() }
-        body.addView(TextView(this).apply {
-            text = "An override without an end time stays active until you choose Use schedule. After its end time, ordering returns to the schedule. Closing earlier than opening means overnight hours; equal times mean all day on the selected days."
-            textSize = 14f
-            setPadding(0, dp(12), 0, dp(12))
-        })
-        saveButton = button(fields, "Save order timings") { save() }
-        reloadButton = button(fields, "Reload saved timings") { load() }
+        val overrideActions = flow(body)
+        expiryButton = button(overrideActions, "Ends\nUntil changed") { pickExpiry() }
+        button(overrideActions, "Clear end time") { expiry = null; updateLabels() }
+        val actions = flow(fields)
+        saveButton = button(actions, "Save timings") { save() }
+        reloadButton = button(actions, "Reload") { load() }
         updateLabels()
         load()
     }
 
     private fun text(value: String, size: Int): TextView = TextView(this).apply {
-        text = value; textSize = size.toFloat(); setTextColor(android.graphics.Color.parseColor("#18343B"))
-        setPadding(0, dp(6), 0, dp(6)); fields.addView(this)
+        text = value; textSize = size.toFloat(); setTextColor(getColor(R.color.textColorSecondary))
+        setPadding(0, dp(4), 0, dp(4)); fields.addView(this)
     }
 
-    private fun button(parent: LinearLayout, label: String, action: () -> Unit) = MaterialButton(this).apply {
-        text = label; isAllCaps = false
+    private fun heading(parent: LinearLayout, value: String) {
+        parent.addView(TextView(this).apply {
+            text = value; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setTextColor(getColor(R.color.textColorPrimary)); setPadding(0, dp(12), 0, dp(4))
+        })
+    }
+
+    private fun flow(parent: LinearLayout) = OrderTimingButtonFlow(this).apply {
         layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) }
+        parent.addView(this)
+    }
+
+    private fun button(parent: ViewGroup, label: String, action: () -> Unit) = MaterialButton(this).apply {
+        text = label; isAllCaps = false; textSize = 13f
+        minHeight = dp(48); minWidth = dp(108)
+        setPadding(dp(8), dp(8), dp(8), dp(8))
+        cornerRadius = dp(16)
+        layoutParams = ViewGroup.LayoutParams(-2, -2)
         setOnClickListener { action() }; parent.addView(this)
     }
 
@@ -140,10 +156,10 @@ class AdminOrderTimingsActivity : AdminBaseActivity() {
     }
 
     private fun updateLabels() {
-        openingButton.text = "Opening time: $opens"
-        closingButton.text = "Closing time: $closes"
+        openingButton.text = "Opening\n$opens"
+        closingButton.text = "Closing\n$closes"
         val format = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.US).apply { timeZone = india }
-        expiryButton.text = "Override ends: " + (expiry?.let { format.format(it.time) + " IST" } ?: "Until changed")
+        expiryButton.text = "Ends\n" + (expiry?.let { format.format(it.time) + " IST" } ?: "Until changed")
     }
 
     private fun load() {
@@ -195,7 +211,7 @@ class AdminOrderTimingsActivity : AdminBaseActivity() {
             override fun onFailure(call: Call<JsonObject>, error: Throwable) {
                 if (isFinishing || isDestroyed) return
                 setBusy(false)
-                message("Unable to reach the server. Tap Reload saved timings to retry.")
+                message("Unable to reach the server. Tap Reload to retry.")
             }
         })
     }
@@ -208,10 +224,70 @@ class AdminOrderTimingsActivity : AdminBaseActivity() {
         }
         enable(fields)
         saveButton.isEnabled = !value && loaded
-        reloadButton.text = if (value) "Please wait..." else "Reload saved timings"
+        reloadButton.text = if (value) "Please wait..." else "Reload"
     }
 
     override fun onDestroy() { pendingCall?.cancel(); super.onDestroy() }
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
     private fun message(value: String) = Toast.makeText(this, value, Toast.LENGTH_LONG).show()
+}
+
+
+/** Equal-growth rows that wrap controls when the available width is exhausted. */
+internal class OrderTimingButtonFlow(context: android.content.Context) : ViewGroup(context) {
+    private val rows = mutableListOf<List<View>>()
+    private val gap get() = (8 * resources.displayMetrics.density).toInt()
+
+    override fun generateDefaultLayoutParams() = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        com.svd.svdagencies.utils.CompactUi.applyTree(this)
+        val width = if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED)
+            resources.displayMetrics.widthPixels else MeasureSpec.getSize(widthMeasureSpec)
+        val available = (width - paddingLeft - paddingRight).coerceAtLeast(0)
+        rows.clear()
+        var row = mutableListOf<View>()
+        var used = 0
+        for (index in 0 until childCount) {
+            val child = getChildAt(index)
+            if (child.visibility == GONE) continue
+            val refresh = com.svd.svdagencies.utils.CompactUi.isRefreshControl(child)
+            val size = (48 * resources.displayMetrics.density + .5f).toInt()
+            child.measure(MeasureSpec.makeMeasureSpec(if (refresh) minOf(size, available) else available, if (refresh) MeasureSpec.EXACTLY else MeasureSpec.AT_MOST),
+                MeasureSpec.makeMeasureSpec(if (refresh) size else 0, if (refresh) MeasureSpec.EXACTLY else MeasureSpec.UNSPECIFIED))
+            val needed = child.measuredWidth + if (row.isEmpty()) 0 else gap
+            if (row.isNotEmpty() && used + needed > available) {
+                rows.add(row); row = mutableListOf(); used = 0
+            }
+            if (row.isNotEmpty()) used += gap
+            row.add(child); used += child.measuredWidth
+        }
+        if (row.isNotEmpty()) rows.add(row)
+        var height = paddingTop + paddingBottom
+        rows.forEachIndexed { index, children ->
+            val remaining = (available - children.sumOf { it.measuredWidth } - gap * (children.size - 1)).coerceAtLeast(0)
+            val grow = children.filterNot { com.svd.svdagencies.utils.CompactUi.isRefreshControl(it) }
+            children.forEach { child ->
+                val indexInGrow = grow.indexOf(child)
+                val extra = if (indexInGrow < 0 || grow.isEmpty()) 0 else remaining / grow.size + if (indexInGrow < remaining % grow.size) 1 else 0
+                child.measure(MeasureSpec.makeMeasureSpec(child.measuredWidth + extra, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(child.measuredHeight, MeasureSpec.EXACTLY))
+            }
+            height += children.maxOf { it.measuredHeight } + if (index == 0) 0 else gap
+        }
+        setMeasuredDimension(resolveSize(width, widthMeasureSpec), resolveSize(height, heightMeasureSpec))
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        var y = paddingTop
+        val rtl = layoutDirection == LAYOUT_DIRECTION_RTL
+        rows.forEach { children ->
+            var x = if (rtl) width - paddingRight else paddingLeft
+            children.forEach { child ->
+                if (rtl) { child.layout(x - child.measuredWidth, y, x, y + child.measuredHeight); x -= child.measuredWidth + gap }
+                else { child.layout(x, y, x + child.measuredWidth, y + child.measuredHeight); x += child.measuredWidth + gap }
+            }
+            y += children.maxOf { it.measuredHeight } + gap
+        }
+    }
 }

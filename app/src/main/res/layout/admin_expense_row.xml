@@ -11,14 +11,14 @@
     app:strokeColor="@color/card_stroke_color"
     app:cardBackgroundColor="@color/card_background">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="Category"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="16sp"
+                android:textSize="@dimen/svd_text_body"
                 android:textStyle="bold" />
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:text="Description goes here"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="13sp"
+                android:textSize="@dimen/svd_text_label"
                 android:layout_marginTop="2dp"/>
 
             <TextView
@@ -50,7 +50,7 @@
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_body_small"
                 android:layout_marginTop="4dp"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <TextView
             android:id="@+id/tvAmount"
@@ -58,14 +58,14 @@
             android:layout_height="wrap_content"
             android:text="₹ 500.00"
             android:textColor="?attr/colorPrimary"
-            android:textSize="16sp"
+            android:textSize="@dimen/svd_text_body"
             android:textStyle="bold"
             android:layout_marginEnd="16dp"/>
 
         <ImageButton
             android:id="@+id/btnEdit"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_edit"
             app:tint="@color/brand_blue"
@@ -73,11 +73,11 @@
 
         <ImageButton
             android:id="@+id/btnDelete"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_trash"
             app:tint="?attr/colorPrimary"/>
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

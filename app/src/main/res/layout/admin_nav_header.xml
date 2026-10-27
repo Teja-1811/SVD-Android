@@ -1,49 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/grid_16">
-
-        <ImageView
-            android:id="@+id/imgLogo"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@drawable/logo"
-            android:contentDescription="logo"
-            android:scaleType="centerInside"/>
-
-        <TextView
-        android:id="@+id/txtAppName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_weight="1"
-        android:text="Sri Vijaya Durga Milk Agency"
-        android:textSize="15sp"
-        android:textStyle="bold"
-            android:textColor="@color/drawer_text_primary" />
-
-        <ImageView
-        android:id="@+id/btnCloseDrawer"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/ic_back"
-        android:padding="6dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:tint="@color/drawer_icon_default"
-            xmlns:app="http://schemas.android.com/apk/res-auto"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black" />
-</LinearLayout>
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="?attr/colorSurface" android:orientation="vertical">
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal" android:padding="@dimen/grid_16">
+        <ImageView android:id="@+id/imgLogo" android:layout_width="56dp" android:layout_height="56dp" android:src="@drawable/logo" android:contentDescription="logo" android:scaleType="centerInside" />
+        <TextView android:id="@+id/txtAppName" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="16dp" android:layout_weight="1" android:text="Sri Vijaya Durga Milk Agency" android:textSize="@dimen/svd_text_label" android:textStyle="bold" android:textColor="@color/drawer_text_primary" />
+        <ImageView android:id="@+id/btnCloseDrawer" android:layout_width="48dp" android:layout_height="48dp" android:src="@drawable/ic_back" android:padding="12dp" android:background="?attr/selectableItemBackgroundBorderless" app:tint="@color/drawer_icon_default" android:contentDescription="Close menu" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/black" />
+</com.svd.svdagencies.utils.CompactLinearLayout>

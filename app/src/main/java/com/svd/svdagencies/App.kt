@@ -13,7 +13,6 @@ class App : Application() {
         super.onCreate()
         instance = this
         context = applicationContext
-        com.svd.svdagencies.utils.NetworkRequestUi.install(this)
         SvdFirebaseMessagingService.ensureDefaultChannel(this)
         
         // Start the periodic keep-alive pings ONLY for Admin

@@ -28,7 +28,8 @@ class CustomerCompaniesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = CustomerCompaniesBinding.inflate(inflater, container, false)
+        val layout = if (com.svd.svdagencies.utils.SessionManager(requireContext()).getRole() == com.svd.svdagencies.utils.UserRole.USER) R.layout.user_companies else R.layout.customer_companies
+        _binding = CustomerCompaniesBinding.bind(inflater.inflate(layout, container, false))
         return binding.root
     }
 
@@ -101,14 +102,14 @@ class CustomerCompaniesFragment : Fragment() {
             text = label
             isCheckable = true
             isClickable = true
-            chipMinHeight = 40f
+            chipMinHeight = 40 * resources.displayMetrics.density
             shapeAppearanceModel = shapeAppearanceModel.withCornerSize(20f)
             chipBackgroundColor = ContextCompat.getColorStateList(context, R.color.chip_background_color)
             setTextColor(ContextCompat.getColorStateList(context, R.color.chip_text_color))
             chipStrokeColor = ContextCompat.getColorStateList(context, R.color.chip_unselected_border)
             chipStrokeWidth = 1f
             checkedIcon = null
-            setEnsureMinTouchTargetSize(false)
+            setEnsureMinTouchTargetSize(true)
             setOnClickListener { onSelected() }
         }
     }

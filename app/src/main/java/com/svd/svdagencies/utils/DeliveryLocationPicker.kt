@@ -47,12 +47,12 @@ interface DeliveryLocationApi {
 
 object DeliveryMaps {
     fun open(context: Context, latitude: Double, longitude: Double) {
-        val uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=$latitude,$longitude")
+        val uri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude")
         try {
             context.startActivity(Intent(Intent.ACTION_VIEW, uri).setPackage("com.google.android.apps.maps"))
         } catch (_: ActivityNotFoundException) {
             try { context.startActivity(Intent(Intent.ACTION_VIEW, uri)) }
-            catch (_: ActivityNotFoundException) { Toast.makeText(context, "Install Google Maps or a browser to view this pin.", Toast.LENGTH_LONG).show() }
+            catch (_: ActivityNotFoundException) { Toast.makeText(context, "Install a maps app to view this pin.", Toast.LENGTH_LONG).show() }
         }
     }
 }
@@ -67,21 +67,21 @@ class DeliveryLocationPicker(caller: ActivityResultCaller, private val context: 
 
     fun choose(onDismissed: () -> Unit = {}, onSelected: (DeliveryCoordinates) -> Unit) {
         val ctx = context()
-        val form = LinearLayout(ctx).apply {
+        val form = com.svd.svdagencies.utils.CompactLinearLayout(ctx).apply {
             orientation = LinearLayout.VERTICAL
             val padding = (20 * resources.displayMetrics.density).toInt()
             setPadding(padding, 0, padding, 0)
         }
         fun dp(value: Int) = (value * ctx.resources.displayMetrics.density).toInt()
         form.addView(TextView(ctx).apply {
-            text = "Delivery pin"; textSize = 22f
+            text = "Delivery pin"; textSize = 16f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(android.graphics.Color.rgb(24,59,71))
+            setTextColor(ContextCompat.getColor(ctx, com.svd.svdagencies.R.color.textColorPrimary))
             setPadding(0,dp(20),0,dp(6))
         })
         form.addView(TextView(ctx).apply {
             text = "Choose your location or enter map coordinates."
-            textSize = 13f; setTextColor(android.graphics.Color.rgb(100,121,133))
+            textSize = 13f; setTextColor(ContextCompat.getColor(ctx, com.svd.svdagencies.R.color.textColorSecondary))
             setPadding(0,0,0,dp(16))
         })
         val inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
@@ -95,11 +95,11 @@ class DeliveryLocationPicker(caller: ActivityResultCaller, private val context: 
                 hint = label
                 boxBackgroundMode = com.google.android.material.textfield.TextInputLayout.BOX_BACKGROUND_OUTLINE
                 setBoxCornerRadii(dp(12).toFloat(),dp(12).toFloat(),dp(12).toFloat(),dp(12).toFloat())
-                boxBackgroundColor = android.graphics.Color.WHITE
+                boxBackgroundColor = ContextCompat.getColor(ctx, com.svd.svdagencies.R.color.surface_background)
                 layoutParams = LinearLayout.LayoutParams(-1,-2).apply { topMargin = dp(12) }
             }
             val input = com.google.android.material.textfield.TextInputEditText(box.context).apply {
-                this.inputType = inputType; isSingleLine = true; textSize = 16f
+                this.inputType = inputType; isSingleLine = true; textSize = 14f
             }
             box.addView(input, LinearLayout.LayoutParams(-1,-2)); form.addView(box)
             return input
@@ -108,8 +108,8 @@ class DeliveryLocationPicker(caller: ActivityResultCaller, private val context: 
         val longitude = coordinateField("Longitude")
         val preview = MaterialButton(ctx).apply {
             text = "Preview in Google Maps"; isAllCaps = false; cornerRadius = dp(12); minHeight = dp(48)
-            backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.WHITE)
-            setTextColor(android.graphics.Color.rgb(195,43,43))
+            backgroundTintList = android.content.res.ColorStateList.valueOf(ContextCompat.getColor(ctx, com.svd.svdagencies.R.color.surface_background))
+            setTextColor(com.google.android.material.color.MaterialColors.getColor(ctx, com.google.android.material.R.attr.colorPrimary, ContextCompat.getColor(ctx, com.svd.svdagencies.R.color.textColorPrimary)))
             layoutParams = LinearLayout.LayoutParams(-1,-2).apply { topMargin = dp(16); bottomMargin = dp(12) }
         }
         form.addView(preview)
@@ -176,10 +176,10 @@ class DeliveryLocationPicker(caller: ActivityResultCaller, private val context: 
         val loadCall = api.get()
         dialog.setOnDismissListener { onDismissed(); stopLocation(); afterPermission = null; loadCall.cancel() }
         dialog.setOnShowListener {
-            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(android.graphics.Color.rgb(100,121,133))
+            dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(ctx, com.svd.svdagencies.R.color.textColorSecondary))
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).apply {
-                setTextColor(android.graphics.Color.WHITE)
-                backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.rgb(211,45,45))
+                setTextColor(ContextCompat.getColor(ctx, com.svd.svdagencies.R.color.svd_on_primary))
+                backgroundTintList = android.content.res.ColorStateList.valueOf(com.google.android.material.color.MaterialColors.getColor(ctx, com.google.android.material.R.attr.colorPrimary, android.graphics.Color.DKGRAY))
                 isAllCaps = false
             }
             loadCall.enqueue(object : Callback<JsonObject> {

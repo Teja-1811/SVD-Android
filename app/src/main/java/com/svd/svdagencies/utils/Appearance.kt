@@ -15,6 +15,6 @@ object Appearance {
     fun theme(context: Context): Int = when (selected(context)) {
         1 -> R.style.Theme_SVDAgency_Ocean
         2 -> R.style.Theme_SVDAgency_Forest
-        else -> R.style.Theme_SVDAgency
+        else -> if (SessionManager(context).getRole() == UserRole.USER) R.style.Theme_SVDAgency_User else R.style.Theme_SVDAgency
     }
 }

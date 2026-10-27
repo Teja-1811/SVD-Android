@@ -1,90 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/card_background"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:paddingVertical="8dp"
-    android:paddingHorizontal="8dp"
-    android:weightSum="100">
-
-    <TextView
-        android:id="@+id/tvProductName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="30"
-        android:text="Product Name"
-        android:textSize="@dimen/text_size_caption"
-        android:textColor="@color/textColorPrimary" />
-
-    <TextView
-        android:id="@+id/tvPrice"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="11"
-        android:text="₹0.00"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_caption"
-        android:textColor="@color/textColorPrimary" />
-
-    <TextView
-        android:id="@+id/tvQty"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="11"
-        android:text="0"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_caption"
-        android:textColor="@color/textColorPrimary" />
-
-    <TextView
-        android:id="@+id/tvDisc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="11"
-        android:text="0.0"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_caption"
-        android:textColor="@color/textColorPrimary" />
-
-    <TextView
-        android:id="@+id/tvDiscAmount"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="11"
-        android:text="₹0.00"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_caption"
-        android:textColor="@color/textColorPrimary" />
-
-    <TextView
-        android:id="@+id/tvTotal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="11"
-        android:text="₹0.00"
-        android:gravity="end"
-        android:textSize="@dimen/text_size_caption"
-        android:textStyle="bold"
-        android:textColor="@color/textColorPrimary" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRemove"
-        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-        android:layout_width="0dp"
-        android:layout_height="24dp"
-        android:layout_weight="11"
-        android:layout_marginStart="10dp"
-        android:text="Delete"
-        android:textAllCaps="false"
-        android:textSize="@dimen/text_size_caption"
-        android:padding="0dp"
-        android:backgroundTint="@color/brand_red_dark"
-        app:cornerRadius="@dimen/card_corner_radius_small"
-        android:insetTop="0dp"
-        android:insetBottom="0dp" />
-
-</LinearLayout>
-
+<?xml version='1.0' encoding='utf-8'?>
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingVertical="8dp" android:paddingHorizontal="4dp" android:baselineAligned="false">
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_weight="2.2" android:paddingEnd="4dp">
+        <TextView android:id="@+id/tvProductName" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginEnd="8dp" android:textSize="@dimen/svd_text_label" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:maxLines="3" />
+        <TextView android:id="@+id/tvPrice" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="@dimen/svd_text_label" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:maxLines="4" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_weight="0.8" android:paddingEnd="4dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Qty" android:textSize="@dimen/svd_text_caption" android:textColor="@color/textColorSecondary" android:layout_marginBottom="4dp" />
+        <TextView android:id="@+id/tvQty" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="@dimen/svd_text_label" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:maxLines="4" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_weight="1.3" android:paddingEnd="4dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Disc." android:textSize="@dimen/svd_text_caption" android:textColor="@color/textColorSecondary" android:layout_marginBottom="4dp" />
+        <TextView android:id="@+id/tvDisc" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="@dimen/svd_text_label" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:maxLines="4" />
+        <TextView android:id="@+id/tvDiscAmount" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="@dimen/svd_text_label" android:textStyle="bold" android:textColor="@color/textColorPrimary" android:maxLines="4" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_weight="1.5" android:paddingEnd="4dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Total" android:textSize="@dimen/svd_text_caption" android:textColor="@color/textColorSecondary" android:layout_marginBottom="4dp" />
+        <TextView android:id="@+id/tvTotal" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="@dimen/svd_text_label" android:textStyle="bold" android:textColor="?attr/colorPrimary" android:maxLines="4" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+    <com.google.android.material.button.MaterialButton android:id="@+id/btnRemove" style="@style/Widget.Material3.Button.TextButton" android:layout_width="48dp" android:layout_height="wrap_content" android:minHeight="48dp" android:text="" android:textAllCaps="false" android:textSize="@dimen/svd_text_label" android:textColor="@color/error_red" android:paddingHorizontal="4dp" android:contentDescription="Remove item" android:minWidth="48dp" android:tag="svd-icon-only" app:icon="@android:drawable/ic_menu_delete" />
+</com.svd.svdagencies.utils.CompactLinearLayout>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingVertical="@dimen/spacing_small">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/textColorSecondary"
             android:textSize="@dimen/text_size_small" />
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 
     <TextView
         android:id="@+id/txtStockQty"
@@ -36,4 +36,4 @@
         android:textSize="@dimen/text_size_medium"
         android:textStyle="bold" />
 
-</LinearLayout>
+</com.svd.svdagencies.utils.CompactLinearLayout>

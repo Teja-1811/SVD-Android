@@ -53,11 +53,12 @@ class AdminRoutesActivity : AdminBaseActivity() {
     }
 
     private fun addRouteRow(route: AdminRoute) {
-        val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; setPadding(0, 18, 0, 18) }
-        row.addView(TextView(this).apply { text = "${route.name} (${route.customer_count} customers)" }, LinearLayout.LayoutParams(0, -2, 1f))
-        row.addView(Button(this).apply { text = "Edit"; setOnClickListener { showRouteDialog(route) } })
-        row.addView(Button(this).apply { text = "Delete"; setOnClickListener { deleteRoute(route) } })
-        routesList.addView(row, ViewGroup.LayoutParams(-1, -2))
+        val card = layoutInflater.inflate(R.layout.item_admin_route, routesList, false)
+        card.findViewById<TextView>(R.id.routeRowName).text = route.name
+        card.findViewById<TextView>(R.id.routeRowCustomers).text = "${route.customer_count} customers"
+        card.findViewById<MaterialButton>(R.id.routeRowEdit).setOnClickListener { showRouteDialog(route) }
+        card.findViewById<MaterialButton>(R.id.routeRowDelete).setOnClickListener { deleteRoute(route) }
+        routesList.addView(card)
     }
 
     private fun showRouteDialog(existing: AdminRoute? = null) {

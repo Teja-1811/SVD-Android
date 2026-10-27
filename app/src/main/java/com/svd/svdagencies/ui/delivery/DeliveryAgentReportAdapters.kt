@@ -101,7 +101,7 @@ class DeliveryAgentSectionHeaderAdapter(private val title: String) : RecyclerVie
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setPadding(dp16, dp16, dp16, dp8)
             setTextColor(parent.context.getColor(R.color.textColorPrimary))
-            textSize = 18f
+            textSize = 14f
             typeface = Typeface.DEFAULT_BOLD
         }
         return ViewHolder(view)

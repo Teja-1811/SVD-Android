@@ -11,14 +11,14 @@
     app:strokeColor="@color/card_stroke_color"
     app:cardBackgroundColor="@color/card_background">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="INV-2025-001"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="14sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textStyle="bold" />
 
             <TextView
@@ -41,9 +41,9 @@
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_body_small"
                 android:layout_marginTop="2dp"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:text="₹1,250.00"
                 android:textColor="?attr/colorPrimary"
-                android:textSize="14sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textStyle="bold" />
 
             <TextView
@@ -66,7 +66,7 @@
                 android:textColor="@color/icon_orange"
                 android:textSize="@dimen/text_size_body_small"
                 android:layout_marginTop="2dp"/>
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <ImageView
             android:id="@+id/btnQR"
@@ -92,5 +92,5 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"/>
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

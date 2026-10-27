@@ -6,16 +6,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.svd.svdagencies.R
 
-/** Applies the app's white, rounded surface to a confirmation or form dialog. */
+/** Applies the app's themed, rounded surface to a confirmation or form dialog. */
 fun AlertDialog.applyWhiteDialogSurface() {
     val cornerRadius = 28 * context.resources.displayMetrics.density
     window?.setBackgroundDrawable(GradientDrawable().apply {
-        setColor(ContextCompat.getColor(context, R.color.white))
+        setColor(ContextCompat.getColor(context, R.color.surface_background))
         this.cornerRadius = cornerRadius
     })
 }
 
-/** Shows a destructive confirmation with a white, rounded surface and red action. */
+/** Shows a destructive confirmation with a themed, rounded surface and red action. */
 fun AlertDialog.Builder.showDestructiveDialog() {
     val dialog = create()
     dialog.setOnShowListener {

@@ -90,11 +90,11 @@ class DeliverySubscriptionDeliveriesActivity : BaseActivity() {
     private fun addDeliveryCard(delivery: JsonObject) {
         val card = MaterialCardView(this).apply {
             layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(12) }
-            setCardBackgroundColor(ContextCompat.getColor(this@DeliverySubscriptionDeliveriesActivity, R.color.white))
+            setCardBackgroundColor(ContextCompat.getColor(this@DeliverySubscriptionDeliveriesActivity, R.color.surface_background))
             radius = dp(16).toFloat(); strokeWidth = dp(1)
             strokeColor = ContextCompat.getColor(this@DeliverySubscriptionDeliveriesActivity, R.color.card_stroke_color)
         }
-        val body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(14), dp(16), dp(12)) }
+        val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(14), dp(16), dp(12)) }
         body.addView(label(delivery.value("customer_name"), 18, true))
         body.addView(label(delivery.value("customer_phone"), 14, false))
         val latitude = delivery.get("delivery_latitude")?.takeUnless { it.isJsonNull }?.asDouble
@@ -109,10 +109,10 @@ class DeliverySubscriptionDeliveriesActivity : BaseActivity() {
         }.orEmpty()
         body.addView(label(items, 14, false).apply { setPadding(0, dp(8), 0, 0) })
         if (delivery.value("status") == "scheduled") {
-            val actions = LinearLayout(this).apply { gravity = Gravity.END; orientation = LinearLayout.HORIZONTAL }
+            val actions = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { gravity = Gravity.END; orientation = LinearLayout.HORIZONTAL }
             val id = delivery.get("id").asInt
-            actions.addView(button("Skip") { update(id, false) }.apply { setTextColor(ContextCompat.getColor(this@DeliverySubscriptionDeliveriesActivity, R.color.brand_red)) })
-            actions.addView(button("Mark delivered") { update(id, true) }.apply { setTextColor(ContextCompat.getColor(this@DeliverySubscriptionDeliveriesActivity, R.color.icon_green)) })
+            actions.addView(button("Skip") { update(id, false) }.apply { layoutParams = LinearLayout.LayoutParams(0, -2, 1f); backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.TRANSPARENT); strokeWidth = dp(1); strokeColor = android.content.res.ColorStateList.valueOf(com.google.android.material.color.MaterialColors.getColor(this@DeliverySubscriptionDeliveriesActivity, com.google.android.material.R.attr.colorError, getColor(R.color.brand_red))); setTextColor(com.google.android.material.color.MaterialColors.getColor(this@DeliverySubscriptionDeliveriesActivity, com.google.android.material.R.attr.colorError, getColor(R.color.brand_red))) })
+            actions.addView(button("Mark delivered") { update(id, true) }.apply { layoutParams = LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(8) }; setTextColor(com.google.android.material.color.MaterialColors.getColor(this@DeliverySubscriptionDeliveriesActivity, com.google.android.material.R.attr.colorOnPrimary, getColor(R.color.svd_on_primary))) })
             body.addView(actions)
         } else if (delivery.value("handled_by").isNotBlank()) {
             body.addView(label("Handled by: ${delivery.value("handled_by")}", 13, false).apply { setPadding(0, dp(8), 0, 0) })

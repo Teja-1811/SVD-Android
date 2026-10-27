@@ -13,8 +13,8 @@ class AppSwipeRefreshLayout @JvmOverloads constructor(
 ) : SwipeRefreshLayout(context, attrs) {
 
     init {
-        setColorSchemeResources(R.color.brand_red)
-        setProgressBackgroundColorSchemeResource(R.color.white)
+        setColorSchemeColors(com.google.android.material.color.MaterialColors.getColor(context, com.google.android.material.R.attr.colorPrimary, androidx.core.content.ContextCompat.getColor(context, R.color.colorPrimary)))
+        setProgressBackgroundColorSchemeResource(R.color.surface_background)
     }
 
     override fun setRefreshing(refreshing: Boolean) {

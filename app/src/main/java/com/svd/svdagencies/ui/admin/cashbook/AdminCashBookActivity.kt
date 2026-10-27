@@ -166,7 +166,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
         binding.btnApplyFilters.icon = null
         binding.btnApplyFilters.layoutParams.width = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
         binding.btnApplyFilters.minimumWidth = (72 * resources.displayMetrics.density).toInt()
-        binding.btnApplyFilters.text = "Clear"
+        com.svd.svdagencies.utils.RefreshButtonStyle.apply(binding.btnApplyFilters)
         binding.btnApplyFilters.contentDescription = "Clear filters"
         binding.btnApplyFilters.setOnClickListener { resetFilters() }
         binding.btnResetFilters.visibility = View.GONE
@@ -424,7 +424,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
             return
         }
 
-        val container = LinearLayout(this).apply {
+        val container = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(32, 12, 32, 0)
         }

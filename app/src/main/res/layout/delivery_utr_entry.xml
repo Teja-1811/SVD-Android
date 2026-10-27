@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="@dimen/svd_space_section">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Transaction ID / UTR">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input"
             android:id="@+id/etUtr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapCharacters"
-            android:maxLength="20" />
+            android:maxLength="20"  android:minHeight="48dp" android:minWidth="48dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -24,6 +24,6 @@
         android:layout_marginTop="8dp"
         android:text="Find this in your UPI app's transaction history"
         android:textColor="@color/textColorSecondary"
-        android:textSize="@dimen/text_size_body_small" />
+        android:textSize="@dimen/text_size_body_small"  android:visibility="gone" />
 
-</LinearLayout>
+</com.svd.svdagencies.utils.CompactLinearLayout>

@@ -1,93 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/deliveryDrawerLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/window_background"
-    android:orientation="vertical">
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/subscriptionDeliveryToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:navigationIcon="@drawable/ic_menu"
-        app:title="Subscription Deliveries"
-        app:titleTextColor="@color/white" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Scheduled deliveries"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSubscriptionDeliveryDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            app:backgroundTint="@color/white"
-            app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="1dp"
-            android:textColor="?attr/colorPrimary" />
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/subscriptionDeliveryLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="16dp" />
-
-    <TextView
-        android:id="@+id/tvSubscriptionDeliveriesEmpty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="24dp"
-        android:text="No subscription deliveries scheduled for this day."
-        android:textColor="@color/textColorSecondary"
-        android:visibility="gone" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <LinearLayout
-            android:id="@+id/subscriptionDeliveriesContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp" />
-    </ScrollView>
-</LinearLayout>
-
-<com.google.android.material.navigation.NavigationView
-    android:id="@+id/deliveryNavigationView"
-    style="@style/Widget.App.NavigationView"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:layout_gravity="start"
-    android:background="@color/white"
-    app:backgroundTint="@color/white"
-    app:headerLayout="@layout/admin_nav_header"
-    app:itemIconTint="@color/drawer_nav_icon_colors"
-    app:itemTextColor="@color/drawer_nav_item_colors"
-    app:menu="@menu/menu_delivery_drawer" />
+<?xml version='1.0' encoding='utf-8'?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/deliveryDrawerLayout" android:layout_width="match_parent" android:layout_height="match_parent">
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/window_background" android:orientation="vertical">
+        <com.google.android.material.appbar.MaterialToolbar android:id="@+id/subscriptionDeliveryToolbar" android:layout_width="match_parent" android:layout_height="?attr/actionBarSize" android:background="?attr/colorSurface" app:navigationIcon="@drawable/ic_menu" app:title="Subscription Deliveries" app:titleTextColor="@color/textColorPrimary" app:navigationIconTint="?attr/colorPrimary" />
+        <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal" android:padding="16dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scheduled deliveries" android:textColor="@color/textColorPrimary" android:textSize="@dimen/svd_text_body" android:textStyle="bold" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnSubscriptionDeliveryDate" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAllCaps="false" app:backgroundTint="?attr/colorSurface" app:strokeColor="?attr/colorPrimary" app:strokeWidth="1dp" android:textColor="?attr/colorPrimary" android:minHeight="48dp" android:minWidth="48dp" android:text="Select date" />
+        </com.svd.svdagencies.utils.CompactLinearLayout>
+        <ProgressBar android:id="@+id/subscriptionDeliveryLoading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_margin="16dp" />
+        <TextView android:id="@+id/tvSubscriptionDeliveriesEmpty" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:padding="@dimen/svd_space_section" android:text="No deliveries for this date." android:textColor="@color/textColorSecondary" android:visibility="gone" />
+        <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:fillViewport="true">
+            <com.svd.svdagencies.utils.CompactLinearLayout android:id="@+id/subscriptionDeliveriesContainer" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" />
+        </ScrollView>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+    <com.google.android.material.navigation.NavigationView android:id="@+id/deliveryNavigationView" style="@style/Widget.App.NavigationView" android:layout_width="wrap_content" android:layout_height="match_parent" android:layout_gravity="start" android:background="?attr/colorSurface" app:backgroundTint="?attr/colorSurface" app:headerLayout="@layout/admin_nav_header" app:itemIconTint="@color/drawer_nav_icon_colors" app:itemTextColor="@color/drawer_nav_item_colors" app:menu="@menu/menu_delivery_drawer" />
 </androidx.drawerlayout.widget.DrawerLayout>

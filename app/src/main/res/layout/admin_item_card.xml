@@ -14,7 +14,7 @@
     app:cardElevation="0dp"
     app:cardBackgroundColor="@color/card_background">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -99,10 +99,10 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2">
+            android:columnCount="@integer/svd_summary_columns">
 
             <!-- Code -->
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -121,10 +121,10 @@
                     android:textSize="@dimen/text_size_caption"
                     android:textColor="@color/textColorPrimary"
                     android:textStyle="bold"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <!-- Company -->
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -144,10 +144,10 @@
                     android:textSize="@dimen/text_size_caption"
                     android:textColor="@color/textColorPrimary"
                     android:textStyle="bold"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <!-- Buying -->
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -167,10 +167,10 @@
                     android:textColor="@color/brand_blue"
                     android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <!-- Selling -->
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -191,10 +191,10 @@
                     android:textColor="@color/icon_green"
                     android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <!-- MRP -->
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -214,10 +214,10 @@
                     android:textColor="?attr/colorPrimary"
                     android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
             <!-- Margin -->
-            <LinearLayout
+            <com.svd.svdagencies.utils.CompactLinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -238,12 +238,12 @@
                     android:textColor="@color/icon_blue"
                     android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"/>
-            </LinearLayout>
+            </com.svd.svdagencies.utils.CompactLinearLayout>
 
         </GridLayout>
 
         <!-- ======= UPDATED BUTTONS (More Intuitive) ======= -->
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -254,7 +254,7 @@
                 android:id="@+id/btnUpdate"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="wrap_content" android:minHeight="48dp"
                 android:layout_weight="1"
                 android:text="Update"
                 android:textSize="@dimen/text_size_caption"
@@ -271,13 +271,13 @@
                 android:gravity="center"
                 android:padding="@dimen/grid_4"
                 android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                android:insetBottom="0dp" android:minWidth="48dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStatus"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="wrap_content" android:minHeight="48dp"
                 android:layout_weight="1"
                 android:text="Deactivate"
                 android:textSize="@dimen/text_size_micro"
@@ -294,9 +294,9 @@
                 android:gravity="center"
                 android:padding="@dimen/grid_4"
                 android:insetTop="0dp"
-                android:insetBottom="0dp"/>
+                android:insetBottom="0dp" android:minWidth="48dp" />
 
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

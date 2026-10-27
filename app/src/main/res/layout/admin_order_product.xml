@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -15,29 +15,29 @@
         android:textSize="@dimen/text_size_body_small"
         android:textColor="@color/textColorPrimary" />
 
-    <EditText
+    <EditText style="@style/Widget.Svd.PlainInput"
         android:id="@+id/etQty"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@drawable/bg_qty_outline"
         android:gravity="center"
         android:inputType="number"
         android:textSize="@dimen/text_size_body_small"
         android:layout_marginHorizontal="4dp"
-        android:padding="4dp"/>
+        android:padding="4dp" android:minHeight="48dp" android:minWidth="48dp" />
 
-    <EditText
+    <EditText style="@style/Widget.Svd.PlainInput"
         android:id="@+id/etDisc"
         android:layout_width="0dp"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@drawable/bg_qty_outline"
         android:gravity="center"
         android:inputType="numberDecimal"
         android:textSize="@dimen/text_size_body_small"
         android:layout_marginHorizontal="4dp"
-        android:padding="4dp"/>
+        android:padding="4dp" android:minHeight="48dp" android:minWidth="48dp" />
 
     <TextView
         android:id="@+id/tvAQ"
@@ -49,4 +49,4 @@
         android:textSize="@dimen/text_size_body_small"
         android:textColor="?attr/colorPrimary"
         android:textStyle="bold"/>
-</LinearLayout>
+</com.svd.svdagencies.utils.CompactLinearLayout>

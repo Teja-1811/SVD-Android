@@ -28,7 +28,9 @@ interface AdminPaymentsApi {
     @GET("api/customer-payments/")
     suspend fun getCustomerPayments(
         @Query("customer") customer: String? = null,
-        @Query("transaction_id") transactionId: String? = null
+        @Query("transaction_id") transactionId: String? = null,
+        @Query("route_id") routeId: Int? = null,
+        @Query("customer_id") customerId: Int? = null
     ): CustomerPaymentResponse
 
     @POST("api/customer-payments/update-status/{payment_id}/")

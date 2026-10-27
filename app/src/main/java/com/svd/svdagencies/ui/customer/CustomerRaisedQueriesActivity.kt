@@ -34,7 +34,7 @@ class CustomerRaisedQueriesActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.customer)
+        setContentView(PortalNavigation.layoutFor(this))
 
         val drawerLayout = findViewById<DrawerLayout>(R.id.customerDrawerLayout)
         val navigationView = findViewById<NavigationView>(R.id.customerNavigationView)

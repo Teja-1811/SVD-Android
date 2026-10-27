@@ -177,7 +177,7 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
                     return
                 }
                 val offers = response.body()?.offers.orEmpty().map {
-                    CustomerOffer(it.name, it.description.orEmpty().ifBlank { money(it.price) }, "Place offer order", "#0C4A6E", it.id)
+                    CustomerOffer(it.name, "${money(it.price)} for the bundle · ${it.items.size} products", "View bundle", "#0C4A6E", it.id)
                 }
                 val list = screen.findViewById<RecyclerView>(R.id.userOffers)
                 list.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -231,7 +231,7 @@ class UserHomeFragment : Fragment(R.layout.user_home) {
                 stockAdapter?.submitProducts(products)
                 list.visibility = if (products.isEmpty()) View.GONE else View.VISIBLE
                 status.visibility = if (products.isEmpty()) View.VISIBLE else View.GONE
-                status.text = "No items in stock. You can still place a dated pre-order in Orders."
+                status.text = "No items in stock."
                 updateCartButton()
             }
             override fun onFailure(call: Call<JsonElement>, error: Throwable) {

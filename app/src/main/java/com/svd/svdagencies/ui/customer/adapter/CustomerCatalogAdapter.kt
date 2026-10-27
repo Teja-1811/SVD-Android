@@ -16,11 +16,9 @@ import java.util.Locale
 class CustomerCatalogAdapter : ListAdapter<ProductData, CustomerCatalogAdapter.CatalogViewHolder>(CatalogDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogViewHolder {
-        val binding = CustomerCatalogItemCardBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val layout = if (SessionManager(parent.context).getRole() == UserRole.USER)
+            com.svd.svdagencies.R.layout.user_catalog_item_card else com.svd.svdagencies.R.layout.customer_catalog_item_card
+        val binding = CustomerCatalogItemCardBinding.bind(LayoutInflater.from(parent.context).inflate(layout, parent, false))
         return CatalogViewHolder(binding)
     }
 

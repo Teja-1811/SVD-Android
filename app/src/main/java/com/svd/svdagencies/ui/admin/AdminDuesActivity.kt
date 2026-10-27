@@ -70,7 +70,20 @@ class AdminDuesActivity : AdminBaseActivity() {
         updateDateLabel()
         setupRecycler()
         setupListeners()
+        setupPeriodFilters()
         loadPaymentsDashboard(currentYear, currentMonth)
+    }
+
+    private fun setupPeriodFilters() {
+        val months = java.text.DateFormatSymbols(java.util.Locale.ENGLISH).months.take(12)
+        val month = findViewById<android.widget.AutoCompleteTextView>(R.id.dueMonthFilter)
+        val year = findViewById<android.widget.AutoCompleteTextView>(R.id.dueYearFilter)
+        month.setAdapter(android.widget.ArrayAdapter(this, R.layout.delivery_dropdown_item, months))
+        year.setAdapter(android.widget.ArrayAdapter(this, R.layout.delivery_dropdown_item, (currentYear-10..currentYear+1).map { it.toString() }))
+        month.setText(months[currentMonth-1], false); year.setText(currentYear.toString(), false)
+        month.setOnClickListener { month.showDropDown() }; year.setOnClickListener { year.showDropDown() }
+        month.setOnItemClickListener { _,_,position,_ -> currentMonth=position+1; updateDateLabel(); loadPaymentsDashboard(currentYear,currentMonth) }
+        year.setOnItemClickListener { _,_,_,_ -> currentYear=year.text.toString().toInt(); updateDateLabel(); loadPaymentsDashboard(currentYear,currentMonth) }
     }
 
     private fun setupRecycler() {

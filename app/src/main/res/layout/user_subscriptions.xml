@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:clipToPadding="false">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="24dp" />
+            android:layout_margin="@dimen/svd_space_section" />
 
         <TextView
             android:id="@+id/tvSubscriptionsEmpty"
@@ -30,10 +30,10 @@
             android:textColor="@color/textColorSecondary"
             android:visibility="gone" />
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:id="@+id/subscriptionsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </androidx.core.widget.NestedScrollView>

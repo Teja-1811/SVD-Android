@@ -44,19 +44,19 @@ class CustomerHistoryActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val padding = (16 * resources.displayMetrics.density).toInt()
-        content = LinearLayout(this).apply {
+        content = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(padding, padding, padding, padding)
         }
         progress = ProgressBar(this).apply { visibility = View.GONE }
-        report = TextView(this).apply { textSize = 17f; setPadding(0, padding, 0, padding) }
-        history = TextView(this).apply { textSize = 15f; setPadding(0, padding, 0, padding) }
-        orderActions = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        content.setBackgroundColor(android.graphics.Color.WHITE)
-        report.setTextColor(Color.rgb(24,59,71))
-        history.apply { textSize = 19f; setTypeface(typeface, Typeface.BOLD); setTextColor(Color.rgb(24,59,71)) }
+        report = TextView(this).apply { textSize = 14f; setPadding(0, padding, 0, padding) }
+        history = TextView(this).apply { textSize = 13f; setPadding(0, padding, 0, padding) }
+        orderActions = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        content.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.surface_background))
+        report.setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.textColorPrimary))
+        history.apply { textSize = 16f; setTypeface(typeface, Typeface.BOLD); setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.textColorPrimary)) }
         content.addView(progress)
-        val overview = LinearLayout(this).apply {
+        val overview = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(padding, 0, padding, padding)
             addView(label("Monthly overview", 18, true))
@@ -64,7 +64,7 @@ class CustomerHistoryActivity : BaseActivity() {
             addView(action("Choose month") { chooseReportMonth() })
         }
         content.addView(card(overview))
-        val tools = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val tools = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         tools.addView(action("Refresh") { loadReport(); loadHistory() }.apply {
             layoutParams = LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) }
         })
@@ -139,7 +139,7 @@ class CustomerHistoryActivity : BaseActivity() {
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
     private fun label(value: String, size: Int = 14, bold: Boolean = false) = TextView(this).apply {
-        text = value; textSize = size.toFloat(); setTextColor(Color.rgb(24,59,71))
+        text = value; textSize = size.toFloat(); setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.textColorPrimary))
         if (bold) setTypeface(typeface, Typeface.BOLD)
     }
 
@@ -150,7 +150,7 @@ class CustomerHistoryActivity : BaseActivity() {
 
     private fun card(body: View) = MaterialCardView(this).apply {
         radius = dp(18).toFloat(); cardElevation = 0f; strokeWidth = dp(1)
-        strokeColor = Color.rgb(228,233,236); setCardBackgroundColor(Color.WHITE)
+        strokeColor = androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.card_stroke_color); setCardBackgroundColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.surface_background))
         layoutParams = LinearLayout.LayoutParams(-1,-2).apply { bottomMargin = dp(12) }
         addView(body)
     }
@@ -158,8 +158,8 @@ class CustomerHistoryActivity : BaseActivity() {
     private fun statusLabel(value: String) = value.replace('_', ' ').replaceFirstChar { it.uppercase() }
 
     private fun addOrderActions(order: com.svd.svdagencies.data.api.customer.CustomerOrderHistoryItem) {
-        val body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16),dp(16),dp(16),dp(12)) }
-        val heading = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = android.view.Gravity.CENTER_VERTICAL }
+        val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16),dp(16),dp(16),dp(12)) }
+        val heading = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = android.view.Gravity.CENTER_VERTICAL }
         heading.addView(label("₹${String.format(Locale.US, "%.2f", order.grandTotal)}", 22, true).apply {
             layoutParams = LinearLayout.LayoutParams(0,-2,1f)
         })
@@ -172,17 +172,17 @@ class CustomerHistoryActivity : BaseActivity() {
             }
         })
         body.addView(heading)
-        body.addView(label(order.orderNumber,12).apply { setPadding(0,dp(12),0,dp(8)); setTextColor(Color.rgb(100,121,133)) })
+        body.addView(label(order.orderNumber,12).apply { setPadding(0,dp(12),0,dp(8)); setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.textColorSecondary)) })
         body.addView(label("Ordered  ${order.orderDate}",14))
         body.addView(label("Delivery  ${order.deliveryDate}",14).apply { setPadding(0,dp(4),0,dp(8)) })
-        val actions = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val actions = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         actions.addView(action("View details") { showOrderDetails(order) }.apply { layoutParams = LinearLayout.LayoutParams(0,-2,1f) })
         if (order.canDelete) actions.addView(action("Remove") {
             WhiteMaterialAlertDialogBuilder(this).setTitle("Remove order?")
                 .setMessage(order.orderNumber).setNegativeButton("Keep",null)
                 .setPositiveButton("Remove") { _, _ -> deleteOrder(order.orderId) }.show()
         }.apply {
-            setBackgroundColor(Color.WHITE); setTextColor(Color.rgb(205,43,43))
+            setBackgroundColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.surface_background)); setTextColor(com.google.android.material.color.MaterialColors.getColor(this@CustomerHistoryActivity, com.google.android.material.R.attr.colorError, getColor(R.color.brand_red)))
             layoutParams = LinearLayout.LayoutParams(-2,-2).apply { marginStart = dp(8) }
         })
         body.addView(actions)
@@ -191,15 +191,15 @@ class CustomerHistoryActivity : BaseActivity() {
 
     private fun showOrderDetails(order: com.svd.svdagencies.data.api.customer.CustomerOrderHistoryItem) {
         val sheet = com.google.android.material.bottomsheet.BottomSheetDialog(this)
-        val body = LinearLayout(this).apply {
+        val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20),dp(20),dp(20),dp(24))
-            setBackgroundColor(Color.WHITE)
+            setBackgroundColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.surface_background))
         }
         fun money(value: Double) = "₹${String.format(Locale.US, "%.2f", value)}"
         body.addView(label("Order details",22,true))
         body.addView(label(order.orderNumber,12).apply {
-            setPadding(0,dp(6),0,dp(14)); setTextColor(Color.rgb(100,121,133))
+            setPadding(0,dp(6),0,dp(14)); setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.textColorSecondary))
         })
         body.addView(label(statusLabel(order.status),14,true).apply {
             setPadding(dp(12),dp(10),dp(12),dp(10))
@@ -211,12 +211,12 @@ class CustomerHistoryActivity : BaseActivity() {
         body.addView(label("Ordered: ${order.orderDate}",14).apply { setPadding(0,dp(14),0,dp(4)) })
         body.addView(label("Delivery: ${order.deliveryDate}",14).apply { setPadding(0,0,0,dp(18)) })
         fun tableRow(item: String, qty: String, amount: String, heading: Boolean = false): LinearLayout {
-            return LinearLayout(this).apply {
+            return com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 setPadding(dp(10),dp(12),dp(10),dp(12))
                 background = android.graphics.drawable.GradientDrawable().apply {
-                    setColor(if (heading) Color.rgb(241,245,247) else Color.WHITE)
-                    setStroke(dp(1),Color.rgb(228,233,236))
+                    setColor(if (heading) androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.surface_variant) else androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.surface_background))
+                    setStroke(dp(1),androidx.core.content.ContextCompat.getColor(this@CustomerHistoryActivity, com.svd.svdagencies.R.color.card_stroke_color))
                 }
                 listOf(item,qty,amount).forEachIndexed { index,value ->
                     addView(label(value,if (heading) 12 else 14,heading || index == 2).apply {
@@ -232,8 +232,8 @@ class CustomerHistoryActivity : BaseActivity() {
             val pricing = money(line.unitPrice) + " each" + if (line.discount > 0) " · ${money(line.discount)} off/unit" else ""
             body.addView(tableRow("${line.itemName}\n$pricing",line.quantity.toString(),money(line.total)))
         }
-        val totals = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0,dp(14),0,dp(12)) }
-        fun totalRow(title: String, amount: Double, emphasized: Boolean = false) = LinearLayout(this).apply {
+        val totals = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0,dp(14),0,dp(12)) }
+        fun totalRow(title: String, amount: Double, emphasized: Boolean = false) = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL; setPadding(0,dp(6),0,dp(6))
             addView(label(title,if(emphasized) 19 else 14,emphasized).apply { layoutParams = LinearLayout.LayoutParams(0,-2,1f) })
             addView(label(money(amount),if(emphasized) 19 else 14,true))

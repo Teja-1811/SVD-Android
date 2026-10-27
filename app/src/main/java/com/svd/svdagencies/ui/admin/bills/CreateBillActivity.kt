@@ -27,7 +27,6 @@ import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import kotlin.math.ceil
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -381,8 +380,8 @@ class CreateBillActivity : AdminBaseActivity() {
         tvTotalQty.text = totalQty.toString()
         tvTotalDiscAmount.text = "₹%.2f".format(totalDiscount)
         tvOpeningDue.text = "₹%.2f".format(openingDue)
-        val roundedGrandTotal = ceil(grandTotal)
-        tvGrandTotal.text = "₹%.0f".format(roundedGrandTotal)
+        val totalPayable = BillSummaryTotals.grandTotal(grandTotal, openingDue)
+        tvGrandTotal.text = "₹%.2f".format(totalPayable)
     }
 
     private fun priceForSelectedCustomer(item: AdminItem): Double {

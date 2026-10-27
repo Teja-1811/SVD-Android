@@ -4,20 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/white"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="@dimen/card_corner_radius_medium"
     app:cardElevation="0dp"
     app:strokeColor="@color/card_stroke_color"
     app:strokeWidth="1dp">
 
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <LinearLayout
+        <com.svd.svdagencies.utils.CompactLinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:text="#INV-12345"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="14sp"
+                android:textSize="@dimen/svd_text_label"
                 android:textStyle="bold" />
 
             <TextView
@@ -40,7 +40,7 @@
                 android:text="12 Oct 2023"
                 android:textColor="@color/textColorSecondary"
                 android:textSize="@dimen/text_size_body_small" />
-        </LinearLayout>
+        </com.svd.svdagencies.utils.CompactLinearLayout>
 
         <TextView
             android:id="@+id/tvInvoiceAmount"
@@ -48,8 +48,8 @@
             android:layout_height="wrap_content"
             android:text="₹1,250.00"
             android:textColor="@color/textColorPrimary"
-            android:textSize="16sp"
+            android:textSize="@dimen/svd_text_body"
             android:textStyle="bold" />
 
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

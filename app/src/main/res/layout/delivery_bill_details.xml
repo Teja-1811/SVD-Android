@@ -1,74 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/colorSurface"
-    android:orientation="vertical"
-    android:padding="20dp">
-
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        android:orientation="vertical"
+        android:padding="@dimen/svd_space_section">
     <TextView
         android:id="@+id/tvDialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bill Details"
         android:textColor="@color/textColorPrimary"
-        android:textSize="20sp"
+        android:textSize="@dimen/svd_text_heading"
         android:textStyle="bold" />
-
     <TextView
         android:id="@+id/tvDialogBillNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/textColorSecondary"
-        android:textSize="14sp"
+        android:textSize="@dimen/svd_text_label"
         tools:text="#INV-2023-001" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginVertical="16dp"
         android:background="@color/divider_line" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBillDetailItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxHeight="300dp"
-        tools:listitem="@layout/user_cart_summary_item" />
-
+        tools:listitem="@layout/user_cart_summary_item"
+        android:clipToPadding="false" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginVertical="16dp"
         android:background="@color/divider_line" />
-
-    <LinearLayout
+    <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Grand Total"
-            android:textColor="@color/textColorPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Grand Total"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold" />
         <TextView
-            android:id="@+id/tvDialogTotalAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="₹ 450.00" />
-    </LinearLayout>
-
+        android:id="@+id/tvDialogTotalAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="@dimen/svd_text_body"
+        android:textStyle="bold"
+        tools:text="₹ 450.00" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCloseDialog"
         android:layout_width="wrap_content"
@@ -77,8 +67,7 @@
         android:layout_marginTop="16dp"
         android:text="Close"
         android:textAllCaps="false"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnPrimary"
         app:backgroundTint="?attr/colorPrimary"
-        app:cornerRadius="12dp" />
-
-</LinearLayout>
+        app:cornerRadius="12dp"  android:minHeight="48dp"  android:minWidth="48dp" />
+</com.svd.svdagencies.utils.CompactLinearLayout>

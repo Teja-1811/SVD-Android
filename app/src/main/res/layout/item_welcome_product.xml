@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="136dp" android:layout_height="wrap_content"
     android:layout_marginEnd="10dp" android:layout_marginBottom="4dp"
-    app:cardBackgroundColor="@color/white" app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="?attr/colorSurface" app:cardCornerRadius="16dp"
     app:cardElevation="0dp" app:strokeWidth="0dp">
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="12dp">
         <ImageView android:id="@+id/productImage" android:layout_width="match_parent"
             android:layout_height="104dp" android:scaleType="fitCenter"
@@ -13,7 +13,7 @@
         <TextView android:id="@+id/productName" android:layout_width="match_parent"
             android:layout_height="wrap_content" android:minHeight="44dp"
             android:layout_marginTop="8dp" android:gravity="center"
-            android:textSize="13sp" android:textStyle="bold"
+            android:textSize="@dimen/svd_text_label" android:textStyle="bold"
             android:textColor="@color/textColorPrimary" />
-    </LinearLayout>
+    </com.svd.svdagencies.utils.CompactLinearLayout>
 </com.google.android.material.card.MaterialCardView>

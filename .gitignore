@@ -22,3 +22,13 @@ local.properties
 
 # Isolated command-line build outputs
 .codex-build-output/
+
+# Local redesign builds, screenshot images and reports
+/.codex-redesign-*/
+/reports/
+/output/
+/screenshots/
+**/screenshots/*.png
+**/screenshots/*.jpg
+**/screenshots/*.jpeg
+**/screenshots/*.webp
