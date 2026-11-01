@@ -393,7 +393,7 @@ class AdminStockActivity : AdminBaseActivity() {
 
     private fun setupLeakageType(view: View, selectedType: String? = null): AutoCompleteTextView {
         val type = view.findViewById<AutoCompleteTextView>(R.id.actvType)
-        val options = listOf("Leakage", "Shortage", "Home")
+        val options = listOf("Leakage", "Shortage", "Expired", "Home")
         type.setAdapter(ArrayAdapter(this, R.layout.delivery_dropdown_item, options))
         val selected = options.firstOrNull { it.equals(selectedType, ignoreCase = true) } ?: options.first()
         type.setText(selected, false)
