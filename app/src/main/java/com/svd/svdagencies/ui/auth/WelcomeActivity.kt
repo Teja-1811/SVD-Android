@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ImageView
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.delay
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -57,6 +60,25 @@ class WelcomeActivity : BaseActivity() {
 
         val productsView = findViewById<RecyclerView>(R.id.welcomeProducts)
         productsView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        androidx.recyclerview.widget.PagerSnapHelper().attachToRecyclerView(productsView)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                while (true) {
+                    delay(3_000L)
+                    val count = productsView.adapter?.itemCount ?: 0
+                    if (count > 1 && productsView.hasWindowFocus() &&
+                        productsView.scrollState == RecyclerView.SCROLL_STATE_IDLE && !productsView.isPressed) {
+                        val manager = productsView.layoutManager as? LinearLayoutManager ?: continue
+                        val current = manager.findFirstVisibleItemPosition()
+                        if (current != RecyclerView.NO_POSITION) {
+                            val next = (current + 1) % count
+                            if (next == 0) productsView.scrollToPosition(0)
+                            else productsView.smoothScrollToPosition(next)
+                        }
+                    }
+                }
+            }
+        }
         loadWelcomeProducts()
 
         findViewById<MaterialButton>(R.id.btnStart).setOnClickListener {
@@ -105,6 +127,12 @@ class WelcomeActivity : BaseActivity() {
 
         override fun onBindViewHolder(holder: Holder, position: Int) {
             val product = products[position]
+            (holder.itemView.parent as? RecyclerView)?.let { recycler ->
+                val width = recycler.width - recycler.paddingLeft - recycler.paddingRight
+                if (width > 0 && holder.itemView.layoutParams.width != width) {
+                    holder.itemView.layoutParams = holder.itemView.layoutParams.apply { this.width = width }
+                }
+            }
             holder.name.text = product.name
             Glide.with(holder.itemView)
                 .load(ApiClient.getImageUrl(product.image))

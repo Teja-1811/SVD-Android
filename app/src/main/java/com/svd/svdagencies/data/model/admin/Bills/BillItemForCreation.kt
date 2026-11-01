@@ -6,7 +6,7 @@ package com.svd.svdagencies.data.model.admin.Bills
  */
 data class BillItemForCreation(
     var itemId: Int = 0,
-    var quantity: Int = 1,
+    var quantity: Double = 1.0,
     var discount: Double = 0.0,
     var totalDiscount: Double = 0.0,
     var itemName: String? = null,

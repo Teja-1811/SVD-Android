@@ -56,7 +56,7 @@ class CustomerProfileActivity : AdminBaseActivity() {
         binding.cardProfile.txtCustomerName.text = "${customer.serial_no}. ${customer.name}"
         binding.cardProfile.txtShopName.text = customer.shop_name
         binding.cardProfile.txtPhone.text = customer.phone
-        binding.cardProfile.txtBalance.text = "₹ %.2f".format(customer.due)
+        binding.cardProfile.txtBalance.text = "₹ %.0f".format(customer.due)
 
         // Initial frozen state from list item
         isFrozen = customer.frozen == true

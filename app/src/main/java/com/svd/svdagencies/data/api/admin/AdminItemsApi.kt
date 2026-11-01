@@ -15,7 +15,8 @@ interface AdminItemsApi {
 
     @GET("api/items/by-category/")
     suspend fun getItemsByCategory(
-        @Query("category") category: String
+        @Query("category") category: String,
+        @Query("in_stock") inStock: Boolean? = null
     ): AdminItemsByCategoryResponse
 
     @Multipart

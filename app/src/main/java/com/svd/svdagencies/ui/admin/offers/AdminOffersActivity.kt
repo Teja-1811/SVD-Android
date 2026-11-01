@@ -66,29 +66,29 @@ class AdminOffersActivity : AdminBaseActivity() {
         })
     }
     private fun addOfferRow(offer: AdminOffer) {
-        val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(16), dp(16), dp(16)) }
+        val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(14), dp(12), dp(14), dp(12)) }
         body.addView(label("${if (offer.offer_for == "user") "Users" else "Retailers"} · ${if (offer.is_active) "Published" else "Draft"}", 12f))
-        body.addView(label(offer.name, 19f, true))
-        body.addView(label("${money(offer.price)} for the complete bundle", 17f, true))
-        body.addView(label("${offer.start_date} — ${offer.end_date}", 12f))
+        body.addView(label(offer.name, 17f, true))
+        body.addView(label("${money(offer.price)} · Bundle price", 16f, true))
+        body.addView(label("${offerDate(offer.start_date)} – ${offerDate(offer.end_date)}", 12f))
         if (offer.description.orEmpty().isNotBlank()) body.addView(label(offer.description.orEmpty(), 14f))
         body.addView(label("Included products", 14f, true))
         if (offer.items.orEmpty().isEmpty()) body.addView(label("Add products before publishing.", 14f))
         offer.items.orEmpty().forEach { item -> body.addView(label("${item.item_name} × ${item.buy_qty + item.offer_qty}", 14f)) }
-        val first = com.svd.svdagencies.utils.CompactLinearLayout(this)
-        first.addView(action("Edit bundle") { showOfferDialog(offer) }, slot(true))
+        val first = LinearLayout(this).apply { orientation=LinearLayout.HORIZONTAL }
+        first.addView(action("Edit") { showOfferDialog(offer) }, slot(true))
         first.addView(action("Products") { showBundleItems(offer) }, slot(false))
         body.addView(first)
-        val second = com.svd.svdagencies.utils.CompactLinearLayout(this)
+        val second = LinearLayout(this).apply { orientation=LinearLayout.HORIZONTAL }
         second.addView(action(if (offer.is_active) "Unpublish" else "Publish") {
             if (!offer.is_active && offer.items.orEmpty().isEmpty()) message("Add at least one product before publishing.")
             else submit(ApiClient.adminOffersApi.updateOffer(offer.id, mapOf("is_active" to !offer.is_active)), { loadOffers() })
         }, slot(true))
-        second.addView(action("Delete bundle") { deleteOffer(offer) }.apply { setTextColor(getColor(R.color.red600)) }, slot(false))
+        second.addView(action("Delete") { deleteOffer(offer) }.apply { setTextColor(getColor(R.color.red600)) }, slot(false))
         body.addView(second)
         offersList.addView(MaterialCardView(this).apply {
             radius = dp(14).toFloat(); cardElevation = 0f; strokeWidth = dp(1)
-            strokeColor = getColor(R.color.card_stroke_color); setCardBackgroundColor(getColor(R.color.surface_background))
+            strokeColor = getColor(R.color.card_stroke_color); setCardBackgroundColor(android.graphics.Color.WHITE)
             addView(body)
         }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(12) })
     }
@@ -207,6 +207,7 @@ class AdminOffersActivity : AdminBaseActivity() {
             }
         })
     }
+    private fun offerDate(raw:String?):String = raw.orEmpty().split("-").let { if(it.size==3)it.reversed().joinToString("-") else raw.orEmpty() }
     private fun label(value: String, size: Float, bold: Boolean = false) = TextView(this).apply {
         text = value; textSize = size; setTextColor(getColor(R.color.textColorPrimary)); setPadding(0, dp(4), 0, dp(4))
         if(bold) setTypeface(typeface, Typeface.BOLD)
@@ -215,7 +216,7 @@ class AdminOffersActivity : AdminBaseActivity() {
         text = value; isAllCaps = false; textSize = 13f; minWidth = 0; cornerRadius = dp(10); setPadding(dp(8), 0, dp(8), 0)
         setOnClickListener { click() }
     }
-    private fun slot(first: Boolean) = LinearLayout.LayoutParams(0, dp(48), 1f).apply { topMargin = dp(6); if(first) rightMargin = dp(4) else leftMargin = dp(4) }
+    private fun slot(first: Boolean) = LinearLayout.LayoutParams(0, dp(32), 1f).apply { topMargin = dp(6); if(first) rightMargin = dp(4) else leftMargin = dp(4) }
     private fun money(value: Double) = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("en-IN")).format(value)
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
     private fun message(value: String) = Toast.makeText(this, value, Toast.LENGTH_LONG).show()

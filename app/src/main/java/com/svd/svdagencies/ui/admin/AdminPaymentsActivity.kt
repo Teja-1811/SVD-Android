@@ -163,9 +163,9 @@ class AdminPaymentsActivity : AdminBaseActivity() {
             hint = "Payment amount"
         }
         val amountInput = TextInputEditText(this).apply {
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER or
-                android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
-            setText(payment.amount.toString())
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            keyListener = android.text.method.DigitsKeyListener.getInstance("0123456789")
+            setText("%.0f".format(java.util.Locale.US, payment.amount))
             selectAll()
         }
         amountLayout.addView(amountInput)

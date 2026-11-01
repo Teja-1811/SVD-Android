@@ -89,7 +89,7 @@ class DeliveryBillSelectAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ViewHolder).bind(items[position])
+        (holder as? ViewHolder)?.bind(items[position])
     }
 
     override fun getItemCount() = items.size

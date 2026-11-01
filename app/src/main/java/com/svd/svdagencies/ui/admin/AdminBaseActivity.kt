@@ -37,6 +37,7 @@ abstract class AdminBaseActivity : BaseActivity() {
         val dl = findViewById<DrawerLayout>(R.id.drawerLayout)
         if (dl != null) {
             drawerLayout = dl
+            drawerLayout.setScrimColor(android.graphics.Color.TRANSPARENT)
         }
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.adminToolbar)
@@ -50,12 +51,6 @@ abstract class AdminBaseActivity : BaseActivity() {
                 if (::drawerLayout.isInitialized) {
                     drawerLayout.openDrawer(GravityCompat.START)
                 }
-            }
-
-            toolbar.findViewById<ImageButton>(R.id.btnLogout)?.setOnClickListener {
-                SessionManager(this).logout()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finishAffinity()
             }
         }
 
@@ -76,6 +71,7 @@ abstract class AdminBaseActivity : BaseActivity() {
                     drawerLayout.closeDrawer(GravityCompat.START)
                 }
 
+                if (com.svd.svdagencies.utils.AdminSidebar.open(this, item.itemId)) return@setNavigationItemSelectedListener true
                 when (item.itemId) {
                     R.id.nav_change_theme -> { openAdminDestination(com.svd.svdagencies.ui.ToolsActivity::class.java); true }
                     R.id.nav_users -> { openAdminDestination(com.svd.svdagencies.ui.admin.customer.AdminUsersActivity::class.java); true }
@@ -217,6 +213,12 @@ abstract class AdminBaseActivity : BaseActivity() {
                 }
             }
         }
+        com.svd.svdagencies.utils.AdminSidebar.hideDashboardShortcuts(this)
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        com.svd.svdagencies.utils.AdminSidebar.runPendingAction(this)
     }
 
     private fun openAdminDestination(activityClass: Class<*>) {

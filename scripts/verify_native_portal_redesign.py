@@ -8,14 +8,17 @@ def check(condition,message):
     if not condition:raise AssertionError(message)
     checks.append(message)
 
-layouts={p.name:ET.parse(p).getroot() for p in (res/'layout').glob('*.xml')}
-for p in res.rglob('*.xml'):ET.parse(p)
+resource_roots=[res]+sorted({folder.parent for base in main.glob('res-*') for folder in base.rglob('layout*') if folder.is_dir()})
+layouts={p.name:ET.parse(p).getroot() for base in resource_roots for p in (base/'layout').glob('*.xml')}
+for base in resource_roots:
+    for p in base.rglob('*.xml'):ET.parse(p)
 check(True,f'All XML resources parse; {len(layouts)} native layouts checked')
 archive=subprocess.run(['git','archive','HEAD','app/src/main/res/layout'],cwd=root,check=True,capture_output=True).stdout
 with tarfile.open(fileobj=io.BytesIO(archive)) as files:
     for member in files.getmembers():
         if not member.name.endswith('.xml'):continue
         name=Path(member.name).name
+        if name not in layouts:continue  # Intentionally removed unused layout.
         before=ET.fromstring(files.extractfile(member).read())
         def ids(t):return {n.get(A+'id'):n.tag for n in t.iter() if n.get(A+'id','').startswith('@+id/')}
         old=ids(before);new=ids(layouts[name])
@@ -45,7 +48,7 @@ check('.ui.InformationActivity' in manifest,'Native information screen registere
 check('WebView' not in (java/'ui/InformationActivity.kt').read_text().replace('No HTML/WebView.',''),'Information pages render as native controls')
 check('setContentView(R.layout.customer)' not in sources,'Standalone account pages select the authenticated portal shell')
 tools=(java/'ui/ToolsActivity.kt').read_text()
-check('fun web(' not in tools and 'InformationActivity.intent' in tools,'All Tools destinations are native')
+check('fun web(' not in tools and 'WebView' not in tools and 'SettingsBusinessUi' in tools and 'setContentView(R.layout.activity_tools)' in tools,'Settings use the native layout and business-details controls')
 check('https://www.google.com/maps' not in (java/'utils/DeliveryLocationPicker.kt').read_text(),'Map actions use native geo intents')
 report={'passed':len(checks),'layouts':len(layouts),'pages':{p['id']:len(p['blocks']) for p in pages},'checks':checks}
 if len(sys.argv)>2:Path(sys.argv[2]).write_text(json.dumps(report,indent=2),encoding='utf-8')

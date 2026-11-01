@@ -16,6 +16,7 @@ data class DeliveryBillCustomer(
     @SerializedName("route_id") val routeId: Int? = null,
     @SerializedName("route_name") val routeName: String? = null,
     @SerializedName("user_type") val userType: String? = "user",
+    @SerializedName("allow_credit") val allowCredit: Boolean? = null,
     val due: String? = null
 ) {
     val label: String
@@ -135,7 +136,8 @@ data class CustomerOpeningBalanceResponse(
     @SerializedName("customer_id") val customerId: Int,
     @SerializedName("customer_name") val customerName: String,
     @SerializedName(value = "opening_balance", alternate = ["op_due", "current_due"])
-    val openingBalance: Double
+    val openingBalance: Double,
+    @SerializedName("allow_credit") val allowCredit: Boolean? = null
 )
 
 data class SaveAgentCollectionResponse(

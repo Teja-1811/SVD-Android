@@ -121,6 +121,7 @@ data class DeliveryAgentSubmissionRecord(
 )
 
 data class DeliveryCustomerPaymentRecord(
+    @SerializedName("can_manage") val canManage: Boolean = false,
     val id: Int,
     @SerializedName("customer_id") val customerId: Int? = null,
     @SerializedName("customer_name") val customerName: String? = null,
@@ -139,6 +140,8 @@ data class DeliveryCustomerPaymentRecord(
 
 data class DeliveryAgentDailyDueRecord(
     val id: Int,
+    @SerializedName("delivery_agent_id") val deliveryAgentId: Int? = null,
+    @SerializedName("delivery_agent_name") val agentName: String? = null,
     val date: String,
     @SerializedName("amount_collected") val amountCollected: Double = 0.0,
     @SerializedName("settled_amount") val settledAmount: Double = 0.0,

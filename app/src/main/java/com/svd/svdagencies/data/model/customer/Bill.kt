@@ -1,5 +1,7 @@
 package com.svd.svdagencies.data.model.customer
 
+import com.google.gson.annotations.SerializedName
+
 data class Bill(
     val id: Int,
     val invoice_number: String,
@@ -7,7 +9,8 @@ data class Bill(
     val customer: String,
     val productName: String,
     val price: Double,
-    val quantity: Int,
+    @SerializedName(value = "quantity", alternate = ["qty"])
+    val quantity: Double,
     val discount: Double,
     val total_amount: String
 )

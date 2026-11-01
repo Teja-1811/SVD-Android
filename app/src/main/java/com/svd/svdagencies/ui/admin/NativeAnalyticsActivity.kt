@@ -100,6 +100,11 @@ open class NativeAnalyticsActivity : AdminBaseActivity() {
         }
         load()
     }
+    private fun reportCard(body:View)=MaterialCardView(this).apply {
+        setCardBackgroundColor(android.graphics.Color.WHITE);radius=12*resources.displayMetrics.density;cardElevation=0f;strokeWidth=1;strokeColor=android.graphics.Color.rgb(220,230,233)
+        layoutParams=LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=(8*resources.displayMetrics.density).toInt() }
+        addView(body)
+    }
     private fun label(value: String, size: Float = 14f) = TextView(this).apply {
         text = value; textSize = size; setTextColor(getColor(R.color.textColorPrimary)); setPadding(12, 16, 12, 16)
     }
@@ -116,7 +121,7 @@ open class NativeAnalyticsActivity : AdminBaseActivity() {
     private fun title(key: String) = key.replace('_', ' ').replaceFirstChar { it.uppercase() }
     private fun load() {
         if (busy) { if (kind == "subscriptions") refreshPending = true; return }
-        busy = true; controls.forEach { it.isEnabled = false }; message.text = "Loading reportâ€¦"
+        busy = true; controls.forEach { it.isEnabled = false }; message.visibility=View.VISIBLE; message.text = "Loading reportâ€¦"
         val filters = inputs.mapValues { it.value.text.toString().trim() }.toMutableMap()
         filters["offer"] = offerIds.getOrElse(offer.selectedItemPosition) { "" }
         filters["status"] = statusIds.getOrElse(status.selectedItemPosition) { "" }
@@ -137,22 +142,31 @@ open class NativeAnalyticsActivity : AdminBaseActivity() {
                 if (kind == "subscriptions") {
                     page = data.get("page")?.asInt ?: 1
                     subscriptionUi?.render(data) { next -> page = next; load() }
-                    message.text = data.get("error")?.asString?.takeIf { it.isNotBlank() } ?: "Showing matching subscriptions"
+                    message.text = data.get("error")?.asString.orEmpty()
+                    message.visibility=if(message.text.isBlank())View.GONE else View.VISIBLE
                 } else {
                 results.removeAllViews()
-                results.addView(label("Overview", 20f))
-                val grid = GridLayout(this@NativeAnalyticsActivity).apply { columnCount = resources.getInteger(R.integer.svd_summary_columns) }
+                results.addView(label("Overview", 16f))
+                val grid = GridLayout(this@NativeAnalyticsActivity).apply { columnCount = 2 }
                 data.getAsJsonObject("totals").entrySet().forEach { row ->
-                    grid.addView(label("${title(row.key)}\n${value(row.value)}", 16f).apply {
-                        layoutParams = GridLayout.LayoutParams().apply { width = 0; columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f) }
-                    })
+                    val body=LinearLayout(this@NativeAnalyticsActivity).apply { orientation=LinearLayout.VERTICAL;setPadding(16,12,16,12);addView(label(title(row.key),12f));addView(label(if(row.key.contains("value")) "₹"+String.format(java.util.Locale.US,"%,.2f",row.value.asDouble) else value(row.value),20f)) }
+                    grid.addView(reportCard(body).apply { layoutParams=GridLayout.LayoutParams().apply { width=0;height=-2;columnSpec=GridLayout.spec(GridLayout.UNDEFINED,1f);setMargins(4,4,4,4) } })
                 }
                 results.addView(grid)
-                results.addView(label(if(kind == "offers") "Usage by offer" else "Usage by plan", 20f))
+                results.addView(label(if(kind == "offers") "Usage by offer" else "Usage by plan", 16f))
                 data.getAsJsonArray("groups").forEach { entry ->
-                    results.addView(label(value(entry)))
+                    val dataRow=entry.asJsonObject
+                    val body=LinearLayout(this@NativeAnalyticsActivity).apply { orientation=LinearLayout.VERTICAL;setPadding(16,12,16,12) }
+                    body.addView(label(dataRow.get("name")?.asString ?: "Offer",16f))
+                    dataRow.entrySet().filter { it.key !in setOf("name","offer_id","plan_id") }.forEach { field ->
+                        val line=LinearLayout(this@NativeAnalyticsActivity)
+                        line.addView(label(title(field.key),12f),LinearLayout.LayoutParams(0,-2,1f))
+                        line.addView(label(if(field.key.contains("value")) "₹"+String.format(java.util.Locale.US,"%,.2f",field.value.asDouble) else value(field.value),13f))
+                        body.addView(line)
+                    }
+                    results.addView(reportCard(body))
                 }
-                results.addView(label(if(kind == "offers") "Customer offer orders" else "Customer subscriptions", 20f))
+                results.addView(label(if(kind == "offers") "Customer offer orders" else "Customer subscriptions", 16f))
                 val records = data.getAsJsonArray("records")
                 if (records.size() == 0) results.addView(label("No records match these filters."))
                 records.forEach { entry ->
@@ -166,12 +180,17 @@ open class NativeAnalyticsActivity : AdminBaseActivity() {
                 }
                 val pages = data.get("pages").asInt; page = data.get("page").asInt
                 results.addView(label("Page $page of $pages"))
-                results.addView(MaterialButton(this@NativeAnalyticsActivity).apply { text = "Previous"; isEnabled = page > 1; setOnClickListener { page--; load() } })
-                results.addView(MaterialButton(this@NativeAnalyticsActivity).apply { text = "Next"; isEnabled = page < pages; setOnClickListener { page++; load() } })
-                message.text = data.get("error").asString.ifBlank { "Report updated" }
+                val pagination=LinearLayout(this@NativeAnalyticsActivity).apply { orientation=LinearLayout.HORIZONTAL }
+                pagination.addView(MaterialButton(this@NativeAnalyticsActivity).apply { text="Previous";isAllCaps=false;isEnabled=page>1;setOnClickListener { page--;load() } },LinearLayout.LayoutParams(0,-2,1f))
+                pagination.addView(MaterialButton(this@NativeAnalyticsActivity).apply { text="Next";isAllCaps=false;isEnabled=page<pages;setOnClickListener { page++;load() } },LinearLayout.LayoutParams(0,-2,1f))
+                if(pages>1)results.addView(pagination)
+
+                message.text = data.get("error")?.asString.orEmpty()
+                message.visibility=if(message.text.isBlank()) View.GONE else View.VISIBLE
                 }
             } catch (error: Exception) {
                 if (error is CancellationException) throw error
+                message.visibility=View.VISIBLE
                 message.text = if(kind == "subscriptions") "Could not load subscriptions. Check your connection and tap refresh." else "Could not load the report. Check your connection and try Apply filters again."
             } finally { busy = false; controls.forEach { it.isEnabled = true }; if(refreshPending) { refreshPending = false; load() } }
         }

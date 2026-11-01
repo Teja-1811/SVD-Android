@@ -26,6 +26,7 @@ object CompactUi {
         var dateSkin = false
         var refreshSkin = false
         var iconSkin = false
+        var dropdownSkin = false
     }
     private val states = WeakHashMap<View, State>()
     private val datePattern = Regex("(?:\\d{4}-\\d{2}-\\d{2}|\\d{1,2}[-/]\\d{1,2}[-/]\\d{4}|\\d{1,2} [A-Za-z]{3,9} \\d{4}|[A-Za-z]{3,9} \\d{4})")
@@ -34,6 +35,10 @@ object CompactUi {
         State(if (view.id == View.NO_ID) "" else runCatching { view.resources.getResourceEntryName(view.id) }.getOrDefault(""))
     }
     private fun dp(view: View, value: Int) = (value * view.resources.displayMetrics.density + .5f).toInt()
+    private const val INPUT_HEIGHT_DP = 32
+    private const val DROPDOWN_HEIGHT_DP = 44
+    private const val DROPDOWN_RADIUS_DP = 12
+
     private fun color(view: View, attribute: Int) = MaterialColors.getColor(view.context, attribute, 0)
 
     @JvmStatic fun applyTree(root: View) {
@@ -51,7 +56,7 @@ object CompactUi {
 
     private fun apply(view: View) {
         val info = state(view)
-        if (view is MaterialButton && view.tag == "svd-icon-only") styleIconOnly(view, info)
+        if (view is MaterialButton && view.tag?.toString()?.startsWith("svd-icon-only") == true) styleIconOnly(view, info)
         if (view is TextView) {
             if (view !is Button && view !is EditText &&
                 info.name in CompactCopy.hiddenIds) {
@@ -60,18 +65,91 @@ object CompactUi {
             }
             if (view is AutoCompleteTextView || view.parent is Spinner) {
                 center(view)
-                if (view.parent is Spinner && view.background != null) view.background = null
+                if (view.parent is Spinner) {
+                    if (view.background != null) view.background = null
+                    view.minimumHeight = dp(view, DROPDOWN_HEIGHT_DP)
+                    view.setPadding(dp(view, 4), 0, dp(view, 4), 0)
+                    view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    view.gravity = Gravity.CENTER_VERTICAL
+                    view.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                }
             }
         }
-        if ((view is AutoCompleteTextView || view is Spinner) && !isDateField(view)) {
+        if (view is EditText && view !is AutoCompleteTextView) {
+            val height = dp(view, if (view.tag == "svd-auth-large") 56 else if (info.name == "etCollectedAmount") 48 else INPUT_HEIGHT_DP)
+            view.minimumHeight = height
+            view.layoutParams?.let { params ->
+                if (params.height != height) { params.height = height; view.layoutParams = params }
+            }
+            view.setPadding(view.paddingLeft, 0, view.paddingRight, 0)
+            view.gravity = (view.gravity and Gravity.HORIZONTAL_GRAVITY_MASK) or Gravity.CENTER_VERTICAL
+        }
+        if ((view is AutoCompleteTextView || view is Spinner) ) {
             val owner = owner(view)
             val base = if (info.name.contains("year", true)) 112 else 144
             compactWidth(owner, dp(view, (base * view.resources.configuration.fontScale.coerceAtLeast(1f)).toInt()))
-            if (view.minimumHeight != dp(view, 48)) view.minimumHeight = dp(view, 48)
-            if (view is AutoCompleteTextView && (view.paddingLeft != dp(view, 8) || view.paddingRight != dp(view, 8)))
-                view.setPadding(dp(view, 8), view.paddingTop, dp(view, 8), view.paddingBottom)
+            val fieldHeight = dp(view, DROPDOWN_HEIGHT_DP)
+            if (view.minimumHeight != fieldHeight) view.minimumHeight = fieldHeight
+            view.layoutParams?.let { params ->
+                if (params.height != fieldHeight) { params.height = fieldHeight; view.layoutParams = params }
+            }
+            if (view is Spinner && !info.dropdownSkin) {
+                info.dropdownSkin = true
+                val outline = GradientDrawable().apply {
+                    setColor(color(view, com.google.android.material.R.attr.colorSurface))
+                    setStroke(dp(view, 1), ColorUtils.setAlphaComponent(color(view, com.google.android.material.R.attr.colorOnSurface), 70))
+                    cornerRadius = dp(view, DROPDOWN_RADIUS_DP).toFloat()
+                }
+                val arrow = AppCompatResources.getDrawable(view.context, R.drawable.ic_dropdown_arrow)!!.mutate()
+                arrow.setTint(color(view, com.google.android.material.R.attr.colorPrimary))
+                view.backgroundTintList = null
+                view.background = android.graphics.drawable.LayerDrawable(arrayOf(outline, arrow)).apply {
+                    setLayerSize(1, dp(view, 20), dp(view, 20))
+                    setLayerGravity(1, Gravity.END or Gravity.CENTER_VERTICAL)
+                    setLayerInsetEnd(1, dp(view, 6))
+                }
+                view.setPadding(dp(view, 6), 0, dp(view, 28), 0)
+                view.setPopupBackgroundResource(R.drawable.bg_delivery_dropdown)
+            }
+            if (view is AutoCompleteTextView) {
+                if (view.paddingLeft != dp(view, 6) || view.paddingTop != 0 || view.paddingRight != dp(view, 6) || view.paddingBottom != 0)
+                    view.setPadding(dp(view, 6), 0, dp(view, 6), 0)
+                view.gravity = Gravity.CENTER_VERTICAL
+                view.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+                if (!info.dropdownSkin) {
+                    info.dropdownSkin = true
+                    view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+                    val box = owner as? TextInputLayout
+                    if (box != null) {
+                        val placeholder = box.hint ?: view.hint
+                        box.isHintEnabled = false
+                        view.hint = placeholder
+                        box.minimumHeight = fieldHeight
+                        box.setPadding(0, 0, 0, 0)
+                        box.boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+                        box.setBoxCornerRadii(dp(view, DROPDOWN_RADIUS_DP).toFloat(), dp(view, DROPDOWN_RADIUS_DP).toFloat(), dp(view, DROPDOWN_RADIUS_DP).toFloat(), dp(view, DROPDOWN_RADIUS_DP).toFloat())
+                        box.boxBackgroundColor = color(view, com.google.android.material.R.attr.colorSurface)
+                        val border = ColorUtils.setAlphaComponent(color(view, com.google.android.material.R.attr.colorOnSurface), 70)
+                        box.setBoxStrokeColorStateList(ColorStateList.valueOf(border))
+                        box.boxStrokeWidth = dp(view, 1)
+                        box.boxStrokeWidthFocused = dp(view, 1)
+                        view.background = null
+                        box.endIconMinSize = fieldHeight
+                        box.setEndIconTintList(ColorStateList.valueOf(color(view, com.google.android.material.R.attr.colorPrimary)))
+                    } else {
+                        view.background = GradientDrawable().apply {
+                            setColor(color(view, com.google.android.material.R.attr.colorSurface))
+                            setStroke(dp(view, 1), ColorUtils.setAlphaComponent(color(view, com.google.android.material.R.attr.colorOnSurface), 70))
+                            cornerRadius = dp(view, DROPDOWN_RADIUS_DP).toFloat()
+                        }
+                        val arrow = AppCompatResources.getDrawable(view.context, R.drawable.ic_dropdown_arrow)?.mutate()?.apply { setTint(color(view, com.google.android.material.R.attr.colorPrimary)) }
+                        view.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, arrow, null)
+                        view.compoundDrawablePadding = dp(view, 4)
+                    }
+                }
+            }
         }
-        if (isDateField(view)) {
+        if (isDateField(view) && view !is AutoCompleteTextView) {
             info.date = true
             styleDate(view as TextView, info)
         }
@@ -79,6 +157,35 @@ object CompactUi {
             info.refresh = true
             styleRefresh(view, info)
         }
+        if (view is Button || view is ImageButton) {
+            val headerMenu = view is ImageButton && (
+                view.parent is androidx.appcompat.widget.Toolbar ||
+                info.name in setOf("btnMenu", "btnMenuToggle", "btnDrawer", "btnNavigation", "menuButton")
+            )
+            val size = dp(view, if (headerMenu || view.tag == "svd-header-outline") 40 else if (view.tag == "svd-auth-large") 56 else if (info.name in setOf("btnClearSelection", "btnGenerateBill") && view.rootView.findViewById<View>(R.id.etCollectedAmount) != null) 48 else 32)
+            view.minimumHeight = size
+            view.layoutParams?.let { params ->
+                params.height = size
+                if (view is ImageButton || (view is MaterialButton && view.text.isNullOrBlank())) {
+                    params.width = size
+                    view.minimumWidth = size
+                }
+                view.layoutParams = params
+            }
+            if (headerMenu && view is ImageButton) {
+                view.scaleType = if (view.tag == "svd-header-outline") ImageView.ScaleType.CENTER_INSIDE else ImageView.ScaleType.FIT_CENTER
+                val padding = dp(view, if (view.tag == "svd-header-outline") 8 else 4)
+                view.setPadding(padding, padding, padding, padding)
+            }
+            if (view is MaterialButton) { view.insetTop = 0; view.insetBottom = 0 }
+            if (!headerMenu) view.setPadding(view.paddingLeft, 0, view.paddingRight, 0)
+        }
+        if (view.tag == "svd-create-field") {
+            view.minimumHeight=dp(view,44)
+            view.layoutParams?.let { params -> if(params.height!=dp(view,44)){params.height=dp(view,44);view.layoutParams=params} }
+            if(view is TextView) view.setPadding(dp(view,10),0,dp(view,10),0)
+        }
+        if (!info.date) ActionButtonColors.apply(view)
     }
 
     private fun center(view: TextView) {
@@ -91,6 +198,8 @@ object CompactUi {
         if (view !is TextView) return false
         if (view !is EditText && view !is Button && !view.isClickable) return false
         val name = state(view).name.lowercase()
+        // Month dropdowns keep the same presentation as route and customer dropdowns.
+        if (view is AutoCompleteTextView && "month" in name && "date" !in name) return false
         val dateName = name.replace("update", "").replace("validate", "")
         if ("refresh" in name || state(view).name in CompactCopy.refreshIds) return false
         if (listOf("prev", "next", "clear", "reset", "delete", "save").any { it in name }) return false
@@ -139,7 +248,7 @@ object CompactUi {
         if (view.text.isNotBlank()) { view.contentDescription = view.text; view.text = "" }
         if (info.iconSkin) return
         info.iconSkin = true
-        view.iconSize = dp(view, 20); view.iconPadding = 0
+        view.iconSize = dp(view, if (view.layoutParams?.height == dp(view, 32)) 16 else 20); view.iconPadding = 0
         view.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
         view.setPadding(dp(view, 8), 0, dp(view, 8), 0)
         view.gravity = Gravity.CENTER
@@ -168,14 +277,15 @@ object CompactUi {
         val base = if (hasOtherEndIcon || shown.length > 13) 152 else 128
         compactWidth(owner, dp(view, (base * view.resources.configuration.fontScale.coerceAtLeast(1f)).toInt()))
         center(view)
-        if (view.minimumHeight != dp(view, 48)) view.minimumHeight = dp(view, 48)
+        view.minimumHeight = dp(view, INPUT_HEIGHT_DP)
+        view.layoutParams?.let { it.height = dp(view, INPUT_HEIGHT_DP); view.layoutParams = it }
         if (view.layoutParams?.height?.let { it > 0 } == true && view.resources.configuration.fontScale > 1.2f)
             view.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         if (view.transformationMethod !== DateChipPresentation) view.transformationMethod = DateChipPresentation
         if (!info.dateSkin) {
             info.dateSkin = true
             val primary = color(view, com.google.android.material.R.attr.colorPrimary)
-            val surface = color(view, com.google.android.material.R.attr.colorSurface)
+            val surface = android.graphics.Color.WHITE
             val states = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf())
             val foreground = ColorStateList(states, intArrayOf(ColorUtils.setAlphaComponent(primary, 100), primary))
             val stroke = ColorStateList(states, intArrayOf(ColorUtils.setAlphaComponent(primary, 60), ColorUtils.setAlphaComponent(primary, 145)))
@@ -185,7 +295,7 @@ object CompactUi {
             view.setTypeface(view.typeface, android.graphics.Typeface.BOLD)
             view.setTextColor(foreground)
             if (input != null) {
-                input.setBoxCornerRadii(dp(view, 24).toFloat(), dp(view, 24).toFloat(), dp(view, 24).toFloat(), dp(view, 24).toFloat())
+                input.setBoxCornerRadii(dp(view, 8).toFloat(), dp(view, 8).toFloat(), dp(view, 8).toFloat(), dp(view, 8).toFloat())
                 input.boxStrokeWidth = dp(view, 1); input.boxStrokeWidthFocused = dp(view, 1)
                 input.setBoxStrokeColorStateList(stroke)
                 input.boxBackgroundColor = surface
@@ -201,14 +311,14 @@ object CompactUi {
                 view.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
                 view.iconTint = foreground
                 view.backgroundTintList = ColorStateList.valueOf(surface)
-                view.strokeWidth = dp(view, 1); view.strokeColor = stroke; view.cornerRadius = dp(view, 24)
-                view.insetTop = dp(view, 4); view.insetBottom = dp(view, 4)
+                view.strokeWidth = dp(view, 1); view.strokeColor = stroke; view.cornerRadius = dp(view, 8)
+                view.insetTop = 0; view.insetBottom = 0
             } else {
                 if (input == null) {
                     androidx.core.view.ViewCompat.setBackgroundTintList(view, null)
                     view.backgroundTintList = null
                     val shape = GradientDrawable().apply {
-                        cornerRadius = dp(view, 24).toFloat()
+                        cornerRadius = dp(view, 8).toFloat()
                         setColor(surface); setStroke(dp(view, 1), stroke)
                     }
                     view.background = RippleDrawable(ColorStateList.valueOf(color(view, androidx.appcompat.R.attr.colorControlHighlight)), shape, null)
@@ -217,7 +327,7 @@ object CompactUi {
                 view.compoundDrawablePadding = dp(view, 4)
                 androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(view, foreground)
             }
-            view.setPadding(dp(view, padding), dp(view, 4), dp(view, padding), dp(view, 4))
+            view.setPadding(0, 0, 0, 0)
         }
     }
 
@@ -239,7 +349,7 @@ object CompactUi {
             intArrayOf(ColorUtils.setAlphaComponent(background, 120), background))
         val icon = AppCompatResources.getDrawable(view.context, R.drawable.ic_refresh)?.mutate()
         if (view is MaterialButton) {
-            view.icon = icon; view.iconTint = tint; view.iconSize = dp(view, 20); view.iconPadding = 0
+            view.icon = icon; view.iconTint = tint; view.iconSize = dp(view, if (view.layoutParams?.height == dp(view, 32)) 16 else 20); view.iconPadding = 0
             view.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
             view.backgroundTintList = fill; view.strokeWidth = 0; view.cornerRadius = dp(view, 12)
             view.insetTop = 0; view.insetBottom = 0; view.setPadding(dp(view, 14), 0, dp(view, 14), 0)

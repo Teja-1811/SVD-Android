@@ -55,7 +55,8 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
         val grouped = filtered.groupBy { it.categoryName?.ifBlank { null } ?: "General" }
 
         displayItems.clear()
-        for ((category, items) in grouped) {
+        for (category in grouped.keys.sortedBy { com.svd.svdagencies.utils.ItemCategoryOrder.rank(it) }) {
+            val items = grouped.getValue(category)
             displayItems.add(CategoryHeader(category, items.size))
             displayItems.addAll(items)
         }
@@ -99,10 +100,11 @@ class StockUpdateAdapter(private var rawItems: List<StockItem> = emptyList()) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is HeaderViewHolder) {
-            holder.bind(displayItems[position] as CategoryHeader)
-        } else if (holder is UpdateViewHolder) {
-            holder.bind(displayItems[position] as StockItem)
+        val item = displayItems.getOrNull(position)
+        if (holder is HeaderViewHolder && item is CategoryHeader) {
+            holder.bind(item)
+        } else if (holder is UpdateViewHolder && item is StockItem) {
+            holder.bind(item)
         }
     }
 

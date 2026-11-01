@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@color/window_background">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:focusableInTouchMode="true">
+        <include layout="@layout/admin_toolbar"/>
+        <com.google.android.material.textfield.TextInputLayout style="@style/Widget.Svd.FormField" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="12dp" android:hint="Search customer, phone or order">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/historySearch" style="@style/Widget.Svd.Input" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text" android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView android:id="@+id/historyStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingHorizontal="16dp" android:paddingBottom="8dp" android:textSize="@dimen/svd_text_label" android:accessibilityLiveRegion="polite"/>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/historyRefresh" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/historyRecords" android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false" android:paddingBottom="12dp"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/historyMore" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginHorizontal="12dp" android:text="Load more" android:visibility="gone"/>
+    </LinearLayout>
+    <com.google.android.material.navigation.NavigationView android:id="@+id/navigationView" android:layout_width="290dp" android:layout_height="match_parent" android:layout_gravity="start" app:headerLayout="@layout/admin_nav_header" app:menu="@menu/menu_admin_drawer"/>
+</androidx.drawerlayout.widget.DrawerLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="?attr/colorSurface" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal" android:padding="12dp">
+        <ImageView android:id="@+id/imgLogo" android:layout_width="40dp" android:layout_height="40dp" android:src="@drawable/logo" android:contentDescription="Milk Agency logo" android:scaleType="centerInside"/>
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:id="@+id/txtAppName" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Milk Agency" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/admin_sidebar_ink"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="SVD Operations" android:textSize="12sp" android:textColor="@color/drawer_text_primary"/>
+        </LinearLayout>
+        <ImageView android:id="@+id/btnCloseDrawer" android:layout_width="48dp" android:layout_height="48dp" android:src="@drawable/ic_back" android:padding="14dp" android:background="?attr/selectableItemBackgroundBorderless" app:tint="@color/admin_sidebar_ink" android:contentDescription="Close menu"/>
+    </LinearLayout>
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/card_stroke_color"/>
+</LinearLayout>

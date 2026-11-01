@@ -16,14 +16,80 @@ import com.svd.svdagencies.R
 object CollapsibleNavigation {
     private val proxies = java.util.WeakHashMap<View, java.lang.ref.WeakReference<android.view.MenuItem>>()
     @JvmStatic fun applyTree(activity: Activity, root: View) {
+        if (root.id == android.R.id.content) hideDuplicateDestinations(root)
+
         proxies[root]?.get()?.let { action ->
             if (action.isEnabled != root.isEnabled) action.isEnabled = root.isEnabled
             if (root is Chip && action.isChecked != root.isChecked) action.isChecked = root.isChecked
             if (root.visibility != View.GONE) root.visibility = View.GONE
         }
-        if (root is NavigationView) { if (root.menu.size() > 0) install(activity, root); return }
+        if (root is NavigationView) {
+            if (root.menu.size() > 0) {
+                install(activity, root)
+                SidebarLogoutFooter.install(root)
+                SidebarTreeStyle.install(root)
+            }
+            return
+        }
         if (root is ViewGroup) for (index in 0 until root.childCount) applyTree(activity, root.getChildAt(index))
     }
+    private fun hideDuplicateDestinations(root: View) {
+        val labels = mutableSetOf<String>()
+        val destinations = mutableSetOf<String>()
+        val selectedLabels = mutableSetOf<String>()
+        val selectedDestinations = mutableSetOf<String>()
+        fun normalize(text: CharSequence?) = text?.toString()?.lowercase(java.util.Locale.ROOT)
+            ?.replace(Regex("[^a-z0-9]"), "").orEmpty()
+        fun readMenu(menu: android.view.Menu) {
+            for (index in 0 until menu.size()) {
+                val item = menu.getItem(index)
+                // Collapsed children remain valid destinations.
+                if (item.isVisible || item.isCheckable) {
+                    labels += normalize(item.title)
+                    if (item.isChecked) selectedLabels += normalize(item.title)
+                    if (item.itemId != View.NO_ID && item.itemId != 0) {
+                        runCatching { root.resources.getResourceEntryName(item.itemId) }.getOrNull()?.let { destinations += it; if (item.isChecked) selectedDestinations += it }
+                    }
+                }
+                item.subMenu?.let { readMenu(it) }
+            }
+        }
+        fun findMenus(view: View) {
+            if (view is NavigationView) { readMenu(view.menu); return }
+            if (view is ViewGroup && view !is androidx.recyclerview.widget.RecyclerView)
+                for (index in 0 until view.childCount) findMenus(view.getChildAt(index))
+        }
+        findMenus(root)
+        if (labels.isEmpty()) return
+        val aliases = mapOf(
+            "btnCustomerLogout" to "nav_logout", "btnLogout" to "nav_logout",
+            "userSubscriptions" to "nav_subscriptions", "btnViewOrders" to "nav_orders",
+            "btnViewEnquiries" to "nav_enquiries", "btnViewOverallReport" to "nav_delivery_overall_report",
+            "btnStatement" to "nav_statement", "btnUpdateStock" to "nav_update_stock",
+            "btnRecordLeakage" to "nav_add_leakage", "btnManageStock" to "nav_update_stock",
+            "btnAddItem" to "nav_add_item", "btnAddCompany" to "nav_add_company",
+            "btnAddRoute" to "nav_add_route", "fabAddCustomer" to "nav_add_customer",
+            "fabCreateBill" to "nav_new_bill", "btnAddExpense" to "nav_add_expense",
+            "btnCommission" to "nav_add_commission", "btnCreateOffer" to "nav_add_offer",
+            "btnCreateSubscriptionOffer" to "nav_add_subscription"
+        )
+        fun hide(view: View) {
+            if (view is NavigationView || view is androidx.recyclerview.widget.RecyclerView) return
+            val name = runCatching { view.resources.getResourceEntryName(view.id) }.getOrDefault("")
+            // These controls operate on the current record or form, even when labels coincide.
+            val protected = (name == "btnAddItem" && root.findViewById<View>(R.id.rvBillItems) != null) || name.contains("Save", true) || name.contains("Submit", true) ||
+                name.contains("Generate", true) || name.contains("Confirm", true) ||
+                name == "btnAddCustomer" || name == "btnLatestOrderAction" || name.contains("Delete", true) || name.contains("Edit", true)
+            val isButton = view is android.widget.Button || view is android.widget.ImageButton
+            val destination = aliases[name]
+            val exactMatch = isButton && (normalize((view as? TextView)?.text).let { it.isNotEmpty() && it in labels && it !in selectedLabels } ||
+                normalize(view.contentDescription).let { it.isNotEmpty() && it in labels && it !in selectedLabels })
+            if (!protected && ((destination != null && destination in destinations && destination !in selectedDestinations) || exactMatch)) view.visibility = View.GONE
+            if (view is ViewGroup) for (index in 0 until view.childCount) hide(view.getChildAt(index))
+        }
+        hide(root)
+    }
+
     private data class Entry(val id: Int, val title: CharSequence, val icon: android.graphics.drawable.Drawable?, val checked: Boolean)
     private val groups = linkedMapOf(
         "Customers" to setOf("nav_customers", "nav_users", "nav_customer_item_discounts", "nav_payments"),
@@ -46,8 +112,55 @@ object CollapsibleNavigation {
     )
 
     @JvmStatic fun install(activity: Activity, navigation: NavigationView) {
+        if (activity is com.svd.svdagencies.ui.admin.AdminBaseActivity && (navigation.menu.findItem(R.id.nav_section_customer) != null || navigation.getTag(R.id.admin_sidebar_installed) == true)) {
+            AdminSidebar.install(activity, navigation); return
+        }
         if (navigation.getTag(R.id.navigationView) == true) return
         navigation.setTag(R.id.navigationView, true)
+        if (navigation.menu.findItem(R.id.nav_delivery_home) != null) {
+            val menu = navigation.menu
+            val stock = menu.findItem(R.id.nav_delivery_stock_entry)
+            val sub = stock?.subMenu
+            if (sub != null) {
+                val entries = (0 until sub.size()).map { sub.getItem(it) }.map { Entry(it.itemId, it.title ?: "", it.icon, it.isChecked) }
+                val destinations = (0 until menu.size()).map { menu.getItem(it) }
+                    .filter { it.itemId != R.id.nav_delivery_stock_entry }
+                    .map { Entry(it.itemId, it.title ?: "", it.icon, it.isChecked) to it.isVisible }
+                menu.clear()
+                destinations.forEachIndexed { index, (row, visible) ->
+                    menu.add(0, row.id, if (row.id == R.id.nav_delivery_home) 0 else 10 + index, row.title).apply {
+                        icon = row.icon; isCheckable = row.id != R.id.nav_logout; isChecked = row.checked; isVisible = visible
+                    }
+                }
+                val header = menu.add(0, R.id.nav_delivery_stock_entry, 1, "Daily Stock Entry").apply {
+                    icon = androidx.core.content.ContextCompat.getDrawable(activity, R.drawable.ic_stock)
+                    isCheckable = false
+                }
+                val children = entries.mapIndexed { index, row ->
+                    menu.add(0, row.id, 2 + index, "    ${row.title}").apply { icon = row.icon; isCheckable = true }
+                }
+                val preferences = activity.getSharedPreferences("svd_navigation_groups", Activity.MODE_PRIVATE)
+                var expanded = preferences.getBoolean("delivery_daily_stock", false)
+                fun renderStock() {
+                    val builder = menu as? androidx.appcompat.view.menu.MenuBuilder
+                    builder?.stopDispatchingItemsChanged()
+                    try {
+                        header.title = "Daily Stock Entry  ${if (expanded) "\u25B4" else "\u25BE"}"
+                        androidx.core.view.MenuItemCompat.setContentDescription(header, "Daily Stock Entry, ${if (expanded) "expanded" else "collapsed"}")
+                        children.forEach { it.isVisible = expanded }
+                    } finally { builder?.startDispatchingItemsChanged() }
+                }
+                header.setOnMenuItemClickListener {
+                    expanded = !expanded
+                    preferences.edit().putBoolean("delivery_daily_stock", expanded).apply()
+                    navigation.post { renderStock() }
+                    true
+                }
+                (navigation.getChildAt(0) as? androidx.recyclerview.widget.RecyclerView)?.itemAnimator = null
+                renderStock()
+            }
+            return
+        }
         navigation.itemMaxLines = 2
         val root = activity.findViewById<View>(android.R.id.content)
         val actionViews = mutableListOf<Pair<View, String>>()
@@ -131,11 +244,23 @@ object CollapsibleNavigation {
             }
             var expanded = preferences.getBoolean(title, false) || local.isNotEmpty() || entries.any { it.checked }
             fun render() {
-                header.title = "$title  ${if (expanded) "▴" else "▾"}"
+                header.title = "$title  ${if (expanded) "\u25B4" else "\u25BE"}"
                 androidx.core.view.MenuItemCompat.setContentDescription(header, "$title, ${if (expanded) "expanded" else "collapsed"}")
-                children.forEach { it.isVisible = expanded }
+                // Avoid rebuilding the drawer once for each child in this section.
+                val menuBuilder = navigation.menu as? androidx.appcompat.view.menu.MenuBuilder
+                menuBuilder?.stopDispatchingItemsChanged()
+                try {
+                    children.forEach { it.isVisible = expanded }
+                } finally {
+                    menuBuilder?.startDispatchingItemsChanged()
+                }
             }
-            header.setOnMenuItemClickListener { expanded = !expanded; preferences.edit().putBoolean(title, expanded).apply(); render(); true }
+            header.setOnMenuItemClickListener {
+                expanded = !expanded
+                preferences.edit().putBoolean(title, expanded).apply()
+                render()
+                true
+            }
             render()
         }
         for (entry in standalone.filter { name(it.id) == "nav_logout" }) menu.add(0, entry.id, 0, entry.title).apply { icon = entry.icon }

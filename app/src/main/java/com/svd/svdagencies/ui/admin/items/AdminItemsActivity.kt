@@ -53,7 +53,6 @@ class AdminItemsActivity : AdminBaseActivity() {
     private var currentCategory: String = "Milk"
     private var selectedCompany: String? = null
 
-    private val categoryOrder = listOf("milk", "curd", "buckets", "cups", "ghee", "flavoured milk", "panner", "sweets", "others")
 
     private val addEditLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -177,12 +176,8 @@ class AdminItemsActivity : AdminBaseActivity() {
         loadItems(currentCategory)
     }
 
-    private fun sortCategories(categories: List<String>): List<String> {
-        return categories.sortedBy { cat ->
-            val index = categoryOrder.indexOf(cat.lowercase())
-            if (index != -1) index else Int.MAX_VALUE
-        }
-    }
+    private fun sortCategories(categories: List<String>): List<String> =
+        categories.sortedBy { com.svd.svdagencies.utils.ItemCategoryOrder.rank(it) }
 
     private fun loadItems(category: String) {
         swipeRefresh.isRefreshing = true

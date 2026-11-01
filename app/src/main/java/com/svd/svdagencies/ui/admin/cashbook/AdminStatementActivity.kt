@@ -175,8 +175,7 @@ class AdminStatementActivity : AdminBaseActivity() {
         setTextColor(when (color) {
             "#17353E" -> this@AdminStatementActivity.getColor(R.color.textColorPrimary)
             "#526670", "#657985" -> this@AdminStatementActivity.getColor(R.color.textColorSecondary)
-            "#16704A" -> if ((resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES) Color.parseColor("#97D8B1") else Color.parseColor(color)
-            "#AD3449" -> if ((resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES) Color.parseColor("#FFB3C0") else Color.parseColor(color)
+            "#16704A", "#AD3449" -> Color.parseColor(color)
             else -> Color.parseColor(color)
         })
         if (bold) setTypeface(typeface, Typeface.BOLD)

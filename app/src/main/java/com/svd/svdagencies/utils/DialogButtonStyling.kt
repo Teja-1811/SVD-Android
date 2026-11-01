@@ -20,12 +20,11 @@ fun AlertDialog.Builder.showDestructiveDialog() {
     val dialog = create()
     dialog.setOnShowListener {
         dialog.applyWhiteDialogSurface()
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.apply {
-            backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(context, R.color.brand_red)
-            )
-            setTextColor(ContextCompat.getColor(context, R.color.white))
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.let {
+            ActionButtonColors.apply(it, forceDestructive = true)
         }
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.let { ActionButtonColors.apply(it) }
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL)?.let { ActionButtonColors.apply(it) }
     }
     dialog.show()
 }

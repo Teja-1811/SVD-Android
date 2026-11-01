@@ -38,7 +38,12 @@ class BillDetailItemAdapter(
         fun bind(item: BillItemDetail, index: Int) {
             tvIndex.text = index.toString()
             tvName.text = item.item_name
-            tvQty.text = String.format(Locale.getDefault(), "%d", item.quantity)
+            val formattedQty = if (item.quantity == item.quantity.toLong().toDouble()) {
+                item.quantity.toLong().toString()
+            } else {
+                String.format(Locale.getDefault(), "%.2f", item.quantity)
+            }
+            tvQty.text = formattedQty
             tvLineTotal.text = String.format(Locale.getDefault(), "₹ %.2f", item.total_amount)
         }
     }

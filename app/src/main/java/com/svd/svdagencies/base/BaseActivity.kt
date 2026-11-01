@@ -16,38 +16,80 @@ import com.svd.svdagencies.utils.LoadingOverlayManager
 open class BaseActivity : AppCompatActivity() {
 
     private var appliedPalette = -1
-    private var compactRoot: View? = null
-    private val compactLayoutListener = android.view.ViewTreeObserver.OnGlobalLayoutListener {
-        compactRoot?.let { com.svd.svdagencies.utils.CompactUi.applyTree(it); com.svd.svdagencies.utils.CollapsibleNavigation.applyTree(this, it) }
-    }
-
     override fun onContentChanged() {
         super.onContentChanged()
-        compactRoot?.viewTreeObserver?.takeIf { it.isAlive }?.removeOnGlobalLayoutListener(compactLayoutListener)
-        compactRoot = findViewById(android.R.id.content)
-        compactRoot?.let { root ->
-            root.viewTreeObserver.addOnGlobalLayoutListener(compactLayoutListener)
-            root.post { if (!isDestroyed) { com.svd.svdagencies.utils.CompactUi.applyTree(root); com.svd.svdagencies.utils.CollapsibleNavigation.applyTree(this, root) } }
+        findViewById<View>(android.R.id.content)?.let { root ->
+            root.post {
+                if (!isDestroyed) {
+                    applyHeaderTheme(root)
+                    com.svd.svdagencies.utils.CompactUi.applyTree(root)
+                    com.svd.svdagencies.utils.CollapsibleNavigation.applyTree(this, root)
+                }
+            }
         }
     }
 
-    override fun onDestroy() {
-        compactRoot?.viewTreeObserver?.takeIf { it.isAlive }?.removeOnGlobalLayoutListener(compactLayoutListener)
-        compactRoot = null
-        super.onDestroy()
+    private fun applyHeaderTheme(root: View) {
+        val primary = com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorPrimary, android.graphics.Color.BLACK)
+        val onPrimary = com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnPrimary, android.graphics.Color.WHITE)
+        fun tintContent(view: View) {
+            fun dateChip(node: View): Boolean {
+                var candidate: View? = node
+                while (candidate != null && candidate !is androidx.appcompat.widget.Toolbar) {
+                    val name = runCatching { candidate!!.resources.getResourceEntryName(candidate!!.id) }.getOrDefault("")
+                    if (name.contains("date", true) || name.contains("month", true)) return true
+                    candidate = candidate.parent as? View
+                }
+                return false
+            }
+            if (view.tag == "svd-header-outline") return
+            val foreground = if (dateChip(view)) primary else onPrimary
+            when (view) {
+                is android.widget.TextView -> view.setTextColor(foreground)
+                is android.widget.ImageView -> view.imageTintList = android.content.res.ColorStateList.valueOf(foreground)
+            }
+            if (view is android.view.ViewGroup) for (index in 0 until view.childCount) tintContent(view.getChildAt(index))
+        }
+        fun visit(view: View) {
+            if (view is com.google.android.material.appbar.AppBarLayout) {
+                view.setBackgroundColor(primary)
+                view.backgroundTintList = android.content.res.ColorStateList.valueOf(primary)
+            }
+            if (view is androidx.appcompat.widget.Toolbar) {
+                view.setBackgroundColor(primary)
+                view.backgroundTintList = android.content.res.ColorStateList.valueOf(primary)
+                view.setTitleTextColor(onPrimary)
+                view.setSubtitleTextColor(onPrimary)
+                view.navigationIcon = view.navigationIcon?.mutate()?.apply { setTint(onPrimary) }
+                view.overflowIcon = view.overflowIcon?.mutate()?.apply { setTint(onPrimary) }
+                tintContent(view)
+            }
+            if (view is android.view.ViewGroup) for (index in 0 until view.childCount) visit(view.getChildAt(index))
+        }
+        visit(root)
     }
 
     lateinit var prefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
         appliedPalette = com.svd.svdagencies.utils.Appearance.selected(this)
         setTheme(com.svd.svdagencies.utils.Appearance.theme(this))
         super.onCreate(savedInstanceState)
         prefs = getSharedPreferences("svd_session", MODE_PRIVATE)
+        supportFragmentManager.registerFragmentLifecycleCallbacks(object : androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewCreated(fm: androidx.fragment.app.FragmentManager, fragment: androidx.fragment.app.Fragment, view: View, state: Bundle?) {
+                view.post {
+                    if (!isDestroyed) findViewById<View>(android.R.id.content)?.let {
+                        com.svd.svdagencies.utils.CollapsibleNavigation.applyTree(this@BaseActivity, it)
+                    }
+                }
+            }
+        }, true)
         
         // Enable Edge-to-Edge to correctly handle Keyboard Insets
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = if ((resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK) == android.content.res.Configuration.UI_MODE_NIGHT_YES) androidx.core.content.ContextCompat.getColor(this, com.svd.svdagencies.R.color.status_bar) else com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorPrimary, android.graphics.Color.BLACK)
+        window.statusBarColor = com.google.android.material.color.MaterialColors.getColor(this, com.google.android.material.R.attr.colorPrimary, android.graphics.Color.BLACK)
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
 
         // Ensure content is always above the keyboard

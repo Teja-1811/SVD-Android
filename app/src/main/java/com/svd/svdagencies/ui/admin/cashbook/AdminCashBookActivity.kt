@@ -39,6 +39,8 @@ import com.svd.svdagencies.databinding.AdminStatCardBinding
 import com.svd.svdagencies.ui.admin.AdminBaseActivity
 import com.svd.svdagencies.utils.NetworkMessageUtils
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.CancellationException
 import java.text.SimpleDateFormat
@@ -48,6 +50,7 @@ import java.util.Locale
 
 class AdminCashBookActivity : AdminBaseActivity() {
     private var filterRequest: Job? = null
+    private var loadVersion = 0
 
 
     private lateinit var binding: AdminCashbookBinding
@@ -279,7 +282,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
         val tvTotal = view.findViewById<TextView>(R.id.tvDenomTotal)
         val tvLabel = view.findViewById<TextView>(R.id.tvDenomLabel)
 
-        tvLabel.text = if (isNote) "₹$value" else "₹$value C"
+        tvLabel.text = if (isNote) "\u20B9$value" else "\u20B9$value C"
         
         if (isNote) {
             cashEditTexts[value] = etCount
@@ -294,7 +297,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 val countInt = s.toString().toIntOrNull() ?: 0
-                tvTotal.text = "₹${countInt * value}"
+                tvTotal.text = "\u20B9${countInt * value}"
                 updateLiveCashTotal() 
             }
         })
@@ -309,18 +312,22 @@ class AdminCashBookActivity : AdminBaseActivity() {
         coinEditTexts.forEach { (value, et) ->
             total += (et.text.toString().toIntOrNull() ?: 0) * value
         }
-        binding.statCash.tvStatValue.text = "₹%.2f".format(total)
+        binding.statCash.tvStatValue.text = "\u20B9%.2f".format(total)
     }
 
     private fun loadDashboardData() {
-        binding.swipeRefresh.isRefreshing = true
+        val version = ++loadVersion
         filterRequest?.cancel()
+        binding.swipeRefresh.isRefreshing = false
+        binding.cashbookProgress.visibility = View.VISIBLE
         filterRequest = lifecycleScope.launch {
             try {
-                val response = ApiClient.cashbookApi.getDashboardData(selectedMonth, selectedYear)
+                val response = withTimeout(30_000L) {
+                    ApiClient.cashbookApi.getDashboardData(selectedMonth, selectedYear)
+                }
                 populateUI(response)
             } catch (e: Exception) {
-                if (e is CancellationException) throw e
+                if (e is CancellationException && e !is TimeoutCancellationException) throw e
                 if (!isFinishing) {
                     Toast.makeText(
                         this@AdminCashBookActivity,
@@ -329,8 +336,11 @@ class AdminCashBookActivity : AdminBaseActivity() {
                     ).show()
                 }
             } finally {
-                binding.swipeRefresh.isRefreshing = false
-                hideScreenLoading()
+                if (version == loadVersion) {
+                    binding.swipeRefresh.isRefreshing = false
+                    binding.cashbookProgress.visibility = View.INVISIBLE
+                    hideScreenLoading()
+                }
             }
         }
     }
@@ -338,18 +348,18 @@ class AdminCashBookActivity : AdminBaseActivity() {
     private fun populateUI(data: CashbookDashboardResponse) {
         // Stats
         val s = data.summary
-        binding.statCash.tvStatValue.text = "₹%.2f".format(s.cash_in)
-        binding.statBank.tvStatValue.text = "₹%.2f".format(s.bank_balance)
-        binding.statDues.tvStatValue.text = "₹%.2f".format(s.customer_due)
-        binding.statNetCash.tvStatValue.text = "₹%.2f".format(s.net_cash)
-        binding.statExpenses.tvStatValue.text = "₹%.2f".format(s.cash_out)
-        binding.statProfit.tvStatValue.text = "₹%.2f".format(s.monthly_profit)
-        binding.statStockValue.tvStatValue.text = "₹%.2f".format(s.stock_value)
-        binding.statRAmount.tvStatValue.text = "₹%.2f".format(s.remaining_amount)
-        binding.statNetProfit.tvStatValue.text = "₹%.2f".format(s.net_profit)
-        binding.statLoss.tvStatValue.text = "₹%.2f".format(s.monthly_loss)
-        binding.statSalary.tvStatValue.text = "₹%.2f".format(s.salary_paid)
-        binding.statCommission.tvStatValue.text = "₹%.2f".format(s.commission_credit)
+        binding.statCash.tvStatValue.text = "\u20B9%.2f".format(s.cash_in)
+        binding.statBank.tvStatValue.text = "\u20B9%.2f".format(s.bank_balance)
+        binding.statDues.tvStatValue.text = "\u20B9%.2f".format(s.customer_due)
+        binding.statNetCash.tvStatValue.text = "\u20B9%.2f".format(s.net_cash)
+        binding.statExpenses.tvStatValue.text = "\u20B9%.2f".format(s.cash_out)
+        binding.statProfit.tvStatValue.text = "\u20B9%.2f".format(s.monthly_profit)
+        binding.statStockValue.tvStatValue.text = "\u20B9%.2f".format(s.stock_value)
+        binding.statRAmount.tvStatValue.text = "\u20B9%.2f".format(s.remaining_amount)
+        binding.statNetProfit.tvStatValue.text = "\u20B9%.2f".format(s.net_profit)
+        binding.statLoss.tvStatValue.text = "\u20B9%.2f".format(s.monthly_loss)
+        binding.statSalary.tvStatValue.text = "\u20B9%.2f".format(s.salary_paid)
+        binding.statCommission.tvStatValue.text = "\u20B9%.2f".format(s.commission_credit)
 
         val salarySummary = data.deliverySalary
         salaryAgents = salarySummary?.agents.orEmpty()
@@ -360,6 +370,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
         binding.tvTotalCompanyDues.text = getString(R.string.label_total_company_dues, s.company_due)
 
         allCompanies = data.filters.companies
+        com.svd.svdagencies.utils.AdminSidebar.runPendingAction(this, true)
         commissionCredits = data.commissionCredits
         
         commissionAdapter.update(commissionCredits)
@@ -367,8 +378,8 @@ class AdminCashBookActivity : AdminBaseActivity() {
 
         // Denomination Loading
         data.cashEntry.denominations.forEach { item ->
-            val value = item.name.replace("₹", "").replace(" Coin", "").trim().toIntOrNull() ?: 0
-            val isNote = !item.name.contains("Coin")
+            val value = Regex("[0-9]+").find(item.name)?.value?.toIntOrNull() ?: return@forEach
+            val isNote = !item.name.contains("Coin", ignoreCase = true)
             setDenominationValue(value, item.count, isNote)
         }
     }
@@ -383,7 +394,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
         if (et.text.toString() != newText) {
             et.setText(newText)
         }
-        tv.text = "₹${count * value}"
+        tv.text = "\u20B9${count * value}"
     }
 
     private fun updateCashIn() {
@@ -435,7 +446,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
                 ArrayAdapter(
                     this@AdminCashBookActivity,
                     R.layout.delivery_dropdown_item,
-                    salaryAgents.map { "${it.agent_name ?: "Agent"} - Due ₹%.2f".format(it.remaining_salary) }
+                    salaryAgents.map { "${it.agent_name ?: "Agent"} - Due \u20B9%.2f".format(it.remaining_salary) }
                 )
             )
             setThreshold(0)
@@ -579,7 +590,7 @@ class AdminCashBookActivity : AdminBaseActivity() {
     private fun showDeleteCommissionConfirm(credit: CommissionCredit) {
         MaterialAlertDialogBuilder(this)
             .setTitle("Delete Commission")
-            .setMessage("Are you sure you want to delete this commission credit of ₹${credit.amount} from ${credit.company}?")
+            .setMessage("Are you sure you want to delete this commission credit of \u20B9${credit.amount} from ${credit.company}?")
             .setPositiveButton("Delete") { _, _ -> deleteCommissionCredit(credit.id) }
             .setNegativeButton("Cancel", null)
             .showDestructiveDialog()
@@ -629,7 +640,7 @@ class CommissionCreditAdapter(
         val credit = credits[position]
         holder.tvCompany.text = credit.company
         holder.tvDesc.text = credit.description
-        holder.tvAmount.text = "₹%.2f".format(credit.amount)
+        holder.tvAmount.text = "\u20B9%.2f".format(credit.amount)
         holder.tvDate.text = "Added: ${credit.createdAt.take(16).replace("T", " ")}"
         
         holder.btnEdit.setOnClickListener { onEdit(credit) }

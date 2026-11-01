@@ -51,7 +51,7 @@ class SettingsBusinessUi(private val activity: ToolsActivity, private val root: 
 
     fun attach() {
         if (SessionManager(activity).getRole() != UserRole.ADMIN) { root.visibility = View.GONE; return }
-        val panel = activity.layoutInflater.inflate(R.layout.include_business_settings, root, false)
+        val panel = activity.layoutInflater.inflate(if(activity.intent.getStringExtra("settings_section")=="gst") R.layout.include_settings_gst else R.layout.include_settings_licences, root, false)
         root.addView(panel)
         for ((key, id) in listOf("upi_id" to R.id.businessUpi, "pan" to R.id.businessPan,
                 "fssai" to R.id.businessFssai, "trade_licence" to R.id.businessTrade,

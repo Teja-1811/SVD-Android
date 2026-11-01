@@ -39,7 +39,12 @@ class AuthInterceptor(
         val request = builder.build()
         val response = chain.proceed(request)
         val sentToken = request.header("Authorization")?.removePrefix("Token ")
-        if (response.code == 401 && !sentToken.isNullOrBlank() && sessionManager.invalidateIfTokenMatches(sentToken)) {
+        // A login on another phone revokes this device's token.  Some protected
+        // endpoints report that revoked session as 403 rather than 401, so both
+        // responses must return the user to sign-in instead of leaving them on
+        // a broken screen with a raw server error.
+        val sessionExpired = response.code == 401 || response.code == 403
+        if (sessionExpired && !sentToken.isNullOrBlank() && sessionManager.invalidateIfTokenMatches(sentToken)) {
             Handler(Looper.getMainLooper()).post {
                 if (sessionManager.getToken().isNullOrBlank()) {
                     Toast.makeText(App.context, "Your session has ended. Please sign in again.", Toast.LENGTH_LONG).show()

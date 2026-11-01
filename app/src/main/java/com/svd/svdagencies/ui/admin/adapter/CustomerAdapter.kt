@@ -72,7 +72,7 @@ class CustomerAdapter(
             txtShopName.text = c.shop_name
             txtRoute.text = "Route: ${c.route_name?.takeIf { it.isNotBlank() } ?: "-"}"
             txtPhone.text = c.phone
-            txtBalance.text = "₹ %.2f".format(c.due)
+            txtBalance.text = "₹ %.0f".format(c.due)
 
             // Dynamic Balance Coloring
             val due = c.due ?: 0.0
@@ -82,10 +82,17 @@ class CustomerAdapter(
                 txtBalance.setTextColor(ContextCompat.getColor(root.context, R.color.icon_green))
             }
 
+            customerStatusDot.background = android.graphics.drawable.GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.OVAL
+                setColor(ContextCompat.getColor(root.context,
+                    if (c.frozen == true) R.color.icon_red else R.color.icon_green))
+            }
+            customerStatusDot.contentDescription = if (c.frozen == true) "Frozen" else "Active"
+
             // Freeze button visual state
             if (c.frozen == true) {
-                txtStatus.text = "Frozen"
-                txtStatus.setTextColor(ContextCompat.getColor(root.context, R.color.icon_red))
+
+
                 // Frozen State: Unfreeze (Green)
                 btnPassword.setIconResource(R.drawable.ic_unlock)
                 btnPassword.text = "Unfreeze"
@@ -94,8 +101,8 @@ class CustomerAdapter(
                     ContextCompat.getColor(root.context, R.color.icon_green)
                 )
             } else {
-                txtStatus.text = "Active"
-                txtStatus.setTextColor(ContextCompat.getColor(root.context, R.color.icon_green))
+
+
                 // Active State: Freeze (Red/Gray)
                 btnPassword.setIconResource(R.drawable.ic_lock)
                 btnPassword.text = "Freeze"

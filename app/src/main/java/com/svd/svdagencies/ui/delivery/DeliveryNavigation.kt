@@ -41,10 +41,25 @@ object DeliveryNavigation {
                 return@setNavigationItemSelectedListener true
             }
 
+            val phase = when (item.itemId) {
+                R.id.nav_delivery_morning_entry -> 0
+                R.id.nav_delivery_morning_return -> 1
+                R.id.nav_delivery_evening_entry -> 2
+                R.id.nav_delivery_evening_return -> 3
+                else -> -1
+            }
+            if (phase >= 0) {
+                val date = java.util.Calendar.getInstance().apply { add(java.util.Calendar.DAY_OF_YEAR, -1) }
+                activity.startActivity(Intent(activity, DeliveryStockPhaseEntryActivity::class.java).apply {
+                    putExtra("phase_type", phase)
+                    putExtra("selected_date", java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(date.time))
+                })
+                return@setNavigationItemSelectedListener true
+            }
             val target = when (item.itemId) {
                 R.id.nav_tools_appearance -> com.svd.svdagencies.ui.ToolsActivity::class.java
                 R.id.nav_delivery_home -> DeliveryBillToCustomerActivity::class.java
-                R.id.nav_delivery_stock_entry -> DeliveryStockEntryActivity::class.java
+                R.id.nav_delivery_stock_entry, R.id.nav_delivery_total_stock -> DeliveryStockEntryActivity::class.java
                 R.id.nav_delivery_catalog -> DeliveryCatalogActivity::class.java
                 R.id.nav_delivery_today_report -> DeliveryDashboardActivity::class.java
                 R.id.nav_delivery_subscriptions -> DeliverySubscriptionDeliveriesActivity::class.java

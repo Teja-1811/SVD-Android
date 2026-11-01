@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class EditBillRequest(
     val items: List<Int>,
-    val quantities: List<Int>,
+    val quantities: List<Double>,
     val discounts: List<Double>,
     @SerializedName("customer") val customerId: Int? = null,
     @SerializedName("invoice_date") val invoiceDate: String? = null

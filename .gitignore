@@ -32,3 +32,6 @@ local.properties
 **/screenshots/*.jpg
 **/screenshots/*.jpeg
 **/screenshots/*.webp
+
+# Generated release packages and baseline profiles
+/app/release/

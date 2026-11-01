@@ -2,6 +2,7 @@ package com.svd.svdagencies.ui.admin.bills
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.View
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.ArrayAdapter
@@ -81,6 +82,8 @@ class CreateBillActivity : AdminBaseActivity() {
         initViews()
         setupRecyclerView()
         setupListeners()
+        btnAddItem.visibility=View.VISIBLE
+        updateSummary()
 
         updateDateDisplay()
         fetchInitialData()
@@ -126,6 +129,7 @@ class CreateBillActivity : AdminBaseActivity() {
             selectedCustomer = filteredCustomers[position]
             openingDue = selectedCustomer?.due ?: 0.0
             selectedCustomer?.id?.let(::loadCustomerDefaultDiscounts)
+            updateSummary()
         }
 
         etSearchItems.addTextChangedListener(object : TextWatcher {
@@ -155,7 +159,7 @@ class CreateBillActivity : AdminBaseActivity() {
 
         btnAddItem.setOnClickListener { 
             if (selectedItem != null) {
-                val qty = etQty.text.toString().toIntOrNull() ?: 1
+                val qty = etQty.text.toString().toDoubleOrNull() ?: 1.0
                 val disc = etDiscount.text.toString().toDoubleOrNull() ?: 0.0
                 val availableStock = selectedItem!!.stock_quantity ?: 0
 
@@ -204,16 +208,43 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private fun showDatePicker() {
-        DatePickerDialog(
-            this,
+        val dialog = DatePickerDialog(
+            this, R.style.Theme_Svd_CompactDatePicker,
             { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
                 updateDateDisplay()
             },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
-        ).show()
+        )
+        dialog.setTitle("Bill date")
+        dialog.setOnShowListener {
+            val density = resources.displayMetrics.density
+            dialog.window?.setLayout(
+                minOf((320 * density).toInt(), resources.displayMetrics.widthPixels - (32 * density).toInt()),
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            val background = android.graphics.drawable.GradientDrawable().apply {
+                setColor(android.graphics.Color.WHITE); cornerRadius = 16 * density
+            }
+            dialog.window?.setBackgroundDrawable(background)
+            fun style(which: Int, fill: Int) {
+                dialog.getButton(which)?.apply {
+                    textSize = 14f; isAllCaps = false
+                    setTextColor(android.graphics.Color.WHITE)
+                    backgroundTintList = android.content.res.ColorStateList.valueOf(fill)
+                    minimumHeight = (40 * density).toInt()
+                    setPadding((16 * density).toInt(), 0, (16 * density).toInt(), 0)
+                    (layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let { params ->
+                        params.height = (40 * density).toInt()
+                        params.marginStart = (8 * density).toInt(); layoutParams = params
+                    }
+                }
+            }
+            style(android.content.DialogInterface.BUTTON_NEGATIVE, android.graphics.Color.rgb(75,85,99))
+            style(android.content.DialogInterface.BUTTON_POSITIVE, android.graphics.Color.rgb(21,128,61))
+        }
+        dialog.show()
     }
 
     private fun updateDateDisplay() {
@@ -346,10 +377,9 @@ class CreateBillActivity : AdminBaseActivity() {
     }
 
     private fun filterItems(query: String) {
-        filteredItems = if (query.isEmpty()) {
-            allAvailableItems
-        } else {
-            allAvailableItems.filter { it.name.contains(query, ignoreCase = true) }
+        filteredItems = allAvailableItems.filter {
+            !it.frozen && (it.stock_quantity ?: 0) > 0 &&
+                (query.isEmpty() || it.name.contains(query, ignoreCase = true))
         }
 
         val names = filteredItems.map { it.name }
@@ -359,7 +389,9 @@ class CreateBillActivity : AdminBaseActivity() {
 
     private fun updateSummary() {
         val items = itemAdapter.getItems()
-        var totalQty = 0
+        btnGenerateBill.isEnabled=selectedCustomer!=null && items.any { it.itemId!=0 && it.quantity>0 }
+        findViewById<View>(R.id.tvCreateBillEmpty)?.visibility=if(items.isEmpty()) View.VISIBLE else View.GONE
+        var totalQty = 0.0
         var totalDiscount = 0.0
         var grandTotal = 0.0
 
@@ -377,8 +409,9 @@ class CreateBillActivity : AdminBaseActivity() {
             grandTotal += (price * billItem.quantity) - billItem.totalDiscount
         }
 
-        tvTotalQty.text = totalQty.toString()
+        tvTotalQty.text = if (totalQty == totalQty.toLong().toDouble()) totalQty.toLong().toString() else String.format(Locale.getDefault(), "%.2f", totalQty)
         tvTotalDiscAmount.text = "₹%.2f".format(totalDiscount)
+        findViewById<TextView>(R.id.tvInvoiceAmount).text = "₹%.2f".format(grandTotal)
         tvOpeningDue.text = "₹%.2f".format(openingDue)
         val totalPayable = BillSummaryTotals.grandTotal(grandTotal, openingDue)
         tvGrandTotal.text = "₹%.2f".format(totalPayable)
@@ -452,7 +485,7 @@ class CreateBillActivity : AdminBaseActivity() {
     private suspend fun fetchAllAvailableItems(): List<AdminItem> {
         val response = ApiClient.adminItemsApi.getCategories()
         return response.categories.map { category ->
-            lifecycleScope.async { ApiClient.adminItemsApi.getItemsByCategory(category) }
+            lifecycleScope.async { ApiClient.adminItemsApi.getItemsByCategory(category, inStock = if (billId == null) true else null) }
         }.awaitAll().flatMap { it.items }.distinctBy { it.id }
     }
 
@@ -546,10 +579,10 @@ class CreateBillActivity : AdminBaseActivity() {
         finish()
     }
 
-    private fun findOutOfStockLine(billItems: List<BillItemForCreation>): Pair<AdminItem, Int>? {
+    private fun findOutOfStockLine(billItems: List<BillItemForCreation>): Pair<AdminItem, Double>? {
         for (billItem in billItems) {
             val item = allAvailableItems.find { it.id == billItem.itemId } ?: continue
-            val availableStock = item.stock_quantity ?: 0
+            val availableStock = (item.stock_quantity ?: 0).toDouble()
             if (billItem.quantity > availableStock) {
                 return item to billItem.quantity
             }

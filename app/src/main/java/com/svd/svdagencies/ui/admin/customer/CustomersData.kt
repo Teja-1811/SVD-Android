@@ -12,7 +12,6 @@ import android.view.Window
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
@@ -44,14 +43,10 @@ open class CustomersData : AdminBaseActivity() {
     private lateinit var api: CustomerDashboardApi
 
     private lateinit var etSearch: EditText
-    private lateinit var fabAddCustomer: com.google.android.material.button.MaterialButton
     private lateinit var tvEmptyState: TextView
     private var selectedType = "delivery"
 
     private var allCustomers: List<CustomerItem> = emptyList()
-    private val addCustomerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _ ->
-        loadCustomers()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,18 +59,8 @@ open class CustomersData : AdminBaseActivity() {
         api = ApiClient.adminCustomerDashboard
 
         initViews()
-        if (this is AdminUsersActivity) {
-            selectedType = "user"
-            findViewById<com.google.android.material.chip.ChipGroup>(R.id.chipGroupCustomerType).check(R.id.chipUser)
-        }
-        if (this !is AdminUsersActivity) {
-            selectedType = intent.getStringExtra("DEFAULT_CUSTOMER_TYPE")?.takeIf { it in setOf("retailer", "delivery", "user") } ?: selectedType
-            findViewById<com.google.android.material.chip.ChipGroup>(R.id.chipGroupCustomerType).check(when (selectedType) {
-                "retailer" -> R.id.chipRetailer
-                "user" -> R.id.chipUser
-                else -> R.id.chipDelivery
-            })
-        }
+        selectedType = if (this is AdminUsersActivity) "user" else
+            intent.getStringExtra("DEFAULT_CUSTOMER_TYPE")?.takeIf { it in setOf("retailer", "delivery", "user") } ?: selectedType
         setupListeners()
     }
 
@@ -89,7 +74,6 @@ open class CustomersData : AdminBaseActivity() {
         swipeRefreshLayout = findViewById(R.id.swipeRefresh)
         rvCustomers = findViewById(R.id.rvCustomers)
         etSearch = findViewById(R.id.etSearch)
-        fabAddCustomer = findViewById(R.id.fabAddCustomer)
         tvEmptyState = findViewById(R.id.tvEmptyState) // Add this in XML
 
         rvCustomers.layoutManager = LinearLayoutManager(this)
@@ -121,21 +105,6 @@ open class CustomersData : AdminBaseActivity() {
             }
         })
 
-        fabAddCustomer.setOnClickListener {
-            val intent = Intent(this, AddCustomerActivity::class.java)
-            intent.putExtra("DEFAULT_CUSTOMER_TYPE", selectedType)
-            addCustomerLauncher.launch(intent)
-        }
-
-        findViewById<com.google.android.material.chip.ChipGroup>(R.id.chipGroupCustomerType)
-            .setOnCheckedStateChangeListener { _, checkedIds ->
-                selectedType = when (checkedIds.firstOrNull()) {
-                    R.id.chipRetailer -> "retailer"
-                    R.id.chipUser -> "user"
-                    else -> "delivery"
-                }
-                loadCustomers()
-            }
     }
 
     private fun loadCustomers() {
@@ -249,8 +218,8 @@ open class CustomersData : AdminBaseActivity() {
         val currentDue = customer.due ?: 0.0
 
         txtName.text = customer.name
-        txtBalance.text = "â‚¹ %.2f".format(currentDue)
-        txtRemainingDue.text = "â‚¹ %.2f".format(currentDue)
+        txtBalance.text = "\u20B9 %.0f".format(currentDue)
+        txtRemainingDue.text = "\u20B9 %.0f".format(currentDue)
 
         val dismissListener = View.OnClickListener { dialog.dismiss() }
         btnCancel.setOnClickListener(dismissListener)
@@ -260,7 +229,7 @@ open class CustomersData : AdminBaseActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val paying = s.toString().toDoubleOrNull() ?: 0.0
-                txtRemainingDue.text = "â‚¹ %.2f".format((currentDue - paying).coerceAtLeast(0.0))
+                txtRemainingDue.text = "\u20B9 %.0f".format((currentDue - paying).coerceAtLeast(0.0))
             }
 
             override fun afterTextChanged(s: Editable?) = Unit

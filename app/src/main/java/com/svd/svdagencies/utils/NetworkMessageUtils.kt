@@ -48,7 +48,7 @@ object NetworkMessageUtils {
             }
 
             if (rawMessage?.contains("Delivery access required", ignoreCase = true) == true) {
-                "please contact Administratir"
+                "Please contact the administrator"
             } else {
                 rawMessage ?: fallback
             }

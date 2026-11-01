@@ -23,6 +23,7 @@ class DeliveryAgentSummaryHeaderAdapter(
     private val onAgentSelected: () -> Unit
 ) : RecyclerView.Adapter<DeliveryAgentSummaryHeaderAdapter.ViewHolder>() {
 
+    var showStats: Boolean = true
     var summary: DeliveryAgentDuesSummary? = null
     var startDateStr: String = ""
     var endDateStr: String = ""
@@ -68,6 +69,9 @@ class DeliveryAgentSummaryHeaderAdapter(
         }
 
         fun bind() {
+            listOf(tvBillCount,tvCounterDue,tvCustomerBillCount,tvCustomerInvoiceAmount,tvSubmittedAmount).forEach {
+                (it.parent as? View)?.visibility = if(showStats) View.VISIBLE else View.GONE
+            }
             autoCompleteAgent.setAdapter(agentAdapter)
             if (autoCompleteAgent.text.toString() != selectedAgentName) {
                 autoCompleteAgent.setText(selectedAgentName, false)
@@ -107,7 +111,7 @@ class DeliveryAgentSectionHeaderAdapter(private val title: String) : RecyclerVie
         return ViewHolder(view)
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val tv = holder.itemView as TextView
+        val tv = holder.itemView as? TextView ?: return
         tv.text = title
         tv.visibility = if (isVisible) View.VISIBLE else View.GONE
         tv.layoutParams.height = if (isVisible) ViewGroup.LayoutParams.WRAP_CONTENT else 0
@@ -126,11 +130,13 @@ class DeliveryAgentDuesTableHeaderAdapter : RecyclerView.Adapter<DeliveryAgentDu
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.itemView.setBackgroundColor(android.graphics.Color.rgb(239,244,246))
+        holder.agent.text = "Agent Name"
         holder.date.text = "Date"
         holder.collected.text = "Collected"
         holder.submitted.text = "Submitted"
         holder.balance.text = "Balance"
-        listOf(holder.date, holder.collected, holder.submitted, holder.balance).forEach {
+        listOf(holder.agent, holder.date, holder.collected, holder.submitted, holder.balance).forEach {
             it.setTypeface(Typeface.DEFAULT_BOLD)
             it.setTextColor(it.context.getColor(R.color.textColorSecondary))
         }
@@ -141,6 +147,7 @@ class DeliveryAgentDuesTableHeaderAdapter : RecyclerView.Adapter<DeliveryAgentDu
     override fun getItemCount(): Int = 1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val agent: TextView = itemView.findViewById(R.id.tvDueAgent)
         val date: TextView = itemView.findViewById(R.id.tvDueDate)
         val collected: TextView = itemView.findViewById(R.id.tvDueCollected)
         val submitted: TextView = itemView.findViewById(R.id.tvDueSubmitted)
@@ -158,16 +165,18 @@ class DeliveryAgentDailyDueAdapter : ListAdapter<DeliveryAgentDailyDueRecord, De
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val agent: TextView = itemView.findViewById(R.id.tvDueAgent)
         private val date: TextView = itemView.findViewById(R.id.tvDueDate)
         private val collected: TextView = itemView.findViewById(R.id.tvDueCollected)
         private val submitted: TextView = itemView.findViewById(R.id.tvDueSubmitted)
         private val balance: TextView = itemView.findViewById(R.id.tvDueBalance)
 
         fun bind(due: DeliveryAgentDailyDueRecord) {
+            agent.text = due.agentName ?: due.deliveryAgentId?.let { "Agent #$it" } ?: "—"
             date.text = due.date
-            collected.text = money(due.amountCollected)
-            submitted.text = money(due.settledAmount)
-            balance.text = money(due.balanceDue)
+            collected.text = String.format(Locale.US, "%.2f", due.amountCollected)
+            submitted.text = String.format(Locale.US, "%.2f", due.settledAmount)
+            balance.text = String.format(Locale.US, "%.2f", due.balanceDue)
             balance.setTextColor(
                 itemView.context.getColor(
                     if (due.balanceDue > 0.0) R.color.error_red else R.color.green_status

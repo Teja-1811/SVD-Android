@@ -1,30 +1,81 @@
 <?xml version='1.0' encoding='utf-8'?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/nav_home" android:title="Home" android:icon="@drawable/ic_home" android:checkable="true" />
-    <item android:id="@+id/nav_change_theme" android:title="Settings" android:icon="@drawable/ic_theme" android:checkable="false" />
-    <item android:id="@+id/nav_companies" android:title="Companies" android:icon="@drawable/ic_shop" android:checkable="true" />
-    <item android:id="@+id/nav_customers" android:title="Customers" android:icon="@drawable/ic_users" android:checkable="true" />
-    <item android:id="@+id/nav_customer_item_discounts" android:title="Customer Discounts" android:icon="@drawable/ic_rupee" android:checkable="true" />
-    <item android:id="@+id/nav_routes" android:title="Routes" android:icon="@drawable/ic_orders" android:checkable="true" />
-    <item android:id="@+id/nav_order_timings" android:title="Order Timings" android:icon="@drawable/ic_orders" android:checkable="true" />
-    <item android:id="@+id/nav_offers" android:title="Offers" android:icon="@drawable/ic_orders" android:checkable="true" />
-    <item android:id="@+id/nav_category_sales" android:title="Category Sales" android:icon="@drawable/ic_items" android:checkable="true" />
-    <item android:id="@+id/nav_bills" android:title="Bills" android:icon="@drawable/ic_bill" android:checkable="true" />
-    <item android:id="@+id/nav_orders" android:title="Orders" android:icon="@drawable/ic_orders" android:checkable="true" />
-    <item android:id="@+id/nav_agent_dues" android:title="Agent Dues" android:icon="@drawable/ic_money" android:checkable="true" />
-    <item android:id="@+id/nav_items" android:title="Items" android:icon="@drawable/ic_items" android:checkable="true" />
-    <item android:id="@+id/nav_stock" android:title="Stock" android:icon="@drawable/ic_stock" android:checkable="true" />
-    <item android:id="@+id/nav_dues" android:title="Company Dues" android:icon="@drawable/ic_payments" android:checkable="true" />
-    <item android:id="@+id/nav_cashbook" android:title="CashBook" android:icon="@drawable/ic_cashbook" android:checkable="true" />
-    <item android:id="@+id/nav_expenses" android:title="Expenses" android:icon="@drawable/ic_bill" android:checkable="true" />
-    <item android:id="@+id/nav_statement" android:title="Statement" android:icon="@drawable/ic_bill" android:checkable="true" />
-    <item android:id="@+id/nav_monthly_summary" android:title="Monthly Summary" android:icon="@drawable/ic_calendar" android:checkable="true" />
-    <item android:id="@+id/nav_payments" android:title="Customer Payments" android:icon="@drawable/ic_payments" android:checkable="true" />
-    <item android:id="@+id/nav_enquiries" android:title="Enquiries" android:icon="@drawable/ic_person" android:checkable="true" />
-    <item android:id="@+id/nav_gst" android:title="GST Summary" android:icon="@drawable/ic_bill" android:checkable="true" />
-    <item android:id="@+id/nav_purchase_reports" android:title="Purchase Reports" android:icon="@drawable/ic_calendar" android:checkable="true" />
-    <item android:id="@+id/nav_new_bill" android:title="New Bill" android:icon="@drawable/ic_bill" android:checkable="true" />
-    <item android:id="@+id/nav_users" android:title="Users" android:icon="@drawable/ic_users" android:checkable="true" />
-    <item android:id="@+id/nav_offer_usage" android:title="Offer Usage" android:icon="@drawable/ic_orders" android:checkable="true" />
-    <item android:id="@+id/nav_subscription_report" android:title="Subscriptions" android:icon="@drawable/ic_orders" android:checkable="true" />
+  <item android:id="@+id/nav_home" android:title="Dashboard" android:icon="@drawable/ic_ma_grid_1x2_fill" android:checkable="true" />
+  <item android:id="@+id/nav_section_customer" android:title="Customer" android:icon="@drawable/ic_ma_people">
+    <menu>
+      <item android:id="@+id/nav_customers" android:title="Delivery Agents" android:icon="@drawable/ic_ma_truck" android:checkable="true" />
+      <item android:id="@+id/nav_retailers" android:title="Retailers" android:icon="@drawable/ic_ma_shop" android:checkable="true" />
+      <item android:id="@+id/nav_users" android:title="Users" android:icon="@drawable/ic_ma_person" android:checkable="true" />
+      <item android:id="@+id/nav_add_customer" android:title="Add Customer" android:icon="@drawable/ic_ma_person_plus" android:checkable="true" />
+      <item android:id="@+id/nav_deleted_customers" android:title="Deleted Customers" android:icon="@drawable/ic_ma_trash" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_section_bills" android:title="Bills" android:icon="@drawable/ic_ma_receipt">
+    <menu>
+      <item android:id="@+id/nav_bills" android:title="Dashboard" android:icon="@drawable/ic_ma_grid" android:checkable="true" />
+      <item android:id="@+id/nav_new_bill" android:title="New Bill" android:icon="@drawable/ic_ma_receipt_cutoff" android:checkable="true" />
+      <item android:id="@+id/nav_orders" android:title="Orders" android:icon="@drawable/ic_ma_clipboard_check" android:checkable="true" />
+      <item android:id="@+id/nav_orders_history" android:title="Orders History" android:icon="@drawable/ic_ma_clock_history" android:checkable="true" />
+      <item android:id="@+id/nav_order_timings" android:title="Order Timings" android:icon="@drawable/ic_ma_clock" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_section_stock" android:title="Stock" android:icon="@drawable/ic_ma_boxes">
+    <menu>
+      <item android:id="@+id/nav_stock" android:title="Dashboard" android:icon="@drawable/ic_ma_grid" android:checkable="true" />
+      <item android:id="@+id/nav_update_stock" android:title="Update Stock" android:icon="@drawable/ic_ma_box_arrow_in_down" android:checkable="true" />
+      <item android:id="@+id/nav_add_leakage" android:title="Add Leakage" android:icon="@drawable/ic_ma_droplet_half" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_section_products" android:title="Products" android:icon="@drawable/ic_ma_box_seam">
+    <menu>
+      <item android:id="@+id/nav_items" android:title="Dashboard" android:icon="@drawable/ic_ma_grid" android:checkable="true" />
+      <item android:id="@+id/nav_add_item" android:title="Add Item" android:icon="@drawable/ic_ma_plus_circle" android:checkable="true" />
+      <item android:id="@+id/nav_customer_item_discounts" android:title="Customer Item Discounts" android:icon="@drawable/ic_ma_percent" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_section_companies" android:title="Companies" android:icon="@drawable/ic_ma_building">
+    <menu>
+      <item android:id="@+id/nav_companies" android:title="Dashboard" android:icon="@drawable/ic_ma_grid" android:checkable="true" />
+      <item android:id="@+id/nav_add_company" android:title="Add Company" android:icon="@drawable/ic_ma_building_add" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_section_routes" android:title="Routes" android:icon="@drawable/ic_ma_signpost_split">
+    <menu>
+      <item android:id="@+id/nav_routes" android:title="Dashboard" android:icon="@drawable/ic_ma_grid" android:checkable="true" />
+      <item android:id="@+id/nav_add_route" android:title="Add Route" android:icon="@drawable/ic_ma_plus_circle" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_section_cashbook" android:title="Cashbook" android:icon="@drawable/ic_ma_cash_stack">
+    <menu>
+      <item android:id="@+id/nav_cashbook" android:title="Dashboard" android:icon="@drawable/ic_ma_grid" android:checkable="true" />
+      <item android:id="@+id/nav_dues" android:title="Company Dues" android:icon="@drawable/ic_ma_building" android:checkable="true" />
+      <item android:id="@+id/nav_payments" android:title="Customer Payments" android:icon="@drawable/ic_ma_cash_coin" android:checkable="true" />
+      <item android:id="@+id/nav_expenses" android:title="Expenses" android:icon="@drawable/ic_ma_wallet2" android:checkable="true" />
+      <item android:id="@+id/nav_add_expense" android:title="Add Expenses" android:icon="@drawable/ic_ma_plus_circle" android:checkable="true" />
+      <item android:id="@+id/nav_add_commission" android:title="Add Commission" android:icon="@drawable/ic_ma_cash_coin" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_statement" android:title="Statement" android:icon="@drawable/ic_ma_file_earmark_text" android:checkable="true" />
+  <item android:id="@+id/nav_monthly_summary" android:title="Monthly Statement" android:icon="@drawable/ic_ma_calendar3" android:checkable="true" />
+  <item android:id="@+id/nav_section_offers_and_subscriptions" android:title="Offers and Subscriptions" android:icon="@drawable/ic_ma_gift">
+    <menu>
+      <item android:id="@+id/nav_offer_usage" android:title="Offers Dashboard" android:icon="@drawable/ic_ma_grid" android:checkable="true" />
+      <item android:id="@+id/nav_subscription_report" android:title="Subscription Dashboard" android:icon="@drawable/ic_ma_calendar_check" android:checkable="true" />
+      <item android:id="@+id/nav_add_offer" android:title="Add Plan (Offers)" android:icon="@drawable/ic_ma_plus_circle" android:checkable="true" />
+      <item android:id="@+id/nav_add_subscription" android:title="Add Plan (Subscriptions)" android:icon="@drawable/ic_ma_plus_circle" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_enquiries" android:title="Enquiries" android:icon="@drawable/ic_ma_chat_left_text" android:checkable="true" />
+  <item android:id="@+id/nav_section_settings" android:title="Settings" android:icon="@drawable/ic_ma_gear">
+    <menu>
+      <item android:id="@+id/nav_gst_configuration" android:title="GST Configuration" android:icon="@drawable/ic_ma_percent" android:checkable="true" />
+      <item android:id="@+id/nav_appearance" android:title="Appearance" android:icon="@drawable/ic_ma_gear" android:checkable="true" />
+      <item android:id="@+id/nav_licences" android:title="Licences" android:icon="@drawable/ic_ma_card_text" android:checkable="true" />
+    </menu>
+  </item>
+  <item android:id="@+id/nav_category_sales" android:title="Category Sales" android:icon="@drawable/ic_ma_bar_chart" android:checkable="true" />
+  <item android:id="@+id/nav_agent_dues" android:title="Delivery Data" android:icon="@drawable/ic_ma_truck" android:checkable="true" />
+  <item android:id="@+id/nav_due_details" android:title="Due Details" android:icon="@drawable/ic_ma_table" android:checkable="true" />
+  <item android:id="@+id/nav_gst" android:title="GST" android:icon="@drawable/ic_ma_percent" android:checkable="true" />
+  <item android:id="@+id/nav_logout" android:title="Log out" android:icon="@drawable/ic_ma_box_arrow_right" />
 </menu>

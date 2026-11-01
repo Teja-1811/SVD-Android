@@ -25,11 +25,12 @@ import java.util.Locale
 class DeliveryCustomerPaymentsActivity : BaseActivity() {
 
     private lateinit var binding: DeliveryCustomerPaymentsBinding
-    private val adapter = DeliveryCustomerPaymentAdapter()
+    private val adapter = DeliveryCustomerPaymentAdapter { payment, action -> showPaymentActions(payment, action) }
+    private var filterByDay = false
     private var customerId: Int = -1
     private var customerName: String? = null
 
-    private val selectedMonth: Calendar = Calendar.getInstance().apply { set(Calendar.DAY_OF_MONTH, 1) }
+    private val selectedMonth: Calendar = Calendar.getInstance()
     private val monthLabelFormat = SimpleDateFormat("MMMM yyyy", Locale.US)
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
@@ -63,25 +64,31 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
     private fun setupMonthFilter() {
         updateMonthLabel()
         binding.btnPreviousMonth.setOnClickListener {
-            selectedMonth.add(Calendar.MONTH, -1)
+            filterByDay = true
+            selectedMonth.add(Calendar.DAY_OF_MONTH, -1)
             updateMonthLabel()
             loadPayments()
         }
         binding.btnNextMonth.setOnClickListener {
-            selectedMonth.add(Calendar.MONTH, 1)
+            filterByDay = true
+            selectedMonth.add(Calendar.DAY_OF_MONTH, 1)
             updateMonthLabel()
             loadPayments()
         }
         binding.tvSelectedMonth.setOnClickListener { showMonthPicker() }
+        binding.tvSelectedMonth.setOnLongClickListener {
+            filterByDay = false; updateMonthLabel(); loadPayments(); true
+        }
     }
 
     private fun showMonthPicker() {
         DatePickerDialog(
             this,
-            { _, year, month, _ ->
+            { _, year, month, day ->
                 selectedMonth.set(Calendar.YEAR, year)
                 selectedMonth.set(Calendar.MONTH, month)
-                selectedMonth.set(Calendar.DAY_OF_MONTH, 1)
+                selectedMonth.set(Calendar.DAY_OF_MONTH, day)
+                filterByDay = true
                 updateMonthLabel()
                 loadPayments()
             },
@@ -92,7 +99,8 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
     }
 
     private fun updateMonthLabel() {
-        binding.tvSelectedMonth.text = monthLabelFormat.format(selectedMonth.time)
+        binding.tvSelectedMonth.text = if (filterByDay) SimpleDateFormat("dd MMM yyyy", Locale.US).format(selectedMonth.time) else "All dates"
+        binding.tvSelectedMonth.contentDescription = "Filter by date. Long press to show all dates"
     }
 
     private fun setupRecyclerView() {
@@ -119,12 +127,13 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
                 // Call the correct customer payments URL for both general and specific views
                 val response = ApiClient.deliveryApi.getCustomerPaymentRecords(
                     customerId = targetId,
-                    month = selectedMonth.get(Calendar.MONTH) + 1,
-                    year = selectedMonth.get(Calendar.YEAR)
+                    month = if (filterByDay) selectedMonth.get(Calendar.MONTH) + 1 else null,
+                    year = if (filterByDay) selectedMonth.get(Calendar.YEAR) else null,
+                    scope = if (customerId == -1) "agent" else null
                 ).awaitResponse()
                 
                 if (response.isSuccessful) {
-                    val payments = response.body()?.payments.orEmpty()
+                    val payments = response.body()?.payments.orEmpty().filter { !filterByDay || it.createdAt?.take(10) == apiDateFormat.format(selectedMonth.time) }
                     adapter.submitList(payments)
                     binding.emptyState.visibility = if (payments.isEmpty()) View.VISIBLE else View.GONE
                 } else {
@@ -146,6 +155,40 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
         }
     }
 
+    private fun showPaymentActions(payment: DeliveryCustomerPaymentRecord, action: Int) {
+        run {
+                if (action == 0) {
+                    val input = android.widget.EditText(this).apply {
+                        inputType = android.text.InputType.TYPE_CLASS_NUMBER
+                        keyListener = android.text.method.DigitsKeyListener.getInstance("0123456789")
+                        setText("%.0f".format(java.util.Locale.US, payment.amount))
+                    }
+                    com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder(this).setTitle("Edit collected amount")
+                        .setView(input).setNegativeButton("Cancel", null)
+                        .setPositiveButton("Save") { _, _ ->
+                            mutatePayment(ApiClient.deliveryApi.editCollectedPayment(payment.id, mapOf("amount" to input.text.toString())))
+                        }.show()
+                } else {
+                    com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder(this).setTitle("Delete payment?")
+                        .setMessage("This will update the customer's due and your collection balance.")
+                        .setNegativeButton("Cancel", null).setPositiveButton("Delete") { _, _ ->
+                            mutatePayment(ApiClient.deliveryApi.deleteCollectedPayment(payment.id))
+                        }.show()
+                }
+            }
+    }
+    private fun mutatePayment(call: retrofit2.Call<okhttp3.ResponseBody>) {
+        lifecycleScope.launch {
+            try {
+                val response = call.awaitResponse()
+                if (response.isSuccessful) loadPayments()
+                else Toast.makeText(this@DeliveryCustomerPaymentsActivity, NetworkMessageUtils.parseError(response, "Unable to update payment"), Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Toast.makeText(this@DeliveryCustomerPaymentsActivity, "Unable to update payment", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     private fun monthStartDate(): String {
         val calendar = selectedMonth.clone() as Calendar
         calendar.set(Calendar.DAY_OF_MONTH, 1)
@@ -159,7 +202,7 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
     }
 }
 
-class DeliveryCustomerPaymentAdapter : RecyclerView.Adapter<DeliveryCustomerPaymentAdapter.ViewHolder>() {
+class DeliveryCustomerPaymentAdapter(private val onManage: (DeliveryCustomerPaymentRecord, Int) -> Unit = { _, _ -> }) : RecyclerView.Adapter<DeliveryCustomerPaymentAdapter.ViewHolder>() {
 
     private var items: List<DeliveryCustomerPaymentRecord> = emptyList()
     private val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
@@ -183,6 +226,11 @@ class DeliveryCustomerPaymentAdapter : RecyclerView.Adapter<DeliveryCustomerPaym
 
     inner class ViewHolder(private val binding: CustomerPaymentRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DeliveryCustomerPaymentRecord) {
+            binding.paymentActions.visibility = if (item.canManage) View.VISIBLE else View.GONE
+            com.svd.svdagencies.utils.CompactUi.applyTree(binding.root)
+            binding.paymentEdit.setOnClickListener { onManage(item, 0) }
+            binding.paymentDelete.setOnClickListener { onManage(item, 1) }
+            binding.root.contentDescription = if (item.canManage) "Payment, tap to edit or delete" else "Payment"
             binding.tvAmount.text = "₹%.2f".format(item.amount)
             
             // For general view, include customer name in the "payment for" label

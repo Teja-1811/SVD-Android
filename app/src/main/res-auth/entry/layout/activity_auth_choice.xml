@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="wrap_content" app:cardBackgroundColor="@color/card_background" app:cardCornerRadius="@dimen/card_corner_radius_medium" app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="@color/card_stroke_color">
+
+    <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_horizontal" android:orientation="vertical" android:padding="32dp">
+
+        <View android:layout_width="48dp" android:layout_height="5dp" android:layout_marginBottom="@dimen/svd_space_section" android:alpha="0.1" android:background="@color/black" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="@drawable/bg_soft_badge" android:letterSpacing="0.05" android:paddingStart="16dp" android:paddingTop="8dp" android:paddingEnd="16dp" android:paddingBottom="8dp" android:text="Choose Action" android:textAllCaps="true" android:textColor="@color/customer_badge_text" android:textSize="@dimen/text_size_body_small" android:textStyle="bold" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/svd_space_section" android:text="Get Started" android:textColor="@color/textColorPrimary" android:textSize="@dimen/svd_text_title" android:textStyle="bold" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center" android:lineSpacingMultiplier="1.2" android:text="Join our community to access exclusive features and manage your business efficiently." android:textColor="@color/textColorSecondary" android:textSize="@dimen/svd_text_label" android:visibility="gone" />
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="24dp"><com.google.android.material.button.MaterialButton android:id="@+id/btnLogin" android:layout_width="0dp" android:layout_height="56dp" android:layout_marginTop="0dp" android:text="Login" android:textAllCaps="false" android:textSize="@dimen/svd_text_body" android:textStyle="bold" app:backgroundTint="?attr/colorPrimary" app:cornerRadius="@dimen/card_corner_radius_large" android:minHeight="@dimen/svd_touch_target" android:minWidth="48dp" android:layout_weight="1" android:tag="svd-auth-large" android:layout_marginEnd="6dp" />
+
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnRegister" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="56dp" android:layout_marginTop="0dp" android:text="Register" android:textAllCaps="false" android:textColor="?attr/colorPrimary" android:textSize="@dimen/svd_text_body" android:textStyle="bold" app:cornerRadius="@dimen/card_corner_radius_large" app:strokeColor="?attr/colorPrimary" android:minHeight="@dimen/svd_touch_target" android:minWidth="48dp" android:layout_weight="1" android:tag="svd-auth-large" android:layout_marginStart="6dp" />
+
+        </LinearLayout><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/svd_space_section" android:alpha="0.6" android:text="By continuing, you agree to our Terms" android:textColor="@color/textColorSecondary" android:textSize="@dimen/text_size_body_small" />
+
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+</com.google.android.material.card.MaterialCardView>

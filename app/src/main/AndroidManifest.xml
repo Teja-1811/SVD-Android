@@ -145,6 +145,7 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".ui.admin.AdminHistoryActivity" android:exported="false" />
     </application>
 
 </manifest>

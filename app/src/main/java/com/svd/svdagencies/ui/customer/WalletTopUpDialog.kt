@@ -38,12 +38,12 @@ object WalletTopUpDialog {
         alert.setOnShowListener {
             alert.getButton(android.content.DialogInterface.BUTTON_POSITIVE).setOnClickListener { button ->
                 button.isEnabled = false
-                val payButton = button as android.widget.Button
-                payButton.text = "Starting payment…"
+                val payButton = button as? android.widget.Button
+                payButton?.text = "Starting payment…"
                 val pulse = android.animation.ObjectAnimator.ofFloat(button, "alpha", 1f, 0.55f, 1f).apply {
                     duration = 900; repeatCount = android.animation.ValueAnimator.INFINITE; start()
                 }
-                fun reset() { pulse.cancel(); button.alpha = 1f; button.isEnabled = true; payButton.text = "Pay" }
+                fun reset() { pulse.cancel(); button.alpha = 1f; button.isEnabled = true; payButton?.text = "Pay" }
                 val call = ApiClient.customerApi.initiateGatewayPayment(mapOf("amount" to String.format(Locale.US,"%.2f",shortfall), "payment_for" to "GENERAL"))
                 owner.lifecycle.addObserver(object : androidx.lifecycle.DefaultLifecycleObserver {
                     override fun onDestroy(owner: androidx.lifecycle.LifecycleOwner) { call.cancel(); reset(); alert.dismiss() }
@@ -65,10 +65,10 @@ object WalletTopUpDialog {
                         val init = WhiteMaterialAlertDialogBuilder(activity).setView(content).create()
                         content.findViewById<android.view.View>(com.svd.svdagencies.R.id.upiDialogCancel).setOnClickListener { init.dismiss() }
                         content.findViewById<com.google.android.material.button.MaterialButton>(com.svd.svdagencies.R.id.upiDialogPay).setOnClickListener { view ->
-                            val pay = view as com.google.android.material.button.MaterialButton
-                            pay.showLoading(true, "Opening UPI…")
+                            val pay = view as? com.google.android.material.button.MaterialButton
+                            pay?.showLoading(true, "Opening UPI…")
                             UpiPaymentLauncher.open(activity, uri,
-                                onCancelled = { pay.showLoading(false) },
+                                onCancelled = { pay?.showLoading(false) },
                                 onLaunched = {
                                     init.dismiss()
                                     val waiting = WhiteMaterialAlertDialogBuilder(activity)

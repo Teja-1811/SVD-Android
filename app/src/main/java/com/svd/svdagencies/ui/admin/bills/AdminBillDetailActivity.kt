@@ -133,7 +133,7 @@ class AdminBillDetailActivity : AdminBaseActivity() {
                 tvBillNumber.text = "#${response.invoice_number}"
                 tvBillDate.text = response.invoice_date
                 tvTotalAmount.text = "₹${response.total_amount}"
-                tvProfit.text = "₹${response.profit}"
+                tvProfit.text = String.format(java.util.Locale.US, "₹%.2f", response.profit)
                 tvOpeningDue.text = "₹${response.op_due_amount}"
                 tvCurrentDue.text = "₹${response.current_due}"
             } catch (e: Exception) {

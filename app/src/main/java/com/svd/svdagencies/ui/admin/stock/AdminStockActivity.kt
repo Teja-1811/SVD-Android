@@ -240,6 +240,7 @@ class AdminStockActivity : AdminBaseActivity() {
         // Update Table
         allStockItems = data.allItems
         adapter.updateList(allStockItems)
+        com.svd.svdagencies.utils.AdminSidebar.runPendingAction(this, true)
     }
 
     private fun setupBarChart(topItems: List<com.svd.svdagencies.data.model.admin.stock.StockItem>) {
@@ -416,7 +417,12 @@ class AdminStockActivity : AdminBaseActivity() {
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
 
-        val itemNames = allStockItems.map { "${it.name} (${it.companyName})" }
+        val selectableItems = allStockItems.filter { it.stockQuantity > 0 }
+        if (selectableItems.isEmpty()) {
+            Toast.makeText(this, "No in-stock items available", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val itemNames = selectableItems.map { "${it.name} (${it.companyName})" }
         val adapter = ArrayAdapter(this, R.layout.delivery_dropdown_item, itemNames)
         actvItem.setAdapter(adapter)
 
@@ -427,7 +433,7 @@ class AdminStockActivity : AdminBaseActivity() {
                 val selectedName = actvItem.text.toString()
                 val itemIndex = itemNames.indexOf(selectedName)
                 if (itemIndex != -1) {
-                    val itemId = allStockItems[itemIndex].id
+                    val itemId = selectableItems[itemIndex].id
                     val qty = etQuantity.text.toString().toIntOrNull() ?: 0
                     if (qty > 0) {
                         saveLeakage(itemId, qty, etDate.text.toString(), etNotes.text.toString(), actvType.text.toString().lowercase(Locale.ROOT))

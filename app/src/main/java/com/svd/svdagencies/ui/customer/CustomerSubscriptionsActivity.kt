@@ -94,7 +94,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         empty = screen.findViewById(R.id.tvSubscriptionsEmpty)
         container = screen.findViewById(R.id.subscriptionsContainer)
         plans = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        (container.parent as LinearLayout).addView(plans)
+        (container.parent as? android.view.ViewGroup)?.addView(plans)
         if (SessionManager(this).getRole() == UserRole.USER) {
             findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.customerBottomNav).apply {
                 visibility = View.VISIBLE

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <item name="admin_sidebar_installed" type="id" />
+  <item name="nav_agent_dues" type="id" />
+  <item name="nav_bills" type="id" />
+  <item name="nav_cashbook" type="id" />
+  <item name="nav_category_sales" type="id" />
+  <item name="nav_change_theme" type="id" />
+  <item name="nav_companies" type="id" />
+  <item name="nav_customer_item_discounts" type="id" />
+  <item name="nav_customers" type="id" />
+  <item name="nav_dues" type="id" />
+  <item name="nav_enquiries" type="id" />
+  <item name="nav_expenses" type="id" />
+  <item name="nav_gst" type="id" />
+  <item name="nav_home" type="id" />
+  <item name="nav_items" type="id" />
+  <item name="nav_monthly_summary" type="id" />
+  <item name="nav_new_bill" type="id" />
+  <item name="nav_offer_usage" type="id" />
+  <item name="nav_offers" type="id" />
+  <item name="nav_order_timings" type="id" />
+  <item name="nav_orders" type="id" />
+  <item name="nav_payments" type="id" />
+  <item name="nav_purchase_reports" type="id" />
+  <item name="nav_routes" type="id" />
+  <item name="nav_statement" type="id" />
+  <item name="nav_stock" type="id" />
+  <item name="nav_subscription_report" type="id" />
+  <item name="nav_users" type="id" />
+</resources>

@@ -95,7 +95,7 @@ class AdminBillAdapter(
             tvCustomerName.text = bill.customer_name ?: ""
             tvGeneratedBy.text = bill.generatedBy?.name?.takeIf { it.isNotBlank() } ?: "Not recorded"
             tvTotalAmount.text = "₹" + bill.total_amount
-            tvProfitAmount.text = "₹" + bill.profit
+            tvProfitAmount.text = String.format(Locale.US, "₹%.2f", bill.profit)
 
             btnView.setOnClickListener { onViewClick(bill) }
             btnEdit.setOnClickListener { onEditClick(bill) }

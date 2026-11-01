@@ -14,4 +14,14 @@ class WhiteMaterialAlertDialogBuilder(context: Context) : MaterialAlertDialogBui
             cornerRadius = 28 * context.resources.displayMetrics.density
         })
     }
+    override fun create(): androidx.appcompat.app.AlertDialog {
+        return super.create().also { dialog ->
+            dialog.setOnShowListener {
+                dialog.window?.decorView?.let { CompactUi.applyTree(it) }
+                for (which in listOf(android.content.DialogInterface.BUTTON_POSITIVE, android.content.DialogInterface.BUTTON_NEGATIVE, android.content.DialogInterface.BUTTON_NEUTRAL)) {
+                    dialog.getButton(which)?.let { ActionButtonColors.apply(it, which == android.content.DialogInterface.BUTTON_POSITIVE) }
+                }
+            }
+        }
+    }
 }

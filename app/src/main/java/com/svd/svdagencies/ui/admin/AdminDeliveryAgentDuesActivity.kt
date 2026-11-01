@@ -41,6 +41,7 @@ import java.util.Calendar
 import java.util.Locale
 
 class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
+    private val dueDetailsMode get() = intent.getBooleanExtra("sidebar_due_details", false)
     private var filterRequest: Job? = null
 
     private lateinit var swipeRefresh: AppSwipeRefreshLayout
@@ -63,7 +64,7 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.admin_delivery_agent_dues)
-        setupAdminLayout("Agent Dues")
+        setupAdminLayout(if (intent.getBooleanExtra("sidebar_due_details", false)) "Due Details" else "Delivery Data")
         initDates()
         initViews()
         setupLists()
@@ -111,16 +112,13 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
             startActivity(intent)
         }
 
-        val concatAdapter = ConcatAdapter(
-            headerAdapter,
-            duesHeaderAdapter,
-            duesTableHeaderAdapter,
-            duesAdapter,
-            itemsHeaderAdapter,
-            itemAdapter,
-            billsHeaderAdapter,
-            billAdapter
-        )
+        headerAdapter.showStats = !dueDetailsMode
+        val concatAdapter = if (dueDetailsMode) {
+            ConcatAdapter(headerAdapter, duesHeaderAdapter, duesTableHeaderAdapter, duesAdapter)
+        } else {
+            ConcatAdapter(headerAdapter, itemsHeaderAdapter, itemAdapter, billsHeaderAdapter, billAdapter)
+        }
+
         rvUnified.apply {
             layoutManager = LinearLayoutManager(this@AdminDeliveryAgentDuesActivity)
             adapter = concatAdapter
@@ -188,7 +186,7 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
         duesHeaderAdapter.notifyItemChanged(0)
         duesTableHeaderAdapter.isVisible = response.dailyDues.isNotEmpty()
         duesTableHeaderAdapter.notifyItemChanged(0)
-        duesAdapter.submitList(response.dailyDues)
+        duesAdapter.submitList(response.dailyDues.map { due -> due.copy(agentName = due.agentName ?: agents.firstOrNull { it.id == due.deliveryAgentId }?.name) })
 
         itemsHeaderAdapter.isVisible = response.items.isNotEmpty()
         itemsHeaderAdapter.notifyItemChanged(0)
@@ -198,6 +196,7 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
         billsHeaderAdapter.isVisible = allBills.isNotEmpty()
         billsHeaderAdapter.notifyItemChanged(0)
         billAdapter.submitList(allBills)
+
     }
 
     private fun showSubmissionDialog() {

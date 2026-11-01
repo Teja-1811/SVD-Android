@@ -36,7 +36,7 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
         setupAdminLayout("Subscriptions")
         list = findViewById(R.id.subscriptionOffersList)
         loading = findViewById(R.id.subscriptionOffersLoading)
-        findViewById<MaterialButton>(R.id.btnCreateSubscriptionOffer).setOnClickListener { showCreateDialog() }
+        findViewById<MaterialButton>(R.id.btnCreateSubscriptionOffer).visibility = android.view.View.GONE
         loadOffers()
     }
 
@@ -48,6 +48,7 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
                 if (!response.isSuccessful) return toast("Unable to load subscription offers")
                 val body = response.body() ?: return
                 catalogueItems = body.getAsJsonArray("items") ?: JsonArray()
+                com.svd.svdagencies.utils.AdminSidebar.runPendingAction(this@AdminSubscriptionOffersActivity, true)
                 list.removeAllViews()
                 (body.getAsJsonArray("offers") ?: JsonArray()).forEach { addOfferCard(it.asJsonObject) }
             }
@@ -58,25 +59,26 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
     private fun addOfferCard(offer: JsonObject) {
         val card = MaterialCardView(this).apply {
             layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(12) }
-            setCardBackgroundColor(ContextCompat.getColor(this@AdminSubscriptionOffersActivity, R.color.surface_background))
+            setCardBackgroundColor(android.graphics.Color.WHITE)
             radius = dp(16).toFloat(); strokeWidth = dp(1); strokeColor = ContextCompat.getColor(this@AdminSubscriptionOffersActivity, R.color.card_stroke_color)
         }
         val body = com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(14), dp(16), dp(14)) }
-        body.addView(label(offer.value("name"), 18, true))
-        body.addView(label("User Portal · ${offer.value("duration_value")} ${offer.value("duration_unit")} · ${offer.value("delivery_frequency")}", 14, false))
-        body.addView(label("${offer.value("delivery_count")} deliveries · ₹${offer.value("total_amount")}", 15, true).apply { setPadding(0, dp(6), 0, 0) })
-        val itemLines = offer.getAsJsonArray("items")?.joinToString("\n") { item ->
-            val row = item.asJsonObject
-            "• ${row.value("name")} × ${row.value("quantity")} @ ₹${row.value("unit_price")}" 
-        }.orEmpty()
-        body.addView(label(itemLines, 13, false).apply { setPadding(0, dp(8), 0, 0) })
-        body.addView(com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            addView(MaterialButton(this@AdminSubscriptionOffersActivity).apply {
-                text = "Edit"; isAllCaps = false
-                setOnClickListener { showEditDialog(offer) }
-            })
-        })
+        val header=LinearLayout(this).apply { orientation=LinearLayout.HORIZONTAL;gravity=android.view.Gravity.CENTER_VERTICAL }
+        header.addView(label(offer.value("name"),16,true),LinearLayout.LayoutParams(0,-2,1f))
+        header.addView(MaterialButton(this).apply { text="Edit";isAllCaps=false;setOnClickListener { showEditDialog(offer) } },LinearLayout.LayoutParams(-2,dp(32)))
+        body.addView(header)
+        val duration=offer.value("duration_value")
+        val unit=offer.value("duration_unit").removeSuffix("s") + if(duration=="1") "" else "s"
+        body.addView(label("$duration $unit · ${offer.value("delivery_frequency").replaceFirstChar { it.uppercase() }}",12,false))
+        body.addView(label("${offer.value("delivery_count")} deliveries · ${planMoney(offer.value("total_amount"))}",16,true).apply { setPadding(0,dp(10),0,dp(10)) })
+        offer.getAsJsonArray("items")?.forEach { item ->
+            val entry=item.asJsonObject
+            val line=LinearLayout(this).apply { orientation=LinearLayout.HORIZONTAL;gravity=android.view.Gravity.CENTER_VERTICAL;setPadding(0,dp(8),0,dp(8)) }
+            line.addView(label("${entry.value("name")} × ${entry.value("quantity")}",13,false),LinearLayout.LayoutParams(0,-2,1f))
+            line.addView(label(planMoney(entry.value("unit_price")),13,true))
+            body.addView(line)
+            body.addView(View(this).apply { setBackgroundColor(android.graphics.Color.rgb(230,236,239)) },LinearLayout.LayoutParams(-1,dp(1)))
+        }
         card.addView(body); list.addView(card)
     }
 
@@ -170,6 +172,7 @@ class AdminSubscriptionOffersActivity : AdminBaseActivity() {
         })
     }
 
+    private fun planMoney(raw:String) = "₹" + String.format(java.util.Locale.US,"%,.2f",raw.toDoubleOrNull() ?: 0.0)
     private fun JsonObject.value(name: String) = get(name)?.asString ?: ""
     private fun label(value: String, size: Int, bold: Boolean) = TextView(this).apply {
         text = value; textSize = size.toFloat(); setTextColor(ContextCompat.getColor(this@AdminSubscriptionOffersActivity, R.color.textColorPrimary))

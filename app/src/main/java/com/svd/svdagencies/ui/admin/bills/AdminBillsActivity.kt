@@ -2,7 +2,6 @@ package com.svd.svdagencies.ui.admin.bills
 
 import com.svd.svdagencies.utils.PaymentConfig
 
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -46,12 +45,8 @@ class AdminBillsActivity : AdminBaseActivity() {
 
 
     private lateinit var autoCompleteCustomer: AutoCompleteTextView
-    private lateinit var tvStartDate: TextView
-    private lateinit var tvEndDate: TextView
-    private lateinit var btnSearch: Button
     private lateinit var btnClearFilters: MaterialButton
     private lateinit var rvBills: RecyclerView
-    private lateinit var fabCreateBill: MaterialButton
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var btnPreviousPage: MaterialButton
     private lateinit var btnNextPage: MaterialButton
@@ -60,8 +55,6 @@ class AdminBillsActivity : AdminBaseActivity() {
     private lateinit var billAdapter: AdminBillAdapter
     private var customers: List<CustomerItem> = emptyList()
 
-    private var startDate: Calendar = Calendar.getInstance()
-    private var endDate: Calendar = Calendar.getInstance()
 
     private var currentPage = 1
     private var isLoading = false
@@ -89,12 +82,8 @@ class AdminBillsActivity : AdminBaseActivity() {
 
     private fun initViews() {
         autoCompleteCustomer = findViewById(R.id.autoCompleteCustomer)
-        tvStartDate = findViewById(R.id.tvStartDate)
-        tvEndDate = findViewById(R.id.tvEndDate)
-        btnSearch = findViewById(R.id.btnSearch)
         btnClearFilters = findViewById(R.id.btnClearBillFilters)
         rvBills = findViewById(R.id.rvBills)
-        fabCreateBill = findViewById(R.id.fabCreateBill)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
         btnPreviousPage = findViewById(R.id.btnPreviousBillsPage)
         btnNextPage = findViewById(R.id.btnNextBillsPage)
@@ -301,54 +290,16 @@ class AdminBillsActivity : AdminBaseActivity() {
     }
 
     private fun setupListeners() {
-        tvStartDate.setOnClickListener { showDatePickerDialog(isStartDate = true) }
-        tvEndDate.setOnClickListener { showDatePickerDialog(isStartDate = false) }
-        btnSearch.visibility = View.GONE
         btnClearFilters.text = ""
 
 
         btnClearFilters.setOnClickListener { clearFilters() }
         btnPreviousPage.setOnClickListener { if (currentPage > 1) fetchBills(currentPage - 1) }
         btnNextPage.setOnClickListener { fetchBills(currentPage + 1) }
-        fabCreateBill.setOnClickListener {
-            val intent = Intent(this, CreateBillActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    private fun showDatePickerDialog(isStartDate: Boolean) {
-        val calendar = if (isStartDate) startDate else endDate
-        val datePickerDialog = DatePickerDialog(
-            this,
-            { _, year, month, dayOfMonth ->
-                calendar.set(year, month, dayOfMonth)
-                updateDateTextView(isStartDate)
-                fetchBills(isRefresh = true)
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        datePickerDialog.show()
-    }
-
-    private fun updateDateTextView(isStartDate: Boolean) {
-        val calendar = if (isStartDate) startDate else endDate
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val dateString = format.format(calendar.time)
-        if (isStartDate) {
-            tvStartDate.text = dateString
-        } else {
-            tvEndDate.text = dateString
-        }
     }
 
     private fun clearFilters() {
         routeCustomerFilters?.clear()
-        tvStartDate.text = ""
-        tvEndDate.text = ""
-        startDate = Calendar.getInstance()
-        endDate = Calendar.getInstance()
         fetchBills(isRefresh = true)
     }
 
@@ -389,13 +340,11 @@ class AdminBillsActivity : AdminBaseActivity() {
 
         val customerId = routeCustomerFilters?.customerId
 
-        val startDateString = if (tvStartDate.text.isNotEmpty()) tvStartDate.text.toString() else null
-        val endDateString = if (tvEndDate.text.isNotEmpty()) tvEndDate.text.toString() else null
 
         filterRequest?.cancel()
         filterRequest = lifecycleScope.launch {
             try {
-                val response = ApiClient.billsDashboardApi.getBills(customerId, startDateString, endDateString, page, routeCustomerFilters?.routeId)
+                val response = ApiClient.billsDashboardApi.getBills(customerId, null, null, page, routeCustomerFilters?.routeId)
 
                 currentPage = response.current_page
                 billAdapter.updateList(response.results)

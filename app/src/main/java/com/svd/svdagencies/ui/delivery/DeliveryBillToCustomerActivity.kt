@@ -76,6 +76,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     private lateinit var catalogAdapter: DeliveryBillSelectAdapter
     private lateinit var sessionManager: SessionManager
     private var fetchCustomersJob: Job? = null
+    private val customerCredit = mutableMapOf<Int, Boolean>()
     private var availableItems: List<DeliveryBillItem> = emptyList()
     private var customers: List<DeliveryBillCustomer> = emptyList()
     private var routes: List<DeliveryRoute> = emptyList()
@@ -309,6 +310,11 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         }
                     }
                     
+                    if (selectedRouteId == null && routes.isNotEmpty()) {
+                        selectedRouteId = routes.first().id
+                        autoRoute.setText(routes.first().name, false)
+                        sessionManager.saveSelectedRoute(selectedRouteId, routes.first().name)
+                    }
                     fetchCustomers()
                 } else {
                     swipeRefresh.isRefreshing = false
@@ -353,6 +359,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                                 if (billingTarget != BILLING_TARGET_CUSTOMER_LIST) {
                                     selectBillingTarget(BILLING_TARGET_CUSTOMER_LIST)
                                 }
+                                customer.allowCredit?.let { customerCredit[customer.id] = it }
                                 customerId = customer.id
                                 customerName = customer.name
                                 customerPhone = customer.phone.orEmpty()
@@ -368,6 +375,10 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         }
                     }
                     
+                    if (customerId == 0 && customers.isNotEmpty()) {
+                        autoCustomer.setText(customers.first().label, false)
+                        autoCustomer.onItemClickListener?.onItemClick(null, null, 2, 2L)
+                    }
                     // Automatically show dropdown if the user just selected a route
                     if (customers.isNotEmpty() && !swipeRefresh.isRefreshing) {
                         autoCustomer.showDropDown()
@@ -399,7 +410,9 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             try {
                 val response = ApiClient.deliveryApi.getCustomerOpeningBalance(id).awaitResponse()
                 if (response.isSuccessful) {
+                    if (id != customerId) return@launch
                     val body = response.body()
+                    body?.allowCredit?.let { customerCredit[id] = it }
                     openingDue = body?.openingBalance ?: 0.0
                     tvOpeningDue.text = "₹ %.2f".format(openingDue)
                     updateSummary()
@@ -456,9 +469,19 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                         prefillMap = null
                     }
                     updateSummary()
+                    if (availableItems.isEmpty()) {
+                        Toast.makeText(this@DeliveryBillToCustomerActivity, "No in-stock items available", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this@DeliveryBillToCustomerActivity,
+                        NetworkMessageUtils.parseError(catalogResponse, "Unable to load items. Pull down to retry."),
+                        Toast.LENGTH_LONG).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@DeliveryBillToCustomerActivity, "Failed to load data", Toast.LENGTH_SHORT).show()
+                if (e is CancellationException) throw e
+                Toast.makeText(this@DeliveryBillToCustomerActivity,
+                    NetworkMessageUtils.friendlyMessage(e, "Unable to load items. Pull down to retry."),
+                    Toast.LENGTH_LONG).show()
             } finally {
                 swipeRefresh.isRefreshing = false
                 hideScreenLoading()
@@ -500,6 +523,7 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             btnGenerateBill.isEnabled = canUpdate
             btnGenerateBill.alpha = if (canUpdate) 1.0f else 0.5f
         }
+        com.svd.svdagencies.utils.ActionButtonColors.apply(btnGenerateBill)
     }
 
     private fun showUpdateBalanceDialog() {
@@ -557,12 +581,12 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
 
         chip500?.setOnClickListener {
             val current = etAmount?.text?.toString()?.toDoubleOrNull() ?: 0.0
-            etAmount?.setText("%.2f".format(current + 500.0))
+            etAmount?.setText("%.0f".format(current + 500.0))
         }
 
         chip1000?.setOnClickListener {
             val current = etAmount?.text?.toString()?.toDoubleOrNull() ?: 0.0
-            etAmount?.setText("%.2f".format(current + 1000.0))
+            etAmount?.setText("%.0f".format(current + 1000.0))
         }
 
         chipClear?.setOnClickListener {
@@ -659,6 +683,15 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         }
     }
 
+    private fun showCreditLimitDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Credit limit exceeded")
+            .setMessage("Customer exceeds the credit limit. You can collect pending payments, but cannot generate a new bill until the administrator enables Allow credit.")
+            .setPositiveButton("Collect pending payment") { _, _ -> showUpdateBalanceDialog() }
+            .setNegativeButton("Close", null)
+            .show()
+    }
+
     private fun generateBill() {
         if (customerId <= 0) {
             Toast.makeText(this, "Please select a customer", Toast.LENGTH_SHORT).show()
@@ -671,6 +704,10 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             return
         }
 
+        if (customerCredit[customerId] == false) {
+            showCreditLimitDialog()
+            return
+        }
         showConfirmationDialog(selectedItems)
     }
 
@@ -786,11 +823,18 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                     dialog.dismiss()
                     resetLayout()
                 } else {
-                    Toast.makeText(
-                        this@DeliveryBillToCustomerActivity,
-                        com.svd.svdagencies.utils.NetworkMessageUtils.parseError(response, response.body()?.message ?: "Failed"),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val error = runCatching {
+                        org.json.JSONObject(response.errorBody()?.string().orEmpty())
+                    }.getOrNull()
+                    if (error?.optString("code") == "credit_limit_exceeded") {
+                        customerCredit[customerId] = false
+                        dialog.dismiss()
+                        showCreditLimitDialog()
+                    } else {
+                        val message = error?.optString("message")?.takeIf { it.isNotBlank() }
+                            ?: response.body()?.message ?: "Unable to generate bill"
+                        Toast.makeText(this@DeliveryBillToCustomerActivity, message, Toast.LENGTH_LONG).show()
+                    }
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@DeliveryBillToCustomerActivity, "Error generating bill", Toast.LENGTH_SHORT).show()

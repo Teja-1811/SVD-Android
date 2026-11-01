@@ -37,6 +37,8 @@ import java.util.*
 
 class AdminMonthlySummary : AdminBaseActivity() {
 
+    private lateinit var autoRoute: AutoCompleteTextView
+    private var selectedRouteId: Int? = null
     private lateinit var autoCustomer: AutoCompleteTextView
     private lateinit var etMonth: ImageButton
     private lateinit var btnDownload: ImageButton
@@ -87,11 +89,26 @@ class AdminMonthlySummary : AdminBaseActivity() {
         val customerField = autoCustomer.parent?.parent as? View
         if (filterRow != null && customerField?.parent == filterRow) {
             filterRow.orientation = LinearLayout.VERTICAL
-            customerField.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            val actions = com.svd.svdagencies.utils.CompactLinearLayout(this)
+            filterRow.removeView(customerField)
+            val selectors = LinearLayout(this).apply { orientation=LinearLayout.HORIZONTAL;tag="svd-fixed-row" }
+            val routeBox = com.google.android.material.textfield.TextInputLayout(this).apply {
+                hint="Route";boxBackgroundMode=com.google.android.material.textfield.TextInputLayout.BOX_BACKGROUND_OUTLINE
+                layoutParams=LinearLayout.LayoutParams(0,-2,1f).apply { marginEnd=(8*resources.displayMetrics.density).toInt() }
+            }
+            autoRoute = com.google.android.material.textfield.MaterialAutoCompleteTextView(this).apply { inputType=0;hint="Route";threshold=0;keyListener=null;setOnClickListener { showDropDown() };setOnFocusChangeListener { _,focused -> if(focused)showDropDown() } }
+            routeBox.addView(autoRoute,LinearLayout.LayoutParams(-1,-2))
+            routeBox.endIconMode=com.google.android.material.textfield.TextInputLayout.END_ICON_DROPDOWN_MENU
+            selectors.addView(routeBox)
+            customerField.layoutParams=LinearLayout.LayoutParams(0,-2,1f)
+            selectors.addView(customerField)
+            filterRow.addView(selectors)
+            val actions = LinearLayout(this).apply { orientation=LinearLayout.HORIZONTAL;gravity=android.view.Gravity.END;tag="svd-fixed-row";setPadding(0,(8*resources.displayMetrics.density).toInt(),0,0) }
             listOf(etMonth, btnDownload, btnWhatsappShare).forEach { button ->
                 filterRow.removeView(button)
-                actions.addView(button, LinearLayout.LayoutParams(0, (52 * resources.displayMetrics.density).toInt(), 1f))
+                val size=(32*resources.displayMetrics.density).toInt()
+                button.minimumWidth=0;button.minimumHeight=0
+                button.setPadding(6,6,6,6)
+                actions.addView(button, LinearLayout.LayoutParams(size,size).apply { marginStart=(8*resources.displayMetrics.density).toInt() })
             }
             filterRow.addView(actions)
         }
@@ -153,28 +170,19 @@ class AdminMonthlySummary : AdminBaseActivity() {
                 val response = api.getCustomers().awaitResponse()
                 if (response.isSuccessful) {
                     customersList = response.body()?.customers ?: emptyList()
-                    val names = customersList.map { "${it.name ?: "Unknown"} (#${it.id})" }
+
                     withContext(Dispatchers.Main) {
                         if (isDestroyed || isFinishing) return@withContext
-                        val adapter = ArrayAdapter(this@AdminMonthlySummary, R.layout.delivery_dropdown_item, names)
-                        autoCustomer.setAdapter(adapter)
-                        autoCustomer.setOnItemClickListener { _, _, position, _ ->
-                            val selectedName = adapter.getItem(position)
-                            val customer = customersList.getOrNull(names.indexOf(selectedName))
-                            selectedCustomerId = customer?.id
-                            selectedCustomerArea = customer?.area ?: ""
-                            
-                            // Pre-fill customer details from list
-                            customer?.let {
-                                layoutResults.visibility = View.VISIBLE
-                                cardCustomerDetails.visibility = View.VISIBLE
-                                tvDetailName.text = it.name
-                                tvDetailShop.text = it.shop_name
-                                tvDetailPhone.text = it.phone
-                            }
-                            
-                            fetchSummary()
+                        val routes=customersList.filter { it.route_id!=null }.distinctBy { it.route_id }
+                        val routeLabels=listOf("All routes")+routes.map { it.route_name ?: "Route #${it.route_id}" }
+                        autoRoute.setAdapter(ArrayAdapter(this@AdminMonthlySummary,R.layout.delivery_dropdown_item,routeLabels))
+                        autoRoute.setText("All routes",false)
+                        autoRoute.setOnItemClickListener { _,_,position,_ ->
+                            selectedRouteId=if(position==0)null else routes[position-1].route_id
+                            selectedCustomerId=null;currentSummary=null;autoCustomer.setText("",false);layoutResults.visibility=View.GONE
+                            updateCustomerFilter()
                         }
+                        updateCustomerFilter()
                     }
                 }
             } catch (e: Exception) {
@@ -184,6 +192,20 @@ class AdminMonthlySummary : AdminBaseActivity() {
                     Toast.makeText(this@AdminMonthlySummary, "Failed to load customers", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    private fun updateCustomerFilter() {
+        val filtered=customersList.filter { selectedRouteId==null || it.route_id==selectedRouteId }
+        val names=filtered.map { it.name ?: "Unknown" }
+        val adapter=ArrayAdapter(this,R.layout.delivery_dropdown_item,names)
+        autoCustomer.setAdapter(adapter)
+        autoCustomer.setOnItemClickListener { _,_,position,_ ->
+            val customer=filtered.filter { it.name.orEmpty().contains(autoCustomer.text.toString(),true) }.getOrNull(position) ?: filtered.getOrNull(position) ?: return@setOnItemClickListener
+            selectedCustomerId=customer.id;selectedCustomerArea=customer.area.orEmpty()
+            layoutResults.visibility=View.VISIBLE;cardCustomerDetails.visibility=View.VISIBLE
+            tvDetailName.text=customer.name;tvDetailShop.text=customer.shop_name;tvDetailPhone.text=customer.phone
+            fetchSummary()
         }
     }
 

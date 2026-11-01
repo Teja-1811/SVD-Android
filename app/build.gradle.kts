@@ -17,8 +17,8 @@ configure<ApplicationExtension> {
         applicationId = "com.svd.svdagencies"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.0.5"
+        versionCode = 5
+        versionName = "1.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,6 +38,62 @@ configure<ApplicationExtension> {
             keyPassword = "android"
         }
     }
+
+    // Layouts are grouped by portal; shared values, images and menus remain in res.
+    sourceSets.getByName("main").res.srcDirs(
+        "src/main/res-admin/bills",
+        "src/main/res-admin/companies",
+        "src/main/res-admin/customers",
+        "src/main/res-admin/dashboard",
+        "src/main/res-admin/delivery-data",
+        "src/main/res-admin/enquiries",
+        "src/main/res-admin/finance",
+        "src/main/res-admin/history",
+        "src/main/res-admin/monthly-statements",
+        "src/main/res-admin/offers-subscriptions",
+        "src/main/res-admin/orders",
+        "src/main/res-admin/products",
+        "src/main/res-admin/reports",
+        "src/main/res-admin/routes",
+        "src/main/res-admin/settings",
+        "src/main/res-admin/shared",
+        "src/main/res-admin/stock", "src/main/res-delivery/bills",
+        "src/main/res-delivery/dashboard",
+        "src/main/res-delivery/navigation",
+        "src/main/res-delivery/payments",
+        "src/main/res-delivery/products",
+        "src/main/res-delivery/reports",
+        "src/main/res-delivery/stock",
+        "src/main/res-delivery/subscriptions", "src/main/res-customer/bills",
+        "src/main/res-customer/companies",
+        "src/main/res-customer/dashboard",
+        "src/main/res-customer/navigation",
+        "src/main/res-customer/offers",
+        "src/main/res-customer/orders",
+        "src/main/res-customer/payments",
+        "src/main/res-customer/products",
+        "src/main/res-customer/statements",
+        "src/main/res-customer/subscriptions",
+        "src/main/res-customer/support",
+        "src/main/res-user/bills",
+        "src/main/res-user/companies",
+        "src/main/res-user/dashboard",
+        "src/main/res-user/navigation",
+        "src/main/res-user/offers",
+        "src/main/res-user/orders",
+        "src/main/res-user/payments",
+        "src/main/res-user/products",
+        "src/main/res-user/stock",
+        "src/main/res-user/subscriptions", "src/main/res-auth/entry",
+        "src/main/res-auth/login",
+        "src/main/res-auth/registration",
+        "src/main/res-auth/welcome", "src/main/res-shared/common",
+        "src/main/res-shared/companies",
+        "src/main/res-shared/payments",
+        "src/main/res-shared/settings",
+        "src/main/res-shared/subscriptions",
+        "src/main/res-shared/support"
+    )
 
     buildFeatures {
         buildConfig = true

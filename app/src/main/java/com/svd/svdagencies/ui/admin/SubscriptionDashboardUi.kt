@@ -81,11 +81,11 @@ internal class SubscriptionDashboardUi(private val activity: NativeAnalyticsActi
         totals.entrySet().filter { it.key !in primary }.forEach { (key, value) ->
             extra.addView(detail(title(key), display(key, value)))
         }
-        expandable(results, "More totals", extra)
+        if(extra.childCount>0) expandable(results, "More totals", extra)
         section("Plans")
         data.getAsJsonArray("groups")?.forEach { entry ->
             val group = entry.asJsonObject
-            val body = column().apply { setPadding(dp(14), dp(14), dp(14), dp(14)) }
+            val body = column().apply { setPadding(dp(12), dp(10), dp(12), dp(10)) }
             body.addView(text(string(group, "name"), 16f, true), block(6))
             body.addView(text("${string(group, "subscriptions")} subscriptions · ${string(group, "customer_count")} customers", 13f).apply { setTextColor(muted) }, block(8))
             val counts = row()
@@ -105,7 +105,7 @@ internal class SubscriptionDashboardUi(private val activity: NativeAnalyticsActi
         records?.forEach { entry ->
             val record = entry.asJsonObject
             val fields = record.getAsJsonObject("fields") ?: JsonObject()
-            val body = column().apply { setPadding(dp(14), dp(14), dp(14), dp(14)) }
+            val body = column().apply { setPadding(dp(12), dp(10), dp(12), dp(10)) }
             val header = row()
             header.addView(text(string(record, "customer"), 17f, true), LinearLayout.LayoutParams(0, -2, 1f))
             header.addView(text(string(fields, "status").replaceFirstChar { it.uppercase() }, 12f, true).apply {
@@ -143,19 +143,24 @@ internal class SubscriptionDashboardUi(private val activity: NativeAnalyticsActi
         pager.addView(MaterialButton(activity).apply { styleButton(this, "Previous", false); isEnabled = page > 1; setOnClickListener { onPage(page - 1) } }, LinearLayout.LayoutParams(-2, dp(46)))
         pager.addView(text("$page / $pages", 13f).apply { gravity = Gravity.CENTER }, LinearLayout.LayoutParams(0, -2, 1f))
         pager.addView(MaterialButton(activity).apply { styleButton(this, "Next", false); isEnabled = page < pages; setOnClickListener { onPage(page + 1) } }, LinearLayout.LayoutParams(-2, dp(46)))
-        results.addView(pager)
+        if(pages>1)results.addView(pager)
     }
 
     private fun expandable(parent: LinearLayout, label: String, details: LinearLayout) {
         details.visibility = View.GONE
-        val toggle = MaterialButton(activity).apply {
-            styleButton(this, label, false); textSize = 13f
-            setOnClickListener { details.visibility = if (details.visibility == View.VISIBLE) View.GONE else View.VISIBLE; text = if (details.visibility == View.VISIBLE) "Hide details" else label }
+        val toggle = text(label + "  +",13f,true).apply {
+            gravity=Gravity.CENTER_VERTICAL
+            minimumHeight=dp(36)
+            isFocusable=true;isClickable=true
+            setOnClickListener {
+                details.visibility=if(details.visibility==View.VISIBLE)View.GONE else View.VISIBLE
+                text=label+if(details.visibility==View.VISIBLE) "  −" else "  +"
+            }
         }
-        parent.addView(toggle, LinearLayout.LayoutParams(-1, dp(44)).apply { topMargin = dp(8); bottomMargin = dp(6) })
+        parent.addView(toggle, LinearLayout.LayoutParams(-1,-2).apply { topMargin=dp(4);bottomMargin=dp(4) })
         parent.addView(details)
     }
-    private fun section(value: String) { results.addView(text(value, 19f, true).apply { setPadding(0, dp(14), 0, dp(10)) }) }
+    private fun section(value: String) { results.addView(text(value, 16f, true).apply { setPadding(0, dp(10), 0, dp(6)) }) }
     private fun stat(label: String, value: String) = card(column().apply {
         setPadding(dp(12), dp(12), dp(12), dp(12))
         addView(text(label, 12f).apply { setTextColor(muted) }, block(5))
@@ -183,7 +188,7 @@ internal class SubscriptionDashboardUi(private val activity: NativeAnalyticsActi
         button.setPadding(dp(10), 0, dp(10), 0)
     }
     private fun card(child: View) = MaterialCardView(activity).apply {
-        radius = dp(14).toFloat(); cardElevation = 0f; strokeWidth = dp(1); strokeColor = androidx.core.content.ContextCompat.getColor(activity, com.svd.svdagencies.R.color.card_stroke_color); setCardBackgroundColor(androidx.core.content.ContextCompat.getColor(activity, com.svd.svdagencies.R.color.surface_background))
+        radius = dp(14).toFloat(); cardElevation = 0f; strokeWidth = dp(1); strokeColor = androidx.core.content.ContextCompat.getColor(activity, com.svd.svdagencies.R.color.card_stroke_color); setCardBackgroundColor(Color.WHITE)
         addView(child, ViewGroup.LayoutParams(-1, -2))
     }
     private fun text(value: String, size: Float, bold: Boolean = false) = TextView(activity).apply {

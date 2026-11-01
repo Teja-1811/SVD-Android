@@ -35,9 +35,9 @@ class DeliveryStockEntryActivity : BaseActivity() {
     private lateinit var binding: DeliveryStockEntryBinding
     private val reportAdapter = DeliveryStockReportAdapter()
     
-    private var selectedDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }
+    private var selectedDate = Calendar.getInstance()
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-    private val displayDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.US)
+    private val displayDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.US)
     private lateinit var session: SessionManager
     private var pendingSelfBillTransactionId: String? = null
 
@@ -88,7 +88,7 @@ class DeliveryStockEntryActivity : BaseActivity() {
             binding.deliveryDrawerLayout,
             binding.deliveryNavigationView,
             menuButton = binding.toolbar.findViewById(R.id.btnMenu),
-            selectedItemId = R.id.nav_delivery_stock_entry
+            selectedItemId = R.id.nav_delivery_total_stock
         )
     }
 
@@ -309,3 +309,4 @@ class DeliveryStockEntryActivity : BaseActivity() {
         return if (value % 1.0 == 0.0) value.toInt().toString() else "%.2f".format(value)
     }
 }
+

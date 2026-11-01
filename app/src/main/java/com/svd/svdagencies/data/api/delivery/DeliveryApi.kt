@@ -104,7 +104,8 @@ interface DeliveryApi {
     fun getCustomerPaymentRecords(
         @retrofit2.http.Path("customer_id") customerId: Int,
         @retrofit2.http.Query("month") month: Int? = null,
-        @retrofit2.http.Query("year") year: Int? = null
+        @retrofit2.http.Query("year") year: Int? = null,
+        @retrofit2.http.Query("scope") scope: String? = null
     ): Call<CustomerPaymentHistoryResponse>
 
     @retrofit2.http.POST("api/delivery/save-agent-collection/")
@@ -112,4 +113,8 @@ interface DeliveryApi {
         @retrofit2.http.Query("customer_id") customerId: Int,
         @retrofit2.http.Query("collected_amount") amount: String
     ): SaveAgentCollectionResponse
+    @retrofit2.http.POST("api/delivery/payments/{id}/")
+    fun editCollectedPayment(@retrofit2.http.Path("id") id: Int, @retrofit2.http.Body body: Map<String, String>): Call<okhttp3.ResponseBody>
+    @retrofit2.http.DELETE("api/delivery/payments/{id}/")
+    fun deleteCollectedPayment(@retrofit2.http.Path("id") id: Int): Call<okhttp3.ResponseBody>
 }

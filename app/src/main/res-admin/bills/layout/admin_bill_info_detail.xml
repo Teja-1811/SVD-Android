@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp"
+    android:paddingHorizontal="12dp"
+    android:gravity="center_vertical"
+    android:weightSum="100">
+
+    <TextView
+        android:id="@+id/tvIndex"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:text="1"
+        android:textSize="@dimen/text_size_micro"
+        android:textColor="@color/textColorPrimary" />
+
+    <TextView
+        android:id="@+id/tvItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="60"
+        android:text="Item Name"
+        android:textSize="@dimen/text_size_micro"
+        android:textColor="@color/textColorPrimary"
+        android:ellipsize="end"
+        android:maxLines="2" />
+
+    <TextView
+        android:id="@+id/tvQuantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="15"
+        android:text="10"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_micro"
+        android:textColor="@color/textColorPrimary" />
+
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="20"
+        android:text="₹100.00"
+        android:gravity="end"
+        android:textSize="@dimen/text_size_micro"
+        android:textColor="@color/textColorPrimary" />
+
+</com.svd.svdagencies.utils.CompactLinearLayout>

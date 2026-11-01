@@ -60,7 +60,6 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
         etStockSearch = findViewById(R.id.etStockSearch)
         spinnerCompanyFilter = findViewById(R.id.spinnerCompanyFilter)
         etEntryDate = findViewById(R.id.etEntryDate)
-        tvUpdateTotalItems = findViewById(R.id.tvUpdateTotalItems)
         tvUpdateEntries = findViewById(R.id.tvUpdateEntries)
         tvUpdateDayValue = findViewById(R.id.tvUpdateDayValue)
         tvNoUpdateCompanyTotals = findViewById(R.id.tvNoUpdateCompanyTotals)
@@ -146,7 +145,6 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val items = response.body()!!.allItems
                     val data = response.body()!!
-                    tvUpdateTotalItems.text = "Items: ${data.summary.totalItems}"
                     tvUpdateEntries.text = "Entries: ${data.summary.entriesOnDate}"
                     tvUpdateDayValue.text = String.format(Locale.getDefault(), "Rs. %.2f", data.summary.dayTotalValue)
                     companyTotalAdapter.updateList(data.companyTotals)

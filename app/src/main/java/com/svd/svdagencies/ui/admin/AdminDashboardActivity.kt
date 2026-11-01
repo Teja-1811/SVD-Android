@@ -87,6 +87,9 @@ class AdminDashboardActivity : AdminBaseActivity() {
         loadDashboard()
     }
 
+    private fun wholeRupeeAmount(value: Double?): String = "₹" + java.math.BigDecimal.valueOf(value ?: 0.0)
+        .setScale(0, java.math.RoundingMode.CEILING).toPlainString()
+
     private fun setupStatCard(card: View, label: String, iconRes: Int, colorRes: Int) {
         card.findViewById<TextView>(R.id.tvStatLabel).text = label
         val iconView = card.findViewById<ImageView>(R.id.ivStatIcon)
@@ -122,8 +125,8 @@ class AdminDashboardActivity : AdminBaseActivity() {
                 // ========= UPDATE DASHBOARD COUNTS =========
                 binding.cardCustomers.tvStatValue.text = (summary?.customers ?: 0).toString()
                 binding.cardItems.tvStatValue.text = (summary?.items ?: 0).toString()
-                binding.cardSales.tvStatValue.text = getString(R.string.format_currency_symbol, summary?.sales_today ?: 0.0)
-                binding.cardDues.tvStatValue.text = getString(R.string.format_currency_symbol, summary?.dues ?: 0.0)
+                binding.cardSales.tvStatValue.text = wholeRupeeAmount(summary?.sales_today ?: 0.0)
+                binding.cardDues.tvStatValue.text = wholeRupeeAmount(summary?.dues ?: 0.0)
                 binding.cardProfit.tvStatValue.text = getString(R.string.format_currency_symbol, summary?.profit_today ?: 0.0)
                 binding.cardStockValue.tvStatValue.text = getString(R.string.format_currency_symbol, summary?.stock_value ?: 0.0)
                 
@@ -192,7 +195,7 @@ class AdminDashboardActivity : AdminBaseActivity() {
                     
                     rowBinding.txtCustomerName.text = customer.name
                     rowBinding.txtCustomerPhone.text = customer.phone
-                    rowBinding.txtDueAmount.text = getString(R.string.format_currency_symbol, customer.actual_due)
+                    rowBinding.txtDueAmount.text = wholeRupeeAmount(customer.actual_due)
                     
                     binding.layoutTopDuesList.addView(rowBinding.root)
                 }
@@ -226,3 +229,4 @@ class AdminDashboardActivity : AdminBaseActivity() {
         })
     }
 }
+

@@ -36,6 +36,9 @@ open class AdminReportsActivity : AdminBaseActivity() {
     private var companyIds = listOf("")
     private var config = JsonObject()
     private var purchaseUi: PurchaseReportUi? = null
+    private var gstPeriod = 0
+    private var reloadPending = false
+    private val periodButtons = mutableListOf<MaterialButton>()
     private var busy = false
     private var filtersReady = false
     private val controls = mutableListOf<android.view.View>()
@@ -78,7 +81,20 @@ open class AdminReportsActivity : AdminBaseActivity() {
             tag="svd-full-width";contentDescription="Period"
             adapter=ArrayAdapter(this@AdminReportsActivity,com.svd.svdagencies.R.layout.delivery_dropdown_item,listOf("Day","Week","Month","Year"))
         }
-        content.addView(row().apply { addView(cell("Company",company));addView(cell("Period",period)) })
+        val tabs=twoColumns()
+        listOf("Day","Week","Month","Year").forEachIndexed { index,title ->
+            val tab=MaterialButton(this).apply {
+                text=title;isAllCaps=false;textSize=12f;layoutParams=gridCell()
+                setOnClickListener {
+                    gstPeriod=index
+                    periodButtons.forEachIndexed { i,b -> b.alpha=if(i==index)1f else .55f }
+                    if(filtersReady)load()
+                }
+            }
+            periodButtons.add(tab);tabs.addView(tab)
+        }
+        content.addView(tabs)
+        content.addView(cell("Company",company).apply { layoutParams=LinearLayout.LayoutParams(-1,-2) })
         firstDate=MaterialButton(this).apply {
             text=SimpleDateFormat("yyyy-MM-dd",Locale.US).format(Calendar.getInstance().time)
             tag="svd-full-width";contentDescription="GST report date";isAllCaps=false
@@ -92,12 +108,11 @@ open class AdminReportsActivity : AdminBaseActivity() {
         }
         content.addView(row().apply { addView(cell("Date",firstDate));addView(cell("Refresh",refresh)) })
         controls.addAll(listOf(company,period,firstDate,refresh))
-        button("Download / print PDF"){download()}
-        if(!purchase){
-            button("Review purchase credit"){reviewPurchases()}
-            button("Generate past invoice GST"){generate("sales")}
-            button("Generate purchase invoice records"){generate("purchases")}
+        val actions=twoColumns()
+        listOf("Print GST report" to { download() },"GST settings" to { gstSettings() }).forEach { (title,action) ->
+            actions.addView(MaterialButton(this).apply { text=title;isAllCaps=false;textSize=12f;layoutParams=gridCell();setOnClickListener { if(!busy)action() };controls.add(this) })
         }
+        content.addView(actions)
         status=label("Loading…",13f);content.addView(status)
         results=com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation=LinearLayout.VERTICAL };content.addView(results)
         }
@@ -138,6 +153,8 @@ open class AdminReportsActivity : AdminBaseActivity() {
     private fun clearFilters() {
         company.setSelection(0)
         period.setSelection(0)
+        gstPeriod=0
+        periodButtons.forEachIndexed { i,b -> b.alpha=if(i==0)1f else .55f }
         val now = Calendar.getInstance()
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         if (purchase) now.set(Calendar.DAY_OF_MONTH, 1)
@@ -151,12 +168,12 @@ open class AdminReportsActivity : AdminBaseActivity() {
     private fun filters():Map<String,String>{
         val values=mutableMapOf("company" to companyIds.getOrElse(company.selectedItemPosition){""})
         if(purchase){values["from_date"]=firstDate.text.toString();values["to_date"]=lastDate.text.toString()}
-        else{values["date"]=firstDate.text.toString();values["period"]=listOf("day","week","month","year")[period.selectedItemPosition.coerceAtLeast(0)]}
+        else{values["date"]=firstDate.text.toString();values["period"]=listOf("day","week","month","year")[gstPeriod]}
         return values
     }
     private fun setBusy(value:Boolean){busy=value;controls.forEach{it.isEnabled=!value}}
     private fun load(){
-        if(busy)return
+        if(busy){reloadPending=true;return}
         val selection=filters();setBusy(true);status.text="Loading summary…"
         lifecycleScope.launch {try{
             val data=if(purchase)api.purchases(selection)else api.gst(selection)
@@ -165,21 +182,98 @@ open class AdminReportsActivity : AdminBaseActivity() {
                 purchaseUi?.render(data)
             }else{
                 config=data.getAsJsonObject("config")
-                results.addView(label("GST paid to companies: ${money(data,"purchase_tax")}",20f))
-                results.addView(label("Customer GST billed: ${money(data,"sales_tax")}",20f))
-                results.addView(label("Estimated payable: ${money(data,"cash_estimate")}",20f))
-                results.addView(label("Eligible credit: ${money(data,"eligible_tax")}"))
-                results.addView(label("${string(data,"start")} to ${string(data,"end")} · ${string(data,"company")}"))
-                results.addView(label("Customer GST includes unpaid bills. Purchase GST is recorded on purchases, not cash payments. Only reviewed eligible credit reduces payable. Company figures are for comparison; use All companies for overall payable.",12f))
-                if(!config.get("enabled").asBoolean)results.addView(label("GST collection is off.",13f))
-                if(data.get("missing_purchases").asInt>0)results.addView(label("Purchase GST records missing.",13f))
+                val metrics=twoColumns()
+                listOf("GST paid to companies" to "purchase_tax","Customer GST" to "sales_tax","GST payable" to "cash_estimate","Eligible credit" to "eligible_tax").forEach { (title,key) ->
+                    val card=com.google.android.material.card.MaterialCardView(this@AdminReportsActivity).apply { layoutParams=gridCell();radius=12*resources.displayMetrics.density;cardElevation=0f;strokeWidth=1;strokeColor=Color.LTGRAY }
+                    val body=LinearLayout(this@AdminReportsActivity).apply { orientation=LinearLayout.VERTICAL;setPadding(16,12,16,12);addView(label(title,12f));addView(label(money(data,key),20f)) }
+                    card.addView(body);metrics.addView(card)
+                }
+                results.addView(metrics)
                 val rows=data.getAsJsonArray("records").map{it.asJsonObject}.map{listOf(string(it,"date"),money(it,"purchases"),money(it,"sales"),money(it,"credit"))}
-                table(listOf("Date","Purchase GST","Customer GST","Eligible credit"),rows)
-                val heads=data.getAsJsonArray("heads").map{it.asJsonObject}.map{listOf(string(it,"name"),money(it,"output"),money(it,"input"),money(it,"cash"),money(it,"remaining"))}
-                table(listOf("Tax","Sales","Credit","Payable","Credit left"),heads)
+                section("Summary records", true) {
+                    table(listOf("Date","Purchase GST","Customer GST","Eligible credit"), rows + listOf(
+                        listOf("Period total",money(data,"purchase_tax"),money(data,"sales_tax"),money(data,"eligible_tax")),
+                        listOf("Estimated GST payable","","",money(data,"cash_estimate"))))
+                }
+                section("Generate GST records") {
+                    resultAction("Generate past invoice GST") { generate("sales") }
+                    resultAction("Generate purchase invoices") { generate("purchases") }
+                }
+                section("Purchase credit review") {
+                    resultAction("Review purchases") { reviewPurchases() }
+                }
+                val heads=data.getAsJsonArray("heads").map{it.asJsonObject}.map{listOf(string(it,"name"),money(it,"output"),money(it,"opening"),money(it,"input"),money(it,"cash"),money(it,"remaining"))}
+                section("CGST, SGST and IGST breakdown") {
+                    table(listOf("Tax","Sales GST","Opening credit","Purchase credit","Estimated payable","Credit remaining"),heads)
+                }
+                section("GST registration settings") { resultAction("Edit GST settings") { gstSettings() } }
+                section("Product GST rates") {
+                    resultAction("View and edit product rates") { startActivity(android.content.Intent(this@AdminReportsActivity,com.svd.svdagencies.ui.admin.items.AdminItemsActivity::class.java)) }
+                }
+
             }
-            status.text="Summary updated."
-        }catch(error:Exception){if(error is CancellationException)throw error;status.text=errorMessage(error)}finally{setBusy(false)}}
+            status.text=""
+        }catch(error:Exception){if(error is CancellationException)throw error;status.text=errorMessage(error)}finally{setBusy(false);if(reloadPending){reloadPending=false;load()}}}
+    }
+    private fun twoColumns()=GridLayout(this).apply { columnCount=2;layoutParams=LinearLayout.LayoutParams(-1,-2) }
+    private fun gridCell()=GridLayout.LayoutParams().apply {
+        width=0;height=ViewGroup.LayoutParams.WRAP_CONTENT
+        columnSpec=GridLayout.spec(GridLayout.UNDEFINED,1f)
+        val gap=(4*resources.displayMetrics.density).toInt();setMargins(gap,gap,gap,gap)
+    }
+    private fun section(title:String, expanded:Boolean=false, body:()->Unit) {
+        val outer=results
+        val card=com.google.android.material.card.MaterialCardView(this).apply {
+            radius=12*resources.displayMetrics.density;cardElevation=0f;strokeWidth=1
+            strokeColor=Color.rgb(220,230,233)
+            layoutParams=LinearLayout.LayoutParams(-1,-2).apply { bottomMargin=(12*resources.displayMetrics.density).toInt() }
+        }
+        val spacing=(12*resources.displayMetrics.density).toInt()
+        val column=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL;setPadding(spacing,0,spacing,spacing/2) }
+        val header=LinearLayout(this).apply {
+            orientation=LinearLayout.HORIZONTAL;gravity=android.view.Gravity.CENTER_VERTICAL
+            minimumHeight=(48*resources.displayMetrics.density).toInt()
+            isFocusable=true;isClickable=true
+        }
+        val heading=label(title,14f).apply {
+            setTypeface(typeface,android.graphics.Typeface.BOLD)
+            layoutParams=LinearLayout.LayoutParams(0,-2,1f)
+        }
+        val indicator=label(if(expanded) "−" else "+",20f).apply {
+            gravity=android.view.Gravity.CENTER
+            layoutParams=LinearLayout.LayoutParams((32*resources.displayMetrics.density).toInt(),-2)
+            importantForAccessibility=android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }
+        val inner=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL;visibility=if(expanded)android.view.View.VISIBLE else android.view.View.GONE }
+        fun describe() { header.contentDescription=title+if(inner.visibility==android.view.View.VISIBLE) ", expanded" else ", collapsed" }
+        header.setOnClickListener {
+            val show=inner.visibility!=android.view.View.VISIBLE
+            inner.visibility=if(show)android.view.View.VISIBLE else android.view.View.GONE
+            indicator.text=if(show) "−" else "+"
+            describe()
+        }
+        describe()
+        results=inner
+        try { body() } finally { results=outer }
+        header.addView(heading);header.addView(indicator)
+        column.addView(header);column.addView(inner);card.addView(column);outer.addView(card)
+    }
+
+    private fun resultAction(title:String, action:()->Unit) {
+        results.addView(MaterialButton(this).apply { text=title;isAllCaps=false;textSize=13f;setOnClickListener { if(!busy)action() } })
+    }
+    private fun gstSettings() {
+        val form=LinearLayout(this).apply { orientation=LinearLayout.VERTICAL;setPadding(32,16,32,16) }
+        val gstin=EditText(this).apply { hint="Registered GSTIN";setText(string(config,"gstin")) }
+        val date=EditText(this).apply { hint="GST start date (yyyy-MM-dd)";setText(string(config,"effective_from")) }
+        val enabled=CheckBox(this).apply { text="Collect GST on new invoices";isChecked=config.get("enabled")?.asBoolean?:false }
+        form.addView(label("Changes apply to new invoices; existing records stay unchanged.",12f));form.addView(gstin);form.addView(date);form.addView(enabled)
+        val dialog=WhiteMaterialAlertDialogBuilder(this).setTitle("GST registration settings").setView(form).setNegativeButton("Cancel",null).setPositiveButton("Save",null).create()
+        dialog.setOnShowListener { dialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+            val body=JsonObject().apply { addProperty("gstin",gstin.text.toString().trim());addProperty("effective_from",date.text.toString().trim());addProperty("enabled",enabled.isChecked) }
+            lifecycleScope.launch { try { api.settings(body);dialog.dismiss();load() } catch(error:Exception) { if(error is CancellationException)throw error;date.error=errorMessage(error) } }
+        } }
+        dialog.show()
     }
     private fun table(headers:List<String>,rows:List<List<String>>){
         val scroll=HorizontalScrollView(this);val table=com.svd.svdagencies.utils.CompactLinearLayout(this).apply{orientation=LinearLayout.VERTICAL}

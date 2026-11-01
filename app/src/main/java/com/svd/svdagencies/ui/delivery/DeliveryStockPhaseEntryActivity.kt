@@ -33,13 +33,13 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
         session = SessionManager(this)
 
         phase = intent.getIntExtra("phase_type", 0)
-        selectedDate = intent.getStringExtra("selected_date") ?: ""
+        selectedDate = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
 
         setupToolbar()
         setupRecyclerView()
         setupListeners()
         
-        binding.tvPhaseDate.text = "Date: $selectedDate"
+        binding.tvPhaseDate.text = "Date: ${selectedDate.split("-").reversed().joinToString("-")}"
         loadItems()
     }
 

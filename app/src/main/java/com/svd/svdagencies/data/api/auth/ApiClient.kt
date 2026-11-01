@@ -53,16 +53,18 @@ object ApiClient {
         .addInterceptor(logging)
         .build()
 
+    val gson = createSafeGson()
+
     val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
     val authRetrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(authClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
     val authApi: AuthApi by lazy {

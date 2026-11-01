@@ -103,7 +103,12 @@ class BillItemAdapter(private var items: List<BillItemDetail>) : RecyclerView.Ad
         fun bind(item: BillItemDetail, index: Int) {
             tvIndex.text = index.toString()
             tvItemName.text = item.item_name
-            tvQuantity.text = item.quantity.toString()
+            val formattedQty = if (item.quantity == item.quantity.toLong().toDouble()) {
+                item.quantity.toLong().toString()
+            } else {
+                String.format(java.util.Locale.getDefault(), "%.2f", item.quantity)
+            }
+            tvQuantity.text = formattedQty
             tvTotal.text = "₹${item.total_amount}"
         }
     }

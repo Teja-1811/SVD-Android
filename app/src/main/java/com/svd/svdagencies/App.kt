@@ -11,6 +11,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
         instance = this
         context = applicationContext
         SvdFirebaseMessagingService.ensureDefaultChannel(this)

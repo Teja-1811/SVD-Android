@@ -49,7 +49,7 @@ class StockDateEntryAdapter(
     override fun getItemCount(): Int = entries.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val h = holder as InfoHolder
+        val h = holder as? InfoHolder ?: return
         val entry = entries[position]
         h.title.text = entry.itemName
         h.subtitle.text = entry.companyName ?: "No company"
@@ -81,16 +81,16 @@ class StockCompanyTotalAdapter(private var rows: List<StockCompanyTotal> = empty
     override fun getItemCount(): Int = rows.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val h = holder as InfoHolder
+        val h = holder as? InfoHolder ?: return
         val row = rows[position]
         h.title.text = row.companyName
         h.subtitle.text = "Company total"
         h.chip.text = "#${position + 1}"
-        h.meta1Label.text = "Total crates"
+        h.meta1Label.text = "Crates"
         h.meta1Value.text = row.totalCrates.f2()
-        h.meta2Label.text = "Total quantity"
+        h.meta2Label.text = "Quantity"
         h.meta2Value.text = row.totalQuantity.f2()
-        h.meta3Label.text = "Total value"
+        h.meta3Label.text = "Value"
         h.meta3Value.text = row.totalValue.rs2()
         
         h.btnEdit?.visibility = View.GONE
@@ -113,7 +113,7 @@ class StockLeakageAdapter(
     override fun getItemCount(): Int = entries.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val h = holder as InfoHolder
+        val h = holder as? InfoHolder ?: return
         val entry = entries[position]
         h.title.text = entry.itemName ?: "Item"
         val type = (entry.entryType ?: "leakage").replaceFirstChar { it.titlecase(Locale.ROOT) }

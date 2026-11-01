@@ -23,6 +23,21 @@
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
     </style>
+    <style name="Widget.Svd.Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/bg_qty_outline</item>
+        <item name="android:minHeight">@dimen/svd_touch_target</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:popupBackground">@drawable/bg_delivery_dropdown</item>
+    </style>
+    <style name="Widget.Svd.Spinner.DropDownItem" parent="@android:style/Widget.TextView.SpinnerItem">
+        <item name="android:background">@drawable/bg_dropdown_option</item>
+        <item name="android:textSize">@dimen/svd_text_body</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+    </style>
     <style name="TextAppearance.Svd.Body" parent="TextAppearance.Material3.BodyMedium"><item name="android:textSize">@dimen/svd_text_body</item></style>
     <style name="TextAppearance.Svd.Label" parent="TextAppearance.Material3.LabelMedium"><item name="android:textSize">@dimen/svd_text_label</item></style>
     <style name="TextAppearance.Svd.Heading" parent="TextAppearance.Material3.TitleMedium"><item name="android:textSize">@dimen/svd_text_heading</item></style>
