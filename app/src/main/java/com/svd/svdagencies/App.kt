@@ -14,6 +14,7 @@ class App : Application() {
         androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
         instance = this
         context = applicationContext
+        registerActivityLifecycleCallbacks(com.svd.svdagencies.utils.ForegroundAgentLocation)
         SvdFirebaseMessagingService.ensureDefaultChannel(this)
         
         // Start the periodic keep-alive pings ONLY for Admin

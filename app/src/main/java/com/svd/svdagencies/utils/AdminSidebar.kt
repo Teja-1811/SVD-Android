@@ -103,6 +103,13 @@ object AdminSidebar {
             }
             render()
         }
+        menu.add(0, R.id.nav_agent_live_location, 0, "Agent Locations").apply {
+            setIcon(android.R.drawable.ic_menu_mylocation)
+            setOnMenuItemClickListener {
+                activity.startActivity(Intent(activity, AgentLocationActivity::class.java))
+                true
+            }
+        }
     }
     private fun dp(activity: Activity, value: Int) = (value * activity.resources.displayMetrics.density).toInt()
 

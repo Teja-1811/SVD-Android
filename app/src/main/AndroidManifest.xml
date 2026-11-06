@@ -40,6 +40,7 @@
         android:enableOnBackInvokedCallback="true"
         android:windowSoftInputMode="adjustResize">
 
+        <activity android:name=".utils.AgentLocationActivity" android:exported="false" />
         <property
             android:name="android.app.PROPERTY_ALLOW_APP_CLONING"
             android:value="true" />

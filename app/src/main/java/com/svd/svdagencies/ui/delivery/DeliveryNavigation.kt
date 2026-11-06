@@ -25,6 +25,16 @@ object DeliveryNavigation {
         toolbar?.setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
         menuButton?.setOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
         navigationView.setCheckedItem(selectedItemId)
+        if (navigationView.menu.findItem(R.id.nav_agent_live_location) == null) {
+            navigationView.menu.add(0, R.id.nav_agent_live_location, 0, "Location sharing").apply {
+                setIcon(android.R.drawable.ic_menu_mylocation)
+                setOnMenuItemClickListener {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    activity.startActivity(Intent(activity, com.svd.svdagencies.utils.AgentLocationActivity::class.java))
+                    true
+                }
+            }
+        }
 
         if (navigationView.headerCount > 0) {
             val headerView = navigationView.getHeaderView(0)
@@ -57,6 +67,7 @@ object DeliveryNavigation {
                 return@setNavigationItemSelectedListener true
             }
             val target = when (item.itemId) {
+                R.id.nav_agent_live_location -> com.svd.svdagencies.utils.AgentLocationActivity::class.java
                 R.id.nav_tools_appearance -> com.svd.svdagencies.ui.ToolsActivity::class.java
                 R.id.nav_delivery_home -> DeliveryBillToCustomerActivity::class.java
                 R.id.nav_delivery_stock_entry, R.id.nav_delivery_total_stock -> DeliveryStockEntryActivity::class.java
