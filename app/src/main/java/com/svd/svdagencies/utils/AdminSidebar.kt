@@ -49,6 +49,10 @@ object AdminSidebar {
         }
         val selected = selectedId(activity)
         val preferences = activity.getSharedPreferences("milk_agency_sidebar", Activity.MODE_PRIVATE)
+        val sectionClosers = mutableMapOf<String, () -> Unit>()
+        val initialSection = sections.firstOrNull { section -> section.children.any { it.id == selected } }
+            ?.let { activity.resources.getResourceEntryName(it.entry.id) }
+            ?: preferences.getString("expanded_section", null)
         menu.clear()
         for (section in sections) {
             if (section.children.isEmpty()) {
@@ -73,7 +77,7 @@ object AdminSidebar {
                 icon = row.icon; isCheckable = true; isChecked = row.id == selected
             } }
             val key = activity.resources.getResourceEntryName(header.itemId)
-            var expanded = preferences.getBoolean(key, false) || section.children.any { it.id == selected }
+            var expanded = key == initialSection
             fun render() {
                 indicator.text = if (expanded) "\u2212" else "+"
                 androidx.core.view.MenuItemCompat.setContentDescription(header, "${section.entry.title}, ${if (expanded) "expanded" else "collapsed"}")
@@ -87,9 +91,12 @@ object AdminSidebar {
                     menuBuilder?.startDispatchingItemsChanged()
                 }
             }
+            sectionClosers[key] = { expanded = false; render() }
             header.setOnMenuItemClickListener {
-                expanded = !expanded
-                preferences.edit().putBoolean(key, expanded).apply()
+                val opening = !expanded
+                sectionClosers.filterKeys { it != key }.values.forEach { it() }
+                expanded = opening
+                preferences.edit().putString("expanded_section", if (expanded) key else null).apply()
                 // Refresh after NavigationView releases its click-time presenter suspension.
                 nav.post { render() }
                 true
@@ -127,6 +134,7 @@ object AdminSidebar {
             R.id.nav_routes -> target(AdminRoutesActivity::class.java)
             R.id.nav_add_route -> target(AdminRoutesActivity::class.java, R.id.btnAddRoute)
             R.id.nav_cashbook -> target(AdminCashBookActivity::class.java)
+            R.id.nav_payment_summary -> target(AdminPaymentSummaryActivity::class.java)
             R.id.nav_dues -> target(AdminDuesActivity::class.java)
             R.id.nav_payments -> target(AdminPaymentsActivity::class.java)
             R.id.nav_expenses -> target(ViewExpensesActivity::class.java)
@@ -213,6 +221,7 @@ object AdminSidebar {
             is AdminDuesActivity -> R.id.nav_dues
             is AdminPaymentsActivity -> R.id.nav_payments
             is AdminCashBookActivity -> R.id.nav_cashbook
+            is AdminPaymentSummaryActivity -> R.id.nav_payment_summary
             is AdminStatementActivity -> R.id.nav_statement
             is AdminMonthlySummary -> R.id.nav_monthly_summary
             is AdminOfferUsageActivity -> R.id.nav_offer_usage

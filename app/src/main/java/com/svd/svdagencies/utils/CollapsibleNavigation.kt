@@ -15,6 +15,9 @@ import com.svd.svdagencies.R
 /** Group navigation destinations and reuse dashboard action handlers in the drawer. */
 object CollapsibleNavigation {
     private val proxies = java.util.WeakHashMap<View, java.lang.ref.WeakReference<android.view.MenuItem>>()
+    private fun usesFlatPortalNavigation(activity: Activity) =
+        SessionManager(activity).getRole() in setOf(UserRole.CUSTOMER, UserRole.USER)
+
     @JvmStatic fun applyTree(activity: Activity, root: View) {
         if (root.id == android.R.id.content) hideDuplicateDestinations(root)
 
@@ -24,6 +27,15 @@ object CollapsibleNavigation {
             if (root.visibility != View.GONE) root.visibility = View.GONE
         }
         if (root is NavigationView) {
+            // User and retailer portals deliberately use a simple, flat drawer.
+            // Their destination menus are already defined in display order.
+            if (usesFlatPortalNavigation(activity)) {
+                if (root.menu.size() > 0) {
+                    SidebarLogoutFooter.install(root)
+                    SidebarFlatStyle.install(root)
+                }
+                return
+            }
             if (root.menu.size() > 0) {
                 install(activity, root)
                 SidebarLogoutFooter.install(root)
@@ -96,7 +108,7 @@ object CollapsibleNavigation {
         "Bills & orders" to setOf("nav_bills", "nav_new_bill", "nav_orders", "nav_order_timings", "nav_delivery_home", "nav_delivery_bill_history", "nav_delivery_subscriptions", "nav_subscriptions", "nav_history_reports"),
         "Products & stock" to setOf("nav_items", "nav_stock", "nav_delivery_stock_entry", "nav_delivery_catalog", "nav_delivery_stock_history"),
         "Companies & routes" to setOf("nav_companies", "nav_routes"),
-        "Finance & reports" to setOf("nav_dues", "nav_agent_dues", "nav_cashbook", "nav_expenses", "nav_statement", "nav_monthly_summary", "nav_category_sales", "nav_gst", "nav_purchase_reports", "nav_delivery_payments", "nav_delivery_today_report", "nav_delivery_overall_report"),
+        "Finance & reports" to setOf("nav_dues", "nav_agent_dues", "nav_cashbook", "nav_payment_summary", "nav_expenses", "nav_statement", "nav_monthly_summary", "nav_category_sales", "nav_gst", "nav_purchase_reports", "nav_delivery_payments", "nav_delivery_today_report", "nav_delivery_overall_report"),
         "Offers & subscriptions" to setOf("nav_offers", "nav_offer_usage", "nav_subscription_report"),
         "Account" to setOf("nav_company", "nav_profile", "nav_support", "nav_queries", "nav_enquiries", "nav_change_theme", "nav_tools_appearance")
     )
@@ -194,6 +206,10 @@ object CollapsibleNavigation {
             (parent as? DrawerLayout)?.closeDrawer(GravityCompat.START)
         }
         val admin = originals.any { name(it.id) == "nav_customers" }
+        val sectionClosers = mutableMapOf<String, () -> Unit>()
+        val initialSection = byGroup.entries.firstOrNull { (_, entries) -> entries.any { it.checked } }?.key
+            ?: actionViews.firstOrNull()?.second
+            ?: preferences.getString("expanded_section", null)
         for ((title, entries) in byGroup) {
             val local = actionViews.filter { it.second == title }
             if (entries.isEmpty() && local.isEmpty() && !(admin && title == "Customers")) continue
@@ -242,7 +258,7 @@ object CollapsibleNavigation {
                     }
                 }
             }
-            var expanded = preferences.getBoolean(title, false) || local.isNotEmpty() || entries.any { it.checked }
+            var expanded = title == initialSection
             fun render() {
                 header.title = "$title  ${if (expanded) "\u25B4" else "\u25BE"}"
                 androidx.core.view.MenuItemCompat.setContentDescription(header, "$title, ${if (expanded) "expanded" else "collapsed"}")
@@ -255,9 +271,12 @@ object CollapsibleNavigation {
                     menuBuilder?.startDispatchingItemsChanged()
                 }
             }
+            sectionClosers[title] = { expanded = false; render() }
             header.setOnMenuItemClickListener {
-                expanded = !expanded
-                preferences.edit().putBoolean(title, expanded).apply()
+                val opening = !expanded
+                sectionClosers.filterKeys { it != title }.values.forEach { it() }
+                expanded = opening
+                preferences.edit().putString("expanded_section", if (expanded) title else null).apply()
                 render()
                 true
             }
