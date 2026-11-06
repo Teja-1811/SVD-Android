@@ -3,7 +3,7 @@ package com.svd.svdagencies.utils
 import retrofit2.Call
 import retrofit2.http.*
 
-data class AgentPosition(val name: String, val route: String, val status: String, val updated_at: String?, val maps_url: String?, val accuracy: Double?)
+data class AgentPosition(val id: Int, val latitude: Double?, val longitude: Double?, val recent: Boolean, val name: String, val route: String, val status: String, val updated_at: String?, val maps_url: String?, val accuracy: Double?)
 data class AgentPositions(val agents: List<AgentPosition>)
 interface LiveLocationApi {
     @POST("api/delivery/live-location/") fun send(@Body position: Map<String, @JvmSuppressWildcards Any>): Call<Void>
