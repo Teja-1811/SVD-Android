@@ -5,7 +5,9 @@ import retrofit2.http.*
 
 data class AgentPosition(val id: Int, val latitude: Double?, val longitude: Double?, val recent: Boolean, val name: String, val route: String, val status: String, val updated_at: String?, val maps_url: String?, val accuracy: Double?)
 data class AgentPositions(val agents: List<AgentPosition>)
+data class PublicTrackingShare(val url: String, val expires_at: String)
 interface LiveLocationApi {
+    @POST("api/admin/live-locations/{agent_id}/share/") fun share(@Path("agent_id") agentId: Int): Call<PublicTrackingShare>
     @POST("api/delivery/live-location/") fun send(@Body position: Map<String, @JvmSuppressWildcards Any>): Call<Void>
     @DELETE("api/delivery/live-location/") fun stop(): Call<Void>
     @GET("api/admin/live-locations/") fun agents(): Call<AgentPositions>

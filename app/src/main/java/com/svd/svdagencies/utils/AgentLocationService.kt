@@ -40,8 +40,8 @@ class AgentLocationService : Service(), LocationListener, SharedPreferences.OnSh
         val stop = PendingIntent.getService(this, 1, Intent(this, AgentLocationService::class.java).setAction(STOP), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val open = PendingIntent.getActivity(this, 2, Intent(this, AgentLocationActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val notification = NotificationCompat.Builder(this, CHANNEL)
-            .setSmallIcon(android.R.drawable.ic_menu_mylocation).setContentTitle("Sharing delivery location with admin")
-            .setContentText("Active with the app closed or screen off. Tap Stop to end sharing.")
+            .setSmallIcon(android.R.drawable.ic_menu_mylocation).setContentTitle("Sharing delivery location")
+            .setContentText("Admin and active tracking-link recipients can view. Tap Stop to end sharing.")
             .setContentIntent(open).setOngoing(true).setOnlyAlertOnce(true)
             .addAction(android.R.drawable.ic_media_pause, "Stop sharing", stop).build()
         try {

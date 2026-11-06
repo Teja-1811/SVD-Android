@@ -88,7 +88,7 @@ class AgentLocationActivity : BaseActivity() {
         val body = card()
         body.addView(label("DELIVERY LOCATION", 12f, true).apply { setTextColor(primary()); letterSpacing = .08f })
         body.addView(label(if (sharing) "Sharing is on" else "You control your location", 23f, true))
-        body.addView(label(if (sharing) "Admin can see your latest delivery location." else "Share your location with admin during deliveries."))
+        body.addView(label(if (sharing) "Admin and people with an active tracking link can view your shared location." else "Share your delivery location. Admin can create a 24-hour tracking link for customers or others."))
         body.addView(label(if (sharing) "●  SHARING ENABLED" else "●  SHARING OFF", 12f, true).apply {
             setTextColor(color(if (sharing) R.color.icon_green else R.color.textColorSecondary))
             setPadding(0, dp(4), 0, dp(4)); accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
@@ -113,7 +113,7 @@ class AgentLocationActivity : BaseActivity() {
         info.addView(label("Screen off or app closed", 14f, true))
         info.addView(label("Sharing continues until you stop it or sign out. The notification also has a Stop button."))
         info.addView(label("Your privacy", 14f, true))
-        info.addView(label("Only your latest position is stored. Force-stopping the app or restarting your phone ends sharing."))
+        info.addView(label("Only your latest position is stored. Public links expire after 24 hours and can be revoked. Stop sharing to hide your position. Force-stopping the app or restarting your phone ends sharing."))
     }
     private fun enableSharing() {
         if (android.os.Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
