@@ -5,11 +5,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.location.LocationManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -34,7 +35,11 @@ class AgentLocationActivity : BaseActivity() {
     private var pending: Call<AgentPositions>? = null
     private var active = false
     private val refresh = Runnable { loadAgents() }
-    private val admin get() = SessionManager(this).getRole() == UserRole.ADMIN
+    // The activity is shared by the delivery and admin portals.  The portal
+    // that opened it is authoritative: a stale stored role must not turn an
+    // admin's Agent Locations screen into the delivery sharing screen.
+    private val admin get() = intent.getBooleanExtra(EXTRA_ADMIN_LOCATIONS, false) ||
+        SessionManager(this).getRole() == UserRole.ADMIN
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
     private fun color(id: Int) = ContextCompat.getColor(this, id)
     private fun primary() = MaterialColors.getColor(this, com.google.android.material.R.attr.colorPrimary, color(R.color.colorPrimary))
@@ -93,6 +98,17 @@ class AgentLocationActivity : BaseActivity() {
             setTextColor(color(if (sharing) R.color.icon_green else R.color.textColorSecondary))
             setPadding(0, dp(4), 0, dp(4)); accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
         })
+        if (sharing) {
+            val prefs = getSharedPreferences("svd_session", MODE_PRIVATE)
+            val lastUpload = prefs.getLong(ForegroundAgentLocation.LAST_UPLOAD_AT, 0L)
+            val error = prefs.getString(ForegroundAgentLocation.LAST_ERROR, null)
+            val serviceText = when {
+                error != null -> "Location update needs attention: $error"
+                lastUpload > 0L -> "Last uploaded: ${java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(java.util.Date(lastUpload))}"
+                else -> "Waiting for the first location update…"
+            }
+            body.addView(label(serviceText, 13f).apply { setTextColor(color(if (error == null) R.color.textColorSecondary else R.color.icon_red)) })
+        }
         body.addView(button(if (sharing) "Stop sharing" else "Start sharing") {
             if (ForegroundAgentLocation.enabled(this)) { ForegroundAgentLocation.setEnabled(this, false); showSharing() }
             else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
@@ -107,6 +123,13 @@ class AgentLocationActivity : BaseActivity() {
         })
         conditions.addView(label("GPS and an internet connection are needed for fresh updates. Accuracy may vary."))
         if (!gps) conditions.addView(button("Open location settings") { startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) })
+        if (sharing && android.os.Build.VERSION.SDK_INT >= 29 &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            conditions.addView(label("For sharing to resume after a phone restart, set Location access to ‘Allow all the time’."))
+            conditions.addView(button("Open app location permission") {
+                startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
+            })
+        }
 
         val info = card()
         info.addView(label("How sharing works", 17f, true))
@@ -125,27 +148,49 @@ class AgentLocationActivity : BaseActivity() {
         super.onRequestPermissionsResult(code, permissions, results)
         if (code in setOf(271, 272) && results.any { it == PackageManager.PERMISSION_GRANTED }) enableSharing()
     }
-    override fun onResume() { super.onResume(); active = true; liveMap?.onResume(); if (admin) loadAgents() else showSharing() }
+    override fun onResume() {
+        super.onResume(); active = true; liveMap?.onResume()
+        if (admin) loadAgents() else {
+            // Resume only a previous explicit opt-in, from a visible screen.
+            if (ForegroundAgentLocation.enabled(this)) ForegroundAgentLocation.setEnabled(this, true)
+            showSharing()
+        }
+    }
     override fun onPause() { active = false; liveMap?.onPause(); handler.removeCallbacks(refresh); pending?.cancel(); pending = null; super.onPause() }
     override fun onDestroy() { liveMap?.destroy(); super.onDestroy() }
     private fun loadAgents() {
-        if (!active || !admin || pending != null) return
+        if (!active || !admin || pending != null) {
+            Log.d(TAG, "Skipping agent request: active=$active admin=$admin pending=${pending != null}")
+            return
+        }
+        Log.d(TAG, "Requesting admin live locations")
         pending = LiveLocationNetwork.api.agents()
         pending?.enqueue(object : Callback<AgentPositions> {
             override fun onResponse(call: Call<AgentPositions>, response: Response<AgentPositions>) {
                 if (pending !== call) return
                 pending = null
                 if (!active) return
-                if (response.isSuccessful && response.body() != null) liveMap?.update(response.body()!!)
-                else liveMap?.offline()
+                if (response.isSuccessful && response.body() != null) {
+                    Log.d(TAG, "Loaded ${response.body()!!.agents.size} agent locations")
+                    liveMap?.update(response.body()!!)
+                } else {
+                    Log.w(TAG, "Live locations request failed: HTTP ${response.code()}")
+                    liveMap?.offline()
+                }
                 handler.postDelayed(refresh, 15000)
             }
             override fun onFailure(call: Call<AgentPositions>, error: Throwable) {
                 if (pending !== call) return
                 pending = null
                 if (!active) return
+                Log.w(TAG, "Live locations request failed", error)
                 liveMap?.offline(); handler.postDelayed(refresh, 15000)
             }
         })
+    }
+
+    companion object {
+        const val EXTRA_ADMIN_LOCATIONS = "admin_agent_locations"
+        private const val TAG = "AgentLocationActivity"
     }
 }

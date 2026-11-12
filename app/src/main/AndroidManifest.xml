@@ -2,8 +2,12 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Required only to resume an explicitly enabled delivery-share session
+         after the phone restarts. The app guides the agent to grant it. -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     
@@ -43,6 +47,13 @@
         android:windowSoftInputMode="adjustResize">
 
         <service android:name=".utils.AgentLocationService" android:exported="false" android:foregroundServiceType="location" android:stopWithTask="false" />
+        <receiver android:name=".utils.AgentLocationRestartReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.USER_UNLOCKED" />
+            </intent-filter>
+        </receiver>
         <activity android:name=".utils.AgentLocationActivity" android:exported="false" />
         <property
             android:name="android.app.PROPERTY_ALLOW_APP_CLONING"
