@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.admin.offers
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.os.Bundle
 import android.content.res.ColorStateList
 import android.graphics.Typeface
@@ -147,7 +147,7 @@ class AdminOffersActivity : AdminBaseActivity() {
             body.addView(actions)
         }
         if (offer.items.orEmpty().isEmpty()) body.addView(label("No products included.", 14f))
-        manager = WhiteMaterialAlertDialogBuilder(this).setTitle(offer.name).setView(ScrollView(this).apply { addView(body) })
+        manager = WhiteMaterialAlertDialogBuilder(this).setTitle(offer.name).setView(ScrollView(this, null, android.R.attr.scrollViewStyle).apply { addView(body) })
             .setNegativeButton("Done", null).setPositiveButton("Add product") { _, _ -> showItemForm(offer) }.show()
     }
 

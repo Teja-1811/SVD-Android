@@ -13,49 +13,10 @@
         <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Shop invoices"
-        android:textSize="@dimen/svd_text_title"
-        android:textColor="@color/textColorPrimary"
-        android:textStyle="bold"
-        android:layout_marginBottom="4dp" />
-        <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="Review billing and account totals."
         android:textSize="@dimen/svd_text_label"
         android:textColor="@color/textColorSecondary"
         android:layout_marginBottom="16dp"  android:visibility="gone" />
-        <com.svd.svdagencies.utils.CompactLinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="@dimen/spacing_medium">
-            <EditText style="@style/Widget.Svd.PlainInput"
-        android:id="@+id/etMonth"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:hint="Month"
-        android:focusable="false"
-        android:clickable="true"
-        android:drawableEnd="@drawable/ic_calendar"
-        android:padding="@dimen/spacing_medium"
-        android:textSize="@dimen/text_size_medium"
-        android:background="@drawable/bg_qty_outline"
-        android:textColor="@color/textColorPrimary"
-        android:textColorHint="@color/textColorSecondary"
-        android:minHeight="48dp"  android:minWidth="48dp" />
-            <Button
-        android:id="@+id/btnFilter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Filter"
-        android:textSize="@dimen/text_size_button"
-        android:layout_marginStart="@dimen/spacing_small"
-        app:backgroundTint="?attr/colorPrimary"
-        android:textColor="?attr/colorOnPrimary"  android:minHeight="48dp"  android:minWidth="48dp" />
-        </com.svd.svdagencies.utils.CompactLinearLayout>
         <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

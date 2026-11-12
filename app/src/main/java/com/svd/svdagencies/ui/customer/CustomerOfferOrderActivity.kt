@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.customer
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
@@ -61,7 +61,7 @@ class CustomerOfferOrderActivity : BaseActivity() {
         }.also { root.addView(it) }
         confirm = button("Place offer order") { placeOffer() }.also { root.addView(it); it.isEnabled = false }
         retry = button("Retry loading offer") { loadOffer() }.also { root.addView(it); it.visibility = View.GONE }
-        PortalNavigation.installPage(this, ScrollView(this).apply { addView(root) }, "Order offer", R.id.nav_home)
+        PortalNavigation.installPage(this, ScrollView(this, null, android.R.attr.scrollViewStyle).apply { addView(root) }, "Order offer", R.id.nav_home)
         loadOffer()
     }
 
@@ -80,9 +80,12 @@ class CustomerOfferOrderActivity : BaseActivity() {
                 details.text = "${chosen.name}\n\n" + chosen.items.joinToString("\n") {
                     "${it.itemName} × ${it.orderQuantity}"
                 } + "\n\nBundle price: ${money.format(chosen.price)}\nDelivery: ${money.format(charge)}\nTotal: ${money.format(chosen.price + charge)}"
-                regular.isEnabled = chosen.items.all { it.stock >= it.orderQuantity }
-                status.text = (if (regular.isEnabled) "Review the included items, then choose delivery." else "Some included items are out of stock. Choose a dated pre-order.") + "\n" + CustomerOrderWindow.statusMessage(if (isPreorder) "pre_order" else "regular")
                 val isUser = SessionManager(this@CustomerOfferOrderActivity).getRole() == UserRole.USER
+                // Retailers may submit a supply request even when the offer's
+                // current stock is short. Users must choose a pre-order in
+                // that case so their regular delivery remains stock-backed.
+                regular.isEnabled = !isUser || chosen.items.all { it.stock >= it.orderQuantity }
+                status.text = (if (regular.isEnabled) "Review the included items, then choose delivery." else "Some included items are out of stock. Choose a dated pre-order.") + "\n" + CustomerOrderWindow.statusMessage(if (isPreorder) "pre_order" else "regular")
                 setMode(!regular.isEnabled && isUser)
                 confirm.isEnabled = regular.isEnabled || isUser
             }

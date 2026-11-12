@@ -66,10 +66,10 @@ class AddEditItemActivity : AdminBaseActivity() {
 
         if (itemToUpdate != null) {
             setupAdminLayout("Edit Item")
-            binding.btnAddItem.text = "Update Item"
+            binding.btnSaveItem.text = "Update Item"
         } else {
             setupAdminLayout("Add Item")
-            binding.btnAddItem.text = "Add Item"
+            binding.btnSaveItem.text = "Add Item"
         }
 
         loadFilters()
@@ -170,7 +170,7 @@ class AddEditItemActivity : AdminBaseActivity() {
             binding.btnRemoveImage.visibility = View.GONE
         }
 
-        binding.btnAddItem.setOnClickListener { saveItem() }
+        binding.btnSaveItem.setOnClickListener { saveItem() }
         binding.btnCancel.setOnClickListener { finish() }
     }
 
@@ -197,7 +197,7 @@ class AddEditItemActivity : AdminBaseActivity() {
             return
         }
 
-        binding.btnAddItem.showLoading(true, "Saving...")
+        binding.btnSaveItem.showLoading(true, "Saving...")
         showScreenLoading()
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -232,7 +232,7 @@ class AddEditItemActivity : AdminBaseActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        binding.btnAddItem.showLoading(false)
+                        binding.btnSaveItem.showLoading(false)
                         hideScreenLoading()
                         Toast.makeText(this@AddEditItemActivity, "Saved successfully", Toast.LENGTH_SHORT).show()
                         setResult(Activity.RESULT_OK)
@@ -242,7 +242,7 @@ class AddEditItemActivity : AdminBaseActivity() {
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     if (!isDestroyed) {
-                        binding.btnAddItem.showLoading(false)
+                        binding.btnSaveItem.showLoading(false)
                         hideScreenLoading()
                         Toast.makeText(
                             this@AddEditItemActivity,

@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.admin.bills
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.text.Editable
@@ -217,33 +217,6 @@ class CreateBillActivity : AdminBaseActivity() {
             calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         )
-        dialog.setTitle("Bill date")
-        dialog.setOnShowListener {
-            val density = resources.displayMetrics.density
-            dialog.window?.setLayout(
-                minOf((320 * density).toInt(), resources.displayMetrics.widthPixels - (32 * density).toInt()),
-                android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            val background = android.graphics.drawable.GradientDrawable().apply {
-                setColor(android.graphics.Color.WHITE); cornerRadius = 16 * density
-            }
-            dialog.window?.setBackgroundDrawable(background)
-            fun style(which: Int, fill: Int) {
-                dialog.getButton(which)?.apply {
-                    textSize = 14f; isAllCaps = false
-                    setTextColor(android.graphics.Color.WHITE)
-                    backgroundTintList = android.content.res.ColorStateList.valueOf(fill)
-                    minimumHeight = (40 * density).toInt()
-                    setPadding((16 * density).toInt(), 0, (16 * density).toInt(), 0)
-                    (layoutParams as? android.view.ViewGroup.MarginLayoutParams)?.let { params ->
-                        params.height = (40 * density).toInt()
-                        params.marginStart = (8 * density).toInt(); layoutParams = params
-                    }
-                }
-            }
-            style(android.content.DialogInterface.BUTTON_NEGATIVE, android.graphics.Color.rgb(75,85,99))
-            style(android.content.DialogInterface.BUTTON_POSITIVE, android.graphics.Color.rgb(21,128,61))
-        }
         dialog.show()
     }
 

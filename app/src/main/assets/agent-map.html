@@ -671,7 +671,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
  <p id="agentMapTileNotice" class="agent-map-notice" role="status"></p>
  <div class="agent-map-summary"><span id="agentMapStatus" role="status">Loading agent locations…</span><span class="agent-map-legend"><span><i class="agent-map-dot"></i>Recent update</span><span><i class="agent-map-dot old"></i>Last known</span></span></div>
  <div class="agent-table-scroll" role="region" aria-label="Agent location details" tabindex="0" data-svd-table-scroll>
-  <table class="agent-location-table" id="agentLocationTable" data-svd-keep-table><thead><tr><th scope="col">Agent name</th><th scope="col">Location</th><th scope="col">Share</th><th scope="col">Follow agent</th></tr></thead><tbody id="agentMapRows"></tbody></table>
+  <table class="agent-location-table" id="agentLocationTable" data-svd-keep-table><thead><tr><th scope="col">Agent name</th><th scope="col">Location</th><th scope="col">Get location</th><th scope="col">Map</th></tr></thead><tbody id="agentMapRows"></tbody></table>
  </div>
 </section>
 <dialog id="trackingShareDialog" class="tracking-share-dialog" aria-labelledby="trackingShareTitle">
@@ -718,6 +718,22 @@ svg.leaflet-image-layer.leaflet-interactive path {
  const shareDialog=document.getElementById('trackingShareDialog'),shareInput=document.getElementById('trackingShareLink'),shareMessage=document.getElementById('trackingShareMessage'),shareSend=document.getElementById('trackingShareSend'),shareCopy=document.getElementById('trackingShareCopy'),shareRevoke=document.getElementById('trackingShareRevoke');
  let shareId=null,shareUrl='',shareVersion=0;
  const csrf=()=>document.getElementById('trackingCsrf')?.value||'';
+ const requesting=new Set();
+ function requestResult(id,data,error){
+  requesting.delete(String(id));const agent=agents.find(a=>String(a.id)===String(id));
+  if(agent){agent.location_request=data?.request_id?data:{status:'failed',message:error||data?.message||'Could not send request. Try again.'};}paint();
+ }
+ async function requestLocation(id){
+  if(requesting.has(id))return;requesting.add(id);paint();
+  if(document.documentElement.dataset.nativeMap==='true'){location.href='svd-request://location?agent_id='+encodeURIComponent(id);return;}
+  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),20000);
+  try{
+   const response=await fetch('/api/admin/live-locations/'+id+'/request/',{method:'POST',cache:'no-store',svdBackground:true,headers:{'X-CSRFToken':csrf(),Accept:'application/json'},signal:controller.signal});
+   const data=await response.json();requestResult(id,data,response.ok?null:data.message);
+   window.dispatchEvent(new Event('svd-location-requested'));
+  }catch(error){requestResult(id,null,'Could not send request. Check your connection and try again.');}
+  finally{clearTimeout(timeout);}
+ }
  if(shareDialog){
   document.getElementById('trackingShareClose').addEventListener('click',()=>{shareVersion++;shareDialog.close();});
   shareDialog.addEventListener('cancel',()=>{shareVersion++;});
@@ -744,21 +760,24 @@ svg.leaflet-image-layer.leaflet-interactive path {
   for(const a of agents){
    const id=String(a.id);seen.add(id);let row=rows.get(id);
    if(!row){
-    row={card:create('tr'),name:create('strong'),route:create('small'),tag:create('span',null,'agent-map-tag'),time:create('small'),accuracy:create('small'),location:create('button'),share:create('button','Share'),follow:create('button','Follow agent')};
+    row={card:create('tr'),name:create('strong'),route:create('small'),tag:create('span',null,'agent-map-tag'),time:create('small'),accuracy:create('small'),location:create('button'),share:create('button','Get location'),requestStatus:create('small'),follow:create('button','Follow agent')};
     const nameCell=create('td'),locationCell=create('td'),shareCell=create('td'),followCell=create('td');
-    nameCell.append(row.name,row.route);locationCell.append(row.location,row.tag,row.time,row.accuracy);shareCell.append(row.share);followCell.append(row.follow);row.card.append(nameCell,locationCell,shareCell,followCell);table.append(row.card);
+    nameCell.append(row.name,row.route);locationCell.append(row.location,row.tag,row.time,row.accuracy);shareCell.append(row.share,row.requestStatus);row.requestStatus.setAttribute('role','status');followCell.append(row.follow);row.card.append(nameCell,locationCell,shareCell,followCell);table.append(row.card);
     for(const button of [row.location,row.share,row.follow])button.type='button';
     row.location.addEventListener('click',()=>{following=false;focus(id);canvas.scrollIntoView({behavior:'smooth',block:'center'});});
-    row.share.addEventListener('click',()=>share(id));
+    row.share.addEventListener('click',()=>requestLocation(id));
     row.follow.addEventListener('click',()=>{if(following&&selected===id)all();else{following=true;focus(id);canvas.scrollIntoView({behavior:'smooth',block:'center'});}});rows.set(id,row);
    }
    row.name.textContent=a.name;row.route.textContent=a.route||'';
    row.location.textContent=valid(a)?a.latitude.toFixed(5)+', '+a.longitude.toFixed(5):'No location received';row.location.disabled=!valid(a);
    row.location.setAttribute('aria-label',valid(a)?'Show '+a.name+' on map':'No location for '+a.name);
-   row.tag.textContent=recent(a)?'Recent location':(valid(a)?'Last known location':'Not sharing');row.tag.classList.toggle('is-recent',recent(a));
+   row.tag.textContent=recent(a)?'Recent location':(valid(a)?'Last known location':'Not requested yet');row.tag.classList.toggle('is-recent',recent(a));
    const timestamp=Date.parse(a.updated_at);row.time.textContent=Number.isFinite(timestamp)?'Updated '+new Date(timestamp).toLocaleString():'';
    row.accuracy.textContent=Number.isFinite(a.accuracy)?'Accuracy ±'+Math.round(a.accuracy)+' m':'';
-   row.share.disabled=false;row.follow.disabled=!valid(a);row.share.setAttribute('aria-label','Share '+a.name+' location');
+   const inquiry=a.location_request,waiting=inquiry?.status==='pending'&&Date.parse(inquiry.expires_at)>Date.now();
+   row.share.disabled=requesting.has(id)||waiting;row.share.textContent=requesting.has(id)?'Sending…':(waiting?'Waiting…':'Get location');
+   row.requestStatus.textContent=waiting?'Waiting for agent location…':(inquiry?.status==='pending'?'No response. Ask the agent to open SVD.':inquiry?.message||'');
+   row.follow.disabled=!valid(a);row.share.setAttribute('aria-label','Get '+a.name+' location');
    if(map&&valid(a)){
     let marker=markers.get(id);if(!marker){marker=L.marker([a.latitude,a.longitude],{icon:agentIcon(a),title:a.name,keyboard:true}).addTo(map);marker.on('click',()=>{following=false;focus(id);});marker.bindPopup(popup(a));markers.set(id,marker);}
     marker.setLatLng([a.latitude,a.longitude]).setIcon(agentIcon(a)).setPopupContent(popup(a));
@@ -773,10 +792,11 @@ svg.leaflet-image-layer.leaflet-interactive path {
   agents=Array.isArray(data.agents)?data.agents:[];connected=true;lastRefresh=Date.now();
   if(selected&&!agents.some(a=>String(a.id)===selected&&valid(a))){selected='';following=false;overview=true;}paint();
   if(overview)showAll();else if(following){const a=current();if(a&&valid(a)&&map)map.panTo([a.latitude,a.longitude]);}
-  status.textContent=agents.filter(recent).length+' recent · '+agents.length+' agents · Refreshed '+new Date().toLocaleTimeString();
+  const live=agents.filter(recent).length;
+  status.textContent=live+' recent · '+agents.length+' agents · Refreshed '+new Date().toLocaleTimeString()+(agents.length&&!live?' · Tap Get location for a fresh position.':'');
  }
- function offline(){connected=false;paint();status.textContent='Connection interrupted. Displayed positions are last known; retrying…';}
+ function offline(message){connected=false;paint();status.textContent=message||'Connection interrupted. Displayed positions are last known; retrying…';}
  setInterval(()=>{if(connected&&lastRefresh&&Date.now()-lastRefresh>45000)offline();else if(connected)paint();},10000);
- window.SvdAgentMap={update,offline,focus,resize:()=>map?.invalidateSize()};
+ window.SvdAgentMap={update,offline,focus,requestResult,resize:()=>map?.invalidateSize()};
 })();
 </script></body></html>

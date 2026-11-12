@@ -88,7 +88,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPaymentMethod" />
 
-        <LinearLayout android:id="@+id/paymentActions" android:visibility="gone" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:orientation="horizontal" android:tag="svd-fixed-row" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/tvTransactionId" app:layout_constraintEnd_toEndOf="parent">
+        <TextView
+            android:id="@+id/tvCollectedBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="@dimen/text_size_body_small"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTransactionId" />
+
+        <TextView
+            android:id="@+id/tvEditedBy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="@dimen/text_size_body_small"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvCollectedBy" />
+
+        <LinearLayout android:id="@+id/paymentActions" android:visibility="gone" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:orientation="horizontal" android:tag="svd-fixed-row" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/tvEditedBy" app:layout_constraintEnd_toEndOf="parent">
             <com.google.android.material.button.MaterialButton android:id="@+id/paymentEdit" android:layout_width="wrap_content" android:layout_height="48dp" android:text="Edit" android:textAllCaps="false" app:icon="@drawable/ic_edit" />
             <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
             <com.google.android.material.button.MaterialButton android:id="@+id/paymentDelete" android:layout_width="wrap_content" android:layout_height="48dp" android:text="Delete" android:textAllCaps="false" app:icon="@drawable/ic_ma_trash" />

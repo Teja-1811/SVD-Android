@@ -14,15 +14,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-            <FrameLayout
+            <LinearLayout android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-                <androidx.core.widget.NestedScrollView
+                <androidx.core.widget.NestedScrollView android:id="@+id/stockUpdateScroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:clipToPadding="false"
-        android:fillViewport="true"
-        android:paddingBottom="88dp">
+        android:fillViewport="true" android:descendantFocusability="beforeDescendants" android:focusableInTouchMode="true"
+        android:paddingBottom="12dp" android:layout_weight="1">
                     <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -104,6 +104,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:gravity="center_vertical" android:baselineAligned="false"
         android:orientation="horizontal">
                                     <com.google.android.material.textfield.TextInputLayout style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
@@ -130,7 +131,7 @@
                                     </com.google.android.material.textfield.TextInputLayout>
                                     <EditText style="@style/Widget.Svd.PlainInput"
         android:id="@+id/etEntryDate"
-        android:layout_width="112dp"
+        android:layout_width="0dp" android:layout_weight="1" android:layout_gravity="center_vertical"
         android:layout_height="48dp"
         android:background="@drawable/bg_stock_date_field"
         android:clickable="true"
@@ -245,7 +246,7 @@
         android:paddingVertical="16dp"
         android:orientation="vertical"
         android:gravity="center"
-        android:background="@android:color/transparent">
+        android:background="@color/window_background">
                     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSubmitUpdate"
         android:layout_width="wrap_content"
@@ -266,7 +267,7 @@
         android:insetBottom="0dp"
         app:elevation="6dp" style="@style/Widget.MaterialComponents.Button"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
                 </com.svd.svdagencies.utils.CompactLinearLayout>
-            </FrameLayout>
+            </LinearLayout>
         </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
     </com.svd.svdagencies.utils.CompactLinearLayout>
     <com.google.android.material.navigation.NavigationView

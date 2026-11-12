@@ -24,7 +24,7 @@
         app:titleTextColor="@color/textColorPrimary"
         android:background="?attr/colorSurface" />
         </com.google.android.material.appbar.AppBarLayout>
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,8 +36,8 @@
         android:padding="16dp"
         android:clipToPadding="false"
         tools:listitem="@layout/delivery_stock_history_card" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-        <ProgressBar
+        </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
+        <com.svd.svdagencies.utils.LogoProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

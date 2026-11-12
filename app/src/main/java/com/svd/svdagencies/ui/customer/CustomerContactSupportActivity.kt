@@ -93,7 +93,11 @@ class CustomerContactSupportActivity : BaseActivity() {
             finish()
         }
 
-        findViewById<TextView>(R.id.tvCustomerToolbarTitle).text = "Contact Support"
+        findViewById<TextView>(R.id.tvCustomerToolbarTitle).apply {
+            text = "Contact Support"
+            setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_ma_chat_left_text, 0, 0, 0)
+            compoundDrawablePadding = (8 * resources.displayMetrics.density).toInt()
+        }
 
         findViewById<BottomNavigationView>(R.id.customerBottomNav).visibility = View.GONE
 

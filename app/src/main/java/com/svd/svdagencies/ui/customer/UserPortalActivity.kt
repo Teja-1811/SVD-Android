@@ -11,7 +11,7 @@ class UserPortalActivity : PortalMainActivity() {
     override val portalLayoutRes: Int = R.layout.user_portal
     override val portalBottomMenuRes: Int = R.menu.menu_user_bottom
     override val portalDrawerMenuRes: Int = R.menu.menu_user_drawer
-    override val portalHomeTitle: String = "User Portal"
+    override val portalHomeTitle: String = "Home"
     override val portalDrawerTitle: String = "User Access"
     override val portalDrawerSubtitle: String = "Orders, subscriptions and bills"
     override fun createHomeFragment() = UserHomeFragment()

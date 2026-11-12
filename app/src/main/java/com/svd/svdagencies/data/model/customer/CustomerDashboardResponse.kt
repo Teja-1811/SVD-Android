@@ -70,5 +70,9 @@ data class CustomerDashboardLatestOrder(
     @SerializedName("delivery_charge")
     val deliveryCharge: Double = 0.0,
     @SerializedName("payment_status")
-    val paymentStatus: String? = null
+    val paymentStatus: String? = null,
+    @SerializedName("can_update")
+    val canUpdate: Boolean = false,
+    @SerializedName("can_cancel")
+    val canCancel: Boolean = false
 )

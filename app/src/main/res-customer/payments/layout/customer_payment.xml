@@ -5,6 +5,9 @@
         android:layout_height="match_parent"
         android:background="@color/window_background"
         tools:context=".ui.customer.fragment.CustomerPaymentFragment">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,13 +20,6 @@
         android:focusableInTouchMode="true"
         android:descendantFocusability="beforeDescendants"
         android:padding="@dimen/grid_16">
-            <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Payment Center"
-        android:textColor="@color/textColorPrimary"
-        android:textSize="@dimen/svd_text_heading"
-        android:textStyle="bold" />
             <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -112,7 +108,7 @@
             <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="@dimen/svd_space_section"
         app:cardBackgroundColor="?attr/colorSurface"
         app:cardCornerRadius="@dimen/card_corner_radius_medium"
         app:cardElevation="0dp"
@@ -168,64 +164,80 @@
         app:iconGravity="textStart"
         app:iconPadding="8dp"
         app:iconTint="?attr/colorOnPrimary"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
-                    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:drawableStart="@drawable/ic_lock"
-        android:drawablePadding="8dp"
-        android:text="Secure UPI Payment"
-        android:textColor="@color/textColorSecondary"
-        android:textSize="@dimen/text_size_body_small"
-        app:drawableTint="@color/icon_green" />
                 </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:tag="svd-fixed-row"
         android:orientation="horizontal">
                 <TextView
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="Recent History"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/svd_text_body"
         android:textStyle="bold" />
+                <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
                 <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:tag="svd-fixed-row"
         android:orientation="horizontal">
-                    <ImageButton
+                    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnPrevMonth"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="4dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_back"
-        app:tint="?attr/colorPrimary" />
-                    <TextView
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:minWidth="44dp"
+        android:minHeight="44dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_back"
+        app:iconGravity="textStart"
+        app:iconTint="?attr/colorPrimary"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="1dp" />
+                    <com.google.android.material.button.MaterialButton
         android:id="@+id/tvMonthLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:text="OCT 2023"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="4dp"
+        android:minWidth="48dp"
+        android:minHeight="40dp"
+        android:text="NOV 2026"
         android:textColor="?attr/colorPrimary"
-        android:textSize="@dimen/text_size_body_small"
-        android:textStyle="bold" />
-                    <ImageButton
+        android:textSize="@dimen/text_size_small"
+        android:textStyle="bold"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_calendar"
+        app:iconTint="?attr/colorPrimary"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="1dp" />
+                    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnNextMonth"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="4dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_arrow_forward"
-        app:tint="?attr/colorPrimary" />
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:minWidth="44dp"
+        android:minHeight="44dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_forward_chevron"
+        app:iconGravity="textStart"
+        app:iconTint="?attr/colorPrimary"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="1dp" />
                 </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.svd.svdagencies.utils.CompactLinearLayout>
             <androidx.recyclerview.widget.RecyclerView
@@ -261,4 +273,11 @@
             </com.svd.svdagencies.utils.CompactLinearLayout>
         </com.svd.svdagencies.utils.CompactLinearLayout>
     </androidx.core.widget.NestedScrollView>
+    <com.svd.svdagencies.utils.LogoProgressBar
+        android:id="@+id/paymentLoading"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+    </FrameLayout>
 </com.svd.svdagencies.utils.AppSwipeRefreshLayout>

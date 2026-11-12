@@ -36,6 +36,7 @@ import java.util.Calendar
 
 class AdminStatementActivity : AdminBaseActivity() {
     private var filterRequest: Job? = null
+    private var statementRequestVersion = 0
 
 
     private lateinit var binding: AdminStatementBinding
@@ -69,7 +70,6 @@ class AdminStatementActivity : AdminBaseActivity() {
         }
         binding.btnPdf.setOnClickListener { openPdf() }
         binding.swipeRefresh.setOnRefreshListener { loadStatement() }
-        loadStatement()
     }
 
     override fun onResume() {
@@ -113,12 +113,14 @@ class AdminStatementActivity : AdminBaseActivity() {
     }
 
     private fun loadStatement() {
-        binding.swipeRefresh.isRefreshing = true
+        val requestVersion = ++statementRequestVersion
+        showScreenLoading()
+        binding.swipeRefresh.isRefreshing = false
         filterRequest?.cancel()
         filterRequest = lifecycleScope.launch {
             try {
                 val response = ApiClient.cashbookApi.getStatement(selectedMonth, selectedYear)
-                bindStatement(response)
+                if (requestVersion == statementRequestVersion) bindStatement(response)
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
                 Toast.makeText(
@@ -127,8 +129,10 @@ class AdminStatementActivity : AdminBaseActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } finally {
-                binding.swipeRefresh.isRefreshing = false
-                hideScreenLoading()
+                if (requestVersion == statementRequestVersion) {
+                    binding.swipeRefresh.isRefreshing = false
+                    hideScreenLoading()
+                }
             }
         }
     }

@@ -39,15 +39,15 @@ class CategorySalesActivity : AdminBaseActivity() {
         selectedPeriod=state?.getString("period")?:"overall"
         customerId=state?.getInt("customer")?.takeIf{it>0}
         range=text("All time",12f)
-        content.addView(range)
+        range.visibility=View.GONE
         val filters=column()
         val row=LinearLayout(this).apply{orientation=LinearLayout.HORIZONTAL;gravity=android.view.Gravity.CENTER_VERTICAL;tag="svd-fixed-row"}
         period=Spinner(this).apply{tag="svd-full-width";contentDescription="Period";adapter=ArrayAdapter(this@CategorySalesActivity,R.layout.delivery_dropdown_item,listOf("All time","Today","This week","This month","This year"));setSelection(periods.indexOf(selectedPeriod).coerceAtLeast(0))}
         customer=Spinner(this).apply{tag="svd-full-width";contentDescription="Customer";adapter=ArrayAdapter(this@CategorySalesActivity,R.layout.delivery_dropdown_item,listOf("All customers"))}
         row.addView(field("Period",period),LinearLayout.LayoutParams(0,-2,1f).apply{marginEnd=dp(8)})
         row.addView(field("Customer",customer),LinearLayout.LayoutParams(0,-2,1f))
-        val reset=MaterialButton(this).apply{text="";contentDescription="Clear filters";setIconResource(R.drawable.ic_refresh);iconPadding=0;setOnClickListener{selectedPeriod="overall";customerId=null;period.setSelection(0);customer.setSelection(0);load()}}
-        filters.addView(row);filters.addView(reset,LinearLayout.LayoutParams(dp(32),dp(32)).apply{gravity=android.view.Gravity.END;topMargin=dp(8)})
+        val reset=MaterialButton(this).apply{tag="svd-icon-only";text="";contentDescription="Refresh filters";setIconResource(R.drawable.ic_refresh);iconPadding=0;setOnClickListener{selectedPeriod="overall";customerId=null;period.setSelection(0);customer.setSelection(0);load()}}
+        row.addView(reset,LinearLayout.LayoutParams(dp(48),dp(48)).apply{gravity=android.view.Gravity.BOTTOM;marginStart=dp(8)});filters.addView(row);filters.addView(range)
         content.addView(card(filters));results=column();content.addView(results)
         period.onItemSelectedListener=listener{val next=periods[period.selectedItemPosition];if(next!=selectedPeriod){selectedPeriod=next;load()}}
         customer.onItemSelectedListener=listener{val next=customerIds.getOrNull(customer.selectedItemPosition);if(next!=customerId){customerId=next;load()}}
@@ -58,15 +58,16 @@ class CategorySalesActivity : AdminBaseActivity() {
         override fun onItemSelected(p:AdapterView<*>?,v:View?,position:Int,id:Long){action()}
     }
     private fun load(){
-        call?.cancel();refresh.isRefreshing=true
+        call?.cancel();showScreenLoading();refresh.isRefreshing=false
         val request=ApiClient.categorySalesApi.getSummary(period=selectedPeriod,customer=customerId);call=request
         request.enqueue(object:Callback<CategorySalesResponse>{
             override fun onResponse(c:Call<CategorySalesResponse>,r:Response<CategorySalesResponse>){
                 if(c!==call)return
-                refresh.isRefreshing=false
+                refresh.isRefreshing=false;hideScreenLoading()
                 val data=r.body();if(!r.isSuccessful||data==null){failure();return}
                 val ids=listOf<Int?>(null)+data.customers.map{it.id}
                 if(ids!=customerIds){customerIds=ids;customer.adapter=ArrayAdapter(this@CategorySalesActivity,R.layout.delivery_dropdown_item,listOf("All customers")+data.customers.map{it.name});customer.setSelection(ids.indexOf(customerId).coerceAtLeast(0))}
+                range.visibility=if(selectedPeriod=="overall")View.GONE else View.VISIBLE
                 range.text=if(selectedPeriod=="overall")"All time" else "${data.start_date.orEmpty()} – ${data.end_date.orEmpty()}"
                 render(data)
             }
@@ -96,7 +97,7 @@ class CategorySalesActivity : AdminBaseActivity() {
         names.forEach{name->val values=mutableListOf(name,number(data.data_by_category[name]?:0.0));if(selectedPeriod!="overall")values.add(number(data.compare_data_by_category[name]?:0.0));values.add(currency.format(data.amount_by_category[name]?:0.0));row(values)}
         val total=mutableListOf("Total",number(data.total_volume));if(selectedPeriod!="overall")total.add(number(data.total_compare_volume));total.add(currency.format(data.amount_by_category.values.sum()));row(total,true)
         if(names.isEmpty())tableBody.addView(text("No sales in this period.",13f))
-        tableBody.addView(HorizontalScrollView(this).apply{addView(table)});results.addView(card(tableBody))
+        tableBody.addView(HorizontalScrollView(this, null, android.R.attr.horizontalScrollViewStyle).apply{addView(table)});results.addView(card(tableBody))
     }
     private val chartColors=intArrayOf(Color.rgb(8,127,140),Color.rgb(65,105,180),Color.rgb(230,155,45),Color.rgb(135,90,160),Color.rgb(65,155,100))
     private inner class VolumeChart(val series:List<Pair<String,List<Double>>>,val bars:Boolean):View(this@CategorySalesActivity){
@@ -105,7 +106,7 @@ class CategorySalesActivity : AdminBaseActivity() {
             series.forEachIndexed{index,entry->p.color=chartColors[index%chartColors.size];if(bars){val slot=(right-left)/series.size.coerceAtLeast(1);val x=left+slot*index;val y=bottom-((entry.second.firstOrNull()?:0.0)/max*(bottom-top)).toFloat();c.drawRect(x+slot*.2f,y,x+slot*.8f,bottom,p);p.textSize=dp(10).toFloat();c.drawText(entry.first,x+slot*.15f,bottom+dp(18),p)}else{p.style=Paint.Style.STROKE;p.strokeWidth=dp(2).toFloat();val path=Path();entry.second.forEachIndexed{i,v->val x=left+(right-left)*i/(entry.second.size-1).coerceAtLeast(1);val y=bottom-(v/max*(bottom-top)).toFloat();if(i==0)path.moveTo(x,y)else path.lineTo(x,y)};c.drawPath(path,p);p.style=Paint.Style.FILL}}
         }
     }
-    private fun failure(){results.removeAllViews();results.addView(text("Could not load category sales. Pull down to retry.",14f))}
+    private fun failure(){hideScreenLoading();results.removeAllViews();results.addView(text("Could not load category sales. Pull down to retry.",14f))}
     private fun column()=LinearLayout(this).apply{orientation=LinearLayout.VERTICAL}
     private fun field(title:String,view:View)=column().apply{addView(text(title,12f));addView(view,LinearLayout.LayoutParams(-1,-2))}
     private fun text(value:String,size:Float,bold:Boolean=false)=TextView(this).apply{text=value;textSize=size;setTextColor(if(bold)ink else muted);setPadding(0,dp(4),0,dp(4));if(bold)setTypeface(typeface,android.graphics.Typeface.BOLD)}

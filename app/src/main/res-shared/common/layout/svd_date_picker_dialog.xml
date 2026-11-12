@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="12dp" android:background="@drawable/bg_shared_date_picker">
+<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="8dp" android:text="Select date" android:textColor="#292524" android:textSize="18sp" android:textStyle="bold" />
+<ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:scrollbars="vertical">
+<DatePicker android:id="@+id/sharedDatePicker" android:layout_width="match_parent" android:layout_height="wrap_content" android:datePickerMode="calendar" android:calendarViewShown="true" android:spinnersShown="false" />
+</ScrollView>
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:baselineAligned="false" android:paddingTop="12dp">
+<com.google.android.material.button.MaterialButton android:id="@+id/btnCancelSharedDate" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:layout_marginEnd="8dp" android:text="Cancel" android:textAllCaps="false" android:textSize="14sp" android:textColor="#292524" android:backgroundTint="#F1F5F9" android:insetTop="0dp" android:insetBottom="0dp" />
+<com.google.android.material.button.MaterialButton android:id="@+id/btnSelectSharedDate" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="Select" android:textAllCaps="false" android:textSize="14sp" android:textColor="#FFFFFF" android:backgroundTint="#B91C1C" android:insetTop="0dp" android:insetBottom="0dp" />
+</LinearLayout></LinearLayout>

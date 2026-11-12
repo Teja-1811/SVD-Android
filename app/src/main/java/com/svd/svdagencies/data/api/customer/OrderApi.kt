@@ -7,14 +7,19 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface OrderApi {
 
     @GET("api/current-day-orders/")
-    fun getCurrentDayOrders(): Call<CurrentDayOrdersResponse>
+    fun getCurrentDayOrders(@Query("delivery_date") deliveryDate: String? = null): Call<CurrentDayOrdersResponse>
 
     @POST("api/place-order/")
     fun placeOrder(
         @Body request: PlaceOrderRequest
     ): Call<PlaceOrderResponse>
+
+    @POST("api/customer/orders/{orderId}/cancel/")
+    fun cancelOrder(@Path("orderId") orderId: Int): Call<Map<String, Any>>
 }

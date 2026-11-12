@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_excess_warning_icon"
+        android:contentDescription="Excess collection warning"
+        android:padding="14dp"
+        android:src="@drawable/ic_warning"
+        app:tint="@color/brand_red" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="Excess collection"
+        android:textColor="@color/brand_red_dark"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvExcessWarningMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="15sp" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        app:cardBackgroundColor="#FDECEA"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/brand_red"
+        app:strokeWidth="1dp">
+
+        <com.svd.svdagencies.utils.CompactLinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Extra amount"
+                android:textColor="@color/brand_red_dark"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvExcessWarningAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/brand_red_dark"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </com.svd.svdagencies.utils.CompactLinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="This excess will be added to the customer advance balance."
+        android:textColor="@color/textColorSecondary"
+        android:textSize="13sp" />
+
+    <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnExcessCancel"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/textColorPrimary"
+            app:strokeColor="@color/card_stroke_color" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnConfirmExcess"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1.35"
+            android:text="Confirm excess"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/brand_red" />
+    </com.svd.svdagencies.utils.CompactLinearLayout>
+</com.svd.svdagencies.utils.CompactLinearLayout>

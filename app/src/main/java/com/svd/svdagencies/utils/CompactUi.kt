@@ -27,12 +27,14 @@ object CompactUi {
         var refreshSkin = false
         var iconSkin = false
         var dropdownSkin = false
+        var dropdownWidthSkin = false
+        var loadingStatusBound = false
     }
     private val states = WeakHashMap<View, State>()
     private val datePattern = Regex("(?:\\d{4}-\\d{2}-\\d{2}|\\d{1,2}[-/]\\d{1,2}[-/]\\d{4}|\\d{1,2} [A-Za-z]{3,9} \\d{4}|[A-Za-z]{3,9} \\d{4})")
 
     private fun state(view: View) = states.getOrPut(view) {
-        State(if (view.id == View.NO_ID) "" else runCatching { view.resources.getResourceEntryName(view.id) }.getOrDefault(""))
+        State(if (view.id <= 0 || (view.id ushr 24) == 0) "" else runCatching { view.resources.getResourceEntryName(view.id) }.getOrDefault(""))
     }
     private fun dp(view: View, value: Int) = (value * view.resources.displayMetrics.density + .5f).toInt()
     private const val INPUT_HEIGHT_DP = 32
@@ -58,13 +60,17 @@ object CompactUi {
         val info = state(view)
         if (view is MaterialButton && view.tag?.toString()?.startsWith("svd-icon-only") == true) styleIconOnly(view, info)
         if (view is TextView) {
+            if (view !is Button && view !is EditText && !info.loadingStatusBound &&
+                (info.name.contains("status", true) || LoadingStatus.isLoading(view.text))) {
+                info.loadingStatusBound = true
+                LoadingStatus.bind(view)
+            }
             if (view !is Button && view !is EditText &&
                 info.name in CompactCopy.hiddenIds) {
                 if (view.visibility != View.GONE) view.visibility = View.GONE
                 return
             }
             if (view is AutoCompleteTextView || view.parent is Spinner) {
-                center(view)
                 if (view.parent is Spinner) {
                     if (view.background != null) view.background = null
                     view.minimumHeight = dp(view, DROPDOWN_HEIGHT_DP)
@@ -75,7 +81,7 @@ object CompactUi {
                 }
             }
         }
-        if (view is EditText && view !is AutoCompleteTextView) {
+        if (view is EditText && view !is AutoCompleteTextView && !isDateField(view)) {
             val height = dp(view, if (view.tag == "svd-auth-large") 56 else if (info.name == "etCollectedAmount") 48 else INPUT_HEIGHT_DP)
             view.minimumHeight = height
             view.layoutParams?.let { params ->
@@ -148,6 +154,7 @@ object CompactUi {
                     }
                 }
             }
+            alignDropdownToField(view, info)
         }
         if (isDateField(view) && view !is AutoCompleteTextView) {
             info.date = true
@@ -157,20 +164,21 @@ object CompactUi {
             info.refresh = true
             styleRefresh(view, info)
         }
-        if (view is Button || view is ImageButton) {
+        if ((view is Button || view is ImageButton) && !info.date) {
             val headerMenu = view is ImageButton && (
                 view.parent is androidx.appcompat.widget.Toolbar ||
                 info.name in setOf("btnMenu", "btnMenuToggle", "btnDrawer", "btnNavigation", "menuButton")
             )
-            val size = dp(view, if (headerMenu || view.tag == "svd-header-outline") 40 else if (view.tag == "svd-auth-large") 56 else if (info.name in setOf("btnClearSelection", "btnGenerateBill") && view.rootView.findViewById<View>(R.id.etCollectedAmount) != null) 48 else 32)
+            val size = dp(view, if (info.refresh) 48 else if (headerMenu || view.tag == "svd-header-outline") 40 else if (view.tag == "svd-auth-large") 56 else if (info.name in setOf("btnClearSelection", "btnGenerateBill") && view.rootView.findViewById<View>(R.id.etCollectedAmount) != null) 48 else 32)
             view.minimumHeight = size
             view.layoutParams?.let { params ->
-                params.height = size
+                var changed = params.height != size
+                if (changed) params.height = size
                 if (view is ImageButton || (view is MaterialButton && view.text.isNullOrBlank())) {
-                    params.width = size
+                    if (params.width != size) { params.width = size; changed = true }
                     view.minimumWidth = size
                 }
-                view.layoutParams = params
+                if (changed) view.layoutParams = params
             }
             if (headerMenu && view is ImageButton) {
                 view.scaleType = if (view.tag == "svd-header-outline") ImageView.ScaleType.CENTER_INSIDE else ImageView.ScaleType.FIT_CENTER
@@ -236,6 +244,28 @@ object CompactUi {
         return view
     }
 
+    /** The popup must match its trigger field, never expand to its longest option. */
+    private fun alignDropdownToField(view: View, info: State) {
+        if (info.dropdownWidthSkin) return
+        info.dropdownWidthSkin = true
+        view.post {
+            val width = view.width
+            if (width <= 0) return@post
+            when (view) {
+                is AutoCompleteTextView -> {
+                    view.dropDownWidth = width
+                    view.dropDownHorizontalOffset = 0
+                    view.dropDownVerticalOffset = dp(view, 4)
+                }
+                is Spinner -> {
+                    view.dropDownWidth = width
+                    view.dropDownHorizontalOffset = 0
+                    view.dropDownVerticalOffset = dp(view, 4)
+                }
+            }
+        }
+    }
+
     private fun managedWidth(view: View): Boolean {
         var current: View? = view
         while (current != null) {
@@ -277,10 +307,11 @@ object CompactUi {
         val base = if (hasOtherEndIcon || shown.length > 13) 152 else 128
         compactWidth(owner, dp(view, (base * view.resources.configuration.fontScale.coerceAtLeast(1f)).toInt()))
         center(view)
-        view.minimumHeight = dp(view, INPUT_HEIGHT_DP)
-        view.layoutParams?.let { it.height = dp(view, INPUT_HEIGHT_DP); view.layoutParams = it }
-        if (view.layoutParams?.height?.let { it > 0 } == true && view.resources.configuration.fontScale > 1.2f)
-            view.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        val height = dp(view, (INPUT_HEIGHT_DP * view.resources.configuration.fontScale.coerceAtLeast(1f)).toInt())
+        view.minimumHeight = height
+        view.layoutParams?.let { params ->
+            if (params.height != height) { params.height = height; view.layoutParams = params }
+        }
         if (view.transformationMethod !== DateChipPresentation) view.transformationMethod = DateChipPresentation
         if (!info.dateSkin) {
             info.dateSkin = true
@@ -352,15 +383,15 @@ object CompactUi {
             view.icon = icon; view.iconTint = tint; view.iconSize = dp(view, if (view.layoutParams?.height == dp(view, 32)) 16 else 20); view.iconPadding = 0
             view.iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
             view.backgroundTintList = fill; view.strokeWidth = 0; view.cornerRadius = dp(view, 12)
-            view.insetTop = 0; view.insetBottom = 0; view.setPadding(dp(view, 14), 0, dp(view, 14), 0)
+            view.insetTop = 0; view.insetBottom = 0; view.setPadding(dp(view, 6), 0, dp(view, 6), 0)
             view.gravity = Gravity.CENTER
         } else if (view is ImageView) {
             view.setImageDrawable(icon); view.imageTintList = tint; view.background = skin(view)
-            view.setPadding(dp(view, 14), dp(view, 14), dp(view, 14), dp(view, 14))
+            view.setPadding(dp(view, 6), dp(view, 6), dp(view, 6), dp(view, 6))
         } else if (view is TextView) {
             icon?.setTint(foreground); icon?.setBounds(0, 0, dp(view, 20), dp(view, 20))
             view.setCompoundDrawablesRelative(icon, null, null, null); androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(view, tint); view.background = skin(view)
-            view.setPadding(dp(view, 14), 0, dp(view, 14), 0)
+            view.setPadding(dp(view, 6), 0, dp(view, 6), 0)
             view.gravity = Gravity.CENTER
         }
         // AppCompat's support tint can otherwise retain the original primary fill.

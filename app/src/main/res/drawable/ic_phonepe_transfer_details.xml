@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Square container stroke -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.8"
+        android:pathData="M4,3h16c1.1,0 2,0.9 2,2v14c0,1.1 -0.9,2 -2,2H4c-1.1,0 -2,-0.9 -2,-2V5c0,-1.1 0.9,-2 2,-2z" />
+    <!-- Bullet List Lines -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M6,7h3v2H6z M11,7.5h7v1h-7z M6,11h3v2H6z M11,11.5h7v1h-7z M6,15h3v2H6z M11,15.5h7v1h-7z" />
+</vector>

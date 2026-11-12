@@ -1,12 +1,17 @@
 package com.svd.svdagencies.ui.delivery
 
+import com.svd.svdagencies.R
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.svd.svdagencies.base.BaseActivity
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.model.admin.stock.StockItem
+import com.svd.svdagencies.data.model.admin.customerData.CustomerItem
 import com.svd.svdagencies.data.model.delivery.*
 import com.svd.svdagencies.databinding.DeliveryStockPhaseEntryBinding
 import com.svd.svdagencies.ui.delivery.adapter.DeliveryStockSingleInputAdapter
@@ -25,6 +30,9 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
     
     private var phase: Int = 0 // 0: Morning Stock, 1: Morning Return, 2: Evening Stock, 3: Evening Return
     private var selectedDate: String = ""
+    private var adminStockEntry = false
+    private var selectedAgentId: Int? = null
+    private var deliveryAgents: List<CustomerItem> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +41,7 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
         session = SessionManager(this)
 
         phase = intent.getIntExtra("phase_type", 0)
+        adminStockEntry = intent.getBooleanExtra("admin_stock_entry", false)
         selectedDate = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
 
         setupToolbar()
@@ -40,7 +49,7 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
         setupListeners()
         
         binding.tvPhaseDate.text = "Date: ${selectedDate.split("-").reversed().joinToString("-")}"
-        loadItems()
+        if (adminStockEntry) setupAdminAgentPicker() else loadItems()
     }
 
     private fun setupToolbar() {
@@ -49,9 +58,9 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
         binding.toolbar.setNavigationOnClickListener { finish() }
         
         binding.toolbar.title = when (phase) {
-            0 -> "Morning Stock"
+            0 -> "Morning Entry"
             1 -> "Morning Return"
-            2 -> "Evening Stock"
+            2 -> "Evening Entry"
             3 -> "Evening Return"
             else -> "Stock Entry"
         }
@@ -70,17 +79,49 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
         binding.btnSubmitPhase.setOnClickListener { submitPhase() }
     }
 
+    private fun setupAdminAgentPicker() {
+        val form = binding.rvStockInput.parent as? ViewGroup ?: return
+        val picker = AutoCompleteTextView(this).apply {
+            hint = "Select delivery agent"
+            inputType = android.text.InputType.TYPE_NULL
+            minimumHeight = (48 * resources.displayMetrics.density).toInt()
+            setPadding((12 * resources.displayMetrics.density).toInt(), 0, (12 * resources.displayMetrics.density).toInt(), 0)
+            background = getDrawable(R.drawable.bg_qty_outline)
+            setOnClickListener { showDropDown() }
+        }
+        form.addView(picker, 1, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        lifecycleScope.launch {
+            try {
+                deliveryAgents = ApiClient.billsDashboardApi.getCustomersForBill("delivery").customers.orEmpty()
+                    .filter { it.frozen != true }.sortedBy { it.name.orEmpty().lowercase(Locale.ROOT) }
+                picker.setAdapter(ArrayAdapter(this@DeliveryStockPhaseEntryActivity, R.layout.delivery_dropdown_item,
+                    listOf("Select delivery agent") + deliveryAgents.map { it.name.orEmpty() }))
+                picker.setOnItemClickListener { _, _, position, _ ->
+                    selectedAgentId = deliveryAgents.getOrNull(position - 1)?.id
+                    if (selectedAgentId != null) loadItems()
+                }
+            } catch (_: Exception) {
+                Toast.makeText(this@DeliveryStockPhaseEntryActivity, "Could not load delivery agents", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
     private fun loadItems() {
+        val agentId = if (adminStockEntry) selectedAgentId else null
+        if (adminStockEntry && agentId == null) {
+            RefreshManager.stopRefresh(binding.swipeRefresh)
+            return
+        }
         RefreshManager.startRefresh(binding.swipeRefresh)
         lifecycleScope.launch {
             try {
                 // Fetch allowed items from the specific phase endpoint
                 val responseCall = when (phase) {
-                    0 -> ApiClient.deliveryApi.getMorningStockItems(selectedDate)
-                    1 -> ApiClient.deliveryApi.getMorningReturnItems(selectedDate)
-                    2 -> ApiClient.deliveryApi.getEveningStockItems(selectedDate)
-                    3 -> ApiClient.deliveryApi.getEveningReturnItems(selectedDate)
-                    else -> ApiClient.deliveryApi.getMorningStockItems(selectedDate)
+                    0 -> ApiClient.deliveryApi.getMorningStockItems(selectedDate, agentId)
+                    1 -> ApiClient.deliveryApi.getMorningReturnItems(selectedDate, agentId)
+                    2 -> ApiClient.deliveryApi.getEveningStockItems(selectedDate, agentId)
+                    3 -> ApiClient.deliveryApi.getEveningReturnItems(selectedDate, agentId)
+                    else -> ApiClient.deliveryApi.getMorningStockItems(selectedDate, agentId)
                 }
                 
                 val response = responseCall.awaitResponse()
@@ -119,6 +160,10 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
     }
 
     private fun submitPhase() {
+        if (adminStockEntry && selectedAgentId == null) {
+            Toast.makeText(this, "Select a delivery agent first", Toast.LENGTH_SHORT).show()
+            return
+        }
         val quantities = inputAdapter.getQuantities()
         if (quantities.isEmpty()) {
             Toast.makeText(this, "No data entered", Toast.LENGTH_SHORT).show()
@@ -127,7 +172,7 @@ class DeliveryStockPhaseEntryActivity : BaseActivity() {
 
         val items = quantities.entries.map { StockEntryItemInput(it.key, it.value) }
         val request = DeliveryStockEntryRequest(
-            deliveryAgent = session.getUserId(),
+            deliveryAgent = selectedAgentId ?: session.getUserId(),
             date = selectedDate,
             items = items
         )

@@ -2,6 +2,30 @@ package com.svd.svdagencies.data.model.delivery
 
 import com.google.gson.annotations.SerializedName
 
+data class DeliveryStockTrackingAgent(val id: Int, val name: String)
+
+data class DeliveryStockTrackingRow(
+    @SerializedName("agent_id") val agentId: Int,
+    @SerializedName("agent_name") val agentName: String,
+    @SerializedName("item_id") val itemId: Int,
+    @SerializedName("item_name") val itemName: String,
+    @SerializedName("item_code") val itemCode: String? = null,
+    @SerializedName("morning_collected") val morningTaken: Double,
+    @SerializedName("morning_returned") val morningReturned: Double,
+    @SerializedName("evening_collected") val eveningTaken: Double,
+    @SerializedName("evening_returned") val eveningReturned: Double,
+    val taken: Double, val billed: Double, val returned: Double, val difference: Double
+)
+
+data class DeliveryStockTrackingResponse(
+    @SerializedName("start_date") val startDate: String,
+    @SerializedName("end_date") val endDate: String,
+    val agents: List<DeliveryStockTrackingAgent>,
+    val rows: List<DeliveryStockTrackingRow>,
+    val totals: Map<String, Double>,
+    @SerializedName("unmatched_count") val unmatchedCount: Int
+)
+
 data class DeliveryBillItemsResponse(
     @SerializedName("allowed_item_codes") val allowedItemCodes: List<String>,
     val items: List<DeliveryBillItem>
@@ -118,6 +142,8 @@ data class DeliveryTodayBill(
 }
 
 data class DeliveryTodayBillItem(
+    @SerializedName(value = "code", alternate = ["item_code"])
+    val code: String? = null,
     @SerializedName(value = "name", alternate = ["item_name"])
     val name: String? = null,
     val quantity: Double = 0.0,

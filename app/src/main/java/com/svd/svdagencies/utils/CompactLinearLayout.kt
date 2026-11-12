@@ -14,10 +14,24 @@ class CompactLinearLayout @JvmOverloads constructor(context: Context, attrs: Att
     private data class Row(val children: List<View>, val width: Int, val height: Int)
     private val rows = mutableListOf<Row>()
     private var wrapping = false
+    private var presentationPrepared = false
     private val gap get() = (8 * resources.displayMetrics.density + .5f).toInt()
 
+    override fun onViewAdded(child: View) {
+        super.onViewAdded(child)
+        presentationPrepared = false
+    }
+
+    override fun onViewRemoved(child: View) {
+        super.onViewRemoved(child)
+        presentationPrepared = false
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        CompactUi.applyForMeasure(this)
+        if (!presentationPrepared) {
+            presentationPrepared = true
+            CompactUi.applyForMeasure(this)
+        }
         val visible = (0 until childCount).map { getChildAt(it) }.filter { it.visibility != GONE }
         if (tag == "svd-fixed-row" && MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED) {
             visible.filter { it.tag == "svd-refresh-share" }.forEach { child ->

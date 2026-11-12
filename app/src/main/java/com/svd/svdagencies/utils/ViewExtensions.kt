@@ -9,15 +9,25 @@ import com.google.android.material.progressindicator.CircularProgressIndicatorSp
 import com.google.android.material.progressindicator.IndeterminateDrawable
 import com.svd.svdagencies.R
 
+private data class LoadingButtonState(
+    val text: CharSequence,
+    val enabled: Boolean,
+    val icon: android.graphics.drawable.Drawable?
+)
+
 /**
  * Extension function to show a loading state on a MaterialButton.
  * It swaps the button text, disables it, and adds a progress spinner icon.
  */
 fun MaterialButton.showLoading(isLoading: Boolean, loadingText: String? = null) {
     if (isLoading) {
-        // Store original state if not already stored
-        if (this.tag == null) {
-            this.tag = arrayOf(this.text, this.isEnabled, this.icon)
+        // Keep this state separate from View.tag, which layouts and other UI
+        // helpers may already use for unrelated data.
+        if (getTag(R.id.tag_loading_button_state) == null) {
+            setTag(
+                R.id.tag_loading_button_state,
+                LoadingButtonState(this.text, this.isEnabled, this.icon)
+            )
         }
         
         this.isEnabled = false
@@ -36,11 +46,11 @@ fun MaterialButton.showLoading(isLoading: Boolean, loadingText: String? = null) 
     } else {
         (this.icon as? android.graphics.drawable.Animatable)?.stop()
         // Restore original state
-        (this.tag as? Array<*>)?.let {
-            this.text = it[0] as? CharSequence
-            this.isEnabled = it[1] as? Boolean ?: true
-            this.icon = it[2] as? android.graphics.drawable.Drawable
-            this.tag = null
+        (getTag(R.id.tag_loading_button_state) as? LoadingButtonState)?.let { state ->
+            this.text = state.text
+            this.isEnabled = state.enabled
+            this.icon = state.icon
+            setTag(R.id.tag_loading_button_state, null)
         }
     }
 }

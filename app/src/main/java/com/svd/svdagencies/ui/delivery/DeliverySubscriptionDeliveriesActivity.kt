@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.delivery
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.os.Bundle
 import com.svd.svdagencies.utils.DeliveryMaps
 import android.view.Gravity

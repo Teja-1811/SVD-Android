@@ -22,6 +22,7 @@
   <item name="nav_order_timings" type="id" />
   <item name="nav_orders" type="id" />
   <item name="nav_payments" type="id" />
+  <item name="nav_queries" type="id" />
   <item name="nav_purchase_reports" type="id" />
   <item name="nav_routes" type="id" />
   <item name="nav_statement" type="id" />

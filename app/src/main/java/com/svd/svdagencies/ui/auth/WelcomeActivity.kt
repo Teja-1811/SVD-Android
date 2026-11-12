@@ -38,6 +38,7 @@ class WelcomeActivity : BaseActivity() {
 
         val session = SessionManager(this)
         session.getRole()?.let { role ->
+            com.svd.svdagencies.notifications.PushRegistrationManager.registerCurrentDevice(this)
             val intent = when (role) {
                 UserRole.ADMIN -> Intent(this, AdminDashboardActivity::class.java)
                 UserRole.CUSTOMER -> Intent(this, CustomerMainActivity::class.java)

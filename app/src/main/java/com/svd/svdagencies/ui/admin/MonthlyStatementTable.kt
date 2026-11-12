@@ -27,7 +27,7 @@ object MonthlyStatementTable {
         }
         val panel = com.svd.svdagencies.utils.CompactLinearLayout(context).apply { orientation = LinearLayout.VERTICAL; setPadding(0,dp(16),0,dp(16)) }
         panel.addView(TextView(context).apply { text="Daily statement · invoices"; textSize=14f; setTextColor(androidx.core.content.ContextCompat.getColor(context, com.svd.svdagencies.R.color.textColorPrimary)); setTypeface(typeface,Typeface.BOLD); setPadding(0,0,0,dp(12)) })
-        val scroll = HorizontalScrollView(context)
+        val scroll = HorizontalScrollView(context, null, android.R.attr.horizontalScrollViewStyle)
         val table = com.svd.svdagencies.utils.CompactLinearLayout(context).apply { orientation=LinearLayout.VERTICAL }
         val widths = listOf(100,100,200,65,95,110,100,100,110,95,95)
         val header = com.svd.svdagencies.utils.CompactLinearLayout(context)

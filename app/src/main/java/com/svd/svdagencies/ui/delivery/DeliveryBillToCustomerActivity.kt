@@ -10,6 +10,8 @@ import com.svd.svdagencies.utils.PaymentConfig
 
 import android.net.Uri
 import android.os.Bundle
+import android.media.AudioManager
+import android.media.ToneGenerator
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -93,7 +95,12 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         setContentView(R.layout.delivery_bill_to_customer)
+        findViewById<View>(android.R.id.content).apply {
+            isFocusableInTouchMode = true
+            requestFocus()
+        }
         sessionManager = SessionManager(this)
 
         if (savedInstanceState != null) {
@@ -599,30 +606,32 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
                 etAmount?.error = "Please enter amount"
                 return@setOnClickListener
             }
+            val collected = amountStr.toDoubleOrNull() ?: 0.0
+            confirmExcessCollection(collected, openingDue, "opening due") {
+                btnUpdate.showLoading(true, "Updating...")
+                btnCancel?.isEnabled = false
 
-            btnUpdate.showLoading(true, "Updating...")
-            btnCancel?.isEnabled = false
-
-            lifecycleScope.launch {
-                try {
-                    val response = withContext(Dispatchers.IO) {
-                        ApiClient.deliveryApi.saveAgentCollection(customerId, amountStr)
+                lifecycleScope.launch {
+                    try {
+                        val response = withContext(Dispatchers.IO) {
+                            ApiClient.deliveryApi.saveAgentCollection(customerId, amountStr)
+                        }
+                        dialog.dismiss()
+                        if (response.success) {
+                            Toast.makeText(this@DeliveryBillToCustomerActivity, response.message ?: "Balance updated", Toast.LENGTH_SHORT).show()
+                            etCollectedAmount.setText("")
+                            fetchOpeningBalance(customerId)
+                        } else {
+                            Toast.makeText(this@DeliveryBillToCustomerActivity, response.message ?: "Failed to update balance", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        dialog.dismiss()
+                        Toast.makeText(
+                            this@DeliveryBillToCustomerActivity,
+                            NetworkMessageUtils.friendlyMessage(e, "Failed to update balance"),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                    dialog.dismiss()
-                    if (response.success) {
-                        Toast.makeText(this@DeliveryBillToCustomerActivity, response.message ?: "Balance updated", Toast.LENGTH_SHORT).show()
-                        etCollectedAmount.setText("")
-                        fetchOpeningBalance(customerId)
-                    } else {
-                        Toast.makeText(this@DeliveryBillToCustomerActivity, response.message ?: "Failed to update balance", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    dialog.dismiss()
-                    Toast.makeText(
-                        this@DeliveryBillToCustomerActivity,
-                        NetworkMessageUtils.friendlyMessage(e, "Failed to update balance"),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }
@@ -684,12 +693,19 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
     }
 
     private fun showCreditLimitDialog() {
-        MaterialAlertDialogBuilder(this)
+        currentFocus?.let { focused ->
+            val keyboard = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            keyboard.hideSoftInputFromWindow(focused.windowToken, 0)
+            focused.clearFocus()
+        }
+        val dialog = MaterialAlertDialogBuilder(this)
             .setTitle("Credit limit exceeded")
-            .setMessage("Customer exceeds the credit limit. You can collect pending payments, but cannot generate a new bill until the administrator enables Allow credit.")
-            .setPositiveButton("Collect pending payment") { _, _ -> showUpdateBalanceDialog() }
+            .setMessage("You can collect pending payments. To create a new bill, ask the administrator to enable Allow credit for this customer.")
+            .setPositiveButton("Collect payment") { _, _ -> showUpdateBalanceDialog() }
             .setNegativeButton("Close", null)
-            .show()
+            .create()
+        dialog.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        dialog.show()
     }
 
     private fun generateBill() {
@@ -723,6 +739,46 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
             return null
         }
         return collected
+    }
+
+    private fun confirmExcessCollection(
+        collected: Double,
+        expected: Double,
+        against: String,
+        onConfirm: () -> Unit,
+    ) {
+        if (collected <= expected + 0.01) {
+            onConfirm()
+            return
+        }
+        val excess = collected - expected
+        val dialogView = layoutInflater.inflate(R.layout.dialog_excess_collection_warning, null)
+        dialogView.findViewById<TextView>(R.id.tvExcessWarningMessage).text =
+            "You are collecting ₹ %.2f against a %s of ₹ %.2f. Please confirm before continuing."
+                .format(collected, against, expected)
+        dialogView.findViewById<TextView>(R.id.tvExcessWarningAmount).text = "₹ %.2f".format(excess)
+        val dialog = MaterialAlertDialogBuilder(this).setView(dialogView).create()
+        val warningTone = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 85)
+        val toneHost = window.decorView
+        val repeatWarning = object : Runnable {
+            override fun run() {
+                warningTone.startTone(ToneGenerator.TONE_PROP_BEEP2, 650)
+                toneHost.postDelayed(this, 760)
+            }
+        }
+        fun stopWarning() {
+            toneHost.removeCallbacks(repeatWarning)
+            warningTone.stopTone()
+            warningTone.release()
+        }
+        dialog.setOnDismissListener { stopWarning() }
+        dialogView.findViewById<MaterialButton>(R.id.btnExcessCancel).setOnClickListener { dialog.dismiss() }
+        dialogView.findViewById<MaterialButton>(R.id.btnConfirmExcess).setOnClickListener {
+            dialog.dismiss()
+            onConfirm()
+        }
+        dialog.show()
+        toneHost.post(repeatWarning)
     }
 
     private fun showConfirmationDialog(selectedItems: List<Pair<DeliveryBillItem, Int>>) {
@@ -774,10 +830,17 @@ class DeliveryBillToCustomerActivity : BaseActivity() {
         showQr: Boolean,
         btn: MaterialButton,
         otherBtn: MaterialButton,
-        dialog: DialogInterface
+        dialog: DialogInterface,
+        excessConfirmed: Boolean = false,
     ) {
         val collectedAmountValue = validateCollectedAmount(showQr) ?: run {
             otherBtn.isEnabled = true
+            return
+        }
+        if (!excessConfirmed && collectedAmountValue > currentGrandTotal + 0.01) {
+            confirmExcessCollection(collectedAmountValue, currentGrandTotal, "grand total") {
+                processBillGeneration(selectedItems, showQr, btn, otherBtn, dialog, excessConfirmed = true)
+            }
             return
         }
         btn.showLoading(true, "Generating...")

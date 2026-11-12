@@ -29,33 +29,95 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:gravity="center_vertical"
+        android:tag="svd-fixed-row"
         android:orientation="horizontal">
-                        <ImageButton
-        android:id="@+id/btnPrevMonth"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_back"
-        app:tint="?attr/colorPrimary" />
-                        <TextView
-        android:id="@+id/tvSelectedMonth"
+                        <View
         android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:visibility="gone" />
+                        <com.svd.svdagencies.utils.CompactLinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="center_vertical"
+        android:tag="svd-fixed-row"
+        android:orientation="horizontal">
+                        <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPrevMonth"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:minWidth="44dp"
+        android:minHeight="44dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_back"
+        app:iconGravity="textStart"
+        app:iconTint="?attr/colorPrimary"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="1dp" />
+                        <com.google.android.material.button.MaterialButton
+        android:id="@+id/tvSelectedMonth"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="4dp"
+        android:minWidth="48dp"
+        android:minHeight="40dp"
         android:text="October 2023"
-        android:textColor="@color/textColorPrimary"
-        android:textSize="@dimen/svd_text_label"
+        android:textAllCaps="false"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="@dimen/text_size_small"
         android:textStyle="bold"
-        android:minHeight="48dp"
-        android:maxLines="1" />
-                        <ImageButton
+        app:backgroundTint="@color/white"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_calendar"
+        app:iconTint="?attr/colorPrimary"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="1dp" />
+                        <com.google.android.material.button.MaterialButton
         android:id="@+id/btnNextMonth"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_arrow_forward"
-        app:tint="?attr/colorPrimary" />
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:minWidth="44dp"
+        android:minHeight="44dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_forward_chevron"
+        app:iconGravity="textStart"
+        app:iconTint="?attr/colorPrimary"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="1dp" />
+                        <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+                        <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnDownloadStatement"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_marginStart="8dp"
+        android:contentDescription="Download monthly statement"
+        android:minWidth="0dp"
+        android:minHeight="44dp"
+        android:text="Download"
+        android:textAllCaps="false"
+        android:textColor="?attr/colorPrimary"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:backgroundTint="@color/white"
+        app:cornerRadius="12dp"
+        app:icon="@drawable/ic_download"
+        app:iconGravity="textStart"
+        app:iconTint="?attr/colorPrimary"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="1dp" />
+                        </com.svd.svdagencies.utils.CompactLinearLayout>
                     </com.svd.svdagencies.utils.CompactLinearLayout>
                     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -104,7 +166,7 @@
                                     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Closing Due"
+        android:text="Current Due"
         android:textColor="@color/textColorSecondary"
         android:textSize="@dimen/text_size_body_small" />
                                     <TextView
@@ -135,7 +197,7 @@
                                     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total Billed"
+        android:text="Total Sales"
         android:textColor="@color/textColorSecondary"
         android:textSize="@dimen/text_size_body_small" />
                                     <TextView
@@ -173,10 +235,11 @@
                         </com.svd.svdagencies.utils.CompactLinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                     <TextView
+        android:id="@+id/tvInvoicesHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
-        android:text="Invoices"
+        android:text="Monthly invoice details"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/svd_text_body"
         android:textStyle="bold" />
@@ -189,6 +252,7 @@
         tools:listitem="@layout/customer_statement_invoice"
         android:clipToPadding="false" />
                     <TextView
+        android:id="@+id/tvPaymentsHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
@@ -210,10 +274,10 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/customerNavigationView" style="@style/Widget.App.NavigationView"
-        android:layout_width="wrap_content"
+        android:layout_width="290dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/customer_nav_header"
+        app:headerLayout="@layout/admin_nav_header"
         app:menu="@menu/menu_customer_drawer"
         android:background="?attr/colorSurface"
         app:backgroundTint="?attr/colorSurface" />

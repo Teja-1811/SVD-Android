@@ -1,22 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_home" android:title="Home" android:icon="@drawable/ic_home" android:checkable="true" />
-    <item android:id="@+id/nav_company" android:title="Company Details" android:icon="@drawable/ic_shop" android:checkable="true" />
-    <item android:id="@+id/nav_profile" android:title="My Profile" android:icon="@drawable/ic_person" android:checkable="true" />
+    <item android:id="@+id/nav_companies" android:title="Catalog" android:icon="@drawable/ic_shop" android:checkable="true" />
+    <item android:id="@+id/nav_orders" android:title="Place Order" android:icon="@drawable/ic_orders" android:checkable="true" />
+    <item android:id="@+id/nav_history_reports" android:title="Order History" android:icon="@drawable/ic_ma_clock_history" android:checkable="true" />
+    <item android:id="@+id/nav_bills" android:title="Bills" android:icon="@drawable/ic_bill" android:checkable="true" />
+    <item android:id="@+id/nav_payment" android:title="Payments" android:icon="@drawable/ic_payments" android:checkable="true" />
     <item android:id="@+id/nav_statement" android:title="Account Statement" android:icon="@drawable/ic_cashbook" android:checkable="true" />
-    <item android:id="@+id/nav_history_reports" android:title="Orders &amp; Reports" android:icon="@drawable/ic_orders" android:checkable="true" />
-    <item android:id="@+id/nav_support" android:title="Contact Support" android:icon="@drawable/ic_phone" android:checkable="true" />
-    <item android:id="@+id/nav_queries" android:title="Raised Queries" android:icon="@drawable/ic_bill" android:checkable="true" />
-    <item android:title="Information &amp; policies" android:visible="false">
-        <menu>
-            <item android:id="@+id/nav_about" android:title="About Us" android:icon="@drawable/ic_bill" android:checkable="true" />
-            <item android:id="@+id/nav_contact_info" android:title="Contact Us" android:icon="@drawable/ic_phone" android:checkable="true" />
-            <item android:id="@+id/nav_privacy" android:title="Privacy Policy" android:icon="@drawable/ic_bill" android:checkable="true" />
-            <item android:id="@+id/nav_terms" android:title="Terms &amp; Conditions" android:icon="@drawable/ic_bill" android:checkable="true" />
-            <item android:id="@+id/nav_refund" android:title="Refund Policy" android:icon="@drawable/ic_bill" android:checkable="true" />
-            <item android:id="@+id/nav_shipment" android:title="Shipment Policy" android:icon="@drawable/ic_bill" android:checkable="true" />
-        </menu>
-    </item>
-    <item android:id="@+id/nav_tools_appearance" android:title="@string/tools_appearance" android:icon="@drawable/ic_theme" android:checkable="true" />
+    <item android:id="@+id/nav_company" android:title="Company Details" android:icon="@drawable/ic_ma_building" android:checkable="true" />
+    <item android:id="@+id/nav_profile" android:title="My Profile" android:icon="@drawable/ic_person" android:checkable="true" />
+    <item android:id="@+id/nav_tools_appearance" android:title="Appearance" android:icon="@drawable/ic_theme" android:checkable="true" />
+    <item android:id="@+id/nav_support" android:title="Contact Support" android:icon="@drawable/ic_ma_chat_left_text" android:checkable="true" />
+    <item android:id="@+id/nav_contact_info" android:title="Contact Info" android:icon="@drawable/ic_phone" android:checkable="true" />
+    <item android:id="@+id/nav_about" android:title="About Us" android:icon="@drawable/ic_ma_file_earmark_text" android:checkable="true" />
+    <item android:id="@+id/nav_privacy" android:title="Privacy Policy" android:icon="@drawable/ic_lock" android:checkable="true" />
+    <item android:id="@+id/nav_terms" android:title="Terms &amp; Conditions" android:icon="@drawable/ic_ma_clipboard_check" android:checkable="true" />
+    <item android:id="@+id/nav_refund" android:title="Refund Policy" android:icon="@drawable/ic_ma_cash_coin" android:checkable="true" />
+    <item android:id="@+id/nav_shipment" android:title="Shipment Policy" android:icon="@drawable/ic_ma_truck" android:checkable="true" />
     <item android:id="@+id/nav_logout" android:title="Log out" android:icon="@drawable/ic_logout" />
 </menu>

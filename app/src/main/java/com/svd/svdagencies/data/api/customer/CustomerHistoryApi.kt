@@ -6,6 +6,7 @@ import retrofit2.Call
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface CustomerHistoryApi {
@@ -14,6 +15,9 @@ interface CustomerHistoryApi {
 
     @DELETE("api/customer/orders/history/{orderId}/")
     fun deleteOrder(@Path("orderId") orderId: Int): Call<Map<String, Any>>
+
+    @POST("api/customer/orders/{orderId}/cancel/")
+    fun cancelOrder(@Path("orderId") orderId: Int): Call<Map<String, Any>>
 
     @GET("api/customer/reports/monthly/")
     fun getMonthlyReport(@Query("date") date: String): Call<CustomerMonthlyReport>

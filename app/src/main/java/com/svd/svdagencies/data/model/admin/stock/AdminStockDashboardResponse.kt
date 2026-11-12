@@ -40,6 +40,7 @@ data class StockItem(
     @SerializedName("pcs_count") val pcsCount: Int? = 1,
     @SerializedName("category_name") val categoryName: String? = null,
     @SerializedName("item_code") val itemCode: String? = null,
+    @SerializedName("frozen") val frozen: Boolean = false,
     @SerializedName("image") val image: String? = null
 )
 
@@ -54,6 +55,9 @@ data class CompanyStockValue(
 )
 
 data class StockDateEntry(
+    @SerializedName("date") val date: String? = null,
+    @SerializedName("item_id") val itemId: Int? = null,
+    @SerializedName("company_id") val companyId: Int? = null,
     @SerializedName("id") val id: Int,
     @SerializedName("created_at") val createdAt: String? = null,
     @SerializedName("company_name") val companyName: String? = null,

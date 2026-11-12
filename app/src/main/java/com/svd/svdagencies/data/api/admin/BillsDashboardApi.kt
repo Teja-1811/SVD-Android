@@ -10,6 +10,7 @@ import com.svd.svdagencies.data.model.admin.Bills.EditBillRequest
 import com.svd.svdagencies.data.model.admin.customerData.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.admin.customerData.GenericSuccessResponse
 import com.svd.svdagencies.data.model.delivery.DeliveryAgentDuesResponse
+import com.svd.svdagencies.data.model.delivery.DeliveryStockTrackingResponse
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
@@ -57,5 +58,19 @@ interface BillsDashboardApi {
         @Query("start_date") startDate: String? = null,
         @Query("end_date") endDate: String? = null
     ): DeliveryAgentDuesResponse
+
+    @GET("api/admin/delivery-stock-tracking/")
+    suspend fun getDeliveryStockTracking(
+        @Query("agent_id") agentId: Int? = null,
+        @Query("start_date") startDate: String,
+        @Query("end_date") endDate: String
+    ): DeliveryStockTrackingResponse
+
+    @POST("api/admin/delivery-stock-tracking/")
+    suspend fun billRemainingDeliveryStock(
+        @Query("agent_id") agentId: Int,
+        @Query("start_date") date: String,
+        @Query("end_date") endDate: String = date
+    ): Map<String, @JvmSuppressWildcards Any>
 
 }

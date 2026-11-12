@@ -16,10 +16,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.CustomerApi
+import com.svd.svdagencies.data.api.customer.OrderApi
 import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.customer.CustomerOfferResponse
 import com.svd.svdagencies.data.model.customer.OfferItem
 import com.svd.svdagencies.ui.customer.CustomerContactSupportActivity
+import com.svd.svdagencies.ui.customer.CustomerHistoryActivity
 import com.svd.svdagencies.ui.customer.PortalMainActivity
 import com.svd.svdagencies.ui.customer.CustomerRaisedQueriesActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,16 +29,11 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.svd.svdagencies.ui.customer.adapter.CustomerOffer
 import com.svd.svdagencies.ui.customer.adapter.CustomerOfferAdapter
-import com.svd.svdagencies.utils.CustomerOrderWindow
-import com.svd.svdagencies.utils.LatestCustomerOrder
-import com.svd.svdagencies.utils.LatestCustomerOrderStore
 import com.svd.svdagencies.utils.RefreshManager
 import com.svd.svdagencies.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class CustomerHomeFragment : Fragment(R.layout.customer_home) {
@@ -53,6 +50,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
     private lateinit var tvLatestOrderSubtitle: TextView
     private lateinit var tvLatestOrderItems: TextView
     private lateinit var btnLatestOrderAction: Button
+    private lateinit var btnLatestOrderCancel: Button
     private lateinit var rvOffers: RecyclerView
 
     private val slidingHandler = android.os.Handler(android.os.Looper.getMainLooper())
@@ -73,7 +71,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
     private lateinit var session: SessionManager
     private val offersList = mutableListOf<CustomerOffer>()
 
-    private val orderDateFormat = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+    private var dashboardSnapshot: CustomerDashboardResponse? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -90,6 +88,7 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         tvLatestOrderSubtitle = view.findViewById(R.id.tvLatestOrderSubtitle)
         tvLatestOrderItems = view.findViewById(R.id.tvLatestOrderItems)
         btnLatestOrderAction = view.findViewById(R.id.btnLatestOrderAction)
+        btnLatestOrderCancel = view.findViewById(R.id.btnLatestOrderCancel)
         rvOffers = view.findViewById(R.id.rvOffers)
 
         session = SessionManager(requireContext())
@@ -98,7 +97,6 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
         setupOffersCarousel()
 
         RefreshManager.setupRefresh(swipeRefresh) {
-            CustomerOrderWindow.refresh { if (isAdded && view != null) renderLatestOrderCard() }
             loadDashboard()
             loadOffers()
         }
@@ -108,9 +106,6 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
 
     override fun onResume() {
         super.onResume()
-        CustomerOrderWindow.refresh {
-            if (isAdded && view != null) renderLatestOrderCard()
-        }
         RefreshManager.startRefresh(swipeRefresh)
         loadDashboard()
         loadOffers()
@@ -157,11 +152,16 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
                 tvWelcome.text = "Welcome back, ${customer.name}"
                 tvPhone.text = "Mobile: ${customer.phone ?: "Not available"}"
                 tvShop.text = customer.shopName ?: "Shop not set"
-                tvBalance.text = formatCurrency(summary.walletBalance)
-                view?.findViewById<TextView>(R.id.retailerOutstanding)?.apply {
-                    visibility = if (customer.allowCredit) View.VISIBLE else View.GONE
-                    text = "Outstanding: ${formatCurrency(summary.outstandingDue)}"
-                }
+                val hasOutstanding = summary.outstandingDue > 0.0
+                view?.findViewById<TextView>(R.id.retailerAccountTitle)?.text =
+                    if (hasOutstanding) "Outstanding" else "Wallet"
+                tvBalance.text = formatCurrency(
+                    if (hasOutstanding) summary.outstandingDue else summary.walletBalance
+                )
+                // The account card is deliberately a single state: due or
+                // wallet advance.  Never show both balances together.
+                view?.findViewById<TextView>(R.id.retailerOutstanding)?.visibility = View.GONE
+                dashboardSnapshot = dashboard
                 applyAccountState(dashboard)
                 renderLatestOrderCard()
             }
@@ -241,46 +241,97 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
     }
 
     private fun renderLatestOrderCard() {
-        val context = context ?: return
-        val latestOrder = LatestCustomerOrderStore.get(context)
-        val isOrderingOpen = CustomerOrderWindow.isOpen()
+        val dashboard = dashboardSnapshot
+        val latestBill = dashboard?.latestBill
+        val tomorrowOrder = dashboard?.latestOrder
 
-        tvOrderWindow.text = CustomerOrderWindow.statusMessage()
-
-        if (latestOrder == null) {
-            tvLatestOrderTitle.text = "Ready for today's order?"
-            tvLatestOrderSubtitle.text = CustomerOrderWindow.statusMessage()
-            tvLatestOrderItems.text = "No orders yet."
-            btnLatestOrderAction.text = "Place Order"
-            btnLatestOrderAction.isEnabled = isOrderingOpen
-            btnLatestOrderAction.setOnClickListener {
-                (activity as? PortalMainActivity)?.openOrdersScreen(editLatestOrder = false)
+        // Give a scheduled delivery the highest priority.  If there is no
+        // order due tomorrow, fall back to the latest billed invoice.
+        // Do not show the generic order-window copy here; it is not an order.
+        when {
+            tomorrowOrder != null -> {
+                tvOrderWindow.isVisible = true
+                tvOrderWindow.text = "DELIVERY TOMORROW"
+                tvLatestOrderTitle.text = tomorrowOrder.orderNumber
+                tvLatestOrderSubtitle.text = "Delivery on ${formatDashboardDate(tomorrowOrder.deliveryDate ?: tomorrowOrder.orderDate)}"
+                val payment = tomorrowOrder.paymentStatus
+                    ?.uppercase(Locale.getDefault())
+                    ?.let { " · Payment: $it" }
+                    .orEmpty()
+                val orderAmount = (tomorrowOrder.approvedTotalAmount.takeIf { it > 0.0 }
+                    ?: tomorrowOrder.totalAmount) + tomorrowOrder.deliveryCharge
+                tvLatestOrderItems.text = "Order total: ${formatCurrency(orderAmount)}$payment"
+                tvLatestOrderItems.isVisible = true
             }
-            return
+            latestBill != null -> {
+                tvOrderWindow.isVisible = true
+                tvOrderWindow.text = "LAST BILLED"
+                tvLatestOrderTitle.text = latestBill.invoiceNumber
+                tvLatestOrderSubtitle.text = "Billed on ${formatDashboardDate(latestBill.invoiceDate)}"
+                tvLatestOrderItems.text = "Invoice total: ${formatCurrency(latestBill.totalAmount)}"
+                tvLatestOrderItems.isVisible = true
+            }
+            else -> {
+                tvOrderWindow.isVisible = false
+                tvLatestOrderTitle.text = "No recent bill or scheduled delivery"
+                tvLatestOrderSubtitle.text = "Your latest billed invoice or tomorrow's order will appear here."
+                tvLatestOrderItems.isVisible = false
+            }
         }
 
-        bindLatestOrder(latestOrder, isOrderingOpen)
+        val canUpdateTomorrowOrder = tomorrowOrder?.canUpdate == true
+        val canCancelTomorrowOrder = tomorrowOrder?.canCancel == true
+        btnLatestOrderAction.text = if (canUpdateTomorrowOrder) "Update Order" else "View Orders"
+        btnLatestOrderAction.isEnabled = true
+        btnLatestOrderAction.setOnClickListener {
+            if (canUpdateTomorrowOrder) {
+                (activity as? PortalMainActivity)?.openOrdersScreen(editLatestOrder = true)
+            } else {
+                startActivity(Intent(requireContext(), CustomerHistoryActivity::class.java))
+            }
+        }
+        btnLatestOrderCancel.isVisible = canCancelTomorrowOrder
+        btnLatestOrderCancel.setOnClickListener {
+            if (tomorrowOrder != null && canCancelTomorrowOrder) confirmCancelOrder(tomorrowOrder.orderId)
+        }
     }
 
-    private fun bindLatestOrder(latestOrder: LatestCustomerOrder, isOrderingOpen: Boolean) {
-        val totalUnits = latestOrder.items.sumOf { it.quantity }
-        val placedAt = orderDateFormat.format(Date(latestOrder.placedAtMillis))
-        val itemLines = latestOrder.items.joinToString(separator = "\n") { item -> "- ${item.name} (${formatQuantity(item.quantity)})" }
+    private fun confirmCancelOrder(orderId: Int) {
+        com.svd.svdagencies.utils.WhiteMaterialAlertDialogBuilder(requireContext())
+            .setTitle("Cancel order?")
+            .setMessage("This order has not been confirmed. It will be cancelled and kept in your order history.")
+            .setNegativeButton("Keep order", null)
+            .setPositiveButton("Cancel order") { _, _ ->
+                btnLatestOrderCancel.isEnabled = false
+                ApiClient.retrofit.create(OrderApi::class.java).cancelOrder(orderId)
+                    .enqueue(object : Callback<Map<String, Any>> {
+                        override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
+                            if (!isAdded) return
+                            btnLatestOrderCancel.isEnabled = true
+                            Toast.makeText(requireContext(), if (response.isSuccessful) "Order cancelled" else "Order can no longer be cancelled", Toast.LENGTH_SHORT).show()
+                            if (response.isSuccessful) loadDashboard()
+                        }
 
-        tvLatestOrderTitle.text = latestOrder.orderNumber?.let { "Latest Order: $it" } ?: "Latest Order"
-        tvLatestOrderSubtitle.text = "${formatQuantity(totalUnits)} units - Placed on $placedAt"
-        tvLatestOrderItems.text = itemLines
-        tvLatestOrderItems.isVisible = itemLines.isNotBlank()
-        btnLatestOrderAction.text = if (isOrderingOpen) "Edit Latest Order" else "Order Window Closed"
-        btnLatestOrderAction.isEnabled = isOrderingOpen
-        btnLatestOrderAction.setOnClickListener {
-            (activity as? PortalMainActivity)?.openOrdersScreen(editLatestOrder = true)
-        }
+                        override fun onFailure(call: Call<Map<String, Any>>, t: Throwable) {
+                            if (!isAdded) return
+                            btnLatestOrderCancel.isEnabled = true
+                            Toast.makeText(requireContext(), "Unable to cancel order", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+            }
+            .show()
     }
 
     private fun formatCurrency(amount: Double): String = "\u20B9 " + String.format(Locale.getDefault(), "%.2f", amount)
 
-    private fun formatQuantity(quantity: Double): String {
-        return if (quantity == quantity.toInt().toDouble()) quantity.toInt().toString() else quantity.toString()
+    private fun formatDashboardDate(value: String): String {
+        return value.split("-").let { parts ->
+            if (parts.size != 3) return value
+            val month = parts[1].toIntOrNull() ?: return value
+            val day = parts[2].toIntOrNull() ?: return value
+            val monthName = java.text.DateFormatSymbols(Locale.getDefault()).shortMonths.getOrNull(month - 1)
+                ?: return value
+            "$day $monthName ${parts[0]}"
+        }
     }
 }

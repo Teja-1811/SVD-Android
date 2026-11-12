@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.customer
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import com.svd.svdagencies.utils.DeliveryLocationPicker
@@ -97,7 +97,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         (container.parent as? android.view.ViewGroup)?.addView(plans)
         if (SessionManager(this).getRole() == UserRole.USER) {
             findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.customerBottomNav).apply {
-                visibility = View.VISIBLE
+                visibility = View.GONE
                 menu.clear()
                 inflateMenu(R.menu.menu_user_bottom)
                 selectedItemId = R.id.nav_subscriptions
@@ -308,7 +308,7 @@ class CustomerSubscriptionsActivity : BaseActivity() {
         }
         val dialog = WhiteMaterialAlertDialogBuilder(this)
             .setTitle("Choose your subscription")
-            .setView(ScrollView(this).apply { addView(choices) })
+            .setView(ScrollView(this, null, android.R.attr.scrollViewStyle).apply { addView(choices) })
             .setNegativeButton("Not now", null)
             .create()
         offers.forEach { value ->

@@ -1,7 +1,7 @@
 package com.svd.svdagencies.ui.admin.cashbook
 
 import android.app.Activity
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast

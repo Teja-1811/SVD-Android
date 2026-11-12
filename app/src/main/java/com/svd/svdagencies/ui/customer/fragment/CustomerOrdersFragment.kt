@@ -1,7 +1,6 @@
 package com.svd.svdagencies.ui.customer.fragment
 
-import android.content.res.ColorStateList
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.os.Bundle
 import com.svd.svdagencies.utils.DeliveryCoordinates
 import com.svd.svdagencies.utils.DeliveryLocationPicker
@@ -20,10 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.google.android.material.button.MaterialButtonToggleGroup
 import com.svd.svdagencies.R
 import com.svd.svdagencies.data.api.auth.ApiClient
 import com.svd.svdagencies.data.api.customer.OrderApi
@@ -38,10 +37,10 @@ import com.svd.svdagencies.data.model.customer.PlaceOrderResponse
 import com.svd.svdagencies.data.model.customer.ProductResponse
 import com.svd.svdagencies.ui.customer.adapter.OrderProductAdapter
 import com.svd.svdagencies.ui.customer.adapter.SummaryAdapter
+import com.svd.svdagencies.ui.customer.PortalMainActivity
 import com.svd.svdagencies.ui.customer.viewmodel.PlaceOrderViewModel
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.UserRole
-import com.svd.svdagencies.utils.CustomerOrderWindow
 import com.svd.svdagencies.utils.LatestCustomerOrder
 import com.svd.svdagencies.utils.LatestCustomerOrderItem
 import com.svd.svdagencies.utils.LatestCustomerOrderStore
@@ -79,10 +78,12 @@ class CustomerOrdersFragment : Fragment() {
     private lateinit var tvTotalAmount: TextView
     private lateinit var tvOrderingWindow: TextView
     private lateinit var btnPlaceOrder: MaterialButton
-    private lateinit var orderTypeToggle: MaterialButtonToggleGroup
-    private lateinit var btnPreOrderDate: MaterialButton
-    private lateinit var tvRegularDeliveryHint: TextView
-    private val preOrderDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 2); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
+    private var orderTypeToggle: MaterialButtonToggleGroup? = null
+    private var btnPreOrderDate: MaterialButton? = null
+    private val preOrderDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }
+    private var selectedUserOrderType = "regular"
+    private var regularOrdersOpen: Boolean? = null
+    private var regularOrderMessage: String = ""
 
     private var placingOrder = false
     private var choosingLocation = false
@@ -106,8 +107,7 @@ class CustomerOrdersFragment : Fragment() {
         tvOrderingWindow = view.findViewById(R.id.tvOrderingWindow)
         btnPlaceOrder = view.findViewById(R.id.btnPlaceOrder)
         orderTypeToggle = view.findViewById(R.id.orderTypeToggle)
-        btnPreOrderDate = view.findViewById(R.id.btnPreOrderDate)
-        tvRegularDeliveryHint = view.findViewById(R.id.tvRegularDeliveryHint)
+        btnPreOrderDate = requireActivity().findViewById(R.id.btnPreOrderDate)
         cardOrderSummary = view.findViewById(R.id.cardOrderSummary)
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount)
         shouldLoadLatestOrder = arguments?.getBoolean(ARG_EDIT_LATEST_ORDER, false) == true
@@ -126,14 +126,27 @@ class CustomerOrdersFragment : Fragment() {
         rvSummary.layoutManager = LinearLayoutManager(requireContext())
         rvSummary.adapter = summaryAdapter
 
-        orderTypeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (isChecked) updateOrderTypeUi(checkedId == R.id.btnPreOrder)
+        btnPreOrderDate?.setOnClickListener {
+            if (!isUserPortal() || selectedUserOrderType == "pre_order") choosePreOrderDate()
         }
-        btnPreOrderDate.setOnClickListener { choosePreOrderDate() }
-        orderTypeToggle.isVisible = SessionManager(requireContext()).getRole() == UserRole.USER
-        if (SessionManager(requireContext()).getRole() != UserRole.USER) viewModel.isPreOrder = false
-        orderTypeToggle.check(if (viewModel.isPreOrder) R.id.btnPreOrder else R.id.btnRegularOrder)
-        updateOrderTypeUi(viewModel.isPreOrder)
+        (activity as? PortalMainActivity)?.setOrderDatePickerVisible(true)
+        if (isUserPortal()) {
+            orderTypeToggle?.addOnButtonCheckedListener { _, checkedId, isChecked ->
+                if (!isChecked) return@addOnButtonCheckedListener
+                selectedUserOrderType = when (checkedId) {
+                    R.id.btnInstantOrder -> "instant"
+                    R.id.btnPreOrder -> "pre_order"
+                    else -> "regular"
+                }
+                applyUserOrderType()
+            }
+            orderTypeToggle?.check(R.id.btnRegularOrder)
+            applyUserOrderType()
+        } else {
+            viewModel.isPreOrder = true
+            tvOrderingWindow.isVisible = false
+            updatePreOrderDateLabel()
+        }
 
 
         swipeRefresh.setOnRefreshListener {
@@ -143,15 +156,6 @@ class CustomerOrdersFragment : Fragment() {
         refreshOrdersScreen()
 
         btnPlaceOrder.setOnClickListener {
-            if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {
-                Toast.makeText(
-                    requireContext(),
-                    CustomerOrderWindow.statusMessage(selectedOrderType()),
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
             if (viewModel.cartQuantities.isEmpty()) {
                 Toast.makeText(requireContext(), "Select items", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -172,6 +176,7 @@ class CustomerOrdersFragment : Fragment() {
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
+        (activity as? PortalMainActivity)?.setOrderDatePickerVisible(!hidden)
         if (!hidden && view != null && ::orderAdapter.isInitialized) {
             orderAdapter.notifyDataSetChanged()
             updateSummary()
@@ -179,12 +184,20 @@ class CustomerOrdersFragment : Fragment() {
         }
     }
 
-    private fun selectedOrderType() = if (orderTypeToggle.checkedButtonId == R.id.btnPreOrder) "pre_order" else "regular"
-
     private fun refreshOrderTimings() {
-        CustomerOrderWindow.refresh {
-            if (isAdded && view != null && ::summaryAdapter.isInitialized) updateOrderWindowUi()
-        }
+        ApiClient.customerApi.getOrderTimings().enqueue(object : Callback<com.google.gson.JsonObject> {
+            override fun onResponse(call: Call<com.google.gson.JsonObject>, response: Response<com.google.gson.JsonObject>) {
+                if (!isAdded || view == null || !response.isSuccessful) return
+                val regular = response.body()?.getAsJsonObject("regular") ?: return
+                regularOrdersOpen = regular.get("is_open")?.asBoolean
+                regularOrderMessage = regular.get("message")?.asString.orEmpty()
+                updateOrderWindowUi()
+            }
+
+            override fun onFailure(call: Call<com.google.gson.JsonObject>, t: Throwable) {
+                if (isAdded && view != null) updateOrderWindowUi()
+            }
+        })
     }
 
     private fun refreshOrdersScreen() {
@@ -202,8 +215,8 @@ class CustomerOrdersFragment : Fragment() {
             total += product.calculateTotal(qty)
         }
 
-        val isUser = SessionManager(requireContext()).getRole() == UserRole.USER
-        val deliveryCharge = if (isUser && viewModel.cartQuantities.isNotEmpty()) 10.0 else 0.0
+        val isUser = isUserPortal()
+        val deliveryCharge = if (isUser && selectedUserOrderType == "instant" && viewModel.cartQuantities.isNotEmpty()) 20.0 else 0.0
         view?.findViewById<TextView>(R.id.tvOrderDeliveryCharge)?.apply {
             isVisible = isUser
             text = "Delivery charge: ${currency.format(deliveryCharge)}"
@@ -214,15 +227,6 @@ class CustomerOrdersFragment : Fragment() {
 
     private fun placeOrder(location: DeliveryCoordinates? = null) {
         if (placingOrder || (choosingLocation && location == null)) return
-        if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {
-            Toast.makeText(
-                requireContext(),
-                CustomerOrderWindow.statusMessage(selectedOrderType()),
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
-
         if (SessionManager(requireContext()).getRole() == UserRole.USER && location == null) {
             choosingLocation = true
             btnPlaceOrder.showLoading(true, "Choose location…")
@@ -244,13 +248,10 @@ class CustomerOrdersFragment : Fragment() {
         }
 
         val submittedOrderItems = buildLatestOrderItems()
-        val isPreOrder = orderTypeToggle.checkedButtonId == R.id.btnPreOrder
-        val deliveryDate = if (isPreOrder) {
-            SimpleDateFormat("yyyy-MM-dd", Locale.US).format(preOrderDate.time)
-        } else null
+        val deliveryDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(preOrderDate.time)
         val request = PlaceOrderRequest(
             items = orderItems,
-            orderType = if (isPreOrder) "pre_order" else "regular",
+            orderType = if (isUserPortal()) selectedUserOrderType else "pre_order",
             deliveryDate = deliveryDate,
             deliveryLatitude = location?.latitude,
             deliveryLongitude = location?.longitude,
@@ -324,41 +325,54 @@ class CustomerOrdersFragment : Fragment() {
         })
     }
 
-    private fun updateOrderTypeUi(isPreOrder: Boolean) {
-        val modeChanged = viewModel.isPreOrder != isPreOrder
-        viewModel.isPreOrder = isPreOrder
-        btnPreOrderDate.isVisible = isPreOrder
-        tvRegularDeliveryHint.text = if (isPreOrder) {
-            "Pre-orders are open 24 hours. Choose delivery at least 2 days ahead."
-        } else {
-            "Regular orders are delivered with your delivery agent's next route visit."
-        }
-        if (isPreOrder) updatePreOrderDateLabel()
-        updateOrderWindowUi()
-        if (::orderAdapter.isInitialized && modeChanged) {
-            viewModel.cartQuantities.clear()
-            pendingServerOrder = null
-            updateSummary()
-            loadProducts(chipGroup.checkedChipId.takeIf { it != View.NO_ID }?.let { chipGroup.findViewById<Chip>(it).tag as? Int })
-        }
-    }
-
     private fun choosePreOrderDate() {
         val picker = DatePickerDialog(requireContext(), { _, year, month, day ->
             preOrderDate.set(year, month, day)
             updatePreOrderDateLabel()
+            updateOrderWindowUi()
         }, preOrderDate.get(Calendar.YEAR), preOrderDate.get(Calendar.MONTH), preOrderDate.get(Calendar.DAY_OF_MONTH))
-        picker.datePicker.minDate = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 2); set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0) }.timeInMillis
+        picker.datePicker.minDate = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, if (isUserPortal()) 2 else 1)
+            set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
         picker.show()
     }
 
     private fun updatePreOrderDateLabel() {
-        btnPreOrderDate.text = "Delivery date: ${SimpleDateFormat("dd MMM yyyy", Locale.US).format(preOrderDate.time)}"
+        btnPreOrderDate?.text = SimpleDateFormat("dd MMM yyyy", Locale.US).format(preOrderDate.time)
+    }
+
+    private fun isUserPortal() = SessionManager(requireContext()).getRole() == UserRole.USER
+
+    private fun applyUserOrderType() {
+        val today = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+        }
+        when (selectedUserOrderType) {
+            "instant" -> preOrderDate.timeInMillis = today.timeInMillis
+            "regular" -> {
+                today.add(Calendar.DAY_OF_YEAR, 1)
+                preOrderDate.timeInMillis = today.timeInMillis
+            }
+            "pre_order" -> {
+                val earliestPreOrderDate = (today.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, 2) }
+                if (preOrderDate.before(earliestPreOrderDate)) {
+                    preOrderDate.timeInMillis = earliestPreOrderDate.timeInMillis
+                }
+            }
+        }
+        viewModel.isPreOrder = selectedUserOrderType == "pre_order"
+        btnPreOrderDate?.isEnabled = selectedUserOrderType == "pre_order"
+        btnPreOrderDate?.alpha = if (selectedUserOrderType == "pre_order") 1f else 0.85f
+        updatePreOrderDateLabel()
+        updateOrderWindowUi()
+        updateSummary()
     }
 
     private fun fetchExistingOrderState() {
         val api = ApiClient.retrofit.create(OrderApi::class.java)
-        api.getCurrentDayOrders().enqueue(object : Callback<CurrentDayOrdersResponse> {
+        val selectedDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(preOrderDate.time)
+        api.getCurrentDayOrders(selectedDate).enqueue(object : Callback<CurrentDayOrdersResponse> {
             override fun onResponse(
                 call: Call<CurrentDayOrdersResponse>,
                 response: Response<CurrentDayOrdersResponse>
@@ -375,7 +389,6 @@ class CustomerOrdersFragment : Fragment() {
                     return
                 }
 
-                if (orderTypeToggle.checkedButtonId == R.id.btnPreOrder) return
                 val existingOrder = payload.orders.firstOrNull {
                     !it.items.isNullOrEmpty() && it.status !in setOf("cancelled", "rejected", "delivered")
                 }
@@ -477,7 +490,7 @@ class CustomerOrdersFragment : Fragment() {
 
                 swipeRefresh.isRefreshing = false
                 val all = parseProducts(response.body())
-                val list = if (orderTypeToggle.checkedButtonId == R.id.btnPreOrder) all else all.filter { it.stock > 0 }
+                val list = all
                 val initialId = arguments?.getInt("initial_product_id", -1) ?: -1
                 if (list.any { it.id == initialId }) {
                     viewModel.cartQuantities[initialId] = 1.0
@@ -535,31 +548,26 @@ class CustomerOrdersFragment : Fragment() {
 
     private fun updateOrderWindowUi() {
         if (placingOrder || choosingLocation) return
-        val isOpen = CustomerOrderWindow.isOpen(selectedOrderType())
-        tvOrderingWindow.text = CustomerOrderWindow.statusMessage(selectedOrderType())
-        btnPlaceOrder.isEnabled = isOpen
-        btnPlaceOrder.text = if (isOpen) "Place Order" else "Ordering Closed"
-        btnPlaceOrder.backgroundTintList = ColorStateList.valueOf(
-            ContextCompat.getColor(
-                requireContext(),
-                if (isOpen) R.color.icon_green else R.color.chip_unselected_border
-            )
-        )
+        val requiresAdminWindow = if (isUserPortal()) {
+            selectedUserOrderType == "regular"
+        } else {
+            val tomorrow = Calendar.getInstance().apply {
+                add(Calendar.DAY_OF_YEAR, 1)
+                set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
+            }
+            !preOrderDate.after(tomorrow)
+        }
+        val closedForTomorrow = requiresAdminWindow && regularOrdersOpen == false
+        btnPlaceOrder.isEnabled = !closedForTomorrow
+        btnPlaceOrder.text = if (closedForTomorrow) "Orders closed" else "Place Order"
+        tvOrderingWindow.isVisible = requiresAdminWindow && regularOrderMessage.isNotBlank()
+        if (tvOrderingWindow.isVisible) tvOrderingWindow.text = regularOrderMessage
     }
 
     private fun restoreLatestOrderIntoCart() {
         if (!isAdded || view == null) return
         val context = context ?: return
         val latestOrder = LatestCustomerOrderStore.get(context) ?: return
-
-        if (selectedOrderType() == "regular" && !CustomerOrderWindow.isOpen("regular")) {
-            Toast.makeText(
-                context,
-                CustomerOrderWindow.statusMessage(selectedOrderType()),
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
 
         bindOrderItemsToCart(latestOrder.items)
 

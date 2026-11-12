@@ -2,6 +2,7 @@ package com.svd.svdagencies.ui.customer
 
 import android.os.Bundle
 import android.view.View
+import android.view.Gravity
 import com.svd.svdagencies.utils.DeliveryCoordinates
 import com.svd.svdagencies.utils.DeliveryLocationPicker
 import com.svd.svdagencies.utils.DeliveryMaps
@@ -39,39 +40,29 @@ class CustomerProfileActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         val root = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(16),dp(20),dp(16),dp(24))
+            setPadding(dp(20), dp(16), dp(20), dp(28))
             setBackgroundColor(getColor(R.color.window_background))
         }
         val isUser = SessionManager(this).getRole() == UserRole.USER
-        val account = section(if (isUser) "Personal details" else "Business details")
-        val profileFields = if (isUser) listOf("name" to "Full name", "phone" to "Phone number") else
-            listOf("name" to "Name", "phone" to "Phone", "shop_name" to "Shop name", "area" to "Area", "city" to "City", "state" to "State", "pin_code" to "PIN code")
-        profileFields.forEach { (key, label) ->
-            val field = TextInputLayout(this).apply {
-                hint = label
-                boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
-                setBoxCornerRadii(dp(12).toFloat(),dp(12).toFloat(),dp(12).toFloat(),dp(12).toFloat())
-                boxBackgroundColor = androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, com.svd.svdagencies.R.color.surface_background)
-                layoutParams = LinearLayout.LayoutParams(-1,-2).apply { topMargin = dp(14) }
-            }
-            val input = TextInputEditText(field.context).apply {
-                isSingleLine = true
-                textSize = 14f; minHeight = dp(48)
-                inputType = when(key) {
-                    "phone" -> InputType.TYPE_CLASS_PHONE
-                    "pin_code" -> InputType.TYPE_CLASS_NUMBER
-                    "name" -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
-                    else -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-                }
-                setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, com.svd.svdagencies.R.color.textColorPrimary))
-            }
-            fields[key] = input
-            field.addView(input, LinearLayout.LayoutParams(-1,-2))
-            account.addView(field)
+        val identity = section(
+            if (isUser) "Personal details" else "Business details",
+            if (isUser) "Keep your contact information current." else "Contact and shop information."
+        )
+        val identityFields = if (isUser) {
+            listOf("name" to "Full name", "phone" to "Phone number")
+        } else {
+            listOf("name" to "Contact name", "phone" to "Phone number", "shop_name" to "Shop name")
         }
-        root.addView(card(account))
+        identityFields.forEach { (key, label) -> addProfileField(identity, key, label) }
+        root.addView(card(identity))
+        if (!isUser) {
+            val address = section("Address", "Used for delivery and account records.")
+            listOf("area" to "Area", "city" to "City", "state" to "State", "pin_code" to "PIN code")
+                .forEach { (key, label) -> addProfileField(address, key, label) }
+            root.addView(card(address))
+        }
         if (isUser) {
-            val location = section("Delivery location")
+            val location = section("Delivery location", "Set the location where your orders should be delivered.")
             locationButton = button("Set delivery location").apply {
                 setOnClickListener { deliveryLocation.choose { pin -> showDeliveryPin(pin) } }
             }.also { location.addView(it) }
@@ -83,9 +74,15 @@ class CustomerProfileActivity : BaseActivity() {
             }.also { location.addView(it) }
             root.addView(card(location))
         }
-        saveButton = button("Save changes").apply { setOnClickListener { save() } }
+        saveButton = button("Save changes").apply {
+            minHeight = dp(56)
+            setIconResource(R.drawable.ic_check)
+            iconGravity = MaterialButton.ICON_GRAVITY_TEXT_START
+            iconPadding = dp(8)
+            setOnClickListener { save() }
+        }
         root.addView(saveButton)
-        PortalNavigation.installPage(this, ScrollView(this).apply {
+        PortalNavigation.installPage(this, ScrollView(this, null, android.R.attr.scrollViewStyle).apply {
             setBackgroundColor(getColor(R.color.window_background)); isFillViewport = true; addView(root)
         }, "My Profile", R.id.nav_profile)
         load()
@@ -93,25 +90,64 @@ class CustomerProfileActivity : BaseActivity() {
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
-    private fun section(title: String) = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
+    private fun addProfileField(section: LinearLayout, key: String, label: String) {
+        val field = TextInputLayout(this).apply {
+            hint = label
+            boxBackgroundMode = TextInputLayout.BOX_BACKGROUND_OUTLINE
+            setBoxCornerRadii(dp(14).toFloat(), dp(14).toFloat(), dp(14).toFloat(), dp(14).toFloat())
+            boxBackgroundColor = androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, R.color.surface_background)
+            boxStrokeColor = androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, R.color.card_stroke_color)
+            boxStrokeWidth = dp(1)
+            boxStrokeWidthFocused = dp(2)
+            boxCollapsedPaddingTop = dp(8)
+            layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(14) }
+        }
+        val input = TextInputEditText(field.context).apply {
+            isSingleLine = true
+            textSize = 16f
+            minHeight = dp(64)
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(14), dp(10), dp(14), 0)
+            inputType = when (key) {
+                "phone" -> InputType.TYPE_CLASS_PHONE
+                "pin_code" -> InputType.TYPE_CLASS_NUMBER
+                "name" -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS
+                else -> InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            }
+            setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, R.color.textColorPrimary))
+        }
+        fields[key] = input
+        field.addView(input, LinearLayout.LayoutParams(-1, -2))
+        section.addView(field)
+    }
+
+    private fun section(title: String, subtitle: String? = null) = com.svd.svdagencies.utils.CompactLinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
-        setPadding(dp(18),dp(18),dp(18),dp(18))
+        setPadding(dp(20), dp(20), dp(20), dp(20))
         addView(TextView(this@CustomerProfileActivity).apply {
-            text = title; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD)
+            text = title; textSize = 18f; setTypeface(typeface, android.graphics.Typeface.BOLD)
             setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, com.svd.svdagencies.R.color.textColorPrimary))
         })
+        subtitle?.let { value ->
+            addView(TextView(this@CustomerProfileActivity).apply {
+                text = value
+                textSize = 13f
+                setTextColor(androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, R.color.textColorSecondary))
+                layoutParams = LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(4) }
+            })
+        }
     }
 
     private fun card(body: View) = MaterialCardView(this).apply {
-        radius = dp(18).toFloat(); cardElevation = 0f; strokeWidth = dp(1)
+        radius = dp(20).toFloat(); cardElevation = 0f; strokeWidth = dp(1)
         strokeColor = androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, com.svd.svdagencies.R.color.card_stroke_color); setCardBackgroundColor(androidx.core.content.ContextCompat.getColor(this@CustomerProfileActivity, com.svd.svdagencies.R.color.surface_background))
-        layoutParams = LinearLayout.LayoutParams(-1,-2).apply { bottomMargin = dp(16) }
+        layoutParams = LinearLayout.LayoutParams(-1,-2).apply { bottomMargin = dp(18) }
         addView(body)
     }
 
     private fun button(label: String) = MaterialButton(this).apply {
-        text = label; isAllCaps = false; cornerRadius = dp(12); minHeight = dp(52)
-        layoutParams = LinearLayout.LayoutParams(-1,-2).apply { topMargin = dp(12) }
+        text = label; isAllCaps = false; cornerRadius = dp(16); minHeight = dp(52)
+        layoutParams = LinearLayout.LayoutParams(-1,-2).apply { topMargin = dp(2); bottomMargin = dp(8) }
     }
 
     @Suppress("UNCHECKED_CAST")

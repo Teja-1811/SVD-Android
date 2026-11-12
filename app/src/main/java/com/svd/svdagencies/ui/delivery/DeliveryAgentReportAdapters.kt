@@ -120,7 +120,7 @@ class DeliveryAgentSectionHeaderAdapter(private val title: String) : RecyclerVie
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
 
-class DeliveryAgentDuesTableHeaderAdapter : RecyclerView.Adapter<DeliveryAgentDuesTableHeaderAdapter.ViewHolder>() {
+class DeliveryAgentDuesTableHeaderAdapter(private val columns: DueTableColumns) : RecyclerView.Adapter<DeliveryAgentDuesTableHeaderAdapter.ViewHolder>() {
     var isVisible: Boolean = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -130,13 +130,17 @@ class DeliveryAgentDuesTableHeaderAdapter : RecyclerView.Adapter<DeliveryAgentDu
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.setBackgroundColor(android.graphics.Color.rgb(239,244,246))
+        columns.apply(holder.itemView)
+        val header = (holder.itemView as? android.widget.HorizontalScrollView)?.getChildAt(0) ?: holder.itemView
+        header.setBackgroundColor(android.graphics.Color.rgb(239,244,246))
         holder.agent.text = "Agent Name"
         holder.date.text = "Date"
         holder.collected.text = "Collected"
         holder.submitted.text = "Submitted"
-        holder.balance.text = "Balance"
-        listOf(holder.agent, holder.date, holder.collected, holder.submitted, holder.balance).forEach {
+        holder.balance.text = "Due"
+        holder.opening.text = "Op Due"
+        holder.total.text = "Total"
+        listOf(holder.agent, holder.date, holder.opening, holder.collected, holder.total, holder.submitted, holder.balance).forEach {
             it.setTypeface(Typeface.DEFAULT_BOLD)
             it.setTextColor(it.context.getColor(R.color.textColorSecondary))
         }
@@ -149,25 +153,32 @@ class DeliveryAgentDuesTableHeaderAdapter : RecyclerView.Adapter<DeliveryAgentDu
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val agent: TextView = itemView.findViewById(R.id.tvDueAgent)
         val date: TextView = itemView.findViewById(R.id.tvDueDate)
+        val opening: TextView = itemView.findViewById(R.id.tvDueOpening)
+        val total: TextView = itemView.findViewById(R.id.tvDueTotal)
         val collected: TextView = itemView.findViewById(R.id.tvDueCollected)
         val submitted: TextView = itemView.findViewById(R.id.tvDueSubmitted)
         val balance: TextView = itemView.findViewById(R.id.tvDueBalance)
     }
 }
 
-class DeliveryAgentDailyDueAdapter : ListAdapter<DeliveryAgentDailyDueRecord, DeliveryAgentDailyDueAdapter.ViewHolder>(DueDiffCallback()) {
+class DeliveryAgentDailyDueAdapter(private val columns: DueTableColumns) : ListAdapter<DeliveryAgentDailyDueRecord, DeliveryAgentDailyDueAdapter.ViewHolder>(DueDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.admin_delivery_agent_due_row, parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(getItem(position))
+        columns.apply(holder.itemView)
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val agent: TextView = itemView.findViewById(R.id.tvDueAgent)
         private val date: TextView = itemView.findViewById(R.id.tvDueDate)
-        private val collected: TextView = itemView.findViewById(R.id.tvDueCollected)
+        private val opening: TextView = itemView.findViewById(R.id.tvDueOpening)
+        val total: TextView = itemView.findViewById(R.id.tvDueTotal)
+        val collected: TextView = itemView.findViewById(R.id.tvDueCollected)
         private val submitted: TextView = itemView.findViewById(R.id.tvDueSubmitted)
         private val balance: TextView = itemView.findViewById(R.id.tvDueBalance)
 
@@ -176,10 +187,12 @@ class DeliveryAgentDailyDueAdapter : ListAdapter<DeliveryAgentDailyDueRecord, De
             date.text = due.date
             collected.text = String.format(Locale.US, "%.2f", due.amountCollected)
             submitted.text = String.format(Locale.US, "%.2f", due.settledAmount)
-            balance.text = String.format(Locale.US, "%.2f", due.balanceDue)
+            opening.text = String.format(Locale.US, "%.2f", due.opDue)
+            total.text = String.format(Locale.US, "%.2f", due.total)
+            balance.text = String.format(Locale.US, "%.2f", due.due)
             balance.setTextColor(
                 itemView.context.getColor(
-                    if (due.balanceDue > 0.0) R.color.error_red else R.color.green_status
+                    if (due.due > 0.0) R.color.error_red else R.color.green_status
                 )
             )
         }

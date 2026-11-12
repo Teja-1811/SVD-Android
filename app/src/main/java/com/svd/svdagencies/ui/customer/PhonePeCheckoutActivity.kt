@@ -30,7 +30,7 @@ class PhonePeCheckoutActivity : BaseActivity() {
         }
 
         webView = WebView(this)
-        val progress = ProgressBar(this)
+        val progress = com.svd.svdagencies.utils.LogoProgressBar(this)
         val root = FrameLayout(this).apply {
             setBackgroundColor(Color.WHITE)
             addView(

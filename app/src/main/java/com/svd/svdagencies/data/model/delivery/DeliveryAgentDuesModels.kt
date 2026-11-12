@@ -126,6 +126,12 @@ data class DeliveryCustomerPaymentRecord(
     @SerializedName("customer_id") val customerId: Int? = null,
     @SerializedName("customer_name") val customerName: String? = null,
     @SerializedName("customer_phone") val customerPhone: String? = null,
+    @SerializedName("route_id") val routeId: Int? = null,
+    @SerializedName("collected_by_id") val collectedById: Int? = null,
+    @SerializedName("collected_by_name") val collectedByName: String? = null,
+    @SerializedName("edited_by_id") val editedById: Int? = null,
+    @SerializedName("edited_by_name") val editedByName: String? = null,
+    @SerializedName("edited_at") val editedAt: String? = null,
     @SerializedName("bill_id") val billId: Int? = null,
     @SerializedName("invoice_number") val invoiceNumber: String? = null,
     val amount: Double = 0.0,
@@ -145,6 +151,9 @@ data class DeliveryAgentDailyDueRecord(
     val date: String,
     @SerializedName("amount_collected") val amountCollected: Double = 0.0,
     @SerializedName("settled_amount") val settledAmount: Double = 0.0,
+    @SerializedName("op_due") val opDue: Double = 0.0,
+    @SerializedName("due") val due: Double = 0.0,
+    @SerializedName("total") val total: Double = 0.0,
     @SerializedName("balance_due") val balanceDue: Double = 0.0
 )
 

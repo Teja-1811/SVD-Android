@@ -42,3 +42,10 @@
 -keepattributes SourceFile,LineNumberTable
 -keepattributes EnclosingMethod
 -keepattributes InnerClasses
+
+# Location models are serialized by Gson and passed to the bundled map.
+-keep class com.svd.svdagencies.utils.AgentPosition { *; }
+-keep class com.svd.svdagencies.utils.AgentPositions { *; }
+-keep class com.svd.svdagencies.utils.LocationRequestState { *; }
+-keep class com.svd.svdagencies.utils.LocationRequestEnvelope { *; }
+-keep class com.svd.svdagencies.utils.PublicTrackingShare { *; }

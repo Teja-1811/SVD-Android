@@ -7,7 +7,8 @@ data class MonthlySummaryResponse(
     val customer: SummaryCustomer,
     val summary: SalesSummary,
     val volume: VolumeSummary,
-    val statement_groups: List<MonthlyStatementGroup>? = null
+    val statement_groups: List<MonthlyStatementGroup>? = null,
+    val pdf_url: String? = null
 )
 
 data class SummaryCustomer(

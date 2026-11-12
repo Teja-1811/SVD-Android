@@ -82,6 +82,7 @@
     <string name="title_home">Home</string>
     <string name="title_companies">Companies</string>
     <string name="title_orders">Orders</string>
+    <string name="title_place_order">Place Order</string>
     <string name="title_payment">Payment</string>
 
     <!-- Delivery Agent Dues Strings -->

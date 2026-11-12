@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.admin.stock
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -72,6 +72,7 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
         adapter = StockUpdateAdapter(emptyList())
         rvUpdateStock.layoutManager = LinearLayoutManager(this)
         rvUpdateStock.adapter = adapter
+        setupStockScrolling()
 
         companyTotalAdapter = StockCompanyTotalAdapter(emptyList())
         rvUpdateCompanyTotals.layoutManager = LinearLayoutManager(this)
@@ -83,6 +84,8 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
         rvUpdateSavedEntries.adapter = savedEntryAdapter
         rvUpdateSavedEntries.isNestedScrollingEnabled = false
 
+        swipeRefresh.setOnChildScrollUpCallback { _, _ -> rvUpdateStock.canScrollVertically(-1) || currentFocus is EditText }
+
         swipeRefresh.setOnRefreshListener {
             loadStockItems()
         }
@@ -93,6 +96,11 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
         setupFilters()
 
         loadStockItems()
+    }
+
+    private fun setupStockScrolling() {
+        com.svd.svdagencies.utils.StockEntryScrolling.install(findViewById(R.id.stockUpdateScroll), rvUpdateStock, adapter)
+        window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 
     private fun setupFilters() {
@@ -122,7 +130,7 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
             if (parsed != null) calendar.time = parsed
         }
         DatePickerDialog(
-            this,
+            this, R.style.Theme_Svd_CompactDatePicker,
             { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
                 etEntryDate.setText(dateFormatter.format(calendar.time))
@@ -135,15 +143,17 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
     }
 
     private fun loadStockItems() {
-        swipeRefresh.isRefreshing = true
+        showScreenLoading()
+        swipeRefresh.isRefreshing = false
         ApiClient.adminStockApi.getStockDashboard(etEntryDate.text.toString()).enqueue(object : Callback<AdminStockDashboardResponse> {
             override fun onResponse(
                 call: Call<AdminStockDashboardResponse>,
                 response: Response<AdminStockDashboardResponse>
             ) {
+                hideScreenLoading()
                 swipeRefresh.isRefreshing = false
                 if (response.isSuccessful && response.body() != null) {
-                    val items = response.body()!!.allItems
+                    val items = response.body()!!.allItems.filterNot { it.frozen }
                     val data = response.body()!!
                     tvUpdateEntries.text = "Entries: ${data.summary.entriesOnDate}"
                     tvUpdateDayValue.text = String.format(Locale.getDefault(), "Rs. %.2f", data.summary.dayTotalValue)
@@ -162,6 +172,7 @@ class AdminStockUpdateActivity : AdminBaseActivity() {
             }
 
             override fun onFailure(call: Call<AdminStockDashboardResponse>, t: Throwable) {
+                hideScreenLoading()
                 swipeRefresh.isRefreshing = false
                 Toast.makeText(
                     this@AdminStockUpdateActivity,

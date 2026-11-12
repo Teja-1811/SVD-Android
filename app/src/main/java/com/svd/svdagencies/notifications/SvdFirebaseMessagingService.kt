@@ -24,6 +24,10 @@ class SvdFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+        if (message.data["type"] == "location_request") {
+            com.svd.svdagencies.utils.OnDemandAgentLocation.receive(applicationContext, message.data)
+            return
+        }
 
         val title = message.notification?.title
             ?: message.data["title"]

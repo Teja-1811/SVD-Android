@@ -44,7 +44,7 @@ class RegistrationActivity : BaseActivity() {
                 setPadding(padding, padding / 2, padding, padding)
                 setTextIsSelectable(true)
             }
-            val scroll = ScrollView(this).apply { addView(content) }
+            val scroll = ScrollView(this, null, android.R.attr.scrollViewStyle).apply { addView(content) }
             val dialog = MaterialAlertDialogBuilder(this)
                 .setTitle("Terms & Conditions")
                 .setView(scroll)

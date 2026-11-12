@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:id="@+id/nav_home" android:title="Dashboard" android:icon="@drawable/ic_ma_grid_1x2_fill" android:checkable="true" />
+  <item android:id="@+id/nav_home" android:title="Home" android:icon="@drawable/ic_home" android:checkable="true" />
   <item android:id="@+id/nav_section_customer" android:title="Customer" android:icon="@drawable/ic_ma_people">
     <menu>
       <item android:id="@+id/nav_customers" android:title="Delivery Agents" android:icon="@drawable/ic_ma_truck" android:checkable="true" />
@@ -50,6 +50,7 @@
       <item android:id="@+id/nav_cashbook" android:title="Dashboard" android:icon="@drawable/ic_ma_grid" android:checkable="true" />
       <item android:id="@+id/nav_dues" android:title="Company Dues" android:icon="@drawable/ic_ma_building" android:checkable="true" />
       <item android:id="@+id/nav_payments" android:title="Customer Payments" android:icon="@drawable/ic_ma_cash_coin" android:checkable="true" />
+        <item android:id="@+id/nav_payment_summary" android:title="Payment Summary" android:icon="@drawable/ic_ma_file_earmark_text" android:checkable="true" />
       <item android:id="@+id/nav_expenses" android:title="Expenses" android:icon="@drawable/ic_ma_wallet2" android:checkable="true" />
       <item android:id="@+id/nav_add_expense" android:title="Add Expenses" android:icon="@drawable/ic_ma_plus_circle" android:checkable="true" />
       <item android:id="@+id/nav_add_commission" android:title="Add Commission" android:icon="@drawable/ic_ma_cash_coin" android:checkable="true" />
@@ -75,6 +76,15 @@
   </item>
   <item android:id="@+id/nav_category_sales" android:title="Category Sales" android:icon="@drawable/ic_ma_bar_chart" android:checkable="true" />
   <item android:id="@+id/nav_agent_dues" android:title="Delivery Data" android:icon="@drawable/ic_ma_truck" android:checkable="true" />
+  <item android:id="@+id/nav_section_delivery_stock" android:title="Delivery Stock" android:icon="@drawable/ic_ma_boxes">
+    <menu>
+      <item android:id="@+id/nav_delivery_total_stock" android:title="Total Stock" android:icon="@drawable/ic_ma_boxes" android:checkable="true" />
+      <item android:id="@+id/nav_delivery_morning_entry" android:title="Morning Entry" android:icon="@drawable/ic_ma_box_arrow_in_down" android:checkable="true" />
+      <item android:id="@+id/nav_delivery_morning_return" android:title="Morning Return" android:icon="@drawable/ic_ma_box_arrow_right" android:checkable="true" />
+      <item android:id="@+id/nav_delivery_evening_entry" android:title="Evening Entry" android:icon="@drawable/ic_ma_box_arrow_in_down" android:checkable="true" />
+      <item android:id="@+id/nav_delivery_evening_return" android:title="Evening Return" android:icon="@drawable/ic_ma_box_arrow_right" android:checkable="true" />
+    </menu>
+  </item>
   <item android:id="@+id/nav_due_details" android:title="Due Details" android:icon="@drawable/ic_ma_table" android:checkable="true" />
   <item android:id="@+id/nav_gst" android:title="GST" android:icon="@drawable/ic_ma_percent" android:checkable="true" />
   <item android:id="@+id/nav_logout" android:title="Log out" android:icon="@drawable/ic_ma_box_arrow_right" />

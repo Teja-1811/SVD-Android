@@ -13,6 +13,8 @@ import com.svd.svdagencies.R
 import com.svd.svdagencies.ui.auth.LoginActivity
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.UserRole
+import com.svd.svdagencies.utils.PaymentConfig
+import com.svd.svdagencies.utils.SidebarFlatStyle
 
 /** Shared account pages retain the portal selected by the authenticated role. */
 object PortalNavigation {
@@ -71,9 +73,12 @@ object PortalNavigation {
         navigation.menu.clear()
         navigation.inflateMenu(if (user) R.menu.menu_user_drawer else R.menu.menu_customer_drawer)
         navigation.setCheckedItem(selectedItem)
+        // Install the fixed Admin-style footer immediately after the menu is
+        // available, so every portal page has its Log out action.
+        SidebarFlatStyle.install(navigation)
         navigation.getHeaderView(0).apply {
-            findViewById<TextView>(R.id.tvCustomerName).text = if (user) "User Access" else "Retailer Access"
-            findViewById<TextView>(R.id.tvCustomerDetail).text = if (user) "Orders, subscriptions and bills" else "Orders, support and invoices"
+            findViewById<TextView>(R.id.txtAppName).text = PaymentConfig.PAYEE_NAME
+            findViewById<TextView>(R.id.txtPortalName).text = if (user) "User Portal" else "Retailer Portal"
             findViewById<View>(R.id.btnCloseDrawer).setOnClickListener { drawer.closeDrawer(GravityCompat.START) }
         }
         navigation.setNavigationItemSelectedListener { item ->
@@ -96,6 +101,18 @@ object PortalNavigation {
                 SessionManager(activity).logout()
                 activity.startActivity(Intent(activity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 activity.finish()
+                return@setNavigationItemSelectedListener true
+            }
+            if (item.itemId in setOf(
+                    R.id.nav_companies,
+                    R.id.nav_orders,
+                    R.id.nav_bills,
+                    R.id.nav_payment,
+                    R.id.nav_subscriptions,
+                )
+            ) {
+                activity.startActivity(homeIntent(activity).putExtra("user_tab", item.itemId))
+                if (activity !is PortalMainActivity) activity.finish()
                 return@setNavigationItemSelectedListener true
             }
             val target = when (item.itemId) {

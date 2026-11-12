@@ -4,14 +4,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/user_portal_background">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Explore dairy essentials"
-        android:textSize="@dimen/svd_text_title"
-        android:textColor="@color/textColorPrimary"
-        android:padding="16dp"
-        android:textStyle="bold" />
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -38,7 +38,6 @@ class CustomerCompaniesFragment : Fragment() {
 
         setupRecyclerView()
         setupSwipeRefresh()
-
         fetchCatalog()
     }
 

@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.admin
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.ViewGroup
@@ -81,39 +81,31 @@ open class AdminReportsActivity : AdminBaseActivity() {
             tag="svd-full-width";contentDescription="Period"
             adapter=ArrayAdapter(this@AdminReportsActivity,com.svd.svdagencies.R.layout.delivery_dropdown_item,listOf("Day","Week","Month","Year"))
         }
-        val tabs=twoColumns()
-        listOf("Day","Week","Month","Year").forEachIndexed { index,title ->
-            val tab=MaterialButton(this).apply {
-                text=title;isAllCaps=false;textSize=12f;layoutParams=gridCell()
-                setOnClickListener {
-                    gstPeriod=index
-                    periodButtons.forEachIndexed { i,b -> b.alpha=if(i==index)1f else .55f }
-                    if(filtersReady)load()
-                }
-            }
-            periodButtons.add(tab);tabs.addView(tab)
-        }
-        content.addView(tabs)
         content.addView(cell("Company",company).apply { layoutParams=LinearLayout.LayoutParams(-1,-2) })
         firstDate=MaterialButton(this).apply {
             text=SimpleDateFormat("yyyy-MM-dd",Locale.US).format(Calendar.getInstance().time)
-            tag="svd-full-width";contentDescription="GST report date";isAllCaps=false
+            tag="svd-full-width";contentDescription="GST report from date";isAllCaps=false
             setOnClickListener { pickDate(this) }
         }
-        lastDate=firstDate
+        lastDate=MaterialButton(this).apply {
+            text=firstDate.text
+            tag="svd-full-width";contentDescription="GST report to date";isAllCaps=false
+            setOnClickListener { pickDate(this) }
+        }
         val refresh=MaterialButton(this).apply {
             text="";contentDescription="Refresh";tag="svd-full-width"
             setIconResource(R.drawable.ic_refresh);iconGravity=MaterialButton.ICON_GRAVITY_TEXT_START;iconPadding=0
             setOnClickListener { if(!busy)clearFilters() }
         }
-        content.addView(row().apply { addView(cell("Date",firstDate));addView(cell("Refresh",refresh)) })
-        controls.addAll(listOf(company,period,firstDate,refresh))
+        content.addView(row().apply { addView(cell("From",firstDate));addView(cell("To",lastDate)) })
+        content.addView(refresh)
+        controls.addAll(listOf(company,period,firstDate,lastDate,refresh))
         val actions=twoColumns()
         listOf("Print GST report" to { download() },"GST settings" to { gstSettings() }).forEach { (title,action) ->
             actions.addView(MaterialButton(this).apply { text=title;isAllCaps=false;textSize=12f;layoutParams=gridCell();setOnClickListener { if(!busy)action() };controls.add(this) })
         }
         content.addView(actions)
-        status=label("Loading…",13f);content.addView(status)
+        status=label("",13f);content.addView(status)
         results=com.svd.svdagencies.utils.CompactLinearLayout(this).apply { orientation=LinearLayout.VERTICAL };content.addView(results)
         }
         lifecycleScope.launch {
@@ -138,7 +130,7 @@ open class AdminReportsActivity : AdminBaseActivity() {
         val parts=view.text.toString().split("-").mapNotNull{it.toIntOrNull()}
         val calendar=Calendar.getInstance()
         if(parts.size==3)calendar.set(parts[0],parts[1]-1,parts[2])
-        DatePickerDialog(this,{_,year,month,day->view.text=String.format(Locale.US,"%04d-%02d-%02d",year,month+1,day); if(filtersReady)load()},calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show()
+        DatePickerDialog(this,R.style.Theme_Svd_CompactDatePicker,{_,year,month,day->view.text=String.format(Locale.US,"%04d-%02d-%02d",year,month+1,day); if(filtersReady)load()},calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show()
     }
     private fun setupAutomaticFilters() {
         val selectionListener = object : AdapterView.OnItemSelectedListener {
@@ -159,6 +151,7 @@ open class AdminReportsActivity : AdminBaseActivity() {
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         if (purchase) now.set(Calendar.DAY_OF_MONTH, 1)
         firstDate.text = format.format(now.time)
+        if (!purchase) lastDate.text = firstDate.text
         if (purchase) {
             now.set(Calendar.DAY_OF_MONTH, now.getActualMaximum(Calendar.DAY_OF_MONTH))
             lastDate.text = format.format(now.time)
@@ -168,10 +161,10 @@ open class AdminReportsActivity : AdminBaseActivity() {
     private fun filters():Map<String,String>{
         val values=mutableMapOf("company" to companyIds.getOrElse(company.selectedItemPosition){""})
         if(purchase){values["from_date"]=firstDate.text.toString();values["to_date"]=lastDate.text.toString()}
-        else{values["date"]=firstDate.text.toString();values["period"]=listOf("day","week","month","year")[gstPeriod]}
+        else{values["from_date"]=firstDate.text.toString();values["to_date"]=lastDate.text.toString()}
         return values
     }
-    private fun setBusy(value:Boolean){busy=value;controls.forEach{it.isEnabled=!value}}
+    private fun setBusy(value:Boolean){busy=value;controls.forEach{it.isEnabled=!value};if(value){status.visibility=android.view.View.GONE;showScreenLoading()}else{hideScreenLoading();status.visibility=android.view.View.VISIBLE}}
     private fun load(){
         if(busy){reloadPending=true;return}
         val selection=filters();setBusy(true);status.text="Loading summary…"
@@ -276,7 +269,7 @@ open class AdminReportsActivity : AdminBaseActivity() {
         dialog.show()
     }
     private fun table(headers:List<String>,rows:List<List<String>>){
-        val scroll=HorizontalScrollView(this);val table=com.svd.svdagencies.utils.CompactLinearLayout(this).apply{orientation=LinearLayout.VERTICAL}
+        val scroll=HorizontalScrollView(this, null, android.R.attr.horizontalScrollViewStyle);val table=com.svd.svdagencies.utils.CompactLinearLayout(this).apply{orientation=LinearLayout.VERTICAL}
         (listOf(headers)+rows).forEachIndexed{index,values->val row=com.svd.svdagencies.utils.CompactLinearLayout(this);values.forEach{value->row.addView(label(value,13f).apply{layoutParams=LinearLayout.LayoutParams((125*resources.displayMetrics.density).toInt(),ViewGroup.LayoutParams.WRAP_CONTENT);setBackgroundColor(if(index==0)androidx.core.content.ContextCompat.getColor(this@AdminReportsActivity, com.svd.svdagencies.R.color.surface_variant)else androidx.core.content.ContextCompat.getColor(this@AdminReportsActivity, com.svd.svdagencies.R.color.surface_background))})};table.addView(row)}
         scroll.addView(table);results.addView(scroll)
         if(rows.isEmpty())results.addView(label("No records for this selection."))

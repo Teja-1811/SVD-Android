@@ -69,25 +69,25 @@ interface DeliveryApi {
     fun submitMorningStock(@Body request: DeliveryStockEntryRequest): Call<com.svd.svdagencies.data.model.customer.GenericResponse>
 
     @GET("api/delivery/morning-stock/")
-    fun getMorningStockItems(@retrofit2.http.Query("date") date: String): Call<DeliveryAllowedItemsResponse>
+    fun getMorningStockItems(@retrofit2.http.Query("date") date: String, @retrofit2.http.Query("delivery_agent") agentId: Int? = null): Call<DeliveryAllowedItemsResponse>
 
     @retrofit2.http.POST("api/delivery/morning-return/")
     fun submitMorningReturn(@Body request: DeliveryStockEntryRequest): Call<com.svd.svdagencies.data.model.customer.GenericResponse>
 
     @GET("api/delivery/morning-return/")
-    fun getMorningReturnItems(@retrofit2.http.Query("date") date: String): Call<DeliveryAllowedItemsResponse>
+    fun getMorningReturnItems(@retrofit2.http.Query("date") date: String, @retrofit2.http.Query("delivery_agent") agentId: Int? = null): Call<DeliveryAllowedItemsResponse>
 
     @retrofit2.http.POST("api/delivery/evening-stock/")
     fun submitEveningStock(@Body request: DeliveryStockEntryRequest): Call<com.svd.svdagencies.data.model.customer.GenericResponse>
 
     @GET("api/delivery/evening-stock/")
-    fun getEveningStockItems(@retrofit2.http.Query("date") date: String): Call<DeliveryAllowedItemsResponse>
+    fun getEveningStockItems(@retrofit2.http.Query("date") date: String, @retrofit2.http.Query("delivery_agent") agentId: Int? = null): Call<DeliveryAllowedItemsResponse>
 
     @retrofit2.http.POST("api/delivery/evening-return/")
     fun submitEveningReturn(@Body request: DeliveryStockEntryRequest): Call<com.svd.svdagencies.data.model.customer.GenericResponse>
 
     @GET("api/delivery/evening-return/")
-    fun getEveningReturnItems(@retrofit2.http.Query("date") date: String): Call<DeliveryAllowedItemsResponse>
+    fun getEveningReturnItems(@retrofit2.http.Query("date") date: String, @retrofit2.http.Query("delivery_agent") agentId: Int? = null): Call<DeliveryAllowedItemsResponse>
 
     @GET("api/delivery/stock-entry/")
     fun getDeliveryDashboard(
@@ -105,7 +105,9 @@ interface DeliveryApi {
         @retrofit2.http.Path("customer_id") customerId: Int,
         @retrofit2.http.Query("month") month: Int? = null,
         @retrofit2.http.Query("year") year: Int? = null,
-        @retrofit2.http.Query("scope") scope: String? = null
+        @retrofit2.http.Query("scope") scope: String? = null,
+        @retrofit2.http.Query("route_id") routeId: Int? = null,
+        @retrofit2.http.Query("filter_customer_id") filterCustomerId: Int? = null
     ): Call<CustomerPaymentHistoryResponse>
 
     @retrofit2.http.POST("api/delivery/save-agent-collection/")

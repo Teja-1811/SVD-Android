@@ -1,36 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.svd.svdagencies.utils.CompactLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/svd_space_section">
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Crates"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input"
-            android:id="@+id/etCrates"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"  android:minHeight="48dp" android:minWidth="48dp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Discount (optional)"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-        <com.google.android.material.textfield.TextInputEditText style="@style/Widget.Svd.Input"
-            android:id="@+id/etDiscount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"  android:minHeight="48dp" android:minWidth="48dp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-</com.svd.svdagencies.utils.CompactLinearLayout>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content">
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+<TextView android:id="@+id/tvEditStockItem" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp"/>
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"><com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etEntryDateLayout" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+        android:layout_margin="4dp" android:hint="Date">
+        <com.google.android.material.textfield.TextInputEditText android:id="@+id/etEntryDate" style="@style/Widget.Svd.Input"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:minHeight="48dp" android:focusable="false" android:clickable="true" android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout><com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etStockCompanyLayout" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+        android:layout_margin="4dp" android:hint="Stock company">
+        <AutoCompleteTextView android:id="@+id/etStockCompany" style="@style/Widget.Svd.Input"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:minHeight="48dp" android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout></LinearLayout><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"><com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etCratesLayout" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+        android:layout_margin="4dp" android:hint="Crates">
+        <com.google.android.material.textfield.TextInputEditText android:id="@+id/etCrates" style="@style/Widget.Svd.Input"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:minHeight="48dp" android:inputType="numberDecimal"/>
+    </com.google.android.material.textfield.TextInputLayout><com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etDiscountLayout" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+        android:layout_margin="4dp" android:hint="Discount">
+        <com.google.android.material.textfield.TextInputEditText android:id="@+id/etDiscount" style="@style/Widget.Svd.Input"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:minHeight="48dp" android:inputType="numberDecimal"/>
+    </com.google.android.material.textfield.TextInputLayout></LinearLayout><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"><LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:background="#F5F6F8" android:layout_margin="4dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Pcs / crate" android:textSize="12sp"/>
+    <TextView android:id="@+id/tvEditPcs" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="16sp" android:textStyle="bold"/>
+    </LinearLayout><LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:background="#F5F6F8" android:layout_margin="4dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Quantity" android:textSize="12sp"/>
+    <TextView android:id="@+id/tvEditQuantity" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="16sp" android:textStyle="bold"/>
+    </LinearLayout></LinearLayout><LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"><LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:background="#F5F6F8" android:layout_margin="4dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Value" android:textSize="12sp"/>
+    <TextView android:id="@+id/tvEditValue" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="16sp" android:textStyle="bold"/>
+    </LinearLayout></LinearLayout></LinearLayout></ScrollView>

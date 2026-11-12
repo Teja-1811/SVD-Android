@@ -33,6 +33,11 @@ class AgentLocationActivity : BaseActivity() {
     private var liveMap: EmbeddedAgentMap? = null
     private val handler = Handler(Looper.getMainLooper())
     private var pending: Call<AgentPositions>? = null
+    private var requestedId: String? = null
+    private var requestCall: Call<LocationRequestEnvelope>? = null
+    private val preferenceListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (active && !admin && key in setOf(OnDemandAgentLocation.LAST_UPLOAD, OnDemandAgentLocation.LAST_ERROR)) showSharing()
+    }
     private var active = false
     private val refresh = Runnable { loadAgents() }
     // The activity is shared by the delivery and admin portals.  The portal
@@ -62,7 +67,10 @@ class AgentLocationActivity : BaseActivity() {
         } else shell.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
         setContentView(shell)
         if (admin) { status = label("Loading agent locations…", 14f); list.addView(status) }
-        else showSharing()
+        else {
+            com.svd.svdagencies.notifications.PushRegistrationManager.registerCurrentDevice(this)
+            showSharing()
+        }
     }
 
     private fun label(value: String, size: Float = 14f, bold: Boolean = false) = TextView(this).apply {
@@ -87,76 +95,110 @@ class AgentLocationActivity : BaseActivity() {
     }
     private fun showSharing() {
         list.removeAllViews()
-        val sharing = ForegroundAgentLocation.enabled(this)
-        val manager = getSystemService(LOCATION_SERVICE) as LocationManager
-        val gps = runCatching { manager.isProviderEnabled(LocationManager.GPS_PROVIDER) || manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) }.getOrDefault(false)
+        val enabled = OnDemandAgentLocation.enabled(this)
         val body = card()
-        body.addView(label("DELIVERY LOCATION", 12f, true).apply { setTextColor(primary()); letterSpacing = .08f })
-        body.addView(label(if (sharing) "Sharing is on" else "You control your location", 23f, true))
-        body.addView(label(if (sharing) "Admin and people with an active tracking link can view your shared location." else "Share your delivery location. Admin can create a 24-hour tracking link for customers or others."))
-        body.addView(label(if (sharing) "●  SHARING ENABLED" else "●  SHARING OFF", 12f, true).apply {
-            setTextColor(color(if (sharing) R.color.icon_green else R.color.textColorSecondary))
-            setPadding(0, dp(4), 0, dp(4)); accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
+        body.addView(label("LOCATION ON REQUEST", 12f, true))
+        body.addView(label("Share only when needed", 23f, true))
+        body.addView(label("Admin can tap Get location to request one current position. GPS stays off between requests. Only admin can view requested locations."))
+        body.addView(label(if (enabled) "Automatic replies are on" else "Tap a request notification to share", 15f, true))
+        body.addView(button(if (enabled) "Turn off automatic replies" else "Allow automatic replies") {
+            if (enabled) OnDemandAgentLocation.setEnabled(this, false) else enableSharing()
+            showSharing()
         })
-        if (sharing) {
-            val prefs = getSharedPreferences("svd_session", MODE_PRIVATE)
-            val lastUpload = prefs.getLong(ForegroundAgentLocation.LAST_UPLOAD_AT, 0L)
-            val error = prefs.getString(ForegroundAgentLocation.LAST_ERROR, null)
-            val serviceText = when {
-                error != null -> "Location update needs attention: $error"
-                lastUpload > 0L -> "Last uploaded: ${java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(java.util.Date(lastUpload))}"
-                else -> "Waiting for the first location update…"
-            }
-            body.addView(label(serviceText, 13f).apply { setTextColor(color(if (error == null) R.color.textColorSecondary else R.color.icon_red)) })
+        requestedId?.let { id ->
+            body.addView(label("Admin is waiting for one location.", 14f, true))
+            body.addView(button("Share requested location now") { shareOnce(id) })
         }
-        body.addView(button(if (sharing) "Stop sharing" else "Start sharing") {
-            if (ForegroundAgentLocation.enabled(this)) { ForegroundAgentLocation.setEnabled(this, false); showSharing() }
-            else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) enableSharing()
-            else requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 271)
-        }.apply { icon = ContextCompat.getDrawable(this@AgentLocationActivity, if (sharing) android.R.drawable.ic_media_pause else android.R.drawable.ic_menu_mylocation) })
-
+        body.addView(button("Check for admin request") { loadPendingRequest(false) })
+        val preferences = getSharedPreferences("svd_session", MODE_PRIVATE)
+        val last = preferences.getLong(OnDemandAgentLocation.LAST_UPLOAD, 0L)
+        val error = preferences.getString(OnDemandAgentLocation.LAST_ERROR, null)
+        if (last > 0) body.addView(label("Last shared: " + java.text.DateFormat.getDateTimeInstance().format(java.util.Date(last))))
+        if (error != null) body.addView(label(error).apply { setTextColor(color(R.color.icon_red)) })
         val conditions = card()
-        conditions.addView(label("Location settings", 17f, true))
-        conditions.addView(label(if (gps) "Phone location is on" else "Phone location is off", 14f, true).apply {
-            setTextColor(color(if (gps) R.color.icon_green else R.color.icon_red))
+        conditions.addView(label("Phone settings", 17f, true))
+        conditions.addView(label("Internet and phone location must be on. Automatic replies while SVD is closed need ‘Allow all the time’ location access. Android may still require you to tap the notification."))
+        conditions.addView(button("Open app permissions") {
+            startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
         })
-        conditions.addView(label("GPS and an internet connection are needed for fresh updates. Accuracy may vary."))
-        if (!gps) conditions.addView(button("Open location settings") { startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) })
-        if (sharing && android.os.Build.VERSION.SDK_INT >= 29 &&
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            conditions.addView(label("For sharing to resume after a phone restart, set Location access to ‘Allow all the time’."))
-            conditions.addView(button("Open app location permission") {
-                startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
-            })
-        }
-
+        conditions.addView(label("On Vivo, allow SVD under High background battery usage. Force-stopping SVD blocks requests until you reopen it."))
+        conditions.addView(button("Open background battery settings") {
+            runCatching { startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) }
+                .onFailure { startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName"))) }
+        })
         val info = card()
-        info.addView(label("How sharing works", 17f, true))
-        info.addView(label("Screen off or app closed", 14f, true))
-        info.addView(label("Sharing continues until you stop it or sign out. The notification also has a Stop button."))
-        info.addView(label("Your privacy", 14f, true))
-        info.addView(label("Only your latest position is stored. Public links expire after 24 hours and can be revoked. Stop sharing to hide your position. Force-stopping the app or restarting your phone ends sharing."))
+        info.addView(label("Your location, one request at a time", 17f, true))
+        info.addView(label("Each request expires after two minutes. Location capture runs for at most 45 seconds, then stops. We keep only the latest requested position, not your journey history. Existing public tracking links do not receive these private replies."))
     }
     private fun enableSharing() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 271); return
+        }
         if (android.os.Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 272); return
         }
-        ForegroundAgentLocation.setEnabled(this, true); showSharing()
+        OnDemandAgentLocation.setEnabled(this, true); showSharing()
+        if (android.os.Build.VERSION.SDK_INT >= 29 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            android.widget.Toast.makeText(this, "For automatic replies while closed, set Location to Allow all the time in app permissions.", android.widget.Toast.LENGTH_LONG).show()
+        }
+    }
+    private fun shareOnce(id: String) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestedId = id
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 273); return
+        }
+        val started = OnDemandAgentLocation.start(this, id)
+        android.widget.Toast.makeText(this, if (started) "Getting one location for admin…" else "Could not start. Check phone permissions and try again.", android.widget.Toast.LENGTH_LONG).show()
+        if (started) { requestedId = null; showSharing() }
+    }
+    private fun loadPendingRequest(fromNotification: Boolean) {
+        requestCall?.cancel()
+        val notifiedId = if (fromNotification) intent.getStringExtra(OnDemandAgentLocation.REQUEST_ID) else null
+        val call = if (notifiedId != null) LiveLocationNetwork.api.locationRequest(notifiedId) else LiveLocationNetwork.api.pendingLocationRequest()
+        requestCall = call
+        call.enqueue(object : Callback<LocationRequestEnvelope> {
+            override fun onResponse(call: Call<LocationRequestEnvelope>, response: Response<LocationRequestEnvelope>) {
+                if (requestCall !== call || !active) return
+                requestCall = null
+                val inquiry = response.body()?.request
+                requestedId = inquiry?.takeIf { it.status == "pending" }?.request_id
+                showSharing()
+                if (fromNotification) {
+                    intent.removeExtra(OnDemandAgentLocation.REQUEST_ID)
+                    if (requestedId == null) android.widget.Toast.makeText(this@AgentLocationActivity, "This request expired or is already answered.", android.widget.Toast.LENGTH_LONG).show()
+                    requestedId?.let { shareOnce(it) }
+                }
+            }
+            override fun onFailure(call: Call<LocationRequestEnvelope>, error: Throwable) {
+                if (requestCall !== call || !active) return
+                requestCall = null
+                android.widget.Toast.makeText(this@AgentLocationActivity, "Could not check requests. Check internet and try again.", android.widget.Toast.LENGTH_LONG).show()
+            }
+        })
     }
     override fun onRequestPermissionsResult(code: Int, permissions: Array<out String>, results: IntArray) {
         super.onRequestPermissionsResult(code, permissions, results)
-        if (code in setOf(271, 272) && results.any { it == PackageManager.PERMISSION_GRANTED }) enableSharing()
+        if (results.any { it == PackageManager.PERMISSION_GRANTED }) {
+            if (code in setOf(271, 272)) enableSharing()
+            if (code == 273) requestedId?.let { shareOnce(it) }
+        }
     }
     override fun onResume() {
         super.onResume(); active = true; liveMap?.onResume()
         if (admin) loadAgents() else {
-            // Resume only a previous explicit opt-in, from a visible screen.
-            if (ForegroundAgentLocation.enabled(this)) ForegroundAgentLocation.setEnabled(this, true)
+            // Upgrading must not restart the old continuous GPS service.
+            stopService(Intent(this, AgentLocationService::class.java))
+            getSharedPreferences("svd_session", MODE_PRIVATE).registerOnSharedPreferenceChangeListener(preferenceListener)
             showSharing()
+            loadPendingRequest(intent.hasExtra(OnDemandAgentLocation.REQUEST_ID))
         }
     }
-    override fun onPause() { active = false; liveMap?.onPause(); handler.removeCallbacks(refresh); pending?.cancel(); pending = null; super.onPause() }
+    override fun onPause() {
+        getSharedPreferences("svd_session", MODE_PRIVATE).unregisterOnSharedPreferenceChangeListener(preferenceListener)
+        requestCall?.cancel(); requestCall = null
+        active = false; liveMap?.onPause(); handler.removeCallbacks(refresh); pending?.cancel(); pending = null; super.onPause() }
     override fun onDestroy() { liveMap?.destroy(); super.onDestroy() }
     private fun loadAgents() {
         if (!active || !admin || pending != null) {

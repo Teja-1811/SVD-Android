@@ -80,16 +80,18 @@ class DeliveryTodayBillAdapter(
         private fun bindItems(item: DeliveryTodayBill) {
             while (tableBillItems.childCount > 1) tableBillItems.removeViewAt(1)
             item.items.forEach { line ->
-                val row = TableRow(itemView.context).apply { setPadding(0, 5, 0, 5) }
-                row.addView(cell(line.name ?: "Item", 0, false))
-                row.addView(cell(String.format(Locale.getDefault(), "%.0f", line.quantity), 42, true))
-                row.addView(cell(money(line.pricePerUnit), 62, true))
-                row.addView(cell(if (line.discount > 0) money(line.discount) else "—", 58, true))
-                row.addView(cell(money(line.totalAmount), 64, true))
+                val row = TableRow(itemView.context).apply { setPadding(0, dp(5), 0, dp(5)) }
+                row.addView(cell(line.code ?: "—", 90, false))
+                row.addView(cell(quantity(line.quantity), 42, true))
+                row.addView(cell(money(line.pricePerUnit), 66, true))
+                row.addView(cell(if (line.discount > 0) money(line.discount) else "—", 62, true))
+                row.addView(cell(money(line.totalAmount), 70, true))
                 tableBillItems.addView(row)
             }
             if (item.items.isEmpty()) {
-                tableBillItems.addView(TableRow(itemView.context).apply { addView(cell("No item details available", 0, false)) })
+                tableBillItems.addView(TableRow(itemView.context).apply {
+                    addView(cell("No item details available", 0, false))
+                })
             }
         }
 
@@ -98,7 +100,14 @@ class DeliveryTodayBillAdapter(
             textSize = 12f
             setTextColor(itemView.context.getColor(R.color.textColorPrimary))
             gravity = if (end) android.view.Gravity.END else android.view.Gravity.START
-            layoutParams = TableRow.LayoutParams(if (widthDp == 0) 0 else (widthDp * itemView.resources.displayMetrics.density).toInt(), TableRow.LayoutParams.WRAP_CONTENT, if (widthDp == 0) 1f else 0f)
+            layoutParams = TableRow.LayoutParams(
+                if (widthDp == 0) 0 else dp(widthDp),
+                TableRow.LayoutParams.WRAP_CONTENT,
+                if (widthDp == 0) 1f else 0f,
+            )
         }
+
+        private fun quantity(value: Double) = if (value % 1.0 == 0.0) value.toInt().toString() else "%.2f".format(Locale.getDefault(), value).trimEnd('0').trimEnd('.')
+        private fun dp(value: Int) = (value * itemView.resources.displayMetrics.density + .5f).toInt()
     }
 }

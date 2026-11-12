@@ -19,6 +19,8 @@ open class BaseActivity : AppCompatActivity() {
     override fun onContentChanged() {
         super.onContentChanged()
         findViewById<View>(android.R.id.content)?.let { root ->
+            com.svd.svdagencies.utils.ScrollableTables.install(root)
+            com.svd.svdagencies.utils.LoadingStatus.install(root)
             root.post {
                 if (!isDestroyed) {
                     applyHeaderTheme(root)
@@ -36,7 +38,8 @@ open class BaseActivity : AppCompatActivity() {
             fun dateChip(node: View): Boolean {
                 var candidate: View? = node
                 while (candidate != null && candidate !is androidx.appcompat.widget.Toolbar) {
-                    val name = runCatching { candidate!!.resources.getResourceEntryName(candidate!!.id) }.getOrDefault("")
+                    val id = candidate!!.id
+                    val name = if (id > 0 && (id ushr 24) != 0) runCatching { candidate!!.resources.getResourceEntryName(id) }.getOrDefault("") else ""
                     if (name.contains("date", true) || name.contains("month", true)) return true
                     candidate = candidate.parent as? View
                 }

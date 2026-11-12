@@ -2,7 +2,7 @@ package com.svd.svdagencies.ui.customer.fragment
 
 import com.svd.svdagencies.utils.PaymentConfig
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -12,8 +12,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -33,6 +31,7 @@ import com.svd.svdagencies.data.model.customer.PaymentGatewayInitResponse
 import com.svd.svdagencies.data.model.customer.InvoiceItem
 import com.svd.svdagencies.data.model.customer.InvoiceResponse
 import com.svd.svdagencies.ui.customer.adapter.BillsAdapter
+import com.svd.svdagencies.ui.customer.PortalMainActivity
 import com.svd.svdagencies.utils.RefreshManager
 import com.svd.svdagencies.utils.SessionManager
 import retrofit2.Call
@@ -46,8 +45,7 @@ class CustomerBillsFragment : Fragment() {
     private lateinit var rvBills: RecyclerView
     private lateinit var tvStatus: TextView
     private lateinit var tvEmpty: TextView
-    private lateinit var etMonth: EditText
-    private lateinit var btnFilter: Button
+    private var etMonth: MaterialButton? = null
     private lateinit var tvTotalBills: TextView
     private lateinit var tvTotalAmount: TextView
 
@@ -84,8 +82,7 @@ class CustomerBillsFragment : Fragment() {
         rvBills = view.findViewById(R.id.rvBills)
         tvStatus = view.findViewById(R.id.tvStatus)
         tvEmpty = view.findViewById(R.id.tvEmptyBills)
-        etMonth = view.findViewById(R.id.etMonth)
-        btnFilter = view.findViewById(R.id.btnFilter)
+        etMonth = activity?.findViewById(R.id.btnBillsMonth)
         tvTotalBills = view.findViewById(R.id.tvTotalBills)
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount)
 
@@ -107,9 +104,8 @@ class CustomerBillsFragment : Fragment() {
         setCurrentMonth()
 
         // ---------- ACTIONS ----------
-        etMonth.setOnClickListener { showMonthYearPicker() }
-        com.svd.svdagencies.utils.RefreshButtonStyle.apply(btnFilter)
-        btnFilter.setOnClickListener { setCurrentMonth(); loadBills() }
+        etMonth?.setOnClickListener { showMonthYearPicker() }
+        (activity as? PortalMainActivity)?.setBillsHeaderControlsVisible(true)
 
         // Use RefreshManager to setup swipe refresh
         RefreshManager.setupRefresh(swipeRefresh) {
@@ -121,6 +117,7 @@ class CustomerBillsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        (activity as? PortalMainActivity)?.setBillsHeaderControlsVisible(true)
         loadPaymentAttemptLock()
         RefreshManager.startRefresh(swipeRefresh)
         loadBills()
@@ -130,6 +127,12 @@ class CustomerBillsFragment : Fragment() {
         billRequest?.cancel()
         billRequest = null
         super.onDestroyView()
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        (activity as? PortalMainActivity)?.setBillsHeaderControlsVisible(!hidden)
+        if (!hidden && view != null && ::adapter.isInitialized) loadPaymentAttemptLock()
     }
 
     override fun onDestroy() {
@@ -145,20 +148,20 @@ class CustomerBillsFragment : Fragment() {
         val cal = Calendar.getInstance()
         val month = cal.get(Calendar.MONTH) + 1
         val year = cal.get(Calendar.YEAR)
-        etMonth.setText("$month-$year")   // MM-YYYY
+        etMonth?.setText("$month-$year")   // MM-YYYY
     }
 
     private fun showMonthYearPicker() {
         val context = context ?: return
         val cal = Calendar.getInstance()
-        val monthYear = etMonth.text.toString().split("-")
-        val year = if (monthYear.size == 2) monthYear[1].toIntOrNull() ?: cal.get(Calendar.YEAR) else cal.get(Calendar.YEAR)
-        val month = if (monthYear.size == 2) monthYear[0].toIntOrNull()?.minus(1) ?: cal.get(Calendar.MONTH) else cal.get(Calendar.MONTH)
+        val monthYear = etMonth?.text?.toString()?.split("-")
+        val year = if (monthYear != null && monthYear.size == 2) monthYear[1].toIntOrNull() ?: cal.get(Calendar.YEAR) else cal.get(Calendar.YEAR)
+        val month = if (monthYear != null && monthYear.size == 2) monthYear[0].toIntOrNull()?.minus(1) ?: cal.get(Calendar.MONTH) else cal.get(Calendar.MONTH)
 
         val dpd = DatePickerDialog(
             context,
             { _, selectedYear, selectedMonth, _ ->
-                etMonth.setText("${selectedMonth + 1}-$selectedYear")
+                etMonth?.setText("${selectedMonth + 1}-$selectedYear")
                 loadBills()
             },
             year,
@@ -173,15 +176,20 @@ class CustomerBillsFragment : Fragment() {
         loadPaymentAttemptLock()
         RefreshManager.startRefresh(swipeRefresh)
 
-        val monthYear = etMonth.text.toString().split("-")
-        if (monthYear.size != 2) {
-            tvStatus.text = "Invalid month format (MM-YYYY)"
-            RefreshManager.stopRefresh(swipeRefresh)
-            return
-        }
+        val cal = Calendar.getInstance()
+        val monthStr = etMonth?.text?.toString()
+        val monthYear = monthStr?.split("-") ?: emptyList()
+        val month: String
+        val year: String
 
-        val month = monthYear[0]
-        val year = monthYear[1]
+        if (monthYear.size == 2 && monthYear[0].isNotBlank() && monthYear[1].isNotBlank()) {
+            month = monthYear[0]
+            year = monthYear[1]
+        } else {
+            month = (cal.get(Calendar.MONTH) + 1).toString()
+            year = cal.get(Calendar.YEAR).toString()
+            etMonth?.setText("$month-$year")
+        }
 
         billRequest?.cancel()
         val request = api.getCustomerInvoices(month = month, year = year)
@@ -197,7 +205,7 @@ class CustomerBillsFragment : Fragment() {
                 RefreshManager.stopRefresh(swipeRefresh)
 
                 if (response.isSuccessful && response.body() != null) {
-                    val invoices = response.body()!!.invoices
+                    val invoices = response.body()?.invoices.orEmpty()
 
                     adapter.updateData(invoices)
 
@@ -207,6 +215,7 @@ class CustomerBillsFragment : Fragment() {
                     tvStatus.text =
                         if (invoices.isEmpty()) "No bills found"
                         else "Showing ${invoices.size} bills"
+                    tvStatus.visibility = View.GONE
 
                     // Update stats
                     val totalBills = invoices.size
@@ -215,6 +224,7 @@ class CustomerBillsFragment : Fragment() {
                     tvTotalAmount.text = "₹${String.format("%.2f", totalAmount)}"
 
                 } else {
+                    tvStatus.visibility = View.VISIBLE
                     tvStatus.text = "Failed to load bills"
                 }
             }
@@ -223,6 +233,7 @@ class CustomerBillsFragment : Fragment() {
                 if (call !== billRequest || call.isCanceled || !isAdded || view == null) return
                 if (context == null) return
                 RefreshManager.stopRefresh(swipeRefresh)
+                tvStatus.visibility = View.VISIBLE
                 tvStatus.text = "Network error"
             }
         })
@@ -273,11 +284,6 @@ class CustomerBillsFragment : Fragment() {
         } catch (e: Exception) {
             Toast.makeText(context, "No PDF viewer found", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden && view != null && ::adapter.isInitialized) loadPaymentAttemptLock()
     }
 
     private fun loadPaymentAttemptLock() {

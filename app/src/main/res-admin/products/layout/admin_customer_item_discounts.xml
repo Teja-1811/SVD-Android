@@ -5,9 +5,9 @@
         <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:orientation="vertical" android:padding="12dp" android:layout_weight="1">
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Set the default discount for each item. The final price updates as you type." android:textColor="@color/textColorSecondary" android:textSize="@dimen/svd_text_label" android:visibility="gone" />
             <Spinner android:popupBackground="@drawable/bg_delivery_dropdown" android:id="@+id/spinnerCustomer" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="@drawable/bg_qty_outline" android:padding="12dp" android:minHeight="48dp" android:minWidth="48dp" android:tag="svd-full-width" />
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/swipeRefresh" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="12dp">
+            <com.svd.svdagencies.utils.AppSwipeRefreshLayout android:id="@+id/swipeRefresh" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="12dp">
                 <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvDiscountItems" android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false" android:paddingBottom="12dp" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
             <com.google.android.material.button.MaterialButton android:id="@+id/btnSaveDiscounts" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Save Discounts" android:textAllCaps="false" app:backgroundTint="?attr/colorPrimary" android:minHeight="@dimen/svd_touch_target" android:minWidth="48dp" />
         </com.svd.svdagencies.utils.CompactLinearLayout>
     </com.svd.svdagencies.utils.CompactLinearLayout>

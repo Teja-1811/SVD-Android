@@ -96,6 +96,19 @@
         android:inputType="textCapCharacters"
         android:minHeight="48dp"  android:minWidth="48dp" />
                 </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+        android:tag="svd-fixed-row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_marginBottom="@dimen/spacing_large">
+                    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginEnd="@dimen/grid_8">
                 <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -109,8 +122,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_edittext"
-        android:layout_marginBottom="@dimen/spacing_large"
         android:minHeight="48dp"  android:minWidth="48dp" />
+                    </LinearLayout>
+                    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
                 <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -124,8 +142,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_edittext"
-        android:layout_marginBottom="@dimen/spacing_large"
         android:minHeight="48dp"  android:minWidth="48dp" />
+                    </LinearLayout>
+                </LinearLayout>
                 <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -333,7 +352,7 @@
         app:strokeColor="@color/gray500"
         android:layout_marginEnd="@dimen/spacing_large"  android:minHeight="48dp"  android:minWidth="48dp" />
             <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAddItem"
+        android:id="@+id/btnSaveItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Item"

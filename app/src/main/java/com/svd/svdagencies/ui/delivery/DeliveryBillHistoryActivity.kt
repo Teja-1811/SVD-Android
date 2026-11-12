@@ -100,7 +100,7 @@ class DeliveryBillHistoryActivity : BaseActivity() {
     }
 
     private fun showDatePicker() {
-        android.app.DatePickerDialog(
+        com.svd.svdagencies.utils.SharedDatePickerDialog(
             this,
             { _, year, month, dayOfMonth ->
                 selectedDate.set(year, month, dayOfMonth)
@@ -289,16 +289,8 @@ class DeliveryBillHistoryActivity : BaseActivity() {
         val agencyName = bill.customerShopName.orEmpty()
         val billNo = bill.billNumber ?: "#${bill.realId}"
         val dateStr = formatShareDate(bill.date)
-        val baseUrl = ApiClient.BASE_URL.removeSuffix("/")
-        val invoiceLink = if (!bill.publicInvoiceUrl.isNullOrBlank()) {
-            if (bill.publicInvoiceUrl.startsWith("http")) {
-                bill.publicInvoiceUrl
-            } else {
-                "$baseUrl${if (bill.publicInvoiceUrl.startsWith("/")) "" else "/"}${bill.publicInvoiceUrl}"
-            }
-        } else {
-            "$baseUrl/api/bills/${bill.realId}/download/"
-        }
+        val invoiceLink = com.svd.svdagencies.utils.ShareLinks.normalize(bill.publicInvoiceUrl, ApiClient.BASE_URL)
+            ?: run { Toast.makeText(this, "Invoice link unavailable. Refresh the bills and try again.", Toast.LENGTH_LONG).show(); return }
 
         val due = if (bill.currentDue != 0.0) bill.currentDue else bill.dueAmount
         val balanceLine = if (due < 0) {
@@ -314,7 +306,8 @@ class DeliveryBillHistoryActivity : BaseActivity() {
 
             Invoice No: $billNo
             Invoice Date: $dateStr
-            Invoice Link: $invoiceLink
+            Invoice Link:
+            $invoiceLink
 
             $balanceLine
 

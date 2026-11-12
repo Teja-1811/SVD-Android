@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.admin
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -50,6 +50,7 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
     private lateinit var headerAdapter: DeliveryAgentSummaryHeaderAdapter
     private lateinit var duesHeaderAdapter: DeliveryAgentSectionHeaderAdapter
     private lateinit var duesTableHeaderAdapter: DeliveryAgentDuesTableHeaderAdapter
+    private lateinit var dueColumns: DueTableColumns
     private lateinit var duesAdapter: DeliveryAgentDailyDueAdapter
     private lateinit var itemsHeaderAdapter: DeliveryAgentSectionHeaderAdapter
     private lateinit var itemAdapter: DeliveryAgentItemAdapter
@@ -78,7 +79,7 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
     }
 
     private fun initDates() {
-        startDate.set(Calendar.DAY_OF_MONTH, 1)
+        startDate.time = Calendar.getInstance().time
     }
 
     private fun initViews() {
@@ -100,8 +101,9 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
         }
 
         duesHeaderAdapter = DeliveryAgentSectionHeaderAdapter("Daily Agent Dues")
-        duesTableHeaderAdapter = DeliveryAgentDuesTableHeaderAdapter()
-        duesAdapter = DeliveryAgentDailyDueAdapter()
+        dueColumns = DueTableColumns(this)
+        duesTableHeaderAdapter = DeliveryAgentDuesTableHeaderAdapter(dueColumns)
+        duesAdapter = DeliveryAgentDailyDueAdapter(dueColumns)
         itemsHeaderAdapter = DeliveryAgentSectionHeaderAdapter("Items Delivered")
         itemAdapter = DeliveryAgentItemAdapter()
         billsHeaderAdapter = DeliveryAgentSectionHeaderAdapter("Bill Details")
@@ -130,7 +132,7 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
     }
 
     private fun clearFilters() {
-        startDate.time = Calendar.getInstance().apply { set(Calendar.DAY_OF_MONTH, 1) }.time
+        startDate.time = Calendar.getInstance().time
         endDate.time = Calendar.getInstance().time
         headerAdapter.selectedAgentName = "All Agents"
         updateDateLabels()
@@ -151,9 +153,13 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
         ).show()
     }
 
+    private var reportRequestVersion = 0
+
     private fun loadReport(btn: MaterialButton? = null) {
-        swipeRefresh.isRefreshing = true
-        btn?.showLoading(true, "Applying...")
+        val requestVersion = ++reportRequestVersion
+        showScreenLoading()
+        swipeRefresh.isRefreshing = false
+        btn?.isEnabled = false
         filterRequest?.cancel()
         filterRequest = lifecycleScope.launch {
             try {
@@ -168,7 +174,10 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
                 Toast.makeText(this@AdminDeliveryAgentDuesActivity, "Failed: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 swipeRefresh.isRefreshing = false
-                btn?.showLoading(false)
+                if (requestVersion == reportRequestVersion) {
+                    hideScreenLoading()
+                    btn?.isEnabled = true
+                }
             }
         }
     }
@@ -184,9 +193,11 @@ class AdminDeliveryAgentDuesActivity : AdminBaseActivity() {
 
         duesHeaderAdapter.isVisible = response.dailyDues.isNotEmpty()
         duesHeaderAdapter.notifyItemChanged(0)
+        val dueRows = response.dailyDues.map { due -> due.copy(agentName = due.agentName ?: agents.firstOrNull { it.id == due.deliveryAgentId }?.name) }
+        dueColumns.update(dueRows)
         duesTableHeaderAdapter.isVisible = response.dailyDues.isNotEmpty()
         duesTableHeaderAdapter.notifyItemChanged(0)
-        duesAdapter.submitList(response.dailyDues.map { due -> due.copy(agentName = due.agentName ?: agents.firstOrNull { it.id == due.deliveryAgentId }?.name) })
+        duesAdapter.submitList(dueRows) { duesAdapter.notifyDataSetChanged() }
 
         itemsHeaderAdapter.isVisible = response.items.isNotEmpty()
         itemsHeaderAdapter.notifyItemChanged(0)

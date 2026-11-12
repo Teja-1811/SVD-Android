@@ -25,6 +25,25 @@ class AgentLocationService : Service(), LocationListener, SharedPreferences.OnSh
     }
     private var manager: LocationManager? = null
     private var pending: Call<Void>? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var latestLocation: Location? = null
+    private var lastFixAt = 0L
+    private var lastRegistrationAt = 0L
+    private val recovery = object : Runnable {
+        override fun run() {
+            if (!started) return
+            if (!ForegroundAgentLocation.enabled(this@AgentLocationService)) {
+                finishSharing(clearPreference = false)
+                return
+            }
+            val now = SystemClock.elapsedRealtime()
+            // Re-register only after a gap, never every tick: resetting GPS
+            // repeatedly can prevent it from completing a fix indoors.
+            if (now - maxOf(lastFixAt, lastRegistrationAt) >= 60000L) registerProviders()
+            latestLocation?.let { onLocationChanged(it) }
+            if (started) handler.postDelayed(this, 15000L)
+        }
+    }
     private var lastSent = 0L
     private var token: String? = null
     private var started = false
@@ -57,17 +76,29 @@ class AgentLocationService : Service(), LocationListener, SharedPreferences.OnSh
             started = true
             prefs.registerOnSharedPreferenceChangeListener(this)
             manager = getSystemService(LOCATION_SERVICE) as LocationManager
-            val providers = if (precise) listOf(LocationManager.NETWORK_PROVIDER, LocationManager.GPS_PROVIDER) else listOf(LocationManager.NETWORK_PROVIDER)
-            for (provider in providers) {
-                if (manager?.isProviderEnabled(provider) == true) manager?.requestLocationUpdates(provider, 15000L, 0f, this, Looper.getMainLooper())
-            }
-            // Send a genuinely recent fix immediately instead of waiting for
-            // another GPS callback. onLocationChanged rejects stale fixes.
-            providers.filter { manager?.allProviders?.contains(it) == true }
-                .mapNotNull { manager?.getLastKnownLocation(it) }
-                .maxByOrNull { it.elapsedRealtimeNanos }?.let { onLocationChanged(it) }
+            registerProviders()
+            handler.postDelayed(recovery, 15000L)
         } catch (_: SecurityException) { stopForTemporaryCondition() }
         return if (started) START_STICKY else START_NOT_STICKY
+    }
+    private fun registerProviders() {
+        val locationManager = manager ?: return
+        val precise = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        val providers = if (precise) listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER) else listOf(LocationManager.NETWORK_PROVIDER)
+        lastRegistrationAt = SystemClock.elapsedRealtime()
+        for (provider in providers) {
+            try {
+                if (provider in locationManager.allProviders && locationManager.isProviderEnabled(provider)) {
+                    locationManager.requestLocationUpdates(provider, 15000L, 0f, this, Looper.getMainLooper())
+                    locationManager.getLastKnownLocation(provider)?.let { onLocationChanged(it) }
+                }
+            } catch (error: IllegalArgumentException) {
+                Log.w(TAG, "Location provider unavailable: $provider", error)
+            } catch (_: SecurityException) {
+                stopForTemporaryCondition()
+                return
+            }
+        }
     }
     override fun onSharedPreferenceChanged(preferences: SharedPreferences?, key: String?) {
         if (key == null || key in setOf("token", "role", ForegroundAgentLocation.ENABLED)) {
@@ -79,7 +110,13 @@ class AgentLocationService : Service(), LocationListener, SharedPreferences.OnSh
         if (!ForegroundAgentLocation.enabled(this)) { finishSharing(clearPreference = false); return }
         if (SessionManager(this).getToken() != token) { stopForTemporaryCondition(); return }
         val now = SystemClock.elapsedRealtime()
-        if (now - location.elapsedRealtimeNanos / 1000000 > 60000 || (lastSent != 0L && now - lastSent < 15000) || pending != null) return
+        val fixAt = location.elapsedRealtimeNanos / 1000000
+        if (now - fixAt !in 0L..60000L) return
+        if (fixAt >= lastFixAt) {
+            lastFixAt = fixAt
+            latestLocation = Location(location)
+        } else return
+        if ((lastSent != 0L && now - lastSent < 15000) || pending != null) return
         lastSent = now
         // A cached provider fix can have an old wall-clock timestamp even when
         // its elapsed-realtime age is acceptable. The server validates receipt
@@ -89,7 +126,8 @@ class AgentLocationService : Service(), LocationListener, SharedPreferences.OnSh
         pending = call
         call.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                if (pending === call) pending = null
+                if (pending !== call || !started) return
+                pending = null
                 if (response.isSuccessful) {
                     prefs.edit().putLong(ForegroundAgentLocation.LAST_UPLOAD_AT, System.currentTimeMillis())
                         .remove(ForegroundAgentLocation.LAST_ERROR).apply()
@@ -104,7 +142,8 @@ class AgentLocationService : Service(), LocationListener, SharedPreferences.OnSh
                 if (response.code() in setOf(401, 403)) stopForTemporaryCondition()
             }
             override fun onFailure(call: Call<Void>, t: Throwable) {
-                if (pending === call) pending = null
+                if (pending !== call || !started) return
+                pending = null
                 prefs.edit().putString(ForegroundAgentLocation.LAST_ERROR, t.message ?: "Network error").apply()
                 Log.w(TAG, "Live location upload failed", t)
             }
@@ -113,6 +152,8 @@ class AgentLocationService : Service(), LocationListener, SharedPreferences.OnSh
     private fun stopForTemporaryCondition() = finishSharing(clearPreference = false)
 
     private fun finishSharing(clearPreference: Boolean) {
+        handler.removeCallbacks(recovery)
+        latestLocation = null
         prefs.unregisterOnSharedPreferenceChangeListener(this)
         if (clearPreference) prefs.edit().putBoolean(ForegroundAgentLocation.ENABLED, false).apply()
         manager?.removeUpdates(this); manager = null
@@ -129,6 +170,8 @@ class AgentLocationService : Service(), LocationListener, SharedPreferences.OnSh
     override fun onDestroy() {
         // System cleanup is not a user request to stop sharing. Preserve the
         // opt-in for a service restart; Stop and sign-out use finishSharing.
+        handler.removeCallbacks(recovery)
+        latestLocation = null
         prefs.unregisterOnSharedPreferenceChangeListener(this)
         manager?.removeUpdates(this); manager = null
         pending?.cancel(); pending = null

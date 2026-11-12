@@ -13,6 +13,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
+import retrofit2.http.Streaming
+import okhttp3.ResponseBody
 
 interface CustomerApi {
     @GET("api/order-timings/")
@@ -33,6 +35,13 @@ interface CustomerApi {
         @Query("year") year: Int
     ): Call<CustomerStatementResponse>
 
+    @Streaming
+    @GET("api/customer/statement/pdf/")
+    fun downloadStatementPdf(
+        @Query("month") month: Int,
+        @Query("year") year: Int
+    ): Call<ResponseBody>
+
     @POST("api/customer/payment/record/")
     fun recordCustomerPayment(
         @Body body: Map<String, Any?>
@@ -45,6 +54,9 @@ interface CustomerApi {
     fun initiateGatewayPayment(
         @Body body: Map<String, String>
     ): Call<PaymentGatewayInitResponse>
+
+    @POST("api/customer/payment/cancel-attempt/")
+    fun cancelGatewayPaymentAttempt(@Body body: Map<String, String>): Call<GenericResponse>
 
     @POST("api/contact/")
     fun submitContact(

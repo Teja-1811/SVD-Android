@@ -12,13 +12,42 @@ class AppSwipeRefreshLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null
 ) : SwipeRefreshLayout(context, attrs) {
 
+    private var logoRefreshing = false
     init {
-        setColorSchemeColors(com.google.android.material.color.MaterialColors.getColor(context, com.google.android.material.R.attr.colorPrimary, androidx.core.content.ContextCompat.getColor(context, R.color.colorPrimary)))
-        setProgressBackgroundColorSchemeResource(R.color.surface_background)
+        setColorSchemeColors(android.graphics.Color.TRANSPARENT)
+        setProgressBackgroundColorSchemeColor(android.graphics.Color.TRANSPARENT)
+        hideNativeIndicator()
+    }
+    override fun setRefreshing(refreshing: Boolean) {
+        logoRefreshing = refreshing
+        super.setRefreshing(false)
+        if (refreshing) LoadingOverlayManager.show(this) else LoadingOverlayManager.hide(this)
+    }
+    override fun isRefreshing(): Boolean = logoRefreshing
+    override fun onDetachedFromWindow() { LoadingOverlayManager.hide(this); super.onDetachedFromWindow() }
+
+    // Gesture refreshes use a private SwipeRefreshLayout path, bypassing setRefreshing().
+    override fun setOnRefreshListener(listener: OnRefreshListener?) {
+        super.setOnRefreshListener(if (listener == null) null else OnRefreshListener {
+            setRefreshing(true)
+            listener.onRefresh()
+        })
     }
 
-    override fun setRefreshing(refreshing: Boolean) {
-        super.setRefreshing(refreshing)
+    private fun hideNativeIndicator() {
+        for (index in 0 until childCount) {
+            val child = getChildAt(index)
+            if (child.javaClass.name == "androidx.swiperefreshlayout.widget.CircleImageView") {
+                // Keep drawing enabled: its animation completion dispatches the refresh callback.
+                child.alpha = 1f
+                child.elevation = 0f
+                child.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            }
+        }
+    }
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        hideNativeIndicator()
     }
 
     override fun canChildScrollUp(): Boolean {

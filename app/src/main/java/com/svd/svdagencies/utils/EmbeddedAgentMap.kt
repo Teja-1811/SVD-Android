@@ -11,6 +11,7 @@ import com.google.gson.Gson
 @SuppressLint("SetJavaScriptEnabled")
 class EmbeddedAgentMap(context: Context) : WebView(context) {
     private var shareCall: retrofit2.Call<PublicTrackingShare>? = null
+    private var requestCall: retrofit2.Call<LocationRequestState>? = null
     private var ready = false
     private var data: String? = null
     private var failed = false
@@ -26,6 +27,11 @@ class EmbeddedAgentMap(context: Context) : WebView(context) {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 // The map never navigates to a third-party site in this WebView.
                 val uri = request?.url
+                if (uri?.scheme == "svd-request" && uri.host == "location") {
+                    val agentId = uri.getQueryParameter("agent_id")?.toIntOrNull()
+                    if (agentId != null && agentId > 0) requestAgent(agentId)
+                    return true
+                }
                 if (uri?.scheme == "svd-share" && uri.host == "location") {
                     val agentId = uri.getQueryParameter("agent_id")?.toIntOrNull()
                     if (agentId != null && agentId > 0) shareAgent(agentId)
@@ -38,6 +44,29 @@ class EmbeddedAgentMap(context: Context) : WebView(context) {
             }
         }
         loadDataWithBaseURL("https://svdagencies.shop/embedded-agent-map/", context.assets.open("agent-map.html").bufferedReader().use { it.readText() }, "text/html", "UTF-8", null)
+    }
+    private fun requestAgent(agentId: Int) {
+        if (requestCall != null) {
+            evaluateJavascript("window.SvdAgentMap.requestResult(" + Gson().toJson(agentId.toString()) + ",null, 'Another request is being sent. Try again.');", null)
+            return
+        }
+        val call = LiveLocationNetwork.api.requestLocation(agentId)
+        requestCall = call
+        call.enqueue(object : retrofit2.Callback<LocationRequestState> {
+            override fun onResponse(call: retrofit2.Call<LocationRequestState>, response: retrofit2.Response<LocationRequestState>) {
+                if (requestCall !== call) return
+                requestCall = null
+                val payload = response.body()?.let { Gson().toJson(it) } ?: response.errorBody()?.string()?.let {
+                    runCatching { com.google.gson.JsonParser.parseString(it).asJsonObject.toString() }.getOrNull()
+                } ?: "null"
+                evaluateJavascript("window.SvdAgentMap.requestResult(" + Gson().toJson(agentId.toString()) + "," + payload + ",null);", null)
+            }
+            override fun onFailure(call: retrofit2.Call<LocationRequestState>, error: Throwable) {
+                if (requestCall !== call) return
+                requestCall = null
+                evaluateJavascript("window.SvdAgentMap.requestResult(" + Gson().toJson(agentId.toString()) + ",null,'Could not send request. Check internet and try again.');", null)
+            }
+        })
     }
     private fun shareAgent(agentId: Int) {
         shareCall?.cancel()
@@ -68,7 +97,7 @@ class EmbeddedAgentMap(context: Context) : WebView(context) {
             }
         })
     }
-    override fun destroy() { shareCall?.cancel(); shareCall = null; super.destroy() }
+    override fun destroy() { requestCall?.cancel(); requestCall = null; shareCall?.cancel(); shareCall = null; super.destroy() }
     fun update(positions: AgentPositions) { data = Gson().toJson(positions); failed = false; flush() }
     fun offline() { failed = true; flush() }
     private fun flush() {

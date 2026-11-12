@@ -1,7 +1,5 @@
 package com.svd.svdagencies.ui.customer.fragment
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import com.svd.svdagencies.utils.UpiPaymentLauncher
 import com.svd.svdagencies.utils.PaymentConfig
@@ -10,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,6 +24,7 @@ import com.svd.svdagencies.data.model.customer.CustomerDashboardResponse
 import com.svd.svdagencies.data.model.customer.GenericResponse
 import com.svd.svdagencies.data.model.customer.PaymentGatewayInitResponse
 import com.svd.svdagencies.ui.customer.adapter.CustomerPaymentHistoryAdapter
+import com.svd.svdagencies.ui.customer.PortalMainActivity
 import com.svd.svdagencies.utils.SessionManager
 import com.svd.svdagencies.utils.showLoading
 import kotlinx.coroutines.launch
@@ -47,10 +45,11 @@ class CustomerPaymentFragment : Fragment() {
     private lateinit var tvCurrentBalance: TextView
 
     private lateinit var rvHistory: RecyclerView
-    private lateinit var tvMonthLabel: TextView
-    private lateinit var btnPrevMonth: ImageButton
-    private lateinit var btnNextMonth: ImageButton
+    private lateinit var tvMonthLabel: MaterialButton
+    private lateinit var btnPrevMonth: MaterialButton
+    private lateinit var btnNextMonth: MaterialButton
     private lateinit var layoutEmptyHistory: View
+    private lateinit var paymentLoading: View
 
     private val historyAdapter = CustomerPaymentHistoryAdapter()
     private val selectedMonth = Calendar.getInstance()
@@ -60,8 +59,6 @@ class CustomerPaymentFragment : Fragment() {
     private var awaitingUpiReturn = false
     private var attemptInProgress = false
     private var activeAttempt: PaymentGatewayInitResponse? = null
-    private var supportButton: com.google.android.material.button.MaterialButton? = null
-    private var verificationLabel: TextView? = null
     private val verificationHandler = android.os.Handler(android.os.Looper.getMainLooper())
     private val verificationPoll = object : Runnable {
         override fun run() {
@@ -74,6 +71,7 @@ class CustomerPaymentFragment : Fragment() {
     private var dashboardCall: Call<CustomerDashboardResponse>? = null
     private var statusCall: Call<PaymentGatewayInitResponse>? = null
     private var gatewayCall: Call<PaymentGatewayInitResponse>? = null
+    private var cancelAttemptCall: Call<GenericResponse>? = null
     private var historyJob: kotlinx.coroutines.Job? = null
     private lateinit var api: CustomerApi
     private lateinit var session: SessionManager
@@ -98,6 +96,7 @@ class CustomerPaymentFragment : Fragment() {
         btnPrevMonth = view.findViewById(R.id.btnPrevMonth)
         btnNextMonth = view.findViewById(R.id.btnNextMonth)
         layoutEmptyHistory = view.findViewById(R.id.layoutEmptyHistory)
+        paymentLoading = view.findViewById(R.id.paymentLoading)
 
         session = SessionManager(requireContext())
         if (session.getUserId() == -1) {
@@ -108,22 +107,9 @@ class CustomerPaymentFragment : Fragment() {
         api = ApiClient.customerApi
 
         btnUpi.setOnClickListener { startGatewayPayment() }
-        verificationLabel = TextView(requireContext()).apply {
-            text = "Verification: up to 5 min."
-            setPadding(0, 16, 0, 8)
-        }
-        supportButton = com.google.android.material.button.MaterialButton(requireContext()).apply {
-            text = "Payment not updated? WhatsApp support"
-            isAllCaps = false
-            visibility = View.GONE
-        }
-        (btnUpi.parent as? android.widget.LinearLayout)?.let { parent ->
-            parent.addView(verificationLabel, parent.indexOfChild(btnUpi) + 1)
-            parent.addView(supportButton, parent.indexOfChild(btnUpi) + 2)
-        }
+        hideHeaderDateControls()
         if ((arguments?.getInt("subscription_id", -1) ?: -1) != -1) {
             etAmount.setText(String.format(Locale.US, "%.2f", arguments?.getDouble("subscription_amount") ?: 0.0))
-            verificationLabel?.text = "${arguments?.getString("subscription_name").orEmpty()} subscription payment. " + verificationLabel?.text
         }
         checkoutAmount()?.let { etAmount.setText(String.format(Locale.US, "%.2f", it)) }
         applyPaymentLock()
@@ -155,7 +141,7 @@ class CustomerPaymentFragment : Fragment() {
     }
 
     private fun showMonthPicker() {
-        android.app.DatePickerDialog(
+        com.svd.svdagencies.utils.SharedDatePickerDialog(
             requireContext(),
             { _, year, month, _ ->
                 selectedMonth.set(Calendar.YEAR, year)
@@ -176,6 +162,7 @@ class CustomerPaymentFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        hideHeaderDateControls()
         if (awaitingUpiReturn) {
             awaitingUpiReturn = false
             paymentLocked = false
@@ -196,23 +183,22 @@ class CustomerPaymentFragment : Fragment() {
         dashboardCall?.cancel()
         statusCall?.cancel()
         gatewayCall?.cancel()
+        cancelAttemptCall?.cancel()
         historyJob?.cancel()
         dashboardCall = null
         statusCall = null
         gatewayCall = null
-        supportButton = null
-        verificationLabel = null
+        cancelAttemptCall = null
         rvHistory.adapter = null
         attemptInProgress = false
         paymentLocked = false
         verificationHandler.removeCallbacks(verificationPoll)
-        supportButton = null
-        verificationLabel = null
         super.onDestroyView()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
+        if (!hidden) hideHeaderDateControls()
         verificationHandler.removeCallbacks(verificationPoll)
         if (!hidden && ::api.isInitialized && view != null) verificationHandler.post(verificationPoll)
     }
@@ -221,6 +207,13 @@ class CustomerPaymentFragment : Fragment() {
         (arguments?.getInt("subscription_id", -1) ?: -1) != -1 -> arguments?.getDouble("subscription_amount")
         (arguments?.getInt("order_id", -1) ?: -1) != -1 -> arguments?.getDouble("order_amount")
         else -> null
+    }
+
+    private fun hideHeaderDateControls() {
+        (activity as? PortalMainActivity)?.apply {
+            setOrderDatePickerVisible(false)
+            setBillsHeaderControlsVisible(false)
+        }
     }
 
     private fun applyPaymentLock() {
@@ -241,14 +234,6 @@ class CustomerPaymentFragment : Fragment() {
                 val body = response.body() ?: return
                 if (!response.isSuccessful) return
                 activeAttempt = body.takeIf { !it.paymentOrderId.isNullOrBlank() }
-                body.verificationMessage?.let { verificationLabel?.text = it }
-                if (body.verificationStatus == "success") verificationLabel?.text = "Payment verified successfully."
-                supportButton?.visibility = if (body.supportAvailable && !body.supportWhatsappUrl.isNullOrBlank()) View.VISIBLE else View.GONE
-                supportButton?.setOnClickListener {
-                    val url = body.supportWhatsappUrl ?: return@setOnClickListener
-                    runCatching { startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))) }
-                        .onFailure { showToast("Unable to open WhatsApp support.") }
-                }
                 applyPaymentLock()
             }
             override fun onFailure(call: Call<PaymentGatewayInitResponse>, error: Throwable) = Unit
@@ -264,6 +249,7 @@ class CustomerPaymentFragment : Fragment() {
     private fun loadDashboardData() {
         val screen = view ?: return
         swipeRefresh.isRefreshing = true
+        paymentLoading.visibility = View.VISIBLE
         dashboardCall?.cancel()
         dashboardCall = api.getDashboard()
         dashboardCall?.enqueue(object : Callback<CustomerDashboardResponse> {
@@ -273,6 +259,7 @@ class CustomerPaymentFragment : Fragment() {
             ) {
                 if (!isAdded || view !== screen || call !== dashboardCall || call.isCanceled) return
                 swipeRefresh.isRefreshing = false
+                paymentLoading.visibility = View.GONE
                 if (!response.isSuccessful) {
                     showToast(getString(R.string.server_error_code, response.code()))
                     return
@@ -290,6 +277,7 @@ class CustomerPaymentFragment : Fragment() {
             override fun onFailure(call: Call<CustomerDashboardResponse>, t: Throwable) {
                 if (!isAdded || view !== screen || call !== dashboardCall || call.isCanceled) return
                 swipeRefresh.isRefreshing = false
+                paymentLoading.visibility = View.GONE
                 showToast(
                     getString(
                         R.string.network_error_message,
@@ -424,11 +412,11 @@ class CustomerPaymentFragment : Fragment() {
         content.findViewById<TextView>(R.id.upiDialogId).text = payment.upiId ?: android.net.Uri.parse(payment.upiUri ?: payment.qrPayload.orEmpty()).getQueryParameter("pa").orEmpty()
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(content)
-            .setOnCancelListener { releasePaymentButton() }
+            .setOnCancelListener { cancelPaymentAttempt(payment) }
             .create()
         content.findViewById<MaterialButton>(R.id.upiDialogCancel).setOnClickListener {
             dialog.dismiss()
-            releasePaymentButton()
+            cancelPaymentAttempt(payment)
         }
         content.findViewById<MaterialButton>(R.id.upiDialogPay).setOnClickListener { button ->
             (button as MaterialButton).showLoading(true, "Opening UPI…")
@@ -441,6 +429,39 @@ class CustomerPaymentFragment : Fragment() {
     private fun releasePaymentButton() {
         paymentLocked = false
         applyPaymentLock()
+    }
+
+    private fun cancelPaymentAttempt(payment: PaymentGatewayInitResponse) {
+        val screen = view ?: return
+        val reference = payment.paymentOrderId ?: run {
+            activeAttempt = null
+            releasePaymentButton()
+            return
+        }
+        if (attemptInProgress) return
+        attemptInProgress = true
+        applyPaymentLock()
+        cancelAttemptCall?.cancel()
+        cancelAttemptCall = api.cancelGatewayPaymentAttempt(mapOf("payment_order_id" to reference))
+        cancelAttemptCall?.enqueue(object : Callback<GenericResponse> {
+            override fun onResponse(call: Call<GenericResponse>, response: Response<GenericResponse>) {
+                if (!isAdded || view !== screen || call !== cancelAttemptCall || call.isCanceled) return
+                attemptInProgress = false
+                paymentLocked = false
+                activeAttempt = null
+                applyPaymentLock()
+                loadAllData()
+                if (!response.isSuccessful) showToast("Unable to cancel payment attempt", Toast.LENGTH_SHORT)
+            }
+
+            override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
+                if (!isAdded || view !== screen || call !== cancelAttemptCall || call.isCanceled) return
+                attemptInProgress = false
+                paymentLocked = false
+                applyPaymentLock()
+                showToast("Unable to cancel payment attempt", Toast.LENGTH_SHORT)
+            }
+        })
     }
 
     private fun openUpiApp(payment: PaymentGatewayInitResponse) {

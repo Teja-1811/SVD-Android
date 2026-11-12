@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <include layout="@layout/admin_toolbar" />
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -27,7 +27,7 @@
         android:padding="16dp"
         android:background="@color/surface_background" />
             </ScrollView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
     </com.svd.svdagencies.utils.CompactLinearLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"

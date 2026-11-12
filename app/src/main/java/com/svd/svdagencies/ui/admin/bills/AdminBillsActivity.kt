@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.app.DatePickerDialog
 import android.view.View
 import android.util.Log
 import android.widget.*
@@ -46,6 +47,8 @@ class AdminBillsActivity : AdminBaseActivity() {
 
     private lateinit var autoCompleteCustomer: AutoCompleteTextView
     private lateinit var btnClearFilters: MaterialButton
+    private lateinit var btnStartDate: MaterialButton
+    private lateinit var btnEndDate: MaterialButton
     private lateinit var rvBills: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var btnPreviousPage: MaterialButton
@@ -58,6 +61,8 @@ class AdminBillsActivity : AdminBaseActivity() {
 
     private var currentPage = 1
     private var isLoading = false
+    private var startDate: String? = null
+    private var endDate: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +88,8 @@ class AdminBillsActivity : AdminBaseActivity() {
     private fun initViews() {
         autoCompleteCustomer = findViewById(R.id.autoCompleteCustomer)
         btnClearFilters = findViewById(R.id.btnClearBillFilters)
+        btnStartDate = findViewById(R.id.btnBillStartDate)
+        btnEndDate = findViewById(R.id.btnBillEndDate)
         rvBills = findViewById(R.id.rvBills)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
         btnPreviousPage = findViewById(R.id.btnPreviousBillsPage)
@@ -142,7 +149,8 @@ class AdminBillsActivity : AdminBaseActivity() {
         val agencyName = (bill.customerShopName ?: customer?.shop_name).orEmpty()
         val invoiceNumber = bill.bill_number.orEmpty()
         val invoiceDate = formatShareDate(bill.date)
-        val invoiceLink = bill.publicInvoiceUrl.orEmpty()
+        val invoiceLink = com.svd.svdagencies.utils.ShareLinks.normalize(bill.publicInvoiceUrl, ApiClient.BASE_URL)
+            ?: run { Toast.makeText(this, "Invoice link unavailable. Refresh the bills and try again.", Toast.LENGTH_LONG).show(); return }
         val due = bill.currentDue
         val balanceLine = if (due < 0) {
             "Wallet Balance: ₹${kotlin.math.abs(Math.round(due))}"
@@ -157,7 +165,8 @@ class AdminBillsActivity : AdminBaseActivity() {
 
             Invoice No: $invoiceNumber
             Invoice Date: $invoiceDate
-            Invoice Link: $invoiceLink
+            Invoice Link:
+            $invoiceLink
 
             $balanceLine
 
@@ -294,13 +303,43 @@ class AdminBillsActivity : AdminBaseActivity() {
 
 
         btnClearFilters.setOnClickListener { clearFilters() }
+        btnStartDate.setOnClickListener { pickDate(isStartDate = true) }
+        btnEndDate.setOnClickListener { pickDate(isStartDate = false) }
         btnPreviousPage.setOnClickListener { if (currentPage > 1) fetchBills(currentPage - 1) }
         btnNextPage.setOnClickListener { fetchBills(currentPage + 1) }
     }
 
     private fun clearFilters() {
         routeCustomerFilters?.clear()
+        startDate = null
+        endDate = null
+        updateDateButtons()
         fetchBills(isRefresh = true)
+    }
+
+    private fun pickDate(isStartDate: Boolean) {
+        val selected = if (isStartDate) startDate else endDate
+        val calendar = Calendar.getInstance().apply {
+            if (!selected.isNullOrBlank()) runCatching {
+                time = SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(selected) ?: time
+            }
+        }
+        DatePickerDialog(this, { _, year, month, day ->
+            val value = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day)
+            if (isStartDate) startDate = value else endDate = value
+            // Never send an invalid range. Moving the start past the end (or
+            // the end before the start) updates the companion bound as well.
+            if (startDate != null && endDate != null && startDate!! > endDate!!) {
+                if (isStartDate) endDate = startDate else startDate = endDate
+            }
+            updateDateButtons()
+            fetchBills(isRefresh = true)
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+    }
+
+    private fun updateDateButtons() {
+        btnStartDate.text = startDate ?: "From date"
+        btnEndDate.text = endDate ?: "To date"
     }
 
     private fun fetchCustomers() {
@@ -344,7 +383,9 @@ class AdminBillsActivity : AdminBaseActivity() {
         filterRequest?.cancel()
         filterRequest = lifecycleScope.launch {
             try {
-                val response = ApiClient.billsDashboardApi.getBills(customerId, null, null, page, routeCustomerFilters?.routeId)
+                val response = ApiClient.billsDashboardApi.getBills(
+                    customerId, startDate, endDate, page, routeCustomerFilters?.routeId
+                )
 
                 currentPage = response.current_page
                 billAdapter.updateList(response.results)

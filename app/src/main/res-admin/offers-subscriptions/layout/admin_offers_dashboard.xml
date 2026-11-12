@@ -2,7 +2,7 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/drawerLayout" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@android:color/white">
     <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
         <include layout="@layout/admin_toolbar" />
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:id="@+id/swipeRefresh" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <com.svd.svdagencies.utils.AppSwipeRefreshLayout android:id="@+id/swipeRefresh" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
             <ScrollView android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
                 <com.svd.svdagencies.utils.CompactLinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
                     <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="16dp" app:cardBackgroundColor="@color/card_background" app:cardCornerRadius="@dimen/card_corner_radius_medium" app:cardElevation="0dp" app:strokeColor="@color/card_stroke_color" app:strokeWidth="1dp" android:visibility="gone">
@@ -16,7 +16,7 @@
                     <com.svd.svdagencies.utils.CompactLinearLayout android:id="@+id/offersList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
                 </com.svd.svdagencies.utils.CompactLinearLayout>
             </ScrollView>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.svd.svdagencies.utils.AppSwipeRefreshLayout>
     </com.svd.svdagencies.utils.CompactLinearLayout>
     <com.google.android.material.navigation.NavigationView android:id="@+id/navigationView" android:layout_width="300dp" android:layout_height="match_parent" android:layout_gravity="start" app:headerLayout="@layout/admin_nav_header" app:menu="@menu/menu_admin_drawer" android:background="?attr/colorSurface" app:backgroundTint="?attr/colorSurface" />
 </androidx.drawerlayout.widget.DrawerLayout>

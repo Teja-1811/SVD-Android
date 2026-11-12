@@ -11,7 +11,39 @@ data class CustomerStatementResponse(
     val period: StatementPeriod,
     val summary: StatementSummary,
     val invoices: List<StatementInvoice>,
-    val payments: List<StatementPayment>
+    val payments: List<StatementPayment>,
+    @SerializedName("monthly_statement") val monthlyStatement: MonthlyStatementSummary? = null,
+    @SerializedName("statement_groups") val statementGroups: List<MonthlyStatementGroup>? = emptyList()
+)
+
+data class MonthlyStatementSummary(
+    @SerializedName("opening_due") val openingDue: Double,
+    @SerializedName("total_sales") val totalSales: Double,
+    @SerializedName("paid_amount") val paidAmount: Double,
+    @SerializedName("monthly_due") val monthlyDue: Double,
+    @SerializedName("remaining_due") val remainingDue: Double,
+    @SerializedName("total_items") val totalItems: Double,
+    @SerializedName("total_discount") val totalDiscount: Double,
+    @SerializedName("average_daily_sales") val averageDailySales: Double,
+)
+
+data class MonthlyStatementGroup(
+    val date: String,
+    @SerializedName("invoice_number") val invoiceNumber: String,
+    @SerializedName("opening_due") val openingDue: Double,
+    val total: Double,
+    val paid: Double,
+    val due: Double,
+    val items: List<MonthlyStatementItem> = emptyList(),
+)
+
+data class MonthlyStatementItem(
+    @SerializedName("item_code") val itemCode: String,
+    @SerializedName("item_name") val itemName: String,
+    val quantity: Double,
+    val rate: Double,
+    val discount: Double,
+    val amount: Double,
 )
 
 data class StatementPeriod(

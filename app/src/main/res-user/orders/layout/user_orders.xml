@@ -4,24 +4,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/user_portal_background">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:paddingBottom="84dp">
         <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/spacing_medium">
-            <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Plan your delivery"
-        android:textSize="@dimen/svd_text_title"
-        android:textColor="@color/textColorPrimary"
-        android:textStyle="bold"
-        android:layout_marginBottom="4dp" />
             <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,12 +74,18 @@
         app:singleSelection="true"
         app:selectionRequired="true">
                         <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnInstantOrder" style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Instant"  android:minHeight="48dp"  android:minWidth="48dp" />
+                        <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegularOrder" style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:checked="true"
-        android:text="Regular delivery"  android:minHeight="48dp"  android:minWidth="48dp" />
+        android:text="Regular"  android:minHeight="48dp"  android:minWidth="48dp" />
                         <com.google.android.material.button.MaterialButton
         android:id="@+id/btnPreOrder" style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="0dp"
@@ -100,7 +102,7 @@
         android:textColor="@color/textColorSecondary"
         android:textSize="@dimen/svd_text_label"  android:visibility="gone" />
                     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnPreOrderDate" style="@style/Widget.Material3.Button.OutlinedButton"
+        android:id="@+id/btnLegacyPreOrderDate" style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -122,6 +124,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_medium"
         android:layout_marginBottom="@dimen/spacing_xlarge"
+        app:cardBackgroundColor="@color/surface_background"
         app:cardCornerRadius="@dimen/card_corner_radius_medium"
         app:cardElevation="0dp"
         app:strokeWidth="1dp"
@@ -129,7 +132,6 @@
                 <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/editTextBackground"
         android:orientation="vertical"
         android:padding="@dimen/spacing_large">
                     <TextView
@@ -139,6 +141,13 @@
         android:textSize="@dimen/text_size_large"
         android:textStyle="bold"
         android:textColor="@color/textColorPrimary" />
+                    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Review selected items before placing your order"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="@dimen/text_size_body_small" />
                     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSummary"
         android:layout_width="match_parent"
@@ -148,7 +157,7 @@
                     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/editTextStroke"
+        android:background="@color/divider_line"
         android:layout_marginTop="@dimen/spacing_medium" />
                     <com.svd.svdagencies.utils.CompactLinearLayout
         android:layout_width="match_parent"
@@ -177,21 +186,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Delivery charge: ₹10.00"
+        android:text="Delivery charge: ₹0.00"
         android:textColor="@color/textColorSecondary"
         android:visibility="gone" />
-                    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnPlaceOrder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_large"
-        android:text="Place Order"
-        android:textAllCaps="false"
-        android:textSize="@dimen/text_size_button"
-        app:cornerRadius="@dimen/card_corner_radius_large"
-        app:backgroundTint="@color/icon_green"  android:minHeight="@dimen/svd_touch_target"  android:textColor="@color/white"  android:minWidth="48dp" />
                 </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </com.svd.svdagencies.utils.CompactLinearLayout>
     </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPlaceOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:minHeight="@dimen/svd_touch_target"
+        android:text="Place Order"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_button"
+        app:backgroundTint="@color/icon_green"
+        app:cornerRadius="@dimen/card_corner_radius_large"
+        app:icon="@drawable/ic_check"
+        app:iconGravity="textStart"
+        app:iconTint="@color/white" />
+    </FrameLayout>
 </com.svd.svdagencies.utils.AppSwipeRefreshLayout>

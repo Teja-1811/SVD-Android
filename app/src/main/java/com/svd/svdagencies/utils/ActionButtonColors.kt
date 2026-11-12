@@ -9,12 +9,15 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 
 object ActionButtonColors {
+    private val viewNames = java.util.WeakHashMap<View, String>()
     private val outlineColors = java.util.WeakHashMap<View, Int>()
     private val imageFills = java.util.WeakHashMap<View, Int>()
     fun apply(view: View, confirmation: Boolean = false, forceDestructive: Boolean = false) {
         if (view !is android.widget.Button && view !is android.widget.ImageButton) return
         if (view is android.widget.CompoundButton || CompactUi.isDateField(view)) return
-        val name = runCatching { view.resources.getResourceEntryName(view.id) }.getOrDefault("")
+        val name = viewNames.getOrPut(view) {
+            if (view.id <= 0 || (view.id ushr 24) == 0) "" else runCatching { view.resources.getResourceEntryName(view.id) }.getOrDefault("")
+        }
         if (name == "text_input_end_icon" || name == "text_input_start_icon") {
             androidx.core.view.ViewCompat.setBackgroundTintList(view, null)
             view.backgroundTintList = null

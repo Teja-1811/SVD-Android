@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <ProgressBar
+        <com.svd.svdagencies.utils.LogoProgressBar
             android:id="@+id/subscriptionsLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

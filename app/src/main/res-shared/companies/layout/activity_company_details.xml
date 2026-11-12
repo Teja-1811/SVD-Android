@@ -34,7 +34,7 @@
                     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sri Vijaya Durga Milk Agencies"
+        android:text="Sri Vijaya Durga Milk Agency"
         android:textColor="?attr/colorOnSurface"
         android:textSize="@dimen/svd_text_heading"
         android:textStyle="bold" />
@@ -50,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Dairy distribution - Since 2024"
+        android:text="Dairy distribution and local delivery service"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="@dimen/svd_text_label" />
             </com.svd.svdagencies.utils.CompactLinearLayout>
@@ -74,7 +74,7 @@
                 <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="About"
+        android:text="Registration &amp; online presence"
         android:textColor="?attr/colorOnSurface"
         android:textSize="@dimen/svd_text_body"
         android:textStyle="bold" />
@@ -97,7 +97,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="Registration details are managed by the agency."
+        android:text="Registration information is maintained by the agency."
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="@dimen/svd_text_label" />
             </com.svd.svdagencies.utils.CompactLinearLayout>
@@ -121,7 +121,7 @@
                 <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Contact"
+        android:text="Business contact"
         android:textColor="?attr/colorOnSurface"
         android:textSize="@dimen/svd_text_body"
         android:textStyle="bold" />
@@ -167,7 +167,7 @@
                 <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Operations"
+        android:text="Operating coverage"
         android:textColor="?attr/colorOnSurface"
         android:textSize="@dimen/svd_text_body"
         android:textStyle="bold" />
@@ -182,7 +182,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="Service area: Gundugolanu And nearby Areas"
+        android:text="Service area: Gundugolanu and nearby serviceable areas"
         android:textColor="?attr/colorOnSurfaceVariant"
         android:textSize="@dimen/svd_text_label" />
                 <TextView

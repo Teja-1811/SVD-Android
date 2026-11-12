@@ -1,11 +1,17 @@
 package com.svd.svdagencies.ui.delivery
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.ScrollView
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,11 +30,20 @@ import java.util.Locale
 
 class DeliveryCustomerPaymentsActivity : BaseActivity() {
 
+    private data class FilterOption(val label: String, val id: Int?)
+
+    private companion object {
+        const val TAG = "DeliveryPayments"
+    }
+
     private lateinit var binding: DeliveryCustomerPaymentsBinding
     private val adapter = DeliveryCustomerPaymentAdapter { payment, action -> showPaymentActions(payment, action) }
-    private var filterByDay = false
     private var customerId: Int = -1
     private var customerName: String? = null
+    private var selectedRouteId: Int? = null
+    private var selectedCustomerId: Int? = null
+    private var routes = emptyList<com.svd.svdagencies.data.model.delivery.DeliveryRoute>()
+    private var customers = emptyList<com.svd.svdagencies.data.model.delivery.DeliveryBillCustomer>()
 
     private val selectedMonth: Calendar = Calendar.getInstance()
     private val monthLabelFormat = SimpleDateFormat("MMMM yyyy", Locale.US)
@@ -45,6 +60,7 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
         setupToolbar()
         setupMonthFilter()
         setupRecyclerView()
+        loadFilterOptions()
 
         binding.swipeRefresh.setOnRefreshListener { loadPayments() }
         loadPayments()
@@ -63,32 +79,18 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
 
     private fun setupMonthFilter() {
         updateMonthLabel()
-        binding.btnPreviousMonth.setOnClickListener {
-            filterByDay = true
-            selectedMonth.add(Calendar.DAY_OF_MONTH, -1)
-            updateMonthLabel()
-            loadPayments()
-        }
-        binding.btnNextMonth.setOnClickListener {
-            filterByDay = true
-            selectedMonth.add(Calendar.DAY_OF_MONTH, 1)
-            updateMonthLabel()
-            loadPayments()
-        }
         binding.tvSelectedMonth.setOnClickListener { showMonthPicker() }
-        binding.tvSelectedMonth.setOnLongClickListener {
-            filterByDay = false; updateMonthLabel(); loadPayments(); true
-        }
+        binding.filterRoute.setOnClickListener { selectRoute() }
+        binding.filterCustomer.setOnClickListener { selectCustomer() }
     }
 
     private fun showMonthPicker() {
         DatePickerDialog(
             this,
-            { _, year, month, day ->
+            { _, year, month, _ ->
                 selectedMonth.set(Calendar.YEAR, year)
                 selectedMonth.set(Calendar.MONTH, month)
-                selectedMonth.set(Calendar.DAY_OF_MONTH, day)
-                filterByDay = true
+                selectedMonth.set(Calendar.DAY_OF_MONTH, 1)
                 updateMonthLabel()
                 loadPayments()
             },
@@ -99,8 +101,101 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
     }
 
     private fun updateMonthLabel() {
-        binding.tvSelectedMonth.text = if (filterByDay) SimpleDateFormat("dd MMM yyyy", Locale.US).format(selectedMonth.time) else "All dates"
-        binding.tvSelectedMonth.contentDescription = "Filter by date. Long press to show all dates"
+        binding.tvSelectedMonth.text = monthLabelFormat.format(selectedMonth.time)
+        binding.tvSelectedMonth.contentDescription = "Filter by month and year"
+    }
+
+    private fun loadFilterOptions() = lifecycleScope.launch {
+        setFilterLoading(true)
+        try {
+            routes = ApiClient.deliveryApi.getRoutes().awaitResponse().body().orEmpty()
+            customers = ApiClient.deliveryApi.getBillCustomers().awaitResponse().body()?.results.orEmpty()
+        } catch (_: Exception) {
+            Toast.makeText(this@DeliveryCustomerPaymentsActivity, "Unable to load filters", Toast.LENGTH_SHORT).show()
+        } finally {
+            setFilterLoading(false)
+        }
+    }
+
+    private fun setFilterLoading(isLoading: Boolean) {
+        binding.filterLoading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.filterRoute.isEnabled = !isLoading
+        binding.filterCustomer.isEnabled = !isLoading
+        binding.filterRoute.alpha = if (isLoading) 0.55f else 1f
+        binding.filterCustomer.alpha = if (isLoading) 0.55f else 1f
+    }
+
+    private fun selectRoute() {
+        val options = listOf(FilterOption("All routes", null)) + routes.map {
+            FilterOption(it.name, it.id)
+        }
+        showBorderedDropdown(binding.filterRoute, options) { option ->
+            selectedRouteId = option.id
+            binding.filterRoute.text = option.label
+            selectedCustomerId = null
+            binding.filterCustomer.text = "All customers"
+            loadPayments()
+        }
+    }
+
+    private fun selectCustomer() {
+        val visibleCustomers = customers.filter { selectedRouteId == null || it.routeId == selectedRouteId }
+        val options = listOf(FilterOption("All customers", null)) + visibleCustomers.map {
+            FilterOption(it.label, it.id)
+        }
+        showBorderedDropdown(binding.filterCustomer, options) { option ->
+            selectedCustomerId = option.id
+            binding.filterCustomer.text = option.label
+            loadPayments()
+        }
+    }
+
+    private fun showBorderedDropdown(
+        anchor: View,
+        options: List<FilterOption>,
+        onSelect: (FilterOption) -> Unit,
+    ) {
+        val density = resources.displayMetrics.density
+        fun dp(value: Int) = (value * density + .5f).toInt()
+        val rows = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(4), dp(4), dp(4), dp(4))
+            setBackgroundColor(Color.WHITE)
+        }
+        val scroll = ScrollView(this).apply { addView(rows) }
+        val anchorPosition = IntArray(2)
+        anchor.getLocationOnScreen(anchorPosition)
+        // Size to the content up to a sensible scrollable limit; do not leave a
+        // screen-height empty panel beneath a short list of options.
+        val popupHeight = minOf(dp(360), dp(8) + options.size * dp(52))
+        val popup = PopupWindow(scroll, anchor.width, popupHeight, true).apply {
+            setBackgroundDrawable(ColorDrawable(Color.WHITE))
+            elevation = dp(8).toFloat()
+            isOutsideTouchable = true
+        }
+        options.forEach { option ->
+            rows.addView(android.widget.TextView(this).apply {
+                text = option.label
+                textSize = 16f
+                setTextColor(getColor(R.color.textColorPrimary))
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                setPadding(dp(14), 0, dp(14), 0)
+                background = getDrawable(R.drawable.bg_qty_outline)
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(48)).apply {
+                    bottomMargin = dp(4)
+                }
+                setOnClickListener {
+                    popup.dismiss()
+                    onSelect(option)
+                }
+            })
+        }
+        popup.showAtLocation(
+            anchor.rootView,
+            android.view.Gravity.TOP or android.view.Gravity.START,
+            anchorPosition[0],
+            anchorPosition[1] + anchor.height + dp(4),
+        )
     }
 
     private fun setupRecyclerView() {
@@ -124,16 +219,33 @@ class DeliveryCustomerPaymentsActivity : BaseActivity() {
 
         lifecycleScope.launch {
             try {
+                Log.d(
+                    TAG,
+                    "Loading payments: month=${selectedMonth.get(Calendar.MONTH) + 1}, " +
+                        "year=${selectedMonth.get(Calendar.YEAR)}, route=$selectedRouteId, " +
+                        "customer=$selectedCustomerId",
+                )
                 // Call the correct customer payments URL for both general and specific views
                 val response = ApiClient.deliveryApi.getCustomerPaymentRecords(
                     customerId = targetId,
-                    month = if (filterByDay) selectedMonth.get(Calendar.MONTH) + 1 else null,
-                    year = if (filterByDay) selectedMonth.get(Calendar.YEAR) else null,
-                    scope = if (customerId == -1) "agent" else null
+                    month = selectedMonth.get(Calendar.MONTH) + 1,
+                    year = selectedMonth.get(Calendar.YEAR),
+                    scope = if (customerId == -1) "agent" else null,
+                    routeId = selectedRouteId,
+                    filterCustomerId = selectedCustomerId
                 ).awaitResponse()
                 
                 if (response.isSuccessful) {
-                    val payments = response.body()?.payments.orEmpty().filter { !filterByDay || it.createdAt?.take(10) == apiDateFormat.format(selectedMonth.time) }
+                    val serverPayments = response.body()?.payments.orEmpty()
+                    // Older deployed servers do not include these two fields.
+                    // Only use the client-side verification once the response
+                    // actually supplies the corresponding identifiers.
+                    val includesCustomerIds = serverPayments.any { it.customerId != null }
+                    val includesRouteIds = serverPayments.any { it.routeId != null }
+                    val payments = serverPayments.filter { payment ->
+                        (selectedCustomerId == null || !includesCustomerIds || payment.customerId == selectedCustomerId) &&
+                            (selectedRouteId == null || !includesRouteIds || payment.routeId == selectedRouteId)
+                    }
                     adapter.submitList(payments)
                     binding.emptyState.visibility = if (payments.isEmpty()) View.VISIBLE else View.GONE
                 } else {
@@ -208,6 +320,10 @@ class DeliveryCustomerPaymentAdapter(private val onManage: (DeliveryCustomerPaym
     private val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
     private val outputFormat = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.US)
 
+    private fun formatTimestamp(value: String?): String? = value?.let { raw ->
+        runCatching { inputFormat.parse(raw)?.let(outputFormat::format) }.getOrNull() ?: raw
+    }
+
     fun submitList(newItems: List<DeliveryCustomerPaymentRecord>) {
         items = newItems
         notifyDataSetChanged()
@@ -239,6 +355,12 @@ class DeliveryCustomerPaymentAdapter(private val onManage: (DeliveryCustomerPaym
 
             binding.tvPaymentMethod.text = "Method: ${item.method ?: "N/A"}"
             binding.tvTransactionId.text = "TXN: ${item.transactionId ?: "N/A"}"
+            binding.tvCollectedBy.text = "Collected by: ${item.collectedByName ?: "Not recorded"}"
+            val editedBy = item.editedByName?.takeIf { it.isNotBlank() }
+            binding.tvEditedBy.visibility = if (editedBy == null) View.GONE else View.VISIBLE
+            binding.tvEditedBy.text = if (editedBy == null) "" else {
+                "Edited by: $editedBy${formatTimestamp(item.editedAt)?.let { " • $it" }.orEmpty()}"
+            }
             binding.tvStatus.text = item.status?.uppercase() ?: "UNKNOWN"
 
             val statusBg = when (item.status?.lowercase()) {

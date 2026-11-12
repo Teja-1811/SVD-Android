@@ -106,7 +106,9 @@ object AdminSidebar {
         menu.add(0, R.id.nav_agent_live_location, 0, "Agent Locations").apply {
             setIcon(android.R.drawable.ic_menu_mylocation)
             setOnMenuItemClickListener {
-                activity.startActivity(Intent(activity, AgentLocationActivity::class.java))
+                activity.startActivity(Intent(activity, AgentLocationActivity::class.java).putExtra(
+                    AgentLocationActivity.EXTRA_ADMIN_LOCATIONS, true
+                ))
                 true
             }
         }
@@ -117,6 +119,11 @@ object AdminSidebar {
         fun target(type: Class<*>, action: Int = 0) = Intent(activity, type).apply {
             putExtra(SELECTED, id)
             if (action != 0) putExtra(ACTION, action)
+        }
+        fun deliveryStockPhase(phase: Int) = Intent(activity, com.svd.svdagencies.ui.delivery.DeliveryStockPhaseEntryActivity::class.java).apply {
+            putExtra("admin_stock_entry", true)
+            putExtra("phase_type", phase)
+            putExtra(SELECTED, id)
         }
         return when (id) {
             R.id.nav_home -> target(AdminDashboardActivity::class.java)
@@ -132,6 +139,11 @@ object AdminSidebar {
             R.id.nav_order_timings -> target(AdminOrderTimingsActivity::class.java)
             R.id.nav_stock -> target(AdminStockActivity::class.java)
             R.id.nav_update_stock -> target(AdminStockUpdateActivity::class.java)
+            R.id.nav_delivery_total_stock -> target(DeliveryStockTrackingActivity::class.java)
+            R.id.nav_delivery_morning_entry -> deliveryStockPhase(0)
+            R.id.nav_delivery_morning_return -> deliveryStockPhase(1)
+            R.id.nav_delivery_evening_entry -> deliveryStockPhase(2)
+            R.id.nav_delivery_evening_return -> deliveryStockPhase(3)
             R.id.nav_add_leakage -> target(AdminStockActivity::class.java, R.id.btnRecordLeakage)
             R.id.nav_items -> target(AdminItemsActivity::class.java)
             R.id.nav_add_item -> target(AddEditItemActivity::class.java)
@@ -238,6 +250,7 @@ object AdminSidebar {
             is AdminEnquiriesActivity -> R.id.nav_enquiries
             is CategorySalesActivity -> R.id.nav_category_sales
             is AdminDeliveryAgentDuesActivity -> if (activity.intent.getBooleanExtra("sidebar_due_details", false)) R.id.nav_due_details else R.id.nav_agent_dues
+            is DeliveryStockTrackingActivity -> R.id.nav_delivery_total_stock
             is AdminGstActivity -> R.id.nav_gst
             else -> 0
         }

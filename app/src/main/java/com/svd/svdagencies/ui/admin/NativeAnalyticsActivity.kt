@@ -59,7 +59,7 @@ open class NativeAnalyticsActivity : AdminBaseActivity() {
                 field.setOnClickListener {
                     val calendar = java.util.Calendar.getInstance()
                     runCatching { java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).parse(field.text.toString()) }.getOrNull()?.let { calendar.time = it }
-                    android.app.DatePickerDialog(this, { _, year, month, day ->
+                    com.svd.svdagencies.utils.SharedDatePickerDialog(this, { _, year, month, day ->
                         field.setText(String.format(java.util.Locale.US, "%04d-%02d-%02d", year, month + 1, day))
                     }, calendar.get(java.util.Calendar.YEAR), calendar.get(java.util.Calendar.MONTH), calendar.get(java.util.Calendar.DAY_OF_MONTH)).show()
                 }
@@ -78,7 +78,7 @@ open class NativeAnalyticsActivity : AdminBaseActivity() {
             inputs.filterKeys { it != "customer" }.values.forEach { field ->
                 field.setOnClickListener {
                     val calendar = java.util.Calendar.getInstance()
-                    android.app.DatePickerDialog(this, { _, year, month, day ->
+                    com.svd.svdagencies.utils.SharedDatePickerDialog(this, { _, year, month, day ->
                         field.setText(String.format(java.util.Locale.US, "%04d-%02d-%02d", year, month + 1, day))
                     }, calendar.get(java.util.Calendar.YEAR), calendar.get(java.util.Calendar.MONTH), calendar.get(java.util.Calendar.DAY_OF_MONTH)).show()
                 }

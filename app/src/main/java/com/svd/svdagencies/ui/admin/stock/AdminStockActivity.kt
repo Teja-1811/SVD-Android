@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.admin.stock
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
@@ -73,6 +73,7 @@ class AdminStockActivity : AdminBaseActivity() {
     private var selectedDate = dateFormatter.format(
         Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }.time
     )
+    private var stockCompanies: List<com.svd.svdagencies.data.model.admin.stock.StockCompany> = emptyList()
     private var allStockItems: List<StockItem> = emptyList()
     private lateinit var btnRecordLeakage: MaterialButton
     private lateinit var btnLeakageReport: MaterialButton
@@ -156,8 +157,12 @@ class AdminStockActivity : AdminBaseActivity() {
         loadStockData()
     }
 
+    private var stockRequest: Call<AdminStockDashboardResponse>? = null
+
     private fun loadStockData() {
-        swipeRefresh.isRefreshing = true
+        stockRequest?.cancel()
+        showScreenLoading()
+        swipeRefresh.isRefreshing = false
 
         val calendar = Calendar.getInstance()
         runCatching {
@@ -165,15 +170,19 @@ class AdminStockActivity : AdminBaseActivity() {
             if (parsed != null) calendar.time = parsed
         }
 
-        ApiClient.adminStockApi.getStockDashboard(
+        val request = ApiClient.adminStockApi.getStockDashboard(
             selectedDate,
             calendar.get(Calendar.MONTH) + 1,
             calendar.get(Calendar.YEAR)
-        ).enqueue(object : Callback<AdminStockDashboardResponse> {
+        )
+        stockRequest = request
+        request.enqueue(object : Callback<AdminStockDashboardResponse> {
             override fun onResponse(
                 call: Call<AdminStockDashboardResponse>,
                 response: Response<AdminStockDashboardResponse>
             ) {
+                if (call !== stockRequest) return
+                hideScreenLoading()
                 swipeRefresh.isRefreshing = false
                 if (response.isSuccessful && response.body() != null) {
                     updateUI(response.body()!!)
@@ -183,6 +192,8 @@ class AdminStockActivity : AdminBaseActivity() {
             }
 
             override fun onFailure(call: Call<AdminStockDashboardResponse>, t: Throwable) {
+                if (call !== stockRequest || call.isCanceled) return
+                hideScreenLoading()
                 swipeRefresh.isRefreshing = false
                 Toast.makeText(
                     this@AdminStockActivity,
@@ -200,7 +211,7 @@ class AdminStockActivity : AdminBaseActivity() {
             if (parsed != null) calendar.time = parsed
         }
         DatePickerDialog(
-            this,
+            this, R.style.Theme_Svd_CompactDatePicker,
             { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
                 selectedDate = dateFormatter.format(calendar.time)
@@ -238,6 +249,7 @@ class AdminStockActivity : AdminBaseActivity() {
         setupPieChart(data.companyData)
 
         // Update Table
+        stockCompanies = data.companies
         allStockItems = data.allItems
         adapter.updateList(allStockItems)
         com.svd.svdagencies.utils.AdminSidebar.runPendingAction(this, true)
@@ -291,36 +303,82 @@ class AdminStockActivity : AdminBaseActivity() {
         val view = LayoutInflater.from(this).inflate(R.layout.delivery_edit_stock_entry, null)
         val etCrates = view.findViewById<TextInputEditText>(R.id.etCrates)
         val etDiscount = view.findViewById<TextInputEditText>(R.id.etDiscount)
-
+        val etDate = view.findViewById<TextInputEditText>(R.id.etEntryDate)
+        val companyInput = view.findViewById<AutoCompleteTextView>(R.id.etStockCompany)
+        val discountLayout = view.findViewById<TextInputLayout>(R.id.etDiscountLayout)
+        val item = allStockItems.firstOrNull { it.id == entry.itemId }
+        var company = stockCompanies.firstOrNull { it.id == entry.companyId }
+            ?: stockCompanies.firstOrNull { it.name == entry.companyName }
+        view.findViewById<TextView>(R.id.tvEditStockItem).text = "${entry.itemName} | ${entry.companyName.orEmpty()}"
         etCrates.setText(entry.crates.toString())
         etDiscount.setText(entry.discount.toString())
-
-        val isDodla = entry.companyName.orEmpty().trim().equals("Dodla", ignoreCase = true)
-        val discountHelp = if (isDodla) {
-            "Discount is a percentage."
-        } else {
-            "Discount is in rupees per piece. Older entries may show a total discount; check it before updating."
+        etDate.setText(entry.date ?: selectedDate)
+        etDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            runCatching { calendar.time = dateFormatter.parse(etDate.text.toString())!! }
+            DatePickerDialog(this, R.style.Theme_Svd_CompactDatePicker, { _, y, m, d ->
+                calendar.set(y, m, d)
+                etDate.setText(dateFormatter.format(calendar.time))
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
         }
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Edit Stock Entry")
-            .setMessage("Updating ${entry.itemName} for ${entry.companyName}\n$discountHelp")
+        fun recalc() {
+            val crates = etCrates.text.toString().toDoubleOrNull() ?: 0.0
+            val discount = etDiscount.text.toString().toDoubleOrNull() ?: 0.0
+            val dodla = company?.name.orEmpty().trim().equals("Dodla", ignoreCase = true)
+            discountLayout.hint = if (dodla) "Discount %" else "Discount ₹/pc"
+            val pcs = item?.pcsCount?.toDouble()?.takeIf { it > 0 }
+                ?: (entry.quantity / entry.crates).takeIf { it.isFinite() } ?: 1.0
+            val quantity = crates * pcs
+            val value = if (item == null) null else if (dodla) {
+                crates * item.litresPerCrate * item.basePrice * (1 - discount / 100) * (1 + item.gstPercentage / 100)
+            } else quantity * (item.buyingPrice - discount)
+            view.findViewById<TextView>(R.id.tvEditPcs).text = String.format(Locale.US, "%.3f", pcs)
+            view.findViewById<TextView>(R.id.tvEditQuantity).text = String.format(Locale.US, "%.3f", quantity)
+            view.findViewById<TextView>(R.id.tvEditValue).text = value?.let { String.format(Locale.US, "%.3f", it.coerceAtLeast(0.0)) } ?: "—"
+        }
+        companyInput.setAdapter(ArrayAdapter(this, R.layout.delivery_dropdown_item, stockCompanies.map { it.name }))
+        companyInput.setText(company?.name.orEmpty(), false)
+        companyInput.setOnClickListener { companyInput.showDropDown() }
+        companyInput.setOnItemClickListener { _, _, position, _ ->
+            company = stockCompanies[position]
+            recalc()
+        }
+        val watcher = object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { recalc() }
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        }
+        etCrates.addTextChangedListener(watcher)
+        etDiscount.addTextChangedListener(watcher)
+        recalc()
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle("Edit stock entry")
             .setView(view)
-            .setPositiveButton("Update") { _, _ ->
-                val crates = etCrates.text.toString().toDoubleOrNull() ?: 0.0
-                val discount = etDiscount.text.toString().toDoubleOrNull() ?: 0.0
-                if (crates > 0) {
-                    updateStockEntry(entry.id, crates, discount)
+            .setPositiveButton("Update entry", null)
+            .setNegativeButton("Cancel", null)
+            .create()
+        dialog.setOnShowListener {
+            dialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                val crates = etCrates.text.toString().toDoubleOrNull()
+                val discount = etDiscount.text.toString().ifBlank { "0" }.toDoubleOrNull()
+                if (crates == null || !crates.isFinite() || crates <= 0) {
+                    etCrates.error = "Enter valid crates"
+                } else if (discount == null || !discount.isFinite() || discount < 0) {
+                    etDiscount.error = "Enter valid discount"
+                } else if (company == null) {
+                    companyInput.error = "Select stock company"
                 } else {
-                    Toast.makeText(this, "Enter valid crates", Toast.LENGTH_SHORT).show()
+                    updateStockEntry(entry.id, crates, discount, etDate.text.toString(), company!!.id)
+                    dialog.dismiss()
                 }
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+        }
+        dialog.show()
     }
 
-    private fun updateStockEntry(id: Int, crates: Double, discount: Double) {
+    private fun updateStockEntry(id: Int, crates: Double, discount: Double, date: String, companyId: Int) {
         showScreenLoading()
-        val body = mapOf("crates" to crates, "discount" to discount)
+        val body = mapOf<String, Any>("crates" to crates, "discount" to discount, "entry_date" to date, "company_id" to companyId)
         ApiClient.adminStockApi.editStockEntry(id, body).enqueue(object : Callback<Map<String, Any>> {
             override fun onResponse(call: Call<Map<String, Any>>, response: Response<Map<String, Any>>) {
                 hideScreenLoading()
@@ -411,7 +469,7 @@ class AdminStockActivity : AdminBaseActivity() {
         etDate.setText(selectedDate)
         etDate.setOnClickListener {
             val calendar = Calendar.getInstance()
-            DatePickerDialog(this, { _, y, m, d ->
+            DatePickerDialog(this, R.style.Theme_Svd_CompactDatePicker, { _, y, m, d ->
                 calendar.set(y, m, d)
                 etDate.setText(dateFormatter.format(calendar.time))
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
@@ -492,7 +550,7 @@ class AdminStockActivity : AdminBaseActivity() {
         etDate.setOnClickListener {
             val calendar = Calendar.getInstance()
             runCatching { calendar.time = dateFormatter.parse(entry.date)!! }
-            DatePickerDialog(this, { _, y, m, d ->
+            DatePickerDialog(this, R.style.Theme_Svd_CompactDatePicker, { _, y, m, d ->
                 calendar.set(y, m, d)
                 etDate.setText(dateFormatter.format(calendar.time))
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()

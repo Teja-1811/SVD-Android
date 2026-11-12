@@ -1,6 +1,6 @@
 package com.svd.svdagencies.ui.admin
 
-import android.app.DatePickerDialog
+import com.svd.svdagencies.utils.SharedDatePickerDialog as DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View

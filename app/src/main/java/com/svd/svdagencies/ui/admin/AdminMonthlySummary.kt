@@ -209,13 +209,17 @@ class AdminMonthlySummary : AdminBaseActivity() {
         }
     }
 
+    private var summaryRequestVersion = 0
+
     private fun fetchSummary() {
         val sdf = SimpleDateFormat("yyyy-MM", Locale.US)
         val date = sdf.format(calendar.time)
         val customerId = selectedCustomerId ?: return
         currentSummary = null
         btnWhatsappShare.isEnabled = false
-        monthLabel.text = "Loading $date…"
+        val requestVersion = ++summaryRequestVersion
+        monthLabel.text = date
+        showScreenLoading()
         cardFinancialSummary.visibility = View.GONE
         cardVolumeSummary.visibility = View.GONE
         statementView?.visibility = View.GONE
@@ -235,6 +239,8 @@ class AdminMonthlySummary : AdminBaseActivity() {
                     monthLabel.text = "Couldn't load summary. Try again."
                     Toast.makeText(this@AdminMonthlySummary, "Unable to load monthly summary", Toast.LENGTH_SHORT).show()
                 }
+            } finally {
+                withContext(kotlinx.coroutines.NonCancellable + Dispatchers.Main) { if (requestVersion == summaryRequestVersion) hideScreenLoading() }
             }
         }
     }
@@ -320,13 +326,19 @@ class AdminMonthlySummary : AdminBaseActivity() {
 
     private fun shareOnWhatsapp() {
         val summary = currentSummary ?: return
-        val phoneNumber = summary.customer.phone ?: return
+        val pdfUrl = summary.pdf_url?.takeIf { it.isNotBlank() }
+        if (pdfUrl == null) {
+            Toast.makeText(this, "PDF link unavailable. Refresh the summary and try again.", Toast.LENGTH_LONG).show()
+            return
+        }
+        val phoneNumber = summary.customer.phone.orEmpty()
         
         // Clean phone number (keep only digits)
         val cleanPhone = phoneNumber.replace(Regex("[^0-9]"), "")
         val finalPhone = if (cleanPhone.length == 10) "91$cleanPhone" else cleanPhone
 
-        val monthName = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(calendar.time)
+        val summaryMonth = Calendar.getInstance().apply { set(summary.year, summary.month - 1, 1) }
+        val monthName = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(summaryMonth.time)
         val message = """
             *Monthly Sales Summary - $monthName*
             
@@ -342,6 +354,9 @@ class AdminMonthlySummary : AdminBaseActivity() {
             *Volumes:*
             Milk: ${String.format("%.2f", summary.volume.milk_volume)} L
             Curd: ${String.format("%.2f", summary.volume.curd_volume)} L
+
+            PDF: $pdfUrl
+            Sri Vijaya Durga Milk Agencies.
         """.trimIndent()
 
         try {

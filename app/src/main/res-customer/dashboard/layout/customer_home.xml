@@ -97,6 +97,7 @@
         android:orientation="horizontal"
         android:weightSum="2">
                 <com.google.android.material.card.MaterialCardView
+        android:id="@+id/retailerAccountCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -122,6 +123,7 @@
         android:src="@drawable/ic_rupee"
         app:tint="#0369A1" />
                             <TextView
+        android:id="@+id/retailerAccountTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
@@ -241,16 +243,17 @@
         android:background="@drawable/bg_status_yellow"
         android:paddingHorizontal="12dp"
         android:paddingVertical="6dp"
-        android:text="Order Window: 9 AM - 4:30 PM"
+        android:text="LAST ACTIVITY"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_body_small"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
                     <TextView
         android:id="@+id/tvLatestOrderTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Ready for today's order?"
+        android:text="Loading latest activity..."
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/svd_text_label"
         android:textStyle="bold" />
@@ -259,7 +262,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Place your regular or bulk order now."
+        android:text=""
         android:textColor="@color/textColorSecondary"
         android:textSize="@dimen/svd_text_label" />
                     <TextView
@@ -269,7 +272,7 @@
         android:layout_marginTop="12dp"
         android:background="@color/window_background"
         android:padding="12dp"
-        android:text="Order details will appear here."
+        android:text=""
         android:textColor="@color/textColorSecondary"
         android:textSize="@dimen/text_size_body_small"
         android:visibility="gone" />
@@ -278,7 +281,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/svd_space_section"
-        android:text="Place Order"
+        android:text="View Orders"
         android:textAllCaps="false"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="@dimen/svd_text_body"
@@ -286,6 +289,19 @@
         app:backgroundTint="?attr/colorPrimary"
         app:cornerRadius="16dp"
         app:rippleColor="#40FFFFFF"  android:minHeight="@dimen/svd_touch_target"  android:minWidth="48dp" />
+                    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLatestOrderCancel"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:minHeight="@dimen/svd_touch_target"
+        android:text="Cancel Order"
+        android:textAllCaps="false"
+        android:textColor="@color/brand_red"
+        android:visibility="gone"
+        app:cornerRadius="16dp"
+        app:strokeColor="@color/brand_red" />
                 </com.svd.svdagencies.utils.CompactLinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView

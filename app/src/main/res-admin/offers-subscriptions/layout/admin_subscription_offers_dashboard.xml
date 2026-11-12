@@ -6,7 +6,7 @@
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Create fixed User Portal plans. The plan amount is calculated from item prices, quantities, and delivery count." android:textColor="@color/textColorSecondary" android:visibility="gone" />
             <com.google.android.material.button.MaterialButton android:id="@+id/btnCreateSubscriptionOffer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Create subscription" android:textColor="@color/white" app:backgroundTint="@color/icon_green" android:minHeight="48dp" android:minWidth="48dp" />
         </com.svd.svdagencies.utils.CompactLinearLayout>
-        <ProgressBar android:id="@+id/subscriptionOffersLoading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" />
+        <com.svd.svdagencies.utils.LogoProgressBar android:id="@+id/subscriptionOffersLoading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" />
         <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:fillViewport="true">
             <com.svd.svdagencies.utils.CompactLinearLayout android:id="@+id/subscriptionOffersList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" />
         </ScrollView>
