@@ -10,7 +10,7 @@ import java.io.File
 
 object ReportDownloads {
     suspend fun save(activity: Activity, response: ResponseBody, filename: String): File = withContext(Dispatchers.IO) {
-        val file = File(activity.getExternalFilesDir(null), filename)
+        val file = File(activity.getExternalFilesDir("shared_reports"), filename)
         response.use { body -> body.byteStream().use { input -> file.outputStream().use { output -> input.copyTo(output) } } }
         val signature = file.inputStream().use { input -> ByteArray(4).also { input.read(it) } }
         if (String(signature, Charsets.US_ASCII) != "%PDF") {

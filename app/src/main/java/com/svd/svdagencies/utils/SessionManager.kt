@@ -15,18 +15,18 @@ class SessionManager(private val context: Context) {
     fun saveSession(token: String, role: String, userId: Int) {
         synchronized(sessionLock) {
             Log.d("SessionManager", "Saving signed-in account")
+            TokenVault.store(prefs, token)
             prefs.edit()
-                .putString("token", token)
                 .putString("role", role)
                 .putInt("user_id", userId)
                 .putBoolean("notification_permission_pending", true)
                 .apply()
-            if (role == UserRole.ADMIN) KeepAliveWorker.startNow(context)
+            KeepAliveWorker.stop(context)
         }
     }
 
     fun getToken(): String? {
-        val token = prefs.getString("token", null)
+        val token = TokenVault.read(prefs)
         return token
     }
 

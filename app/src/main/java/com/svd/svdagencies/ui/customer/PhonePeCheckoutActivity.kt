@@ -1,6 +1,9 @@
 package com.svd.svdagencies.ui.customer
 
 import android.app.Activity
+import android.net.Uri
+import android.os.Build
+import android.webkit.WebSettings
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
@@ -24,7 +27,7 @@ class PhonePeCheckoutActivity : BaseActivity() {
 
         val paymentOrderId = intent.getStringExtra(EXTRA_PAYMENT_ORDER_ID).orEmpty()
         val redirectUrl = intent.getStringExtra(EXTRA_REDIRECT_URL).orEmpty()
-        if (paymentOrderId.isBlank() || redirectUrl.isBlank()) {
+        if (paymentOrderId.isBlank() || !isTrustedCheckout(redirectUrl)) {
             finishWithResult(Activity.RESULT_CANCELED, paymentOrderId)
             return
         }
@@ -51,6 +54,10 @@ class PhonePeCheckoutActivity : BaseActivity() {
         }
         setContentView(root)
 
+        webView.settings.allowFileAccess = false
+        webView.settings.allowContentAccess = false
+        webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) webView.settings.safeBrowsingEnabled = true
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         webView.webViewClient = object : WebViewClient() {
@@ -90,9 +97,17 @@ class PhonePeCheckoutActivity : BaseActivity() {
         })
     }
 
+    private fun isTrustedCheckout(url: String): Boolean {
+        val uri = Uri.parse(url)
+        val host = uri.host.orEmpty().lowercase(java.util.Locale.ROOT)
+        return uri.scheme == "https" && uri.userInfo == null &&
+            (host in setOf("svdagencies.shop", "www.svdagencies.shop", "svd-dqw3.onrender.com", "phonepe.com") || host.endsWith(".phonepe.com"))
+    }
+
     private fun isReturnUrl(url: String): Boolean {
-        return url.contains("/api/customer/payment/phonepe/result/", ignoreCase = true) ||
-            url.contains("payment_order_id=", ignoreCase = true)
+        val uri = Uri.parse(url)
+        return uri.scheme == "https" && uri.host in setOf("svdagencies.shop", "www.svdagencies.shop", "svd-dqw3.onrender.com") &&
+            uri.path == "/api/customer/payment/phonepe/result/"
     }
 
     private fun finishWithResult(resultCode: Int, paymentOrderId: String) {

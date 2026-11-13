@@ -262,7 +262,7 @@ class AdminMonthlySummary : AdminBaseActivity() {
                 val responseBody = api.downloadMonthlySalesPdf(date, customerId, selectedCustomerArea)
                 
                 val fileName = "Monthly_Summary_${date}_$customerId.pdf"
-                val file = File(getExternalFilesDir(null), fileName)
+                val file = File(getExternalFilesDir("shared_reports"), fileName)
                 
                 Log.d("DownloadPdf", "Saving to: ${file.absolutePath}")
                 

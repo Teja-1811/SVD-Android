@@ -23,19 +23,13 @@ configure<ApplicationExtension> {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        create("release") {
-            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
-
-        maybeCreate("externalOverride").apply {
-            storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
+    val productionStore = providers.environmentVariable("SVD_RELEASE_STORE_FILE").orNull
+    if (!productionStore.isNullOrBlank()) {
+        signingConfigs.create("production") {
+            storeFile = file(productionStore)
+            storePassword = providers.environmentVariable("SVD_RELEASE_STORE_PASSWORD").get()
+            keyAlias = providers.environmentVariable("SVD_RELEASE_KEY_ALIAS").get()
+            keyPassword = providers.environmentVariable("SVD_RELEASE_KEY_PASSWORD").get()
         }
     }
 
@@ -107,8 +101,9 @@ configure<ApplicationExtension> {
         }
 
         getByName("release") {
+            isDebuggable = false
             isMinifyEnabled = true
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.findByName("production")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -146,6 +141,7 @@ dependencies {
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.guava:guava:33.7.2-android")
 
     // Firebase
     implementation(platform(libs.firebase.bom))

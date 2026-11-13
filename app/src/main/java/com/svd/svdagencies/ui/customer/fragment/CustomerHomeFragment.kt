@@ -142,7 +142,6 @@ class CustomerHomeFragment : Fragment(R.layout.customer_home) {
                     return
                 }
 
-                Log.d("CustomerHomeFragment", "Response: ${response.body()}")
 
                 if (!isAdded || view == null) return
 
